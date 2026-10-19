@@ -30,9 +30,10 @@ pnpm run hooks:install   # optional; see Local Verification
 | `pnpm run format` | Apply formatting and safe lint fixes |
 | `pnpm run typecheck` | Type-check all TypeScript sources |
 | `pnpm test` | Run the tests of every workspace package |
+| `pnpm run i18n:check` | Verify the message catalogs (see [Localization §3](localization.md#3-message-catalogs)) |
 | `pnpm run license:check` | Verify installed dependencies against the license policy |
 
-`verify` runs `lint`, `typecheck`, `test` and `license:check`, stopping at the first failure.
+`verify` runs `lint`, `typecheck`, `test`, `i18n:check` and `license:check`, stopping at the first failure.
 
 ## Local Verification
 
@@ -63,7 +64,9 @@ To bypass a hook once, add `--no-verify` to `git commit` or `git push`. To disab
 | Path | Contents |
 |---|---|
 | `apps/` | Web build and platform shells (not yet created) |
-| `packages/` | Shared modules: `domain`, `timeline`, `renderer`, `offline`, `project-package`, `ui` (not yet created) |
+| `packages/` | Shared modules: `i18n`; planned: `domain`, `timeline`, `renderer`, `offline`, `project-package`, `ui` |
+| `packages/i18n/` | Locale resolution and message catalogs (`locales/`) |
+| `tools/i18n-check/` | Message catalog check used by CI |
 | `tools/license-check/` | License check used by CI |
 | `tools/ci/` | Container definition for `verify:clean` |
 | `.githooks/` | Optional Git hooks |

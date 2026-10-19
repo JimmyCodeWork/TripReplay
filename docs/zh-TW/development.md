@@ -32,9 +32,10 @@ pnpm run hooks:install   # 選用；見「本機驗證」
 | `pnpm run format` | 套用格式化及安全的 lint 修正 |
 | `pnpm run typecheck` | 對所有 TypeScript 原始碼進行型別檢查 |
 | `pnpm test` | 執行所有 workspace 套件的測試 |
+| `pnpm run i18n:check` | 檢查訊息目錄（見[在地化 §3](localization.md#3-訊息目錄)） |
 | `pnpm run license:check` | 依授權政策檢查已安裝的相依套件 |
 
-`verify` 會依序執行 `lint`、`typecheck`、`test` 及 `license:check`，遇到第一個失敗即停止。
+`verify` 會依序執行 `lint`、`typecheck`、`test`、`i18n:check` 及 `license:check`，遇到第一個失敗即停止。
 
 ## 本機驗證
 
@@ -65,7 +66,9 @@ pnpm run hooks:install   # 選用；見「本機驗證」
 | 路徑 | 內容 |
 |---|---|
 | `apps/` | Web 版與各平台外殼（尚未建立） |
-| `packages/` | 共用模組：`domain`、`timeline`、`renderer`、`offline`、`project-package`、`ui`（尚未建立） |
+| `packages/` | 共用模組：`i18n`；規劃中：`domain`、`timeline`、`renderer`、`offline`、`project-package`、`ui` |
+| `packages/i18n/` | 語系判定與訊息目錄（`locales/`） |
+| `tools/i18n-check/` | CI 使用的訊息目錄檢查工具 |
 | `tools/license-check/` | CI 使用的授權檢查工具 |
 | `tools/ci/` | `verify:clean` 使用的容器定義 |
 | `.githooks/` | 選用的 Git hooks |

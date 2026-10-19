@@ -36,7 +36,7 @@ Prerequisite for adding any dependency.
 | M0.3 | Repository governance: contributing guide, code of conduct, security policy, issue and pull request templates | Documents merged; private vulnerability reporting enabled in repository settings |
 | M0.4 | CI license gate: reject unknown, prohibited or unreviewed licenses in lockfiles | **Done.** Verified to reject an unreviewed package and a reviewed MPL-2.0 package ([Development Guide](development.md#license-check)) |
 | M0.5 | CI baseline: lint, format and unit test jobs on every pull request | **Done.** Local verification (`verify`, `verify:clean`, Git hooks) and CI on every pull request and push to `main` |
-| M0.6 | Localization scaffolding (see [Localization](localization.md)) | `en` and `zh-TW` catalogs load; CI rejects missing keys |
+| M0.6 | Localization scaffolding (see [Localization](localization.md)) | **Done.** `packages/i18n` loads `en` and `zh-TW` catalogs; `i18n:check` rejects missing keys and mismatched arguments |
 | M0.7 | Public release of the repository | See below |
 
 ### M0.7 — Making the repository public

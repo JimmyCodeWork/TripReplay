@@ -1,0 +1,34 @@
+{
+  "app.name": {
+    "message": "TripReplay",
+    "description": "Product name. Do not translate."
+  },
+  "common.cancel": {
+    "message": "Cancel",
+    "description": "Button that cancels the current operation."
+  },
+  "common.retry": {
+    "message": "Retry",
+    "description": "Button that retries a failed operation."
+  },
+  "tripList.title": {
+    "message": "Trips",
+    "description": "Heading of the trip list screen."
+  },
+  "tripList.empty": {
+    "message": "No trips yet",
+    "description": "Shown in the trip list when no trip has been created."
+  },
+  "tripList.stopCount": {
+    "message": "{count, plural, one {# stop} other {# stops}}",
+    "description": "Number of stops in a trip, shown under the trip title."
+  },
+  "offline.status.ready": {
+    "message": "Ready for offline use",
+    "description": "Offline package state: all required resources are downloaded and verified."
+  },
+  "export.preflight.missingTiles": {
+    "message": "{count, plural, one {# map tile is missing} other {# map tiles are missing}}. Download the offline package before exporting.",
+    "description": "Export preflight error when map tiles required by the timeline are not stored on the device."
+  }
+}

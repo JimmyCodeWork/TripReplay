@@ -1,0 +1,12 @@
+{
+  "app.name": { "message": "TripReplay" },
+  "common.cancel": { "message": "取消" },
+  "common.retry": { "message": "重試" },
+  "tripList.title": { "message": "旅行" },
+  "tripList.empty": { "message": "尚無旅行" },
+  "tripList.stopCount": { "message": "{count, plural, other {# 個景點}}" },
+  "offline.status.ready": { "message": "已就緒，可離線使用" },
+  "export.preflight.missingTiles": {
+    "message": "{count, plural, other {缺少 # 個地圖圖磚}}。請先下載離線包再匯出。"
+  }
+}

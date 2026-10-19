@@ -21,23 +21,50 @@
 
 ## 2. 語系判定
 
-應用程式依序讀取使用者偏好的語言（作業系統或瀏覽器設定），並採用第一個相符的語系：
+應用程式依序檢查使用者偏好的語言（作業系統或瀏覽器設定），並採用第一個支援的語系：
 
 | 請求的語言標籤 | 判定語系 |
 |---|---|
 | `zh-TW`、`zh-Hant`、`zh-Hant-*`、`zh-HK`、`zh-MO` | `zh-TW` |
 | `en`、`en-*` | `en` |
-| 其他所有標籤，包含 `zh-CN` 與 `zh-Hans` | `en` |
+| 其他所有標籤，包含 `zh`、`zh-CN` 與 `zh-Hans` | 略過 |
+
+若所有偏好語言皆不支援，則使用 `en`。語言標籤依其預設文字系統比對，因此凡隱含繁體字的中文標籤皆判定為 `zh-TW`。實作為 [`packages/i18n`](../../packages/i18n/src/locale.ts) 中的 `resolveLocale`。
 
 使用者可於「設定」中自行指定語言，此選擇與其他偏好設定一同儲存於本機。
 
 ## 3. 訊息目錄
 
-- 訊息目錄置於 `locales/<locale>.json`，每個語系一個檔案，以穩定的點分隔識別碼作為鍵值（例如 `export.preflight.missingTiles`）。
+- 訊息目錄置於 [`packages/i18n/locales/<locale>.json`](../../packages/i18n/locales)，每個語系一個檔案，以穩定的點分隔 camelCase 識別碼作為鍵值（例如 `export.preflight.missingTiles`）。
 - 訊息採用 ICU MessageFormat 處理複數、選擇及預留位置；程式碼中絕不串接字串。
 - 鍵值描述用途而非文字內容，因此修改英文文字不會改變鍵值。
-- 每個鍵值可附上譯者註解，說明使用情境及長度限制。
-- 下列情況 CI 將失敗：鍵值存在於 `en` 但不存在於 `zh-TW`、兩語系的預留位置不一致，或訊息目錄含有未使用的鍵值。尚未翻譯的字串可標示為待翻譯，執行期將退回英文，並於 CI 中回報。
+- 每個英文項目可附上給譯者的 `description`，說明使用情境及長度限制。
+- 各語言的複數規則不同：英文使用 `one` 與 `other`，中文僅使用 `other`。所有 plural 與 select 皆須包含 `other`。
+
+項目格式：
+
+```jsonc
+// en.json — 來源
+"tripList.stopCount": {
+  "message": "{count, plural, one {# stop} other {# stops}}",
+  "description": "Number of stops in a trip, shown under the trip title."
+}
+
+// zh-TW.json — 翻譯
+"tripList.stopCount": { "message": "{count, plural, other {# 個景點}}" }
+
+// zh-TW.json — 尚未翻譯；執行期顯示英文
+"tripList.stopCount": { "pending": true }
+```
+
+`pnpm run i18n:check`（包含於 `pnpm run verify`）在下列情況將失敗：
+
+- `en` 中的鍵值未出現在翻譯中，或翻譯含有 `en` 中不存在的鍵值；
+- 訊息為空，或不是有效的 ICU MessageFormat；
+- 翻譯的參數名稱或類型與英文不同（例如英文為 plural，中文卻為一般預留位置）；
+- 鍵值不符合命名格式。
+
+待翻譯項目會被列出，但不會導致檢查失敗。未使用鍵值的偵測將於第一個 UI 套件引用訊息鍵值後一併加入。
 
 ## 4. 格式化
 
