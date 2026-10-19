@@ -44,11 +44,10 @@ Prerequisite for adding any dependency.
 The repository remains private until the project is ready for outside contributors. Before changing its visibility:
 
 1. ~~Review the full Git history for files and content that must not be published.~~ Done.
-2. ~~Restore the `pull_request` and `push` triggers in `.github/workflows/ci.yml`~~, and confirm that the first run passes.
+2. ~~Restore the `pull_request` and `push` triggers in `.github/workflows/ci.yml`, and confirm that the first run passes.~~ Done.
 3. Require the CI check on `main` in branch protection settings.
 4. Enable private vulnerability reporting.
-5. Install a DCO check for pull requests.
-6. Confirm that README, contributing guide and policies are complete in both languages.
+5. Confirm that README, contributing guide and policies are complete in both languages.
 
 ## M1 — Technical Validation (Phase A)
 

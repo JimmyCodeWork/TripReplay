@@ -10,7 +10,7 @@
 |---|---|---|
 | Node.js | 24（LTS） | 見 [`.node-version`](../../.node-version)。較舊的版本會在安裝時被拒絕。 |
 | pnpm | 12.14.0 | 已於 `package.json` 中鎖定；執行 `corepack enable` 即可自動使用鎖定的版本。 |
-| Git | 任一近期版本 | Commit 須加上簽署（`git commit -s`）。 |
+| Git | 任一近期版本 | |
 | Docker | 選用 | 僅 `pnpm run verify:clean` 需要。 |
 
 ## 開始使用
@@ -56,7 +56,6 @@ pnpm run hooks:install   # 選用；見「本機驗證」
 | Hook | 執行內容 | 目的 |
 |---|---|---|
 | `pre-commit` | `pnpm run lint` | 於 commit 前發現格式與 lint 錯誤 |
-| `commit-msg` | 簽署檢查 | 拒絕沒有 `Signed-off-by` 行的 commit |
 | `pre-push` | `pnpm run verify` | 阻擋會導致 CI 失敗的推送 |
 
 如需單次略過 hook，請於 `git commit` 或 `git push` 加上 `--no-verify`。如需停用 hooks，請執行 `git config --unset core.hooksPath`。

@@ -18,15 +18,9 @@ Issue 與 Pull Request 可使用英文或繁體中文撰寫。
 
 ## 貢獻內容的授權
 
-提交貢獻即表示您同意該貢獻以本專案的 [MIT 授權](../../LICENSE)釋出，並依 [Developer Certificate of Origin 1.1](https://developercertificate.org/)（開發者原創聲明）證明您有權以該授權提交。
+依 [GitHub 服務條款](https://docs.github.com/en/site-policy/github-terms/github-terms-of-service#6-contributions-under-repository-license) D.6 節，貢獻內容以本專案的 [MIT 授權](../../LICENSE)釋出。提交貢獻即表示您確認有權以該授權提交。
 
-請為每個 commit 加上簽署，以記錄此項聲明：
-
-```sh
-git commit -s
-```
-
-此指令會依您的 Git 身分加入一行 `Signed-off-by: Your Name <you@example.com>`。含有未簽署 commit 的 Pull Request 無法合併。
+歡迎為 commit 加上簽署（`git commit -s`），但非必要。
 
 非您本人撰寫的程式碼、資料或資產，除非其授權為[相依套件授權政策](license-policy.md)所允許，且已於 Pull Request 中註明來源，否則請勿提交。
 

@@ -8,7 +8,7 @@ English | [繁體中文](zh-TW/development.md)
 |---|---|---|
 | Node.js | 24 (LTS) | See [`.node-version`](../.node-version). Older versions are rejected at install time. |
 | pnpm | 12.14.0 | Pinned in `package.json`; run `corepack enable` to use the pinned version automatically. |
-| Git | Any recent version | Commits must be signed off (`git commit -s`). |
+| Git | Any recent version | |
 | Docker | Optional | Required only for `pnpm run verify:clean`. |
 
 ## Getting Started
@@ -54,7 +54,6 @@ All checks run locally. The CI workflow ([`.github/workflows/ci.yml`](../.github
 | Hook | Runs | Purpose |
 |---|---|---|
 | `pre-commit` | `pnpm run lint` | Catch formatting and lint errors before committing |
-| `commit-msg` | Sign-off check | Reject commits without a `Signed-off-by` line |
 | `pre-push` | `pnpm run verify` | Block pushes that would fail CI |
 
 To bypass a hook once, add `--no-verify` to `git commit` or `git push`. To disable the hooks, run `git config --unset core.hooksPath`.
