@@ -9,6 +9,7 @@ This directory records significant architecture and policy decisions. Each recor
 | [0001](0001-dependency-license-scope.md) | Dependency license scope | Accepted |
 | [0002](0002-public-domain-and-data-licenses.md) | Permit SQLite and CDLA-Permissive-2.0 | Accepted |
 | [0003](0003-language-and-toolchain.md) | Primary language and toolchain | Accepted |
+| [0004](0004-web-first-release.md) | Web-first, screen-first 1.0 with self-hosted OpenStreetMap tiles | Accepted |
 
 ## Writing a Record
 

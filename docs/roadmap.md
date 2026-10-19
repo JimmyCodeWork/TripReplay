@@ -8,7 +8,7 @@ English | [繁體中文](zh-TW/roadmap.md)
 | Date | 2026-10-19 |
 | Status | Planning. No milestone has started. |
 
-This roadmap breaks the development phases in the [Specification §10](specification.md#10-development-phases-and-decision-gates) into milestones with explicit exit criteria. No dates are committed; each milestone starts when its predecessors' exit criteria are met.
+This roadmap breaks the development phases in the [Specification §10](specification.md#10-development-phases-and-decision-gates) into milestones with explicit exit criteria, leading to the release defined in the [1.0 Definition](release-1.0.md). No dates are committed; each milestone starts when its predecessors' exit criteria are met.
 
 ## Overview
 
@@ -19,11 +19,13 @@ flowchart LR
     Core --> M2
     M1 --> G1{Gate: architecture}
     G1 --> M2[M2 End-to-end flow]
-    M2 --> M3[M3 Offline]
-    M2 --> M4[M4 Export]
-    M3 --> M5[M5 Release readiness]
-    M4 --> M5
+    M2 --> M3[M3 Release readiness]
+    M3 --> R1([1.0])
+    R1 --> M4[M4 Offline]
+    R1 --> M5[M5 Export]
 ```
+
+Milestones M0 to M3 lead to 1.0, which delivers the on-screen experience. M4 and M5 form the next release ([1.0 Definition §4.3](release-1.0.md#43-after-10)).
 
 ## M0 — Foundation
 
@@ -55,14 +57,13 @@ Each spike produces a short report in `docs/spikes/` and a throwaway prototype. 
 
 | ID | Spike | Questions to answer | Exit criteria |
 |---|---|---|---|
-| S1 | Map rendering and data | Which renderer is admissible under M0.1? Which provider permits offline storage and use in exported video? | A license-compliant renderer draws a vector base map from a local file, with Traditional Chinese labels, at 30 fps on the reference devices |
+| S1 | Map rendering and data | Which renderer is admissible under M0.1? How are OpenStreetMap tiles generated, hosted without request logging, and read by range into an offline package? Which place-search provider permits the intended use? | A license-compliant renderer draws a self-generated OpenStreetMap vector base map from a local file, with Traditional Chinese labels, at 30 fps on the reference devices; hosting cost estimated |
 | S2 | Timeline compiler | Is `renderAt(timeUs)` deterministic for a fixed timeline? | Two runs at identical timestamps yield identical camera, captions and media state; Date Line and identical-coordinate cases covered by tests |
-| S3 | Web export | Can WebCodecs plus an admissible MP4 muxer produce a 30-second 1080p H.264/AAC file? | File plays in the default players of all five desktop and mobile OS families; audio-video offset ≤ 100 ms |
-| S4 | Installed shell | Which shell is admissible under M0.1 and runs on Windows, macOS, Linux, Android and iOS? | The S1 map and S2 timeline run inside the shell on all five platforms |
-| S5 | Mobile media bridge | What is the frame throughput between native decoders and the shared compositor? | Sustained 1080p at 30 fps without Base64 transfer, or a documented decision to move rendering to a native pipeline |
 | S6 | Web storage | Can OPFS and IndexedDB hold 10 GB of media with crash-safe imports? | Forced termination during import leaves no referenced partial files |
 
-**Gate — architecture decision.** After S1–S6, record which platforms use the shared renderer and which use a native pipeline, and fix the minimum supported OS and browser versions for M2. If a platform cannot meet S3 or S5, revise the support scope before proceeding.
+Spike S3 (Web export) moves to M5. Spikes S4 (installed shell) and S5 (mobile media bridge) are deferred until the installed builds ([ADR 0004](adr/0004-web-first-release.md)).
+
+**Gate — architecture decision.** After S1, S2 and S6, fix the renderer, the map pipeline and the supported browser versions for M2. The renderer must be driven by `renderAt(timeUs)` and map access must go through the offline package interface, so that M4 and M5 can be added without redesign.
 
 ## Core Library Work
 
@@ -76,12 +77,26 @@ The following can start once M0.1 and M0.2 are complete, in parallel with M1, be
 
 | Exit criteria |
 |---|
-| Trip list, itinerary editor, media editor and preview are usable on the Web build and at least one installed platform |
+| Trip list, itinerary editor, media editor and preview are usable on every supported browser |
+| Automatic media matching, background music and themes ([1.0 Definition §4.2](release-1.0.md#42-additional-features-required-in-10)) |
 | Autosave with revision checks; reopening a project restores its exact state |
-| Versioned project package: back up on one platform and restore on another without loss |
+| Versioned project package: back up in one browser and restore in another without loss |
 | All UI strings available in `en` and `zh-TW` |
 
-## M3 — Offline (Phase C)
+## M3 — Release Readiness for 1.0 (Phase E)
+
+| Exit criteria |
+|---|
+| Public site deployed over HTTPS with a Content Security Policy; installable as a PWA |
+| Tile hosting operational without request logging; attribution shown in the map and during playback |
+| Quality bar of the [1.0 Definition §6](release-1.0.md#6-quality-bar) met, including usability testing |
+| Accessibility review: keyboard operation, screen-reader labels, sufficient contrast, reduced-motion option for previews |
+| License release gate passes ([Dependency License Policy §6](license-policy.md#6-release-gate)) |
+| User guide, privacy statement, known issues and browser support table complete in `en` and `zh-TW`; `1.0.0` tagged with a changelog |
+
+## After 1.0
+
+### M4 — Offline (Phase C)
 
 | Exit criteria |
 |---|
@@ -90,19 +105,16 @@ The following can start once M0.1 and M0.2 are complete, in parallel with M1, be
 | Airplane-mode acceptance test passes ([Specification §9](specification.md#9-acceptance-criteria-and-testing)) |
 | Network inspection confirms no private data in any request |
 
-## M4 — Export (Phase D)
+### M5 — Export (Phase D)
+
+Starts with spike S3: can WebCodecs plus an admissible MP4 muxer produce a 30-second 1080p H.264 file with audio on Chrome, Edge, Safari and Firefox? Exit criteria for the spike: the file plays in the default players of all five desktop and mobile OS families, audio-video offset ≤ 100 ms, and export support is recorded per browser.
 
 | Exit criteria |
 |---|
-| MP4 export on every supported platform, with original audio mixing |
+| MP4 export on the supported browsers, with original audio and background music mixing, and OpenStreetMap attribution rendered into the video |
 | Cancellation and recovery leave no partial output presented as complete |
 | Long-video, low-storage and mixed-format test suites pass |
 
-## M5 — Release Readiness (Phase E)
+### Installed builds
 
-| Exit criteria |
-|---|
-| Signed packages for each platform; permission prompts reviewed |
-| Accessibility review: keyboard operation, screen-reader labels, sufficient contrast, reduced-motion option for previews |
-| License release gate passes ([Dependency License Policy §6](license-policy.md#6-release-gate)) |
-| Documentation and store listings complete in `en` and `zh-TW` |
+Installed builds for Windows, macOS, Linux, Android and iOS, starting with spikes S4 and S5, followed by platform packaging, signing and store releases.

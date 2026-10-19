@@ -8,6 +8,8 @@ English | [繁體中文](zh-TW/specification.md)
 | Date | 2026-10-19 |
 | Status | Design phase. The technology candidates in this document have not passed the [license audit](license-policy.md). |
 
+> The scope and quality bar of version 1.0 are defined in the [1.0 Definition](release-1.0.md). This specification describes the long-term product.
+>
 > The [Dependency License Policy](license-policy.md) takes precedence over this document. Where a technology choice below conflicts with that policy, the choice is suspended until a compliant alternative is found.
 
 ## 1. Overview
@@ -18,7 +20,7 @@ TripReplay turns a planned itinerary and the photos and videos captured along th
 
 - Build an itinerary, import photos and videos, and generate an animated recap ordered by stop.
 - Export the recap as a video file.
-- Run on Web, Windows, macOS, Linux, Android and iOS.
+- Run on Web, Windows, macOS, Linux, Android and iOS. Version 1.0 ships on the Web only ([ADR 0004](adr/0004-web-first-release.md)).
 - Keep all private media and processing on the device.
 - Allow network access, but support downloading all required resources in advance so that previewing does not depend on mobile data while traveling.
 
@@ -64,11 +66,9 @@ Transition overlaps are computed by the timeline compiler; durations are not sim
 
 ## 3. First Release Scope
 
-**Required:** trip and stop CRUD, reordering, local media import with managed storage, manual media assignment, basic trimming and volume, animated map route, timeline preview, autosave, offline preparation, MP4 export, local project backup and restore, storage and error states.
+The scope of version 1.0 is defined in the [1.0 Definition §4](release-1.0.md#4-features). 1.0 delivers the on-screen experience — editing, media import and preview — including automatic media matching by GPS and capture time, user-supplied background music, and bundled themes. MP4 export and offline packages follow in the next release.
 
-**Candidates:** GPS and capture-time matching; user-supplied background music. If background music is added, it must be mixed with original audio, and the user is responsible for holding the rights to it.
-
-**Deferred:** turn-by-turn road routing, live GPS tracking, multi-user collaboration, cloud sync, cloud-based AI organization, 3D buildings, satellite imagery, 4K/HDR output, multi-track editing and a template store. Still-image export is out of scope.
+**Deferred beyond 1.0:** installed applications, turn-by-turn road routing, live GPS tracking, multi-user collaboration, cloud sync, cloud-based AI organization, 3D buildings, satellite imagery, 4K/HDR output, multi-track editing and a template store. Still-image export is out of scope.
 
 ## 4. Offline Operation and Privacy
 
@@ -248,10 +248,9 @@ No fixed schedule is estimated yet; staffing, test devices and map budget are st
 
 The following do not block this version of the design:
 
-- Map data budget and provider: offline use, use in videos, attribution, redistribution and update policy.
 - Whether "private" also prohibits disclosing stops and download extents to map providers.
-- Minimum device and browser support, typical media volume per trip, and maximum video length.
-- Whether background music and GPS-based media matching are required in the first release.
-- Release order (mobile first or desktop first). All six platforms remain in scope but may ship in stages.
+- Release order of the installed platforms after 1.0.
+
+Resolved by the [1.0 Definition](release-1.0.md): map data source (§5), browser support and reference targets (§3, §6), and the inclusion of background music and automatic media matching (§4.2). Its §7 lists the items still open for 1.0.
 
 To be evaluated as the project grows: cross-project deduplication, proxy cache cleanup, larger offline region indexes, 4K/HDR, and native rendering performance. Any future sync or cloud feature requires a fresh privacy review and must not be enabled by default.
