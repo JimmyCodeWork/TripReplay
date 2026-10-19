@@ -4,7 +4,7 @@ English | [繁體中文](zh-TW/release-1.0.md)
 
 | | |
 |---|---|
-| Version | 0.1 (draft) |
+| Version | 0.2 (draft) |
 | Date | 2026-10-19 |
 | Status | For review. Defines what "done" means for version 1.0. |
 
@@ -14,19 +14,20 @@ Values marked *proposed* are working targets to be confirmed during technical va
 
 ## 1. Summary
 
-With TripReplay 1.0, a traveler can open a website, plan or reconstruct a trip as a list of stops, add the photos, videos and music from that trip, and export an animated map recap as an MP4 video — entirely on their own device, online or offline, in English or Traditional Chinese.
+TripReplay 1.0 delivers the complete on-screen experience. A traveler can open a website, plan or reconstruct a trip as a list of stops, add the photos, videos and music from that trip, and watch an animated map recap in the browser — entirely on their own device, in English or Traditional Chinese.
+
+Exporting the recap as a video file and preparing trips for offline use follow in the release after 1.0 (§4.3).
 
 ## 2. Target Users and Core Scenario
 
-**Target users:** individual travelers who want to share a trip as a short video, without uploading their media to a cloud service and without video-editing skills.
+**Target users:** individual travelers who want to relive and show a trip as an animated map recap, without uploading their media to a cloud service and without video-editing skills.
 
 **Core scenario:**
 
 1. Before the trip, or afterwards, the user creates a trip and adds stops by search or by placing pins.
-2. Before going offline, the user downloads the offline package for the trip.
-3. After the trip, the user imports photos and videos; TripReplay suggests a stop for each from GPS data and capture time, and the user confirms or corrects the assignments.
-4. The user chooses a theme and background music, previews the recap and adjusts durations and trimming.
-5. The user exports an MP4 and shares it through the operating system or any app of their choice.
+2. After the trip, the user imports photos and videos; TripReplay suggests a stop for each from GPS data and capture time, and the user confirms or corrects the assignments.
+3. The user chooses a theme and background music, previews the recap and adjusts durations and trimming.
+4. The user plays the recap full-screen, for example to show it to family and friends.
 
 ## 3. Platform
 
@@ -36,7 +37,7 @@ With TripReplay 1.0, a traveler can open a website, plan or reconstruct a trip a
 | Devices | Desktop and laptop computers; tablets and phones through their browsers |
 | Installed builds (Windows, macOS, Linux, Android, iOS) | Not in 1.0. Remain the long-term goal ([Specification §1.1](specification.md#11-goals)) |
 | Browsers | Current and previous major versions of Chrome, Edge, Safari and Firefox |
-| Export | Committed on Chrome and Edge. Safari and Firefox are targeted and confirmed in spike S3; where export is unavailable, the application states so and the project can be exported from a supported browser |
+| Network | Required for map tiles and place search. Trips, media and settings are stored on the device and remain available without a connection |
 
 ## 4. Features
 
@@ -47,9 +48,7 @@ With TripReplay 1.0, a traveler can open a website, plan or reconstruct a trip a
 | Trips | Create, open, rename, duplicate and delete trips; storage usage per trip |
 | Itinerary | Stops grouped by day; place search and manual pins; reordering; names and descriptions; multi-day, multi-country and Date Line crossings |
 | Media | Import photos and videos from the device; assign to stops; reorder; trim videos; set photo duration, rotation and fit; adjust clip volume |
-| Preview | Animated route, camera moves, stop titles and media on a scrubbable timeline; 16:9 and 9:16 |
-| Export | MP4 (H.264) at 1080p or 720p, 30 fps; original audio; progress, cancellation and actionable errors |
-| Offline | Offline package per trip with size estimate, pause, resume, verification and update; full preview and export without a network connection |
+| Preview | Animated route, camera moves, stop titles and media on a scrubbable timeline; 16:9 and 9:16; full-screen playback with sound |
 | Projects | Autosave; back up and restore a trip as a project package |
 | Languages | English and Traditional Chinese for the whole interface and documentation |
 
@@ -58,12 +57,21 @@ With TripReplay 1.0, a traveler can open a website, plan or reconstruct a trip a
 | Feature | 1.0 capability |
 |---|---|
 | Automatic media matching | Suggest a stop for each imported item from its GPS coordinates and capture time, with time-zone correction. Suggestions are always shown for confirmation and never applied silently. Items without metadata are left for manual assignment. |
-| Background music | Import one or more audio files from the device; place them on the timeline; mix with original audio, with fade-in, fade-out and automatic lowering of music during clips with sound. The user is responsible for holding the rights to the music. No music is bundled. |
+| Background music | Import one or more audio files from the device; place them on the timeline; play them in the preview mixed with original audio, with fade-in, fade-out and automatic lowering of music during clips with sound. The user is responsible for holding the rights to the music. No music is bundled. |
 | Themes | Choose from bundled themes that set the map style, route color, title and caption style. *Proposed:* three themes at launch, including one suitable for 9:16. |
 
-### 4.3 Not in 1.0
+### 4.3 After 1.0
 
-Installed applications; cloud sync and accounts; collaboration; turn-by-turn road routing; live GPS tracking; satellite imagery and 3D buildings; 4K and HDR output; multi-track editing; still-image export; a template or theme store; bundled music.
+| Release | Features |
+|---|---|
+| Next release after 1.0 | MP4 export (H.264, 1080p and 720p, 30 fps) with original audio and background music; offline packages for preview and export without a network connection |
+| Later | Installed applications for Windows, macOS, Linux, Android and iOS |
+
+The 1.0 architecture must not preclude these: preview is driven by the deterministic `renderAt(timeUs)` of [Specification §7](specification.md#7-preview-and-video-pipeline), so that export can render the same frames, and map resources are accessed through the offline package manager's interface from the start.
+
+### 4.4 Not planned
+
+Cloud sync and accounts; collaboration; turn-by-turn road routing; live GPS tracking; satellite imagery and 3D buildings; 4K and HDR output; multi-track editing; still-image export; a template or theme store; bundled music.
 
 ## 5. Map Data
 
@@ -72,33 +80,32 @@ Installed applications; cloud sync and accounts; collaboration; turn-by-turn roa
 | Source | OpenStreetMap data, processed by the project into vector tiles in PMTiles format |
 | Hosting | Static file hosting operated by the project, serving tiles through HTTP range requests; no application server |
 | License | Data under ODbL-1.0; downloaded at runtime and never bundled in release artifacts ([Dependency License Policy §2](license-policy.md#2-scope)). The project publishes its processed tiles under ODbL, as the license requires for derivative databases. |
-| Attribution | "© OpenStreetMap contributors" shown in the map view and rendered into exported videos |
-| Offline packages | Built on the device by downloading the tile ranges required by the trip's timeline |
-| Privacy | Tile requests reveal the regions a user views. The hosting is configured without request logging, this is stated in the privacy statement, and users may place pins manually and work fully offline after preparation |
-| Updates | *Proposed:* tiles regenerated quarterly; existing offline packages keep working until the user updates them |
+| Attribution | "© OpenStreetMap contributors" shown in the map view and during full-screen playback |
+| Caching | Viewed tiles are cached by the browser for performance; this is not an offline guarantee |
+| Privacy | Tile requests reveal the regions a user views. The hosting is configured without request logging, this is stated in the privacy statement, and users may place pins manually instead of searching |
+| Updates | *Proposed:* tiles regenerated quarterly |
 | Labels | Traditional Chinese names where available in the data, falling back to local names |
 
 ## 6. Quality Bar
 
-1.0 is a product that can be publicly recommended: a person who has never contacted the project can install it, use it and get a good result.
+1.0 is a product that can be publicly recommended: a person who has never contacted the project can open it, use it and get a good result.
 
 ### 6.1 Functional
 
-All acceptance scenarios in [Specification §9](specification.md#9-acceptance-criteria-and-testing) pass on the committed browsers, with the following *proposed* reference targets:
+The acceptance scenarios of [Specification §9](specification.md#9-acceptance-criteria-and-testing) that apply to editing and preview pass on all supported browsers, with the following *proposed* reference targets:
 
 | Measure | Target |
 |---|---|
-| Reference trip | 10 stops, 50 photos, 10 video clips, 3 minutes of output |
+| Reference trip | 10 stops, 50 photos, 10 video clips, 3 minutes of recap |
 | Preview | 30 fps on a reference laptop; no stall longer than 1 second when scrubbing |
-| Export time | No more than twice the video duration at 1080p on a reference laptop |
-| Maximum video length | 10 minutes |
+| Startup | Opening a reference trip shows the first frame within 3 seconds on a reference laptop |
 | Media volume | 10 GB per trip without exhausting memory |
 
 ### 6.2 Reliability
 
-- No data loss on browser crash, tab close or device sleep during editing, import or export.
-- An interrupted export never produces a file presented as complete.
+- No data loss on browser crash, tab close or device sleep during editing or import.
 - Storage eviction by the browser is detected, explained and recoverable from a project package backup.
+- Missing map tiles never block editing; the preview shows a clear placeholder and retries.
 
 ### 6.3 Usability and accessibility
 
@@ -108,7 +115,7 @@ All acceptance scenarios in [Specification §9](specification.md#9-acceptance-cr
 
 ### 6.4 Documentation and support
 
-- User guide in English and Traditional Chinese, covering the core scenario, offline preparation and backup.
+- User guide in English and Traditional Chinese, covering the core scenario and backup.
 - Privacy statement describing exactly which network requests the application makes.
 - Known issues list and browser support table, kept current for each release.
 - Issue templates and security policy in place (already done).
@@ -128,6 +135,5 @@ These do not block the definition above and are resolved during the milestones n
 | Place-search provider and its terms (geocoding is separate from tile hosting) | M1, spike S1 |
 | Tile hosting provider and monthly bandwidth budget | M1, spike S1 |
 | Reference laptop and phone models | M1 |
-| Export support on Safari and Firefox, and the audio codec used there | M1, spike S3 |
 | Final number and design of themes | M2 |
-| Domain name for the public site | M5 |
+| Domain name for the public site | M3 |

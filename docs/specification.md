@@ -66,7 +66,7 @@ Transition overlaps are computed by the timeline compiler; durations are not sim
 
 ## 3. First Release Scope
 
-The scope of version 1.0 is defined in the [1.0 Definition §4](release-1.0.md#4-features). In addition to the core flow, it includes automatic media matching by GPS and capture time, user-supplied background music, and bundled themes.
+The scope of version 1.0 is defined in the [1.0 Definition §4](release-1.0.md#4-features). 1.0 delivers the on-screen experience — editing, media import and preview — including automatic media matching by GPS and capture time, user-supplied background music, and bundled themes. MP4 export and offline packages follow in the next release.
 
 **Deferred beyond 1.0:** installed applications, turn-by-turn road routing, live GPS tracking, multi-user collaboration, cloud sync, cloud-based AI organization, 3D buildings, satellite imagery, 4K/HDR output, multi-track editing and a template store. Still-image export is out of scope.
 
