@@ -1,0 +1,7 @@
+{
+  "$comment": "Machine-readable form of docs/license-policy.md §3. Amend both in the same pull request.",
+  "allowed": {
+    "code": ["MIT", "ISC", "BSD-2-Clause", "BSD-3-Clause", "0BSD", "Zlib", "Apache-2.0", "Unicode-3.0", "blessing"],
+    "asset": ["OFL-1.1", "CC0-1.0", "CDLA-Permissive-2.0"]
+  }
+}

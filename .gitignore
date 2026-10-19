@@ -1,0 +1,29 @@
+# Local working notes and assistant configuration (never committed)
+CLAUDE.md
+CLAUDE.local.md
+AGENTS.md
+.claude/
+.cursor/
+.cursorrules
+.github/copilot-instructions.md
+.private/
+*.prompt.md
+*.local.md
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Dependencies and build output
+node_modules/
+dist/
+coverage/

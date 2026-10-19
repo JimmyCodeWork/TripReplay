@@ -1,0 +1,10 @@
+{
+  "name": "@tripreplay/license-check",
+  "version": "0.0.0",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "test": "node --test \"test/**/*.test.ts\""
+  }
+}

@@ -1,0 +1,4 @@
+{
+  "release": {},
+  "development": ["@biomejs/biome", "@types/node", "typescript"]
+}

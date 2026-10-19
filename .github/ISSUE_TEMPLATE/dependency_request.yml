@@ -1,0 +1,55 @@
+name: Dependency request / 相依套件申請
+description: Propose adding or upgrading a third-party component. / 提議新增或升級第三方元件。
+labels: ["dependency", "license-review"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Every component must be permitted by the [Dependency License Policy](https://github.com/JimmyCodeWork/TripReplay/blob/main/docs/license-policy.md).
+        所有元件皆須符合[相依套件授權政策](https://github.com/JimmyCodeWork/TripReplay/blob/main/docs/zh-TW/license-policy.md)。
+  - type: input
+    id: package
+    attributes:
+      label: Package and version / 套件與版本
+      placeholder: "e.g. maplibre-gl 5.x"
+    validations:
+      required: true
+  - type: input
+    id: source
+    attributes:
+      label: Source repository / 原始碼位置
+    validations:
+      required: true
+  - type: input
+    id: license
+    attributes:
+      label: SPDX license expression / SPDX 授權運算式
+      placeholder: "e.g. BSD-3-Clause"
+    validations:
+      required: true
+  - type: dropdown
+    id: usage
+    attributes:
+      label: Usage / 用途類別
+      options:
+        - Shipped in release artifacts / 隨發行成品散布
+        - Development tool only / 僅作為開發工具
+    validations:
+      required: true
+  - type: textarea
+    id: purpose
+    attributes:
+      label: Purpose / 用途說明
+    validations:
+      required: true
+  - type: textarea
+    id: transitive
+    attributes:
+      label: Transitive dependencies and embedded code / 遞移相依與內嵌程式碼
+      description: List non-MIT licenses found in the dependency tree and any embedded third-party code. / 列出相依樹中的非 MIT 授權及任何內嵌的第三方程式碼。
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered / 曾考慮的替代方案
