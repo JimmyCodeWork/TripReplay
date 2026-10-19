@@ -16,15 +16,9 @@ Issues and pull requests may be written in English or Traditional Chinese.
 
 ## Licensing of Contributions
 
-By submitting a contribution, you agree that it is licensed under the project's [MIT License](LICENSE), and you certify that you have the right to submit it under that license as described in the [Developer Certificate of Origin 1.1](https://developercertificate.org/).
+Contributions are licensed under the project's [MIT License](LICENSE), as provided by section D.6 of the [GitHub Terms of Service](https://docs.github.com/en/site-policy/github-terms/github-terms-of-service#6-contributions-under-repository-license). By submitting a contribution, you confirm that you have the right to submit it under that license.
 
-Sign off every commit to record this certification:
-
-```sh
-git commit -s
-```
-
-This adds a `Signed-off-by: Your Name <you@example.com>` line using your Git identity. Pull requests with unsigned commits cannot be merged.
+Signing off commits (`git commit -s`) is welcome but not required.
 
 Do not submit code, data or assets that you did not write unless their license is permitted by the [Dependency License Policy](docs/license-policy.md) and the source is identified in the pull request.
 

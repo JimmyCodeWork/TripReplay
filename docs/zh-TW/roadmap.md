@@ -46,11 +46,10 @@ flowchart LR
 版本庫將維持私有，直到專案準備好接受外部貢獻者。變更可見性之前：
 
 1. ~~審閱完整的 Git 歷史，確認無不得公開的檔案或內容。~~ 已完成。
-2. ~~於 `.github/workflows/ci.yml` 恢復 `pull_request` 與 `push` 觸發條件~~，並確認首次執行通過。
+2. ~~於 `.github/workflows/ci.yml` 恢復 `pull_request` 與 `push` 觸發條件，並確認首次執行通過。~~ 已完成。
 3. 於分支保護設定中，將 CI 檢查設為 `main` 的必要檢查。
 4. 啟用私下回報弱點功能。
-5. 為 Pull Request 安裝 DCO 檢查。
-6. 確認 README、貢獻指南及各項政策的兩種語言版本皆已完備。
+5. 確認 README、貢獻指南及各項政策的兩種語言版本皆已完備。
 
 ## M1 — 技術驗證（階段 A）
 
