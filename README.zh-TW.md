@@ -24,6 +24,9 @@ TripReplay 將您的行程、照片與影片，製作成以地圖呈現的動態
 
 - [產品規格與技術設計](docs/zh-TW/specification.md)
 - [相依套件授權政策](docs/zh-TW/license-policy.md)
+- [授權可行性評估](docs/zh-TW/license-assessment.md)
+- [開發路線圖](docs/zh-TW/roadmap.md)
+- [在地化](docs/zh-TW/localization.md)
 
 ## 授權
 

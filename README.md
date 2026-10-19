@@ -24,6 +24,9 @@ Your photos, videos, metadata and projects never leave your device. There is no 
 
 - [Product Specification and Technical Design](docs/specification.md)
 - [Dependency License Policy](docs/license-policy.md)
+- [License Feasibility Assessment](docs/license-assessment.md)
+- [Roadmap](docs/roadmap.md)
+- [Localization](docs/localization.md)
 
 ## License
 
