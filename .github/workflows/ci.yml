@@ -1,9 +1,9 @@
 name: CI
 
-# Manual runs only while the repository is private; verification runs locally
-# instead (see docs/development.md#local-verification). Restore the pull_request
-# and push triggers when the repository becomes public.
 on:
+  pull_request:
+  push:
+    branches: [main]
   workflow_dispatch:
 
 permissions:

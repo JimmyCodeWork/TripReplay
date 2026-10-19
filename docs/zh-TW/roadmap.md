@@ -37,7 +37,7 @@ flowchart LR
 | M0.2 | 依 M0.1 選定主要程式語言與工具鏈 | **已完成。** [ADR 0003](adr/0003-language-and-toolchain.md) |
 | M0.3 | 版本庫治理：貢獻指南、行為準則、安全政策、Issue 與 Pull Request 範本 | 文件已合併；已於版本庫設定中啟用私下回報弱點功能 |
 | M0.4 | CI 授權檢查：於 lockfile 中拒絕未知、禁止或未經審查的授權 | **已完成。** 已驗證可拒絕未經審查的套件，以及已列入清單的 MPL-2.0 套件（[開發指南](development.md#授權檢查)） |
-| M0.5 | CI 基準：每個 Pull Request 皆執行 lint、格式檢查及單元測試 | **本機驗證已完成**（`verify`、`verify:clean`、Git hooks）。CI 觸發條件與必要檢查於 M0.7 啟用 |
+| M0.5 | CI 基準：每個 Pull Request 皆執行 lint、格式檢查及單元測試 | **已完成。** 本機驗證（`verify`、`verify:clean`、Git hooks），以及每個 Pull Request 與推送至 `main` 時執行的 CI |
 | M0.6 | 在地化基礎架構（見[在地化](localization.md)） | `en` 與 `zh-TW` 訊息目錄可載入；CI 拒絕缺漏的鍵值 |
 | M0.7 | 公開版本庫 | 見下方 |
 
@@ -45,8 +45,8 @@ flowchart LR
 
 版本庫將維持私有，直到專案準備好接受外部貢獻者。變更可見性之前：
 
-1. 審閱完整的 Git 歷史，確認無不得公開的檔案或內容。
-2. 於 `.github/workflows/ci.yml` 恢復 `pull_request` 與 `push` 觸發條件，並確認首次執行通過。
+1. ~~審閱完整的 Git 歷史，確認無不得公開的檔案或內容。~~ 已完成。
+2. ~~於 `.github/workflows/ci.yml` 恢復 `pull_request` 與 `push` 觸發條件~~，並確認首次執行通過。
 3. 於分支保護設定中，將 CI 檢查設為 `main` 的必要檢查。
 4. 啟用私下回報弱點功能。
 5. 為 Pull Request 安裝 DCO 檢查。

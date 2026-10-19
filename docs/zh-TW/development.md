@@ -38,7 +38,7 @@ pnpm run hooks:install   # 選用；見「本機驗證」
 
 ## 本機驗證
 
-所有檢查皆可於本機執行。CI workflow（[`.github/workflows/ci.yml`](../../.github/workflows/ci.yml)）執行的是相同的 `pnpm run verify` 指令，因此在本機通過的變更，在 CI 中同樣會通過。版本庫維持私有期間，此 workflow 僅於手動啟動時執行。
+所有檢查皆可於本機執行。CI workflow（[`.github/workflows/ci.yml`](../../.github/workflows/ci.yml)）會在每個 Pull Request 及每次推送至 `main` 時執行相同的 `pnpm run verify` 指令，因此在本機通過的變更，在 CI 中同樣會通過。
 
 ### 驗證層級
 

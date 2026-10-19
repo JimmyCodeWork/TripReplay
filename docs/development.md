@@ -36,7 +36,7 @@ pnpm run hooks:install   # optional; see Local Verification
 
 ## Local Verification
 
-All checks run locally. The CI workflow ([`.github/workflows/ci.yml`](../.github/workflows/ci.yml)) runs the same `pnpm run verify` command, so a change that passes locally passes in CI. While the repository is private, the workflow runs only when started manually.
+All checks run locally. The CI workflow ([`.github/workflows/ci.yml`](../.github/workflows/ci.yml)) runs the same `pnpm run verify` command on every pull request and every push to `main`, so a change that passes locally passes in CI.
 
 ### Levels
 
