@@ -38,7 +38,7 @@ flowchart LR
 | M0.3 | 版本庫治理：貢獻指南、行為準則、安全政策、Issue 與 Pull Request 範本 | 文件已合併；已於版本庫設定中啟用私下回報弱點功能 |
 | M0.4 | CI 授權檢查：於 lockfile 中拒絕未知、禁止或未經審查的授權 | **已完成。** 已驗證可拒絕未經審查的套件，以及已列入清單的 MPL-2.0 套件（[開發指南](development.md#授權檢查)） |
 | M0.5 | CI 基準：每個 Pull Request 皆執行 lint、格式檢查及單元測試 | **已完成。** 本機驗證（`verify`、`verify:clean`、Git hooks），以及每個 Pull Request 與推送至 `main` 時執行的 CI |
-| M0.6 | 在地化基礎架構（見[在地化](localization.md)） | `en` 與 `zh-TW` 訊息目錄可載入；CI 拒絕缺漏的鍵值 |
+| M0.6 | 在地化基礎架構（見[在地化](localization.md)） | **已完成。** `packages/i18n` 可載入 `en` 與 `zh-TW` 訊息目錄；`i18n:check` 拒絕缺漏的鍵值與不一致的參數 |
 | M0.7 | 公開版本庫 | 見下方 |
 
 ### M0.7 — 公開版本庫

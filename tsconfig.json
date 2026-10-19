@@ -14,7 +14,8 @@
     "erasableSyntaxOnly": true,
     "allowImportingTsExtensions": true,
     "noEmit": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "resolveJsonModule": true
   },
-  "include": ["tools/**/*.ts"]
+  "include": ["tools/**/*.ts", "packages/**/*.ts"]
 }
