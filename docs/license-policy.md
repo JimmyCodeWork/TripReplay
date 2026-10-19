@@ -81,7 +81,7 @@ Adding a license to §3 requires a pull request that amends this policy, states 
 |---|---|---|
 | MapLibre GL JS | BSD-3-Clause | Admissible. Pending pinned-version and transitive review. |
 | deck.gl | MIT (transitive ISC, BSD and Apache-2.0) | Admissible. Pending pinned-version and transitive review. |
-| OpenStreetMap data | ODbL-1.0 | Not bundled. Usable only at runtime through a provider whose terms permit offline storage and video use. Bulk download from the OpenStreetMap standard tile servers is prohibited. |
+| OpenStreetMap data | ODbL-1.0 | Not bundled. Processed by the project into vector tiles, published under ODbL and served at runtime from the project's own hosting ([ADR 0004](adr/0004-web-first-release.md)). Bulk download from the OpenStreetMap standard tile servers is prohibited. |
 | PMTiles tooling | BSD-3-Clause | Admissible. Pending review. |
 | FFmpeg (including WASM builds) | LGPL or GPL depending on build configuration | Prohibited. |
 | mediabunny | MPL-2.0 | Prohibited. |

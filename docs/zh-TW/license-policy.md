@@ -83,7 +83,7 @@ TripReplay 以 [MIT 授權](../../LICENSE)釋出。本政策規範哪些第三�
 |---|---|---|
 | MapLibre GL JS | BSD-3-Clause | 可准入。待審查鎖定版本與遞移相依。 |
 | deck.gl | MIT（遞移含 ISC、BSD 及 Apache-2.0） | 可准入。待審查鎖定版本與遞移相依。 |
-| OpenStreetMap 資料 | ODbL-1.0 | 不隨附。僅可於執行期透過條款允許離線儲存及影片使用的供應商取得。禁止從 OpenStreetMap 標準圖磚伺服器批次下載。 |
+| OpenStreetMap 資料 | ODbL-1.0 | 不隨附。由本專案處理為向量圖磚，以 ODbL 公開，並於執行期由本專案自行營運的託管提供（[ADR 0004](adr/0004-web-first-release.md)）。禁止從 OpenStreetMap 標準圖磚伺服器批次下載。 |
 | PMTiles 工具 | BSD-3-Clause | 可准入。待審查。 |
 | FFmpeg（含 WASM 版本） | 依建置設定為 LGPL 或 GPL | 禁止。 |
 | mediabunny | MPL-2.0 | 禁止。 |

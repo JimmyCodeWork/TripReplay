@@ -9,12 +9,13 @@ TripReplay 將您的行程、照片與影片，製作成以地圖呈現的動態
 ## 規劃功能
 
 - 建立依日期分組的行程，支援跨國及跨時區。
-- 匯入照片與影片，並指派至各景點。
+- 匯入照片與影片；依 GPS 資料與拍攝時間自動建議所屬景點。
 - 產生俯視地圖動態回顧：景點間逐段繪製路線、鏡頭拉近至各地點，並依序播放媒體。
+- 加入自己的背景音樂並選擇主題。
 - 以可拖曳的時間軸預覽，支援 16:9 與 9:16 畫面比例。
 - 匯出為 MP4（1080p 或 720p，30 fps）。
 - 出發前即可完成離線準備，旅途中預覽無需使用行動數據。
-- 支援 Web、Windows、macOS、Linux、Android 及 iOS。
+- 1.0 版於瀏覽器中執行，可安裝為漸進式網頁應用程式；Windows、macOS、Linux、Android 及 iOS 安裝版將於之後推出。
 
 ## 隱私
 
@@ -26,6 +27,7 @@ TripReplay 將您的行程、照片與影片，製作成以地圖呈現的動態
 
 ## 文件
 
+- [1.0 定義](docs/zh-TW/release-1.0.md)
 - [產品規格與技術設計](docs/zh-TW/specification.md)
 - [相依套件授權政策](docs/zh-TW/license-policy.md)
 - [授權可行性評估](docs/zh-TW/license-assessment.md)
