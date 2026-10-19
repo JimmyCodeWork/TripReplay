@@ -32,6 +32,7 @@ TripReplay 將您的行程、照片與影片，製作成以地圖呈現的動態
 - [開發路線圖](docs/zh-TW/roadmap.md)
 - [在地化](docs/zh-TW/localization.md)
 - [架構決策紀錄](docs/zh-TW/adr/README.md)
+- [開發指南](docs/zh-TW/development.md)
 
 ## 授權
 

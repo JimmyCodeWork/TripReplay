@@ -11,6 +11,7 @@ Issue 與 Pull Request 可使用英文或繁體中文撰寫。
 ## 開始之前
 
 - 請閱讀[產品規格](specification.md)、[開發路線圖](roadmap.md)及[相依套件授權政策](license-policy.md)。
+- 依[開發指南](development.md)設定開發環境。
 - 小型修正以外的任何變更，請先開立 Issue，待做法取得共識後再投入時間。
 - 重大的架構或政策變更須撰寫[架構決策紀錄](adr/README.md)。
 - 所有參與者皆應遵守[行為準則](CODE_OF_CONDUCT.md)。
@@ -35,9 +36,9 @@ git commit -s
 
 1. 開立 **Dependency request**（相依套件申請）Issue，載明套件名稱、版本、SPDX 授權運算式、用途及曾考慮的替代方案。
 2. 審查該套件的遞移相依及所有內嵌的第三方程式碼。
-3. 核准後，以專門的 Pull Request 加入該相依套件及 lockfile 變更。
+3. 核准後，以專門的 Pull Request 加入該相依套件、lockfile 變更，以及 `licenses/inventory.json` 中的對應項目。
 
-CI 授權檢查會拒絕禁止及未知的授權。
+CI 授權檢查會拒絕未經審查的元件，以及禁止或未知的授權。詳見[開發指南](development.md#授權檢查)。
 
 ## 隱私要求
 

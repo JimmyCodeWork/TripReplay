@@ -32,6 +32,7 @@ Contributions are welcome in English or Traditional Chinese. Please read the [Co
 - [Roadmap](docs/roadmap.md)
 - [Localization](docs/localization.md)
 - [Architecture Decision Records](docs/adr/README.md)
+- [Development Guide](docs/development.md)
 
 ## License
 

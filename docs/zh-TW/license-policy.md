@@ -6,11 +6,11 @@
 
 | | |
 |---|---|
-| 版本 | 0.3 |
+| 版本 | 0.4 |
 | 日期 | 2026-10-19 |
 | 狀態 | 生效中。目前尚無任何元件通過審核。 |
 
-TripReplay 以 [MIT 授權](../../LICENSE)釋出。本政策規範哪些第三方元件可隨應用程式散布，以及如何履行其授權義務，效力優先於[產品規格](specification.md)。現行範圍的決策依據記錄於[授權可行性評估](license-assessment.md)及 [ADR 0001](adr/0001-dependency-license-scope.md)。
+TripReplay 以 [MIT 授權](../../LICENSE)釋出。本政策規範哪些第三方元件可隨應用程式散布，以及如何履行其授權義務，效力優先於[產品規格](specification.md)。現行範圍的決策依據記錄於[授權可行性評估](license-assessment.md)及 [ADR 0001](adr/0001-dependency-license-scope.md) 及 [ADR 0002](adr/0002-public-domain-and-data-licenses.md)。
 
 ## 1. 原則
 
@@ -45,6 +45,7 @@ TripReplay 以 [MIT 授權](../../LICENSE)釋出。本政策規範哪些第三�
 | Zlib | 不得誤述來源；修改版本須標示 |
 | Apache-2.0 | 附上授權全文；保留 `NOTICE` 內容；修改過的檔案須標示 |
 | Unicode-3.0 | 保留著作權及授權聲明 |
+| blessing | 無。此為 SQLite 的公共領域聲明；內嵌的 SQLite 副本須於相依清單的備註中記錄。 |
 
 ### 3.2 字型、圖示、圖片及其他資產
 
@@ -54,6 +55,9 @@ TripReplay 以 [MIT 授權](../../LICENSE)釋出。本政策規範哪些第三�
 |---|---|
 | OFL-1.1 | 隨附授權文件；不得單獨販售字型；子集化或修改時須遵守保留字型名稱（Reserved Font Name）規定 |
 | CC0-1.0 | 無 |
+| CDLA-Permissive-2.0 | 散布資料時須附上授權全文 |
+
+主要由資料構成的元件，例如憑證套件（如 `webpki-roots`）或查找表，歸類為資產。
 
 ### 3.3 多重授權元件
 
@@ -69,6 +73,10 @@ TripReplay 以 [MIT 授權](../../LICENSE)釋出。本政策規範哪些第三�
 
 將授權加入 §3 須提出修訂本政策的 Pull Request，說明其帶來的義務，並經維護者核准。不針對個別套件給予例外。
 
+### 3.6 執行機制
+
+[`licenses/policy.json`](../../licenses/policy.json) 為 §3 的機器可讀版本，須與本文件於同一個 Pull Request 中修訂。[`licenses/inventory.json`](../../licenses/inventory.json) 記錄所有已審查且隨發行成品散布的元件，以及所有已核准的直接開發相依。CI 會拒絕任何未經審查、宣告授權已變更，或其授權不符所屬類別的已安裝元件。詳見[開發指南](development.md#授權檢查)。
+
 ## 4. 候選項目審查
 
 | 候選項目 | 授權 | 決議 |
@@ -80,10 +88,10 @@ TripReplay 以 [MIT 授權](../../LICENSE)釋出。本政策規範哪些第三�
 | FFmpeg（含 WASM 版本） | 依建置設定為 LGPL 或 GPL | 禁止。 |
 | mediabunny | MPL-2.0 | 禁止。 |
 | mp4-muxer | MIT | 可准入。待審查；維護狀態待確認。 |
-| Tauri | Apache-2.0 OR MIT（遞移含 Apache-2.0、ISC、Unicode-3.0、CDLA-Permissive-2.0） | 除 CDLA-Permissive-2.0 元件須依 §3.5 修訂或予以替換外，可准入。待審查。 |
+| Tauri | Apache-2.0 OR MIT（遞移含 Apache-2.0、ISC、Unicode-3.0、CDLA-Permissive-2.0） | 可准入。待審查鎖定版本與遞移相依。 |
 | React | MIT | 可准入。待審查。 |
 | TypeScript | Apache-2.0 | 開發工具，豁免。 |
-| SQLite | 公共領域 | 須先依 §3.5 對公共領域程式碼做出決議，方可准入。 |
+| SQLite | blessing（公共領域） | 可准入。待審查所採用的綁定（例如 `sql.js` 或 `rusqlite`）。 |
 | Noto Sans TC | OFL-1.1 | 可作為隨附字型准入。 |
 
 [產品規格](specification.md)中的功能範圍、資料模型與時間軸設計維持有效。

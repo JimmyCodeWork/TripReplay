@@ -4,11 +4,11 @@ English | [繁體中文](zh-TW/license-policy.md)
 
 | | |
 |---|---|
-| Version | 0.3 |
+| Version | 0.4 |
 | Date | 2026-10-19 |
 | Status | In effect. No component has been admitted yet. |
 
-TripReplay is released under the [MIT License](../LICENSE). This policy defines which third-party components may be shipped with the application and how their license obligations are met. It takes precedence over the [Product Specification](specification.md). The rationale for the current scope is recorded in the [License Feasibility Assessment](license-assessment.md) and [ADR 0001](adr/0001-dependency-license-scope.md).
+TripReplay is released under the [MIT License](../LICENSE). This policy defines which third-party components may be shipped with the application and how their license obligations are met. It takes precedence over the [Product Specification](specification.md). The rationale for the current scope is recorded in the [License Feasibility Assessment](license-assessment.md) and [ADR 0001](adr/0001-dependency-license-scope.md) and [ADR 0002](adr/0002-public-domain-and-data-licenses.md).
 
 ## 1. Principles
 
@@ -43,6 +43,7 @@ TripReplay is released under the [MIT License](../LICENSE). This policy defines 
 | Zlib | Do not misrepresent origin; mark altered versions |
 | Apache-2.0 | Include the license text; retain `NOTICE` contents; mark modified files |
 | Unicode-3.0 | Retain copyright and license notice |
+| blessing | None. This is the SQLite public-domain dedication; embedded copies of SQLite are recorded in the inventory note. |
 
 ### 3.2 Fonts, icons, images and other assets
 
@@ -52,6 +53,9 @@ Any license in §3.1, plus:
 |---|---|
 | OFL-1.1 | Bundle the license; do not sell the font by itself; respect Reserved Font Names when subsetting or modifying |
 | CC0-1.0 | None |
+| CDLA-Permissive-2.0 | Include the license text when distributing the data |
+
+Components that consist primarily of data, such as certificate bundles (for example, `webpki-roots`) or lookup tables, are classified as assets.
 
 ### 3.3 Multi-licensed components
 
@@ -67,6 +71,10 @@ Including, but not limited to: GPL, LGPL, AGPL, MPL, EPL, CDDL, EUPL, SSPL, BUSL
 
 Adding a license to §3 requires a pull request that amends this policy, states the obligations it introduces, and is approved by a maintainer. Exceptions are not granted per package.
 
+### 3.6 Enforcement
+
+[`licenses/policy.json`](../licenses/policy.json) is the machine-readable form of §3 and must be amended in the same pull request as this document. [`licenses/inventory.json`](../licenses/inventory.json) records every reviewed component shipped in release artifacts and every approved direct development dependency. CI rejects any installed component that is unreviewed, whose declared license has changed, or whose license is not permitted for its category. See the [Development Guide](development.md#license-check).
+
 ## 4. Candidate Review
 
 | Candidate | License | Decision |
@@ -78,10 +86,10 @@ Adding a license to §3 requires a pull request that amends this policy, states 
 | FFmpeg (including WASM builds) | LGPL or GPL depending on build configuration | Prohibited. |
 | mediabunny | MPL-2.0 | Prohibited. |
 | mp4-muxer | MIT | Admissible. Pending review; maintenance status to be confirmed. |
-| Tauri | Apache-2.0 OR MIT (transitive Apache-2.0, ISC, Unicode-3.0, CDLA-Permissive-2.0) | Admissible except for CDLA-Permissive-2.0 components, which require a §3.5 amendment or replacement. Pending review. |
+| Tauri | Apache-2.0 OR MIT (transitive Apache-2.0, ISC, Unicode-3.0, CDLA-Permissive-2.0) | Admissible. Pending pinned-version and transitive review. |
 | React | MIT | Admissible. Pending review. |
 | TypeScript | Apache-2.0 | Development tool; exempt. |
-| SQLite | Public domain | Requires a §3.5 decision on public-domain code before admission. |
+| SQLite | blessing (public domain) | Admissible. Pending review of the binding used (for example, `sql.js` or `rusqlite`). |
 | Noto Sans TC | OFL-1.1 | Admissible as a bundled font. |
 
 The feature set, data model and timeline design in the [Product Specification](specification.md) remain valid.

@@ -32,10 +32,10 @@ Prerequisite for adding any dependency.
 | ID | Task | Exit criteria |
 |---|---|---|
 | M0.1 | Decide the license scope (see [License Feasibility Assessment](license-assessment.md)) | **Done.** Option C adopted ([ADR 0001](adr/0001-dependency-license-scope.md)) |
-| M0.2 | Choose the primary language and toolchain consistent with M0.1 | Recorded as an architecture decision |
+| M0.2 | Choose the primary language and toolchain consistent with M0.1 | **Done.** [ADR 0003](adr/0003-language-and-toolchain.md) |
 | M0.3 | Repository governance: contributing guide, code of conduct, security policy, issue and pull request templates | Documents merged; private vulnerability reporting enabled in repository settings |
-| M0.4 | CI license gate: reject unknown, prohibited or unreviewed licenses in lockfiles | Gate fails a test branch that adds a prohibited package |
-| M0.5 | CI baseline: lint, format and unit test jobs on every pull request | Required checks enabled on `main` |
+| M0.4 | CI license gate: reject unknown, prohibited or unreviewed licenses in lockfiles | **Done.** Verified to reject an unreviewed package and a reviewed MPL-2.0 package ([Development Guide](development.md#license-check)) |
+| M0.5 | CI baseline: lint, format and unit test jobs on every pull request | Workflow merged; required checks enabled on `main` in repository settings |
 | M0.6 | Localization scaffolding (see [Localization](localization.md)) | `en` and `zh-TW` catalogs load; CI rejects missing keys |
 
 ## M1 — Technical Validation (Phase A)
@@ -93,5 +93,5 @@ The following can start once M0.1 and M0.2 are complete, in parallel with M1, be
 |---|
 | Signed packages for each platform; permission prompts reviewed |
 | Accessibility review: keyboard operation, screen-reader labels, sufficient contrast, reduced-motion option for previews |
-| License release gate passes ([Dependency License Policy §4](license-policy.md#4-release-gate)) |
+| License release gate passes ([Dependency License Policy §6](license-policy.md#6-release-gate)) |
 | Documentation and store listings complete in `en` and `zh-TW` |

@@ -7,6 +7,8 @@ This directory records significant architecture and policy decisions. Each recor
 | ADR | Title | Status |
 |---|---|---|
 | [0001](0001-dependency-license-scope.md) | Dependency license scope | Accepted |
+| [0002](0002-public-domain-and-data-licenses.md) | Permit SQLite and CDLA-Permissive-2.0 | Accepted |
+| [0003](0003-language-and-toolchain.md) | Primary language and toolchain | Accepted |
 
 ## Writing a Record
 

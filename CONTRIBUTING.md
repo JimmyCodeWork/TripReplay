@@ -9,6 +9,7 @@ Issues and pull requests may be written in English or Traditional Chinese.
 ## Before You Start
 
 - Read the [Product Specification](docs/specification.md), the [Roadmap](docs/roadmap.md) and the [Dependency License Policy](docs/license-policy.md).
+- Set up your environment as described in the [Development Guide](docs/development.md).
 - For anything beyond a small fix, open an issue first so the approach can be agreed before you invest time.
 - Significant architecture or policy changes require an [Architecture Decision Record](docs/adr/README.md).
 - All participants are expected to follow the [Code of Conduct](CODE_OF_CONDUCT.md).
@@ -33,9 +34,9 @@ Every new dependency, including transitive dependencies introduced by an upgrade
 
 1. Open a **Dependency request** issue stating the package, version, SPDX license expression, purpose and alternatives considered.
 2. Review the package's transitive dependencies and any embedded third-party code.
-3. Once approved, add the dependency in a dedicated pull request with the lockfile change.
+3. Once approved, add the dependency in a dedicated pull request with the lockfile change and the corresponding entries in `licenses/inventory.json`.
 
-The CI license check rejects prohibited and unknown licenses.
+The CI license check rejects unreviewed components and prohibited or unknown licenses. See the [Development Guide](docs/development.md#license-check) for details.
 
 ## Privacy Requirements
 
