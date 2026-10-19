@@ -20,6 +20,10 @@ TripReplay 將您的行程、照片與影片，製作成以地圖呈現的動態
 
 您的照片、影片、中繼資料與專案絕不離開您的裝置。無需帳號、無使用分析，亦無雲端處理。僅在取得公開地圖資源及您主動進行地點搜尋時使用網路，並提供完全離線模式。詳見[產品規格 §4](docs/zh-TW/specification.md#4-離線運作與隱私)。
 
+## 參與貢獻
+
+歡迎以英文或繁體中文參與貢獻。請先閱讀[貢獻指南](docs/zh-TW/CONTRIBUTING.md)及[行為準則](docs/zh-TW/CODE_OF_CONDUCT.md)。如需回報安全性或隱私弱點，請依[安全政策](docs/zh-TW/SECURITY.md)辦理。
+
 ## 文件
 
 - [產品規格與技術設計](docs/zh-TW/specification.md)
@@ -27,7 +31,8 @@ TripReplay 將您的行程、照片與影片，製作成以地圖呈現的動態
 - [授權可行性評估](docs/zh-TW/license-assessment.md)
 - [開發路線圖](docs/zh-TW/roadmap.md)
 - [在地化](docs/zh-TW/localization.md)
+- [架構決策紀錄](docs/zh-TW/adr/README.md)
 
 ## 授權
 
-TripReplay 以 [MIT 授權](LICENSE)釋出。所有隨附散布的相依套件與資產亦須為 MIT 授權，詳見[相依套件授權政策](docs/zh-TW/license-policy.md)。
+TripReplay 以 [MIT 授權](LICENSE)釋出。隨應用程式散布的第三方元件僅限寬鬆授權，不允許 Copyleft 授權。詳見[相依套件授權政策](docs/zh-TW/license-policy.md)。

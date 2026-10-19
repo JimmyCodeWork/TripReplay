@@ -6,7 +6,7 @@ English | [繁體中文](zh-TW/localization.md)
 |---|---|
 | Version | 0.1 (draft) |
 | Date | 2026-10-19 |
-| Status | Design. Library selection depends on the license scope decision. |
+| Status | Design. Libraries to be selected under the [Dependency License Policy](license-policy.md). |
 
 ## 1. Supported Locales
 
@@ -51,7 +51,7 @@ Users can override the language in Settings. The choice is stored locally with o
 
 ## 6. Text Rendering
 
-Map labels, captions and titles in exported videos must render Traditional Chinese correctly. Font sourcing depends on the license scope decision: either system fonts are used at render time, or a font under a permitted license is bundled. See the [License Feasibility Assessment §3.1](license-assessment.md#31-map-data-and-fonts).
+Map labels, captions and titles in exported videos must render Traditional Chinese correctly. The application bundles a Traditional Chinese font under a permitted asset license (for example, Noto Sans TC under OFL-1.1; see [Dependency License Policy §3.2](license-policy.md#32-fonts-icons-images-and-other-assets)) so that exported videos render identically on every platform. Subsetting to reduce size must respect the license's Reserved Font Name terms. System fonts are used only as a fallback for characters outside the bundled subset.
 
 Exported videos burn the active locale's strings into the frames. The export dialog shows which language will be used.
 

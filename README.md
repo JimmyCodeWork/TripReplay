@@ -20,6 +20,10 @@ TripReplay turns your itinerary, photos and videos into an animated map recap of
 
 Your photos, videos, metadata and projects never leave your device. There is no account, no analytics and no cloud processing. Network access is used only for public map resources and place searches you initiate, and a fully offline mode is available. See [Specification §4](docs/specification.md#4-offline-operation-and-privacy).
 
+## Contributing
+
+Contributions are welcome in English or Traditional Chinese. Please read the [Contributing Guide](CONTRIBUTING.md) and the [Code of Conduct](CODE_OF_CONDUCT.md). To report a security or privacy vulnerability, follow the [Security Policy](SECURITY.md).
+
 ## Documentation
 
 - [Product Specification and Technical Design](docs/specification.md)
@@ -27,7 +31,8 @@ Your photos, videos, metadata and projects never leave your device. There is no 
 - [License Feasibility Assessment](docs/license-assessment.md)
 - [Roadmap](docs/roadmap.md)
 - [Localization](docs/localization.md)
+- [Architecture Decision Records](docs/adr/README.md)
 
 ## License
 
-TripReplay is released under the [MIT License](LICENSE). All distributed dependencies and assets must also be MIT-licensed; see the [Dependency License Policy](docs/license-policy.md).
+TripReplay is released under the [MIT License](LICENSE). Third-party components shipped with the application are limited to permissive licenses; copyleft licenses are not permitted. See the [Dependency License Policy](docs/license-policy.md).

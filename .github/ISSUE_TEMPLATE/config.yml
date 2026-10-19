@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Report a security or privacy vulnerability / 回報安全性或隱私弱點
+    url: https://github.com/JimmyCodeWork/TripReplay/security/advisories/new
+    about: Please report vulnerabilities privately. Do not open a public issue. / 請私下回報弱點，勿開立公開 Issue。

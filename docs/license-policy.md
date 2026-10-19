@@ -4,65 +4,113 @@ English | [繁體中文](zh-TW/license-policy.md)
 
 | | |
 |---|---|
-| Version | 0.2 (draft) |
+| Version | 0.3 |
 | Date | 2026-10-19 |
 | Status | In effect. No component has been admitted yet. |
 
-TripReplay is released under the [MIT License](../LICENSE). Every component distributed with or required to build the application must also be available under the MIT License. This policy takes precedence over the [Product Specification](specification.md).
+TripReplay is released under the [MIT License](../LICENSE). This policy defines which third-party components may be shipped with the application and how their license obligations are met. It takes precedence over the [Product Specification](specification.md). The rationale for the current scope is recorded in the [License Feasibility Assessment](license-assessment.md) and [ADR 0001](adr/0001-dependency-license-scope.md).
 
 ## 1. Principles
 
-- "Open source", "free for commercial use", "MIT-compatible", "free of charge" and "public domain" are **not** equivalent to MIT. Only the MIT License satisfies this policy.
-- No implementation, pinned versions or complete dependency inventory exists yet; the project therefore does not claim MIT-only compliance.
+- TripReplay's own source code is, and remains, licensed under the MIT License.
+- Release artifacts may contain third-party components only under the permissive licenses listed in §3. Copyleft licenses are prohibited in release artifacts.
+- No component is admitted on the basis of a package's top-level license alone. Transitive dependencies, embedded code and bundled assets are reviewed individually.
 - Converting data formats or self-hosting a service does not change the license of the underlying data.
-- The MIT License covers copyright only. It does not resolve codec patents or platform terms; the video pipeline must be reviewed for these separately.
+- Copyright licenses do not resolve codec patents or platform terms; the video pipeline is reviewed for these separately.
+- No implementation, pinned versions or dependency inventory exists yet; the project therefore does not yet claim compliance with this policy.
 
 ## 2. Scope
 
-Under the current strict interpretation, the following all require review:
+| Category | Rule |
+|---|---|
+| **Release artifacts** — installers, app bundles, the deployed Web build, and anything they contain or load from the project's own origin | Subject to §3 and §4 |
+| **Development tools** — compilers, type checkers, bundlers, linters, test runners and CI tooling that are not shipped | Exempt from §3, provided their output does not embed non-permitted code. Runtime helpers injected by a tool (for example, `tslib`) are release artifacts. |
+| **Platform components** — operating systems, browsers, system WebViews, platform SDKs and system codecs | Exempt, provided they are used as supplied by the platform and never bundled. On Linux, LGPL system libraries such as WebKitGTK and GStreamer must be dynamically linked from the system and must not be bundled into the package. |
+| **Map data** | Never bundled in release artifacts. Downloaded at runtime from a provider whose terms permit offline storage and use in exported video, and used under those terms with the required attribution. |
+| **User media** | Outside this policy. User content is never relicensed. |
 
-- direct and transitive dependencies;
-- native libraries, WASM modules and bundled binaries;
-- map data and map styles;
-- fonts, icons, music and sample media;
-- build and packaging tools.
+## 3. Permitted Licenses
 
-**Multi-licensed components:** a component qualifies only when MIT is an explicit option (for example, `MIT OR Apache-2.0`), in which case it is used under MIT. A conjunctive expression (`AND`) does not permit choosing a single license. Bundled content and dependencies are reviewed independently.
+### 3.1 Code
 
-**Pending definition:** whether the operating system, browser, platform SDKs, system codecs and user-imported private media fall outside the scope of this policy. No exemption is assumed, and user media is never relicensed. If the runtime environment itself had to be MIT-licensed, the Windows, macOS and iOS targets could not be met.
+| SPDX identifier | Additional obligations |
+|---|---|
+| MIT | Retain copyright and license notice |
+| ISC | Retain copyright and license notice |
+| BSD-2-Clause | Retain copyright and license notice |
+| BSD-3-Clause | Retain copyright and license notice; do not use contributors' names for endorsement |
+| 0BSD | None |
+| Zlib | Do not misrepresent origin; mark altered versions |
+| Apache-2.0 | Include the license text; retain `NOTICE` contents; mark modified files |
+| Unicode-3.0 | Retain copyright and license notice |
 
-## 3. Candidate Review
+### 3.2 Fonts, icons, images and other assets
 
-| Original candidate | Initial finding | Decision |
+Any license in §3.1, plus:
+
+| SPDX identifier | Additional obligations |
+|---|---|
+| OFL-1.1 | Bundle the license; do not sell the font by itself; respect Reserved Font Names when subsetting or modifying |
+| CC0-1.0 | None |
+
+### 3.3 Multi-licensed components
+
+- `OR` expressions: admissible if at least one option is permitted. The component is used under that option, and the election is recorded.
+- `AND` expressions: admissible only if every term is permitted. For example, `(MIT OR Apache-2.0) AND Unicode-3.0` is admissible.
+- Bundled content and dependencies are reviewed independently of the declared expression.
+
+### 3.4 Prohibited in release artifacts
+
+Including, but not limited to: GPL, LGPL, AGPL, MPL, EPL, CDDL, EUPL, SSPL, BUSL and any "Commons Clause" or non-commercial terms; CC BY-SA and CC BY-NC; ODbL-licensed databases; and components with no license or an unidentifiable license.
+
+### 3.5 Amending the allowlist
+
+Adding a license to §3 requires a pull request that amends this policy, states the obligations it introduces, and is approved by a maintainer. Exceptions are not granted per package.
+
+## 4. Candidate Review
+
+| Candidate | License | Decision |
 |---|---|---|
-| MapLibre GL JS | BSD-3-Clause | Rejected. A map renderer must be re-selected. |
-| OpenStreetMap data | ODbL | Rejected. Real-world map data requires an explicit MIT grant. |
-| FFmpeg (including WASM builds) | LGPL or GPL depending on build configuration | Rejected. |
-| Tauri | Core available under MIT | Under review. Its dependencies and platform tooling are not thereby MIT. |
-| React, TypeScript, SQLite, PMTiles tooling and other candidates | No audit of pinned versions or full dependency trees | Under review. Not admitted. |
-| Fonts, icons, styles, sample media | No per-item license evidence | Must not be included in any release artifact. |
+| MapLibre GL JS | BSD-3-Clause | Admissible. Pending pinned-version and transitive review. |
+| deck.gl | MIT (transitive ISC, BSD and Apache-2.0) | Admissible. Pending pinned-version and transitive review. |
+| OpenStreetMap data | ODbL-1.0 | Not bundled. Usable only at runtime through a provider whose terms permit offline storage and video use. Bulk download from the OpenStreetMap standard tile servers is prohibited. |
+| PMTiles tooling | BSD-3-Clause | Admissible. Pending review. |
+| FFmpeg (including WASM builds) | LGPL or GPL depending on build configuration | Prohibited. |
+| mediabunny | MPL-2.0 | Prohibited. |
+| mp4-muxer | MIT | Admissible. Pending review; maintenance status to be confirmed. |
+| Tauri | Apache-2.0 OR MIT (transitive Apache-2.0, ISC, Unicode-3.0, CDLA-Permissive-2.0) | Admissible except for CDLA-Permissive-2.0 components, which require a §3.5 amendment or replacement. Pending review. |
+| React | MIT | Admissible. Pending review. |
+| TypeScript | Apache-2.0 | Development tool; exempt. |
+| SQLite | Public domain | Requires a §3.5 decision on public-domain code before admission. |
+| Noto Sans TC | OFL-1.1 | Admissible as a bundled font. |
 
-The feature set, data model and timeline design remain valid. Real-world base maps, place search, offline maps, the platform shell and video export each require a compliant implementation before they can ship.
+The feature set, data model and timeline design in the [Product Specification](specification.md) remain valid.
 
-If no MIT-licensed map data can be found, an original schematic background released under MIT may be used to validate animation. Such a background does not satisfy the real-world map requirement.
+## 5. Notices
 
-## 4. Release Gate
+- Release artifacts include a `THIRD-PARTY-NOTICES` file generated from the dependency inventory. It contains every required copyright notice, the full text of each license used, and the contents of every Apache-2.0 `NOTICE` file.
+- Installed builds expose the notices from an "About" or "Licenses" screen; the Web build serves them at a stable path.
+- Map attribution required by the provider is shown in the map view and, where the provider requires it, rendered into exported videos.
+
+## 6. Release Gate
 
 A release may proceed only when all of the following are met:
 
 1. All versions are pinned and lockfiles are committed.
-2. An SBOM or equivalent inventory covers code, native dependencies, tools and assets.
-3. Each entry records source, version, hash, SPDX identifier, LICENSE and NOTICE files, and evidence of the MIT election where applicable.
+2. An SBOM covers every component in the release artifacts, including native libraries and assets.
+3. Each entry records source, version, hash, SPDX expression, and, where applicable, the elected license option.
 4. Third-party content embedded within files has been manually reviewed.
-5. CI blocks unknown licenses, non-MIT licenses and unreviewed new dependencies.
-6. The actual installers and Web build output are inspected, and all required copyright and MIT notices are retained.
-7. Every version update triggers a new review.
+5. CI blocks prohibited licenses, unknown licenses and unreviewed new dependencies.
+6. The actual installers and Web build output are inspected, and the generated `THIRD-PARTY-NOTICES` matches their contents.
+7. Every version update triggers a new review of the changed components.
 
-## 5. References
+## 7. References
 
-Initial sources, retrieved 2026-10-19. License evidence must be archived for each pinned version during development.
+Retrieved 2026-10-19. License evidence must be archived for each pinned version during development.
 
 - [MapLibre GL JS license](https://github.com/maplibre/maplibre-gl-js/blob/main/LICENSE.txt)
 - [OpenStreetMap copyright and license](https://www.openstreetmap.org/copyright)
+- [OSM Tile Usage Policy](https://operations.osmfoundation.org/policies/tiles/)
 - [FFmpeg legal](https://www.ffmpeg.org/legal.html)
 - [Tauri architecture and licensing](https://tauri.app/concept/architecture/)
+- [SPDX License List](https://spdx.org/licenses/)

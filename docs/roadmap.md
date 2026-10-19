@@ -31,9 +31,9 @@ Prerequisite for adding any dependency.
 
 | ID | Task | Exit criteria |
 |---|---|---|
-| M0.1 | Decide the license scope (see [License Feasibility Assessment](license-assessment.md)) | Policy amended and merged |
+| M0.1 | Decide the license scope (see [License Feasibility Assessment](license-assessment.md)) | **Done.** Option C adopted ([ADR 0001](adr/0001-dependency-license-scope.md)) |
 | M0.2 | Choose the primary language and toolchain consistent with M0.1 | Recorded as an architecture decision |
-| M0.3 | Repository governance: contributing guide, security policy, issue and pull request templates | Merged |
+| M0.3 | Repository governance: contributing guide, code of conduct, security policy, issue and pull request templates | Documents merged; private vulnerability reporting enabled in repository settings |
 | M0.4 | CI license gate: reject unknown, prohibited or unreviewed licenses in lockfiles | Gate fails a test branch that adds a prohibited package |
 | M0.5 | CI baseline: lint, format and unit test jobs on every pull request | Required checks enabled on `main` |
 | M0.6 | Localization scaffolding (see [Localization](localization.md)) | `en` and `zh-TW` catalogs load; CI rejects missing keys |

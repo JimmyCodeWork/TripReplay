@@ -6,11 +6,11 @@ English | [繁體中文](zh-TW/license-assessment.md)
 |---|---|
 | Version | 0.1 (draft) |
 | Date | 2026-10-19 |
-| Status | For decision. Informs the open scope question in the [Dependency License Policy §2](license-policy.md#2-scope). |
+| Status | Decided. Option C adopted on 2026-10-19 ([ADR 0001](adr/0001-dependency-license-scope.md)); see the [Dependency License Policy](license-policy.md). |
 
 ## 1. Purpose
 
-The [Dependency License Policy](license-policy.md) currently applies a strict MIT-only rule to every component, including transitive dependencies, native libraries, build tools, map data and fonts. This assessment samples the candidate ecosystem to determine whether that rule can be met, and sets out the scope options available to the project.
+Version 0.2 of the [Dependency License Policy](license-policy.md) applied a strict MIT-only rule to every component, including transitive dependencies, native libraries, build tools, map data and fonts. This assessment samples the candidate ecosystem to determine whether that rule can be met, and sets out the scope options available to the project.
 
 This is a point-in-time survey, not a compliance audit. Licenses were read from package registry metadata only; the LICENSE files, embedded third-party code and NOTICE requirements of each package have not been reviewed.
 
@@ -139,7 +139,7 @@ Option A should be retired in either case.
 
 ## 7. Next Steps
 
-1. Decide between options B and C, and amend the [Dependency License Policy](license-policy.md) accordingly.
-2. Re-evaluate the platform shell: Tauri is admissible under C only.
+1. ~~Decide between options B and C, and amend the Dependency License Policy accordingly.~~ Done: option C adopted in policy version 0.3.
+2. Re-evaluate the platform shell: Tauri is admissible under C, subject to review of its CDLA-Permissive-2.0 components.
 3. Implement the CI license gate against the chosen allowlist before the first dependency is added.
 4. Confirm that the chosen map provider's terms permit offline storage and use in exported video ([Specification §4.3](specification.md#43-offline-mode-rules)).
