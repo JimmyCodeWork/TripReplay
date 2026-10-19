@@ -6,6 +6,7 @@
 
 ## Checklist
 
+- [ ] `pnpm run verify` passes locally / 本機已通過 `pnpm run verify`
 - [ ] Commits are signed off (`git commit -s`) / Commit 皆已簽署
 - [ ] No new dependencies, **or** each new dependency has an approved dependency request / 未新增相依套件，或每個新增的相依套件皆已核准
 - [ ] No new network requests, **or** each is described below with what it sends / 未新增網路請求，或已於下方說明其傳送內容

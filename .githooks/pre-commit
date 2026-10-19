@@ -1,0 +1,3 @@
+#!/bin/sh
+# Fast checks before each commit. Bypass once with `git commit --no-verify`.
+exec pnpm run --silent lint

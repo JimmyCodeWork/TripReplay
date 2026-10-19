@@ -11,25 +11,55 @@
 | Node.js | 24（LTS） | 見 [`.node-version`](../../.node-version)。較舊的版本會在安裝時被拒絕。 |
 | pnpm | 12.14.0 | 已於 `package.json` 中鎖定；執行 `corepack enable` 即可自動使用鎖定的版本。 |
 | Git | 任一近期版本 | Commit 須加上簽署（`git commit -s`）。 |
+| Docker | 選用 | 僅 `pnpm run verify:clean` 需要。 |
 
 ## 開始使用
 
 ```sh
 corepack enable
 pnpm install --frozen-lockfile
+pnpm run hooks:install   # 選用；見「本機驗證」
 ```
 
 ## 指令
 
 | 指令 | 用途 |
 |---|---|
+| `pnpm run verify` | 依相同順序執行 CI 的所有檢查 |
+| `pnpm run verify:clean` | 於乾淨的 Linux 容器中執行 `verify`（需要 Docker） |
+| `pnpm run hooks:install` | 啟用版本庫的 Git hooks |
 | `pnpm run lint` | 檢查格式與 lint 規則（Biome）；有任何問題即失敗 |
 | `pnpm run format` | 套用格式化及安全的 lint 修正 |
 | `pnpm run typecheck` | 對所有 TypeScript 原始碼進行型別檢查 |
 | `pnpm test` | 執行所有 workspace 套件的測試 |
 | `pnpm run license:check` | 依授權政策檢查已安裝的相依套件 |
 
-CI 會在每個 Pull Request 及每次推送至 `main` 時執行 `lint`、`typecheck`、`test` 及 `license:check`（[`.github/workflows/ci.yml`](../../.github/workflows/ci.yml)）。
+`verify` 會依序執行 `lint`、`typecheck`、`test` 及 `license:check`，遇到第一個失敗即停止。
+
+## 本機驗證
+
+所有檢查皆可於本機執行。CI workflow（[`.github/workflows/ci.yml`](../../.github/workflows/ci.yml)）執行的是相同的 `pnpm run verify` 指令，因此在本機通過的變更，在 CI 中同樣會通過。版本庫維持私有期間，此 workflow 僅於手動啟動時執行。
+
+### 驗證層級
+
+| 層級 | 指令 | 使用時機 |
+|---|---|---|
+| 1. 工作目錄 | `pnpm run verify` | 開發期間及每次推送前 |
+| 2. 乾淨容器 | `pnpm run verify:clean` | 合併至 `main` 前、變更相依套件或工具後，或不同機器的結果不一致時 |
+
+`verify:clean` 會將工作目錄（排除 `node_modules`、`.git` 及本機檔案）複製至 `node:24` Debian 容器，依 lockfile 安裝相依套件後執行 `verify`。它可在任何主機（包括 Windows 與 macOS）上重現 CI 環境，且不會留下映像檔。相依套件會在多次執行之間快取。
+
+### Git hooks
+
+`pnpm run hooks:install` 會將此 clone 的 `core.hooksPath` 設為 [`.githooks/`](../../.githooks)。這些 hooks 為 POSIX shell 指令碼，在 Windows 上亦可透過 Git for Windows 執行。
+
+| Hook | 執行內容 | 目的 |
+|---|---|---|
+| `pre-commit` | `pnpm run lint` | 於 commit 前發現格式與 lint 錯誤 |
+| `commit-msg` | 簽署檢查 | 拒絕沒有 `Signed-off-by` 行的 commit |
+| `pre-push` | `pnpm run verify` | 阻擋會導致 CI 失敗的推送 |
+
+如需單次略過 hook，請於 `git commit` 或 `git push` 加上 `--no-verify`。如需停用 hooks，請執行 `git config --unset core.hooksPath`。
 
 ## 版本庫結構
 
@@ -38,6 +68,8 @@ CI 會在每個 Pull Request 及每次推送至 `main` 時執行 `lint`、`typec
 | `apps/` | Web 版與各平台外殼（尚未建立） |
 | `packages/` | 共用模組：`domain`、`timeline`、`renderer`、`offline`、`project-package`、`ui`（尚未建立） |
 | `tools/license-check/` | CI 使用的授權檢查工具 |
+| `tools/ci/` | `verify:clean` 使用的容器定義 |
+| `.githooks/` | 選用的 Git hooks |
 | `licenses/` | 機器可讀的授權政策與相依清單 |
 | `docs/` | 產品規格、政策、路線圖及架構決策紀錄；繁體中文版置於 `docs/zh-TW/` |
 

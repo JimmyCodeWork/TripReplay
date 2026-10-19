@@ -62,7 +62,7 @@ TripReplay 將所有私人資料保留在裝置上（[產品規格 §1.3](specif
 - 每個 Pull Request 僅聚焦於單一變更。
 - 標題請以英文祈使語氣清楚描述變更，例如「Add timeline compiler for photo segments」。
 - Commit 訊息請以英文撰寫：首行為 72 個字元以內的摘要，其後以內文說明變更內容與原因。
-- 確認 CI 通過，並完成 Pull Request 範本中的檢查清單。
+- 開啟 Pull Request 前請執行 `pnpm run verify`，並完成 Pull Request 範本中的檢查清單。
 - 合併前須至少取得一位維護者核准。
 
 ## 回報問題與功能建議

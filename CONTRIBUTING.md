@@ -60,7 +60,7 @@ Any new network request must be documented in the pull request, together with wh
 - Keep each pull request focused on a single change.
 - Use a descriptive title in the imperative mood, for example "Add timeline compiler for photo segments".
 - Write commit messages in English, with a short summary line (72 characters or fewer) followed by a body explaining what and why.
-- Ensure CI passes, and complete the checklist in the pull request template.
+- Run `pnpm run verify` before opening the pull request, and complete the checklist in the pull request template.
 - At least one maintainer approval is required before merging.
 
 ## Reporting Bugs and Requesting Features

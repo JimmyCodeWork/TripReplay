@@ -1,0 +1,6 @@
+#!/bin/sh
+# Require a Developer Certificate of Origin sign-off (`git commit -s`).
+if ! grep -q '^Signed-off-by: ' "$1"; then
+  echo "Commit message is missing a Signed-off-by line. Use \`git commit -s\`." >&2
+  exit 1
+fi

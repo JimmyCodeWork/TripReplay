@@ -1,0 +1,3 @@
+#!/bin/sh
+# Full verification before each push; matches the CI job. Bypass once with `git push --no-verify`.
+exec pnpm run --silent verify

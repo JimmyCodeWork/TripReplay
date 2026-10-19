@@ -35,8 +35,20 @@ Prerequisite for adding any dependency.
 | M0.2 | Choose the primary language and toolchain consistent with M0.1 | **Done.** [ADR 0003](adr/0003-language-and-toolchain.md) |
 | M0.3 | Repository governance: contributing guide, code of conduct, security policy, issue and pull request templates | Documents merged; private vulnerability reporting enabled in repository settings |
 | M0.4 | CI license gate: reject unknown, prohibited or unreviewed licenses in lockfiles | **Done.** Verified to reject an unreviewed package and a reviewed MPL-2.0 package ([Development Guide](development.md#license-check)) |
-| M0.5 | CI baseline: lint, format and unit test jobs on every pull request | Workflow merged; required checks enabled on `main` in repository settings |
+| M0.5 | CI baseline: lint, format and unit test jobs on every pull request | **Local verification done** (`verify`, `verify:clean`, Git hooks). CI triggers and required checks are enabled in M0.7 |
 | M0.6 | Localization scaffolding (see [Localization](localization.md)) | `en` and `zh-TW` catalogs load; CI rejects missing keys |
+| M0.7 | Public release of the repository | See below |
+
+### M0.7 — Making the repository public
+
+The repository remains private until the project is ready for outside contributors. Before changing its visibility:
+
+1. Review the full Git history for files and content that must not be published.
+2. Restore the `pull_request` and `push` triggers in `.github/workflows/ci.yml`, and confirm that the first run passes.
+3. Require the CI check on `main` in branch protection settings.
+4. Enable private vulnerability reporting.
+5. Install a DCO check for pull requests.
+6. Confirm that README, contributing guide and policies are complete in both languages.
 
 ## M1 — Technical Validation (Phase A)
 
