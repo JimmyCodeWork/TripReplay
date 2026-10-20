@@ -66,7 +66,7 @@ pnpm run hooks:install   # 選用；見「本機驗證」
 | 路徑 | 內容 |
 |---|---|
 | `apps/` | Web 版與各平台外殼（尚未建立） |
-| `packages/` | 共用模組：`i18n`；規劃中：`domain`、`timeline`、`renderer`、`offline`、`project-package`、`ui` |
+| `packages/` | 產品套件：`i18n`；其餘依[應用程式架構 §3](architecture.md#3-套件) 規劃 |
 | `packages/i18n/` | 語系判定與訊息目錄（`locales/`） |
 | `tools/i18n-check/` | CI 使用的訊息目錄檢查工具 |
 | `tools/license-check/` | CI 使用的授權檢查工具 |

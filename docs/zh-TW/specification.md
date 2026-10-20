@@ -131,8 +131,7 @@ flowchart TD
     Public[授權可離線使用的地圖服務] --> Offline
 ```
 
-**共用模組：** `domain`、`timeline`、`renderer`、`offline`、`project-package`、`ui`。
-**平台模組：** `storage`、`media-import`、`media-decode`、`encoder`、`file-export`、`network-policy`。
+套件結構、分層與相依規則定義於[應用程式架構](architecture.md)，畫面則定義於[畫面設計](ui-design.md)。
 
 ### 5.1 主要取捨
 

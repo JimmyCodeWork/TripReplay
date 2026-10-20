@@ -129,8 +129,7 @@ flowchart TD
     Public[Map service licensed for offline use] --> Offline
 ```
 
-**Shared modules:** `domain`, `timeline`, `renderer`, `offline`, `project-package`, `ui`.
-**Platform modules:** `storage`, `media-import`, `media-decode`, `encoder`, `file-export`, `network-policy`.
+The package structure, layers and dependency rules are defined in the [Application Architecture](architecture.md), and the screens in the [Screen Design](ui-design.md).
 
 ### 5.1 Key Trade-offs
 

@@ -28,6 +28,8 @@ Contributions are welcome in English or Traditional Chinese. Please read the [Co
 ## Documentation
 
 - [1.0 Definition](docs/release-1.0.md)
+- [Screen Design](docs/ui-design.md)
+- [Application Architecture](docs/architecture.md)
 - [Product Specification and Technical Design](docs/specification.md)
 - [Dependency License Policy](docs/license-policy.md)
 - [License Feasibility Assessment](docs/license-assessment.md)
@@ -35,6 +37,12 @@ Contributions are welcome in English or Traditional Chinese. Please read the [Co
 - [Localization](docs/localization.md)
 - [Architecture Decision Records](docs/adr/README.md)
 - [Development Guide](docs/development.md)
+
+## Support
+
+If you find TripReplay useful, you can support its development on Ko-fi:
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/toolmanjimmy)
 
 ## License
 

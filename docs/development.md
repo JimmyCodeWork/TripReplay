@@ -64,7 +64,7 @@ To bypass a hook once, add `--no-verify` to `git commit` or `git push`. To disab
 | Path | Contents |
 |---|---|
 | `apps/` | Web build and platform shells (not yet created) |
-| `packages/` | Shared modules: `i18n`; planned: `domain`, `timeline`, `renderer`, `offline`, `project-package`, `ui` |
+| `packages/` | Product packages: `i18n`; planned as defined in the [Application Architecture §3](architecture.md#3-packages) |
 | `packages/i18n/` | Locale resolution and message catalogs (`locales/`) |
 | `tools/i18n-check/` | Message catalog check used by CI |
 | `tools/license-check/` | License check used by CI |
