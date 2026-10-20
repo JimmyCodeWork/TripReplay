@@ -69,15 +69,19 @@ Spike S3 (Web export) moves to M5. Spikes S4 (installed shell) and S5 (mobile me
 
 The following can start once M0.1 and M0.2 are complete, in parallel with M1, because it has no platform or map dependency:
 
-- Domain model and validation (`domain`).
-- Timeline compiler (`timeline`), promoted from the S2 prototype once its design is accepted.
-- Project package format specification and reader/writer (`project-package`), including path-traversal and size validation.
+Packages follow the [Application Architecture](architecture.md):
+
+- Dependency check for the package boundaries, added to `pnpm run verify` with the first package.
+- Domain model and validation (`domain`) and theme definitions (`themes`).
+- Timeline compiler and `renderAt` returning a FrameDescription (`timeline`), promoted from the S2 prototype once its design is accepted.
+- Store, commands with undo and redo, and ports (`app`).
+- Project package format specification and reader/writer (part of `storage`), including path-traversal and size validation.
 
 ## M2 — End-to-End Flow (Phase B)
 
 | Exit criteria |
 |---|
-| Trip list, itinerary editor, media editor and preview are usable on every supported browser |
+| Trip list, workspace (itinerary, media, music, themes, draggable timeline) and full-screen player as specified in the [Screen Design](ui-design.md), usable on every supported browser |
 | Automatic media matching, background music and themes ([1.0 Definition §4.2](release-1.0.md#42-additional-features-required-in-10)) |
 | Autosave with revision checks; reopening a project restores its exact state |
 | Versioned project package: back up in one browser and restore in another without loss |

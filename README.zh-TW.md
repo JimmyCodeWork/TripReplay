@@ -28,6 +28,8 @@ TripReplay 將您的行程、照片與影片，製作成以地圖呈現的動態
 ## 文件
 
 - [1.0 定義](docs/zh-TW/release-1.0.md)
+- [畫面設計](docs/zh-TW/ui-design.md)
+- [應用程式架構](docs/zh-TW/architecture.md)
 - [產品規格與技術設計](docs/zh-TW/specification.md)
 - [相依套件授權政策](docs/zh-TW/license-policy.md)
 - [授權可行性評估](docs/zh-TW/license-assessment.md)
@@ -35,6 +37,12 @@ TripReplay 將您的行程、照片與影片，製作成以地圖呈現的動態
 - [在地化](docs/zh-TW/localization.md)
 - [架構決策紀錄](docs/zh-TW/adr/README.md)
 - [開發指南](docs/zh-TW/development.md)
+
+## 贊助
+
+如果 TripReplay 對您有幫助，歡迎透過 Ko-fi 支持開發：
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/toolmanjimmy)
 
 ## 授權
 

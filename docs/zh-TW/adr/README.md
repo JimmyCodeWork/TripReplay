@@ -12,6 +12,7 @@
 | [0002](0002-public-domain-and-data-licenses.md) | 允許 SQLite 與 CDLA-Permissive-2.0 | 已接受 |
 | [0003](0003-language-and-toolchain.md) | 主要程式語言與工具鏈 | 已接受 |
 | [0004](0004-web-first-release.md) | 1.0 以 Web 與畫面先行，並自行託管 OpenStreetMap 圖磚 | 已接受 |
+| [0005](0005-modular-architecture.md) | 模組化的分層應用程式架構 | 已接受 |
 
 ## 撰寫紀錄
 
