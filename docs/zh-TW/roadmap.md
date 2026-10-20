@@ -73,8 +73,8 @@ flowchart LR
 
 套件依[應用程式架構](architecture.md)規劃：
 
-- 套件界線的相依檢查，隨第一個套件加入 `pnpm run verify`。
-- 領域模型與驗證（`domain`）及主題定義（`themes`）。
+- **已完成。** 套件界線的相依檢查（`pnpm run deps:check`）。
+- **已完成。** 領域模型、不變條件與編輯操作（`domain`），以及隨附主題定義（`themes`）。
 - 時間軸編譯器，以及回傳 FrameDescription 的 `renderAt`（`timeline`），待 S2 原型的設計獲接受後正式開發。
 - 狀態容器、可復原與重做的命令及連接埠（`app`）。
 - 專案包格式規格及讀寫器（屬於 `storage`），含路徑穿越與檔案大小驗證。

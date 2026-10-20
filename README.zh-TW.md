@@ -42,7 +42,7 @@ TripReplay 將您的行程、照片與影片，製作成以地圖呈現的動態
 
 如果 TripReplay 對您有幫助，歡迎透過 Ko-fi 支持開發：
 
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/toolmanjimmy)
+<a href="https://ko-fi.com/toolmanjimmy"><img height="36" src="https://storage.ko-fi.com/cdn/kofi2.png?v=3" alt="Buy Me a Coffee at ko-fi.com"></a>
 
 ## 授權
 
