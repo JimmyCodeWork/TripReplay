@@ -1,12 +1,44 @@
 {
-  "app.name": { "message": "TripReplay" },
-  "common.cancel": { "message": "取消" },
-  "common.retry": { "message": "重試" },
-  "tripList.title": { "message": "旅行" },
-  "tripList.empty": { "message": "尚無旅行" },
-  "tripList.stopCount": { "message": "{count, plural, other {# 個景點}}" },
-  "offline.status.ready": { "message": "已就緒，可離線使用" },
+  "app.name": {
+    "message": "TripReplay"
+  },
+  "common.cancel": {
+    "message": "取消"
+  },
+  "common.retry": {
+    "message": "重試"
+  },
+  "tripList.title": {
+    "message": "旅行"
+  },
+  "tripList.empty": {
+    "message": "尚無旅行"
+  },
+  "tripList.stopCount": {
+    "message": "{count, plural, other {# 個景點}}"
+  },
+  "offline.status.ready": {
+    "message": "已就緒，可離線使用"
+  },
   "export.preflight.missingTiles": {
     "message": "{count, plural, other {缺少 # 個地圖圖磚}}。請先下載離線包再匯出。"
+  },
+  "theme.classic.name": {
+    "message": "經典"
+  },
+  "theme.classic.description": {
+    "message": "淺色地圖、深色路線；適合一般用途"
+  },
+  "theme.night.name": {
+    "message": "夜間"
+  },
+  "theme.night.description": {
+    "message": "深色地圖、發光路線；適合夜間觀看與投影"
+  },
+  "theme.portrait.name": {
+    "message": "直式"
+  },
+  "theme.portrait.description": {
+    "message": "大標題置頂、媒體在下；適合 9:16"
   }
 }

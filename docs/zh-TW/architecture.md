@@ -151,7 +151,7 @@ sequenceDiagram
 5. **不使用全域狀態。** 相依由外殼傳入，而非以單例匯入。
 6. **新技術一律置於連接埠之後。** 新增涉及瀏覽器、網路或儲存的第三方函式庫時，須透過連接埠，使其可被替換。
 
-規則 1 與 2 將於第一個上述套件建立時，以自動化相依檢查納入 `pnpm run verify`。
+規則 1 與 2 由 `pnpm run deps:check`（包含於 `pnpm run verify`）依 [`tools/deps-check/boundaries.json`](../../tools/deps-check/boundaries.json) 中允許的相依關係執行。規則 4 由型別檢查執行：共用的 TypeScript 設定不含 DOM 型別，因此核心與應用層程式碼無法引用瀏覽器 API。
 
 ## 6. 各層測試
 

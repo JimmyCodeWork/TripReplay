@@ -30,5 +30,29 @@
   "export.preflight.missingTiles": {
     "message": "{count, plural, one {# map tile is missing} other {# map tiles are missing}}. Download the offline package before exporting.",
     "description": "Export preflight error when map tiles required by the timeline are not stored on the device."
+  },
+  "theme.classic.name": {
+    "message": "Classic",
+    "description": "Name of the classic theme."
+  },
+  "theme.classic.description": {
+    "message": "Light map and dark route; for general use",
+    "description": "Description of the classic theme, shown under its name."
+  },
+  "theme.night.name": {
+    "message": "Night",
+    "description": "Name of the night theme."
+  },
+  "theme.night.description": {
+    "message": "Dark map and glowing route; for evening viewing and projection",
+    "description": "Description of the night theme."
+  },
+  "theme.portrait.name": {
+    "message": "Portrait",
+    "description": "Name of the theme designed for 9:16."
+  },
+  "theme.portrait.description": {
+    "message": "Large title at the top and media below; for 9:16",
+    "description": "Description of the portrait theme."
   }
 }

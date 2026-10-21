@@ -42,7 +42,7 @@ Contributions are welcome in English or Traditional Chinese. Please read the [Co
 
 If you find TripReplay useful, you can support its development on Ko-fi:
 
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/toolmanjimmy)
+<a href="https://ko-fi.com/toolmanjimmy"><img height="36" src="https://storage.ko-fi.com/cdn/kofi2.png?v=3" alt="Buy Me a Coffee at ko-fi.com"></a>
 
 ## License
 

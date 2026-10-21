@@ -9,7 +9,7 @@
     "node": ">=24"
   },
   "scripts": {
-    "verify": "pnpm run lint && pnpm run typecheck && pnpm test && pnpm run i18n:check && pnpm run license:check",
+    "verify": "pnpm run lint && pnpm run typecheck && pnpm test && pnpm run deps:check && pnpm run i18n:check && pnpm run license:check",
     "verify:clean": "docker build --file tools/ci/Dockerfile --progress plain --output type=cacheonly .",
     "hooks:install": "git config core.hooksPath .githooks",
     "lint": "biome ci .",
@@ -17,7 +17,8 @@
     "typecheck": "tsc --project tsconfig.json",
     "test": "pnpm --recursive --if-present run test",
     "license:check": "node tools/license-check/src/main.ts",
-    "i18n:check": "node tools/i18n-check/src/main.ts"
+    "i18n:check": "node tools/i18n-check/src/main.ts",
+    "deps:check": "node tools/deps-check/src/main.ts"
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.15",

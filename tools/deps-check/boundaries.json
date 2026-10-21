@@ -1,0 +1,17 @@
+{
+  "$comment": "Allowed dependencies between product packages; see docs/architecture.md §3. \"*\" allows every package.",
+  "packages": {
+    "domain": [],
+    "themes": [],
+    "i18n": [],
+    "timeline": ["domain", "themes"],
+    "app": ["domain", "timeline"],
+    "renderer": ["timeline"],
+    "map": ["renderer"],
+    "media": ["domain", "app"],
+    "audio": ["timeline", "app"],
+    "storage": ["domain", "app"],
+    "ui": ["app", "i18n", "themes"],
+    "web": "*"
+  }
+}

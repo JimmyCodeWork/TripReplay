@@ -32,10 +32,11 @@ pnpm run hooks:install   # 選用；見「本機驗證」
 | `pnpm run format` | 套用格式化及安全的 lint 修正 |
 | `pnpm run typecheck` | 對所有 TypeScript 原始碼進行型別檢查 |
 | `pnpm test` | 執行所有 workspace 套件的測試 |
+| `pnpm run deps:check` | 檢查套件界線（見[應用程式架構 §5](architecture.md#5-規則)） |
 | `pnpm run i18n:check` | 檢查訊息目錄（見[在地化 §3](localization.md#3-訊息目錄)） |
 | `pnpm run license:check` | 依授權政策檢查已安裝的相依套件 |
 
-`verify` 會依序執行 `lint`、`typecheck`、`test`、`i18n:check` 及 `license:check`，遇到第一個失敗即停止。
+`verify` 會依序執行 `lint`、`typecheck`、`test`、`deps:check`、`i18n:check` 及 `license:check`，遇到第一個失敗即停止。
 
 ## 本機驗證
 
@@ -66,8 +67,11 @@ pnpm run hooks:install   # 選用；見「本機驗證」
 | 路徑 | 內容 |
 |---|---|
 | `apps/` | Web 版與各平台外殼（尚未建立） |
-| `packages/` | 產品套件：`i18n`；其餘依[應用程式架構 §3](architecture.md#3-套件) 規劃 |
+| `packages/` | 產品套件：`domain`、`themes`、`i18n`；其餘依[應用程式架構 §3](architecture.md#3-套件) 規劃 |
+| `packages/domain/` | 資料模型、不變條件及純函式的編輯操作 |
+| `packages/themes/` | 以資料定義的隨附回顧主題 |
 | `packages/i18n/` | 語系判定與訊息目錄（`locales/`） |
+| `tools/deps-check/` | CI 使用的套件界線檢查；允許的相依關係定義於 `boundaries.json` |
 | `tools/i18n-check/` | CI 使用的訊息目錄檢查工具 |
 | `tools/license-check/` | CI 使用的授權檢查工具 |
 | `tools/ci/` | `verify:clean` 使用的容器定義 |

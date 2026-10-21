@@ -71,8 +71,8 @@ The following can start once M0.1 and M0.2 are complete, in parallel with M1, be
 
 Packages follow the [Application Architecture](architecture.md):
 
-- Dependency check for the package boundaries, added to `pnpm run verify` with the first package.
-- Domain model and validation (`domain`) and theme definitions (`themes`).
+- **Done.** Dependency check for the package boundaries (`pnpm run deps:check`).
+- **Done.** Domain model, invariants and editing operations (`domain`) and built-in theme definitions (`themes`).
 - Timeline compiler and `renderAt` returning a FrameDescription (`timeline`), promoted from the S2 prototype once its design is accepted.
 - Store, commands with undo and redo, and ports (`app`).
 - Project package format specification and reader/writer (part of `storage`), including path-traversal and size validation.
