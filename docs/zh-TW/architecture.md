@@ -93,13 +93,18 @@ flowchart TD
 ```ts
 interface FrameDescription {
   readonly timeUs: number;
+  readonly segmentIndex: number;                          // 此時間所在的片段
+  readonly segmentKind: Segment["kind"];
   readonly camera: { readonly center: LonLat; readonly zoom: number; readonly bearing: number };
   readonly route: { readonly progress: number };          // 已抵達的景點數，移動中為小數
   readonly markers: readonly MarkerState[];               // 已造訪、目前、未抵達
   readonly overlays: readonly Overlay[];                  // 標題、字幕、媒體卡片、來源標示
+  readonly audio: readonly AudioState[];                  // 片段聲音與音樂，含增益
   readonly fade: number;                                  // 0–1，供減少動態效果使用
 }
 ```
+
+完整定義及其設計決策見 [`packages/timeline`](../../packages/timeline/src/frame.ts) 與 [S2 報告](spikes/s2-timeline-compiler.md)。
 
 由於影格是資料，同一份描述可同時驅動預覽、全螢幕播放器，以及日後的匯出；繪製技術也能在不影響時間軸的情況下更換。確定性以比對描述而非像素的方式測試。
 
