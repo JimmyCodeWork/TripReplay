@@ -53,12 +53,12 @@ The repository remains private until the project is ready for outside contributo
 
 ## M1 — Technical Validation (Phase A)
 
-Each spike produces a short report in `docs/spikes/` and a throwaway prototype. Prototypes are not merged into the product code base.
+Each spike produces a short report in `docs/spikes/` and a throwaway prototype. Prototypes are not merged into the product code base, except where a spike concludes that its prototype already meets product standards, as for S2.
 
 | ID | Spike | Questions to answer | Exit criteria |
 |---|---|---|---|
 | S1 | Map rendering and data | Which renderer is admissible under M0.1? How are OpenStreetMap tiles generated, hosted without request logging, and read by range into an offline package? Which place-search provider permits the intended use? | A license-compliant renderer draws a self-generated OpenStreetMap vector base map from a local file, with Traditional Chinese labels, at 30 fps on the reference devices; hosting cost estimated |
-| S2 | Timeline compiler | Is `renderAt(timeUs)` deterministic for a fixed timeline? | Two runs at identical timestamps yield identical camera, captions and media state; Date Line and identical-coordinate cases covered by tests |
+| S2 | Timeline compiler | Is `renderAt(timeUs)` deterministic for a fixed timeline? | **Done.** Two runs at identical timestamps yield identical camera, captions and media state; Date Line and identical-coordinate cases covered by tests ([report](spikes/s2-timeline-compiler.md)) |
 | S6 | Web storage | Can OPFS and IndexedDB hold 10 GB of media with crash-safe imports? | Forced termination during import leaves no referenced partial files |
 
 Spike S3 (Web export) moves to M5. Spikes S4 (installed shell) and S5 (mobile media bridge) are deferred until the installed builds ([ADR 0004](adr/0004-web-first-release.md)).
@@ -73,7 +73,7 @@ Packages follow the [Application Architecture](architecture.md):
 
 - **Done.** Dependency check for the package boundaries (`pnpm run deps:check`).
 - **Done.** Domain model, invariants and editing operations (`domain`) and built-in theme definitions (`themes`).
-- Timeline compiler and `renderAt` returning a FrameDescription (`timeline`), promoted from the S2 prototype once its design is accepted.
+- **Done.** Timeline compiler and `renderAt` returning a FrameDescription (`timeline`), accepted from spike S2.
 - Store, commands with undo and redo, and ports (`app`).
 - Project package format specification and reader/writer (part of `storage`), including path-traversal and size validation.
 

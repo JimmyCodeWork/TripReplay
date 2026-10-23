@@ -91,13 +91,18 @@ Later releases add packages without changing these: `export` (encodes frames fro
 ```ts
 interface FrameDescription {
   readonly timeUs: number;
+  readonly segmentIndex: number;                          // segment at this time
+  readonly segmentKind: Segment["kind"];
   readonly camera: { readonly center: LonLat; readonly zoom: number; readonly bearing: number };
   readonly route: { readonly progress: number };          // stops reached, fractional while travelling
   readonly markers: readonly MarkerState[];               // visited, current, upcoming
   readonly overlays: readonly Overlay[];                  // titles, captions, media cards, attribution
+  readonly audio: readonly AudioState[];                  // clip sound and music, with gains
   readonly fade: number;                                  // 0–1, used by reduced motion
 }
 ```
+
+The full definition and its design decisions are in [`packages/timeline`](../packages/timeline/src/frame.ts) and the [S2 report](spikes/s2-timeline-compiler.md).
 
 Because the frame is data, the same description drives the preview, the full-screen player and, later, export; and the drawing technology can change without touching the timeline. Determinism is tested by comparing descriptions, not pixels.
 
