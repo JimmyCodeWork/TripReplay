@@ -210,6 +210,22 @@ importers:
         specifier: 5.0.5
         version: 5.0.5(@types/node@24.19.2)(vite@8.3.4(@types/node@24.19.2))
 
+  packages/storage:
+    dependencies:
+      '@tripreplay/app':
+        specifier: workspace:*
+        version: link:../app
+      '@tripreplay/domain':
+        specifier: workspace:*
+        version: link:../domain
+    devDependencies:
+      vite:
+        specifier: 8.3.4
+        version: 8.3.4(@types/node@24.19.2)
+      vitest:
+        specifier: 5.0.5
+        version: 5.0.5(@types/node@24.19.2)(vite@8.3.4(@types/node@24.19.2))
+
   packages/themes:
     devDependencies:
       vite:
