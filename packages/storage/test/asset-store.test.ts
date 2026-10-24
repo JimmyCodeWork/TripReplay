@@ -12,7 +12,7 @@ describe("asset store", () => {
     const volume = memoryVolume();
     const store = createAssetStore(volume);
     await store.put("a1", chunks(3, 2), 5);
-    expect(await store.open("a1")).toEqual(new Uint8Array([1, 1, 1, 2, 2]));
+    expect((await store.open("a1"))?.bytes).toEqual(new Uint8Array([1, 1, 1, 2, 2]));
     expect(await store.list()).toEqual(["a1"]);
     expect(volume.tmp.entries.size).toBe(0);
   });
@@ -39,7 +39,7 @@ describe("asset store", () => {
     const store = createAssetStore(memoryVolume());
     await store.put("a1", chunks(1), 1);
     await expect(store.put("a1", chunks(2), 2)).rejects.toMatchObject({ code: "exists" });
-    expect(await store.open("a1")).toEqual(new Uint8Array([1]));
+    expect((await store.open("a1"))?.bytes).toEqual(new Uint8Array([1]));
   });
 
   it("removes files and ignores missing ones", async () => {

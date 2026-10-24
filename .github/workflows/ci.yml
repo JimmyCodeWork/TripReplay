@@ -35,3 +35,9 @@ jobs:
 
       - name: Verify
         run: pnpm run verify
+
+      - name: Install Chromium for browser tests
+        run: pnpm --filter @tripreplay/storage exec playwright install --with-deps chromium
+
+      - name: Browser tests
+        run: pnpm run test:browser

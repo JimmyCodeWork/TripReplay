@@ -47,3 +47,20 @@ describe("recovery", () => {
     expect([...ids].sort()).toEqual(["a", "b", "c"]);
   });
 });
+
+describe("recovery with files in use", () => {
+  it("skips entries that cannot be removed and continues with the rest", async () => {
+    const volume = memoryVolume();
+    await (await volume.tmp.create("locked")).close();
+    await (await volume.tmp.create("free")).close();
+    const remove = volume.tmp.remove.bind(volume.tmp);
+    volume.tmp.remove = async (name) => {
+      if (name === "locked") throw new Error("NoModificationAllowedError");
+      await remove(name);
+    };
+    volume.clock.now = RECOVERY_GRACE_MS;
+    const report = await recoverStorage(volume, { referenced: new Set(), now: volume.clock.now });
+    expect(report.removedTemporary).toEqual(["free"]);
+    expect(await volume.tmp.names()).toEqual(["locked"]);
+  });
+});

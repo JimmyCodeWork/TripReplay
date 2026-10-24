@@ -30,6 +30,7 @@ pnpm run hooks:install   # optional; see Local Verification
 | `pnpm run format` | Apply formatting and safe lint fixes |
 | `pnpm run typecheck` | Type-check all TypeScript sources: core, application and tools without DOM types (`tsconfig.json`), adapters with them (`tsconfig.browser.json`) |
 | `pnpm test` | Run the tests of every workspace package |
+| `pnpm run test:browser` | Run the adapter tests in headless Chromium (Playwright); see [Browser tests](#browser-tests) |
 | `pnpm run deps:check` | Verify package boundaries (see [Application Architecture §5](architecture.md#5-rules)) |
 | `pnpm run i18n:check` | Verify the message catalogs (see [Localization §3](localization.md#3-message-catalogs)) |
 | `pnpm run license:check` | Verify installed dependencies against the license policy |
@@ -38,7 +39,11 @@ pnpm run hooks:install   # optional; see Local Verification
 
 ## Local Verification
 
-All checks run locally. The CI workflow ([`.github/workflows/ci.yml`](../.github/workflows/ci.yml)) runs the same `pnpm run verify` command on every pull request and every push to `main`, so a change that passes locally passes in CI.
+All checks run locally. The CI workflow ([`.github/workflows/ci.yml`](../.github/workflows/ci.yml)) runs the same `pnpm run verify` command on every pull request and every push to `main`, followed by `pnpm run test:browser`, so a change that passes locally passes in CI.
+
+### Browser tests
+
+Adapter packages test their browser APIs (OPFS, IndexedDB) in headless Chromium through Vitest browser mode and Playwright. Install the browser once with `pnpm --filter @tripreplay/storage exec playwright install chromium`. Where the download is not possible, set `CHROMIUM_PATH` to an existing Chromium executable instead. These tests are not part of `verify`, so that `verify` needs no browser.
 
 ### Levels
 
@@ -70,7 +75,7 @@ To bypass a hook once, add `--no-verify` to `git commit` or `git push`. To disab
 | `packages/themes/` | Built-in recap themes as data |
 | `packages/timeline/` | Timeline compiler and `renderAt`, which describes each frame of the recap |
 | `packages/app/` | Editor state, commands with undo and redo, autosave, and the ports adapters implement |
-| `packages/storage/` | Projects in IndexedDB and media in OPFS, with crash-safe imports and start-up recovery |
+| `packages/storage/` | Projects in IndexedDB and media in OPFS, with crash-safe imports, start-up recovery and the [project package](project-package.md) |
 | `packages/i18n/` | Locale resolution and message catalogs (`locales/`) |
 | `tools/deps-check/` | Package boundary check used by CI; allowed dependencies in `boundaries.json` |
 | `tools/i18n-check/` | Message catalog check used by CI |

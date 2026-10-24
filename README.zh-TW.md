@@ -30,6 +30,7 @@ TripReplay 將您的行程、照片與影片，製作成以地圖呈現的動態
 - [1.0 定義](docs/zh-TW/release-1.0.md)
 - [畫面設計](docs/zh-TW/ui-design.md)
 - [應用程式架構](docs/zh-TW/architecture.md)
+- [專案包格式](docs/zh-TW/project-package.md)
 - [產品規格與技術設計](docs/zh-TW/specification.md)
 - [相依套件授權政策](docs/zh-TW/license-policy.md)
 - [授權可行性評估](docs/zh-TW/license-assessment.md)

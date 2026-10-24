@@ -1,12 +1,18 @@
 import type { Directory, FileInfo, Volume, Writer } from "../src/index.ts";
 
+/** Stands in for `File`: a size and the contents. */
+export interface MemoryFile {
+  readonly size: number;
+  readonly bytes: Uint8Array;
+}
+
 interface Entry {
   data: Uint8Array;
   lastModified: number;
 }
 
 /** In-memory volume with the OPFS behavior that matters here: a file changes only when its writer closes. */
-export class MemoryDirectory implements Directory<Uint8Array> {
+export class MemoryDirectory implements Directory<MemoryFile> {
   readonly entries = new Map<string, Entry>();
   readonly clock: { now: number };
 
@@ -45,11 +51,12 @@ export class MemoryDirectory implements Directory<Uint8Array> {
     return entry && { size: entry.data.byteLength, lastModified: entry.lastModified };
   }
 
-  async open(name: string) {
-    return this.entries.get(name)?.data;
+  async open(name: string): Promise<MemoryFile | undefined> {
+    const entry = this.entries.get(name);
+    return entry && { size: entry.data.byteLength, bytes: entry.data };
   }
 
-  async moveTo(name: string, target: Directory<Uint8Array>, newName: string) {
+  async moveTo(name: string, target: Directory<MemoryFile>, newName: string) {
     const entry = this.entries.get(name);
     if (!entry || !(target instanceof MemoryDirectory)) throw new Error(`Cannot move "${name}"`);
     this.entries.delete(name);
@@ -61,7 +68,7 @@ export class MemoryDirectory implements Directory<Uint8Array> {
   }
 }
 
-export function memoryVolume(clock = { now: 0 }): Volume<Uint8Array> & {
+export function memoryVolume(clock = { now: 0 }): Volume<MemoryFile> & {
   tmp: MemoryDirectory;
   assets: MemoryDirectory;
   clock: { now: number };

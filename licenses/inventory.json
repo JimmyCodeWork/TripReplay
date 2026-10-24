@@ -1,4 +1,12 @@
 {
   "release": {},
-  "development": ["@biomejs/biome", "@types/node", "typescript", "vite", "vitest"]
+  "development": [
+    "@biomejs/biome",
+    "@types/node",
+    "@vitest/browser-playwright",
+    "playwright",
+    "typescript",
+    "vite",
+    "vitest"
+  ]
 }

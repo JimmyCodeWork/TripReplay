@@ -32,6 +32,7 @@ pnpm run hooks:install   # 選用；見「本機驗證」
 | `pnpm run format` | 套用格式化及安全的 lint 修正 |
 | `pnpm run typecheck` | 對所有 TypeScript 原始碼進行型別檢查：核心、應用層及工具不含 DOM 型別（`tsconfig.json`），轉接器則包含（`tsconfig.browser.json`） |
 | `pnpm test` | 執行所有 workspace 套件的測試 |
+| `pnpm run test:browser` | 於無頭 Chromium（Playwright）中執行轉接器測試；見[瀏覽器測試](#瀏覽器測試) |
 | `pnpm run deps:check` | 檢查套件界線（見[應用程式架構 §5](architecture.md#5-規則)） |
 | `pnpm run i18n:check` | 檢查訊息目錄（見[在地化 §3](localization.md#3-訊息目錄)） |
 | `pnpm run license:check` | 依授權政策檢查已安裝的相依套件 |
@@ -40,7 +41,11 @@ pnpm run hooks:install   # 選用；見「本機驗證」
 
 ## 本機驗證
 
-所有檢查皆可於本機執行。CI workflow（[`.github/workflows/ci.yml`](../../.github/workflows/ci.yml)）會在每個 Pull Request 及每次推送至 `main` 時執行相同的 `pnpm run verify` 指令，因此在本機通過的變更，在 CI 中同樣會通過。
+所有檢查皆可於本機執行。CI workflow（[`.github/workflows/ci.yml`](../../.github/workflows/ci.yml)）會在每個 Pull Request 及每次推送至 `main` 時執行相同的 `pnpm run verify` 指令，接著執行 `pnpm run test:browser`，因此在本機通過的變更，在 CI 中同樣會通過。
+
+### 瀏覽器測試
+
+轉接器套件透過 Vitest 瀏覽器模式與 Playwright，於無頭 Chromium 中測試其使用的瀏覽器 API（OPFS、IndexedDB）。首次使用時以 `pnpm --filter @tripreplay/storage exec playwright install chromium` 安裝瀏覽器。無法下載時，可改將 `CHROMIUM_PATH` 設為既有 Chromium 執行檔的路徑。這些測試不包含於 `verify`，因此執行 `verify` 不需要瀏覽器。
 
 ### 驗證層級
 
@@ -72,7 +77,7 @@ pnpm run hooks:install   # 選用；見「本機驗證」
 | `packages/themes/` | 以資料定義的隨附回顧主題 |
 | `packages/timeline/` | 時間軸編譯器及 `renderAt`，描述回顧的每一格畫面 |
 | `packages/app/` | 編輯器狀態、可復原與重做的命令、自動儲存，以及由轉接器實作的連接埠 |
-| `packages/storage/` | 以 IndexedDB 儲存專案、以 OPFS 儲存媒體，具備當機安全的匯入及啟動時復原 |
+| `packages/storage/` | 以 IndexedDB 儲存專案、以 OPFS 儲存媒體，具備當機安全的匯入、啟動時復原及[專案包](project-package.md) |
 | `packages/i18n/` | 語系判定與訊息目錄（`locales/`） |
 | `tools/deps-check/` | CI 使用的套件界線檢查；允許的相依關係定義於 `boundaries.json` |
 | `tools/i18n-check/` | CI 使用的訊息目錄檢查工具 |

@@ -76,7 +76,7 @@ Packages follow the [Application Architecture](architecture.md):
 - **Done.** Timeline compiler and `renderAt` returning a FrameDescription (`timeline`), accepted from spike S2.
 - **Done.** Store, commands with undo and redo, autosave with revision checks, and the persistence ports (`app`). The media, audio and clock ports are added with their adapters.
 - **Done.** IndexedDB project repository and OPFS asset store with the import protocol and start-up recovery from spike S6 (`storage`).
-- Project package format specification and reader/writer (part of `storage`), including path-traversal and size validation.
+- **Done.** Project package format specification ([Project Package Format](project-package.md)) and reader/writer (part of `storage`), including path-traversal and size validation.
 
 ## M2 — End-to-End Flow (Phase B)
 
