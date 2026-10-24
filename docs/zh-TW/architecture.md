@@ -119,6 +119,7 @@ interface FrameDescription {
 | `MapLayer` — 依鏡頭繪製底圖 | `renderer` | `map`（線上圖磚） | 離線包 |
 | `MediaSource` — 提供片段在指定時間的解碼影格 | `renderer` | `media` | 匯出用解碼器 |
 | `Clock` — 目前時間與影格排程 | `app` | `requestAnimationFrame` | 匯出用固定步進時鐘 |
+| `Scheduler` — 延遲後執行回呼，供自動儲存使用 | `app` | `setTimeout` | — |
 
 測試時，所有連接埠皆以記憶體內的替身取代。
 

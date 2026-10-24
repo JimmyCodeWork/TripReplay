@@ -176,6 +176,22 @@ importers:
         specifier: 7.0.2
         version: 7.0.2
 
+  packages/app:
+    dependencies:
+      '@tripreplay/domain':
+        specifier: workspace:*
+        version: link:../domain
+      '@tripreplay/timeline':
+        specifier: workspace:*
+        version: link:../timeline
+    devDependencies:
+      vite:
+        specifier: 8.3.4
+        version: 8.3.4(@types/node@24.19.2)
+      vitest:
+        specifier: 5.0.5
+        version: 5.0.5(@types/node@24.19.2)(vite@8.3.4(@types/node@24.19.2))
+
   packages/domain:
     devDependencies:
       vite:

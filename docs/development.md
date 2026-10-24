@@ -65,10 +65,11 @@ To bypass a hook once, add `--no-verify` to `git commit` or `git push`. To disab
 | Path | Contents |
 |---|---|
 | `apps/` | Web build and platform shells (not yet created) |
-| `packages/` | Product packages: `domain`, `themes`, `i18n`, `timeline`; others planned as defined in the [Application Architecture §3](architecture.md#3-packages) |
+| `packages/` | Product packages: `domain`, `themes`, `i18n`, `timeline`, `app`; others planned as defined in the [Application Architecture §3](architecture.md#3-packages) |
 | `packages/domain/` | Data model, invariants and pure editing operations |
 | `packages/themes/` | Built-in recap themes as data |
 | `packages/timeline/` | Timeline compiler and `renderAt`, which describes each frame of the recap |
+| `packages/app/` | Editor state, commands with undo and redo, autosave, and the ports adapters implement |
 | `packages/i18n/` | Locale resolution and message catalogs (`locales/`) |
 | `tools/deps-check/` | Package boundary check used by CI; allowed dependencies in `boundaries.json` |
 | `tools/i18n-check/` | Message catalog check used by CI |

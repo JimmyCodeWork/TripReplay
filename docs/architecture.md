@@ -117,6 +117,7 @@ Because the frame is data, the same description drives the preview, the full-scr
 | `MapLayer` — draw the base map for a camera | `renderer` | `map` (online tiles) | Offline packages |
 | `MediaSource` — provide a decoded frame for a clip at a time | `renderer` | `media` | Export decoder |
 | `Clock` — current time and frame scheduling | `app` | `requestAnimationFrame` | Fixed-step clock for export |
+| `Scheduler` — run a callback after a delay, for autosave | `app` | `setTimeout` | — |
 
 Tests replace every port with an in-memory fake.
 
