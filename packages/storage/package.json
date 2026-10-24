@@ -1,0 +1,21 @@
+{
+  "name": "@tripreplay/storage",
+  "version": "0.0.0",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@tripreplay/app": "workspace:*",
+    "@tripreplay/domain": "workspace:*"
+  },
+  "devDependencies": {
+    "vite": "8.3.4",
+    "vitest": "5.0.5"
+  }
+}

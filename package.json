@@ -14,7 +14,7 @@
     "hooks:install": "git config core.hooksPath .githooks",
     "lint": "biome ci .",
     "format": "biome check --write .",
-    "typecheck": "tsc --project tsconfig.json",
+    "typecheck": "tsc --project tsconfig.json && tsc --project tsconfig.browser.json",
     "test": "pnpm --recursive --if-present run test",
     "license:check": "node tools/license-check/src/main.ts",
     "i18n:check": "node tools/i18n-check/src/main.ts",

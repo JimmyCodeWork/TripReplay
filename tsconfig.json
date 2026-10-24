@@ -17,5 +17,6 @@
     "skipLibCheck": true,
     "resolveJsonModule": true
   },
-  "include": ["tools/**/*.ts", "packages/**/*.ts"]
+  "include": ["tools/**/*.ts", "packages/**/*.ts"],
+  "exclude": ["packages/storage/**"]
 }

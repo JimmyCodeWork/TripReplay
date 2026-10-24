@@ -1,4 +1,4 @@
-import type { Project, TripId } from "@tripreplay/domain";
+import type { AssetId, Project, TripId } from "@tripreplay/domain";
 
 /**
  * Ports the application layer needs from the outside world (docs/architecture.md §4.2). Adapters
@@ -31,4 +31,20 @@ export interface ProjectRepository {
 /** Runs a callback once after a delay; returns a function that cancels it. */
 export interface Scheduler {
   schedule(delayMs: number, callback: () => void): () => void;
+}
+
+/**
+ * Media files, stored by asset id. `File` is the adapter's readable file type, kept opaque here so
+ * that the application layer does not depend on browser types.
+ */
+export interface AssetStore<File = unknown> {
+  /**
+   * Stores `byteSize` bytes from `source` under `id`. The file becomes visible only once it is
+   * complete, so a failed or interrupted write never leaves a partial file under `id`.
+   */
+  put(id: AssetId, source: AsyncIterable<Uint8Array>, byteSize: number): Promise<void>;
+  open(id: AssetId): Promise<File | undefined>;
+  /** Removes the file; succeeds when it does not exist. */
+  remove(id: AssetId): Promise<void>;
+  list(): Promise<readonly AssetId[]>;
 }

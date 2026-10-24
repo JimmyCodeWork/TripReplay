@@ -155,7 +155,7 @@ State flows in one direction. Commands are the only way to change state, which g
 5. **No global state.** Dependencies are passed in by the shell, not imported as singletons.
 6. **New technology behind a port.** Adding a third-party library that touches the browser, the network or storage requires a port, so that it can be replaced.
 
-Rules 1 and 2 are enforced by `pnpm run deps:check`, part of `pnpm run verify`, using the allowed dependencies in [`tools/deps-check/boundaries.json`](../tools/deps-check/boundaries.json). Rule 4 is enforced by type checking: the shared TypeScript configuration does not include DOM types, so core and application code cannot reference browser APIs.
+Rules 1 and 2 are enforced by `pnpm run deps:check`, part of `pnpm run verify`, using the allowed dependencies in [`tools/deps-check/boundaries.json`](../tools/deps-check/boundaries.json). Rule 4 is enforced by type checking: the shared TypeScript configuration does not include DOM types, so core and application code cannot reference browser APIs. Adapter packages are listed in `tsconfig.browser.json`, which adds the DOM types for them only.
 
 ## 6. Testing per Layer
 

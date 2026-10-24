@@ -28,7 +28,7 @@ pnpm run hooks:install   # optional; see Local Verification
 | `pnpm run hooks:install` | Enable the repository's Git hooks |
 | `pnpm run lint` | Check formatting and lint rules (Biome); fails on any issue |
 | `pnpm run format` | Apply formatting and safe lint fixes |
-| `pnpm run typecheck` | Type-check all TypeScript sources |
+| `pnpm run typecheck` | Type-check all TypeScript sources: core, application and tools without DOM types (`tsconfig.json`), adapters with them (`tsconfig.browser.json`) |
 | `pnpm test` | Run the tests of every workspace package |
 | `pnpm run deps:check` | Verify package boundaries (see [Application Architecture §5](architecture.md#5-rules)) |
 | `pnpm run i18n:check` | Verify the message catalogs (see [Localization §3](localization.md#3-message-catalogs)) |
@@ -65,11 +65,12 @@ To bypass a hook once, add `--no-verify` to `git commit` or `git push`. To disab
 | Path | Contents |
 |---|---|
 | `apps/` | Web build and platform shells (not yet created) |
-| `packages/` | Product packages: `domain`, `themes`, `i18n`, `timeline`, `app`; others planned as defined in the [Application Architecture §3](architecture.md#3-packages) |
+| `packages/` | Product packages: `domain`, `themes`, `i18n`, `timeline`, `app`, `storage`; others planned as defined in the [Application Architecture §3](architecture.md#3-packages) |
 | `packages/domain/` | Data model, invariants and pure editing operations |
 | `packages/themes/` | Built-in recap themes as data |
 | `packages/timeline/` | Timeline compiler and `renderAt`, which describes each frame of the recap |
 | `packages/app/` | Editor state, commands with undo and redo, autosave, and the ports adapters implement |
+| `packages/storage/` | Projects in IndexedDB and media in OPFS, with crash-safe imports and start-up recovery |
 | `packages/i18n/` | Locale resolution and message catalogs (`locales/`) |
 | `tools/deps-check/` | Package boundary check used by CI; allowed dependencies in `boundaries.json` |
 | `tools/i18n-check/` | Message catalog check used by CI |
