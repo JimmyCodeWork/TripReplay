@@ -57,7 +57,7 @@ Each spike produces a short report in `docs/spikes/` and a throwaway prototype. 
 
 | ID | Spike | Questions to answer | Exit criteria |
 |---|---|---|---|
-| S1 | Map rendering and data | Which renderer is admissible under M0.1? How are OpenStreetMap tiles generated, hosted without request logging, and read by range into an offline package? Which place-search provider permits the intended use? | A license-compliant renderer draws a self-generated OpenStreetMap vector base map from a local file, with Traditional Chinese labels, at 30 fps on the reference devices; hosting cost estimated |
+| S1 | Map rendering and data | Which renderer is admissible under M0.1? How are OpenStreetMap tiles generated, hosted without request logging, and read by range into an offline package? Which place-search provider permits the intended use? | A license-compliant renderer draws a self-generated OpenStreetMap vector base map from a local file, with Traditional Chinese labels, at 30 fps on the reference devices; hosting cost estimated. **Partly done:** renderer, tile format, labels and hosting ([report](spikes/s1-map-rendering.md)); frame rate on reference devices and the production tile build remain |
 | S2 | Timeline compiler | Is `renderAt(timeUs)` deterministic for a fixed timeline? | **Done.** Two runs at identical timestamps yield identical camera, captions and media state; Date Line and identical-coordinate cases covered by tests ([report](spikes/s2-timeline-compiler.md)) |
 | S6 | Web storage | Can OPFS and IndexedDB hold 10 GB of media with crash-safe imports? | **Done for Chromium.** Forced termination during import leaves no referenced partial files; Firefox and Safari to be measured before the gate ([report](spikes/s6-web-storage.md)) |
 

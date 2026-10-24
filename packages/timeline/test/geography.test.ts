@@ -1,5 +1,15 @@
 import { describe, expect, it } from "vitest";
-import { compile, MAX_OVERVIEW_ZOOM, MIN_ZOOM, normalizeLon, renderAt, STOP_ZOOM } from "../src/index.ts";
+import {
+  compile,
+  MAX_OVERVIEW_ZOOM,
+  MIN_ZOOM,
+  normalizeLon,
+  REFERENCE_FRAME,
+  renderAt,
+  STOP_ZOOM,
+  type Timeline,
+  WORLD_SIZE,
+} from "../src/index.ts";
 import { frames, numbersIn, stop, withStops } from "./fixtures.ts";
 
 describe("International Date Line", () => {
@@ -83,5 +93,40 @@ describe("long distances", () => {
   it("fits a multi-continent overview at a low but valid zoom", () => {
     expect(timeline.overview.zoom).toBeGreaterThanOrEqual(MIN_ZOOM);
     expect(timeline.overview.zoom).toBeLessThan(3);
+  });
+});
+
+/** Whether every route point lies inside the overview's horizontal extent. */
+function overviewShowsRoute(timeline: Timeline): boolean {
+  const visible = (360 * REFERENCE_FRAME["16:9"].width) / (WORLD_SIZE * 2 ** timeline.overview.zoom);
+  return timeline.route.every((p) => Math.abs(p.lon - timeline.overview.center.lon) <= visible / 2);
+}
+
+describe("overview", () => {
+  it("frames every leg in the direction the route takes, not just the stops", () => {
+    // Taipei → Apia → Paris: the last leg goes east over the Americas, although the smallest arc
+    // containing the three stops runs west over Asia.
+    const timeline = compile(
+      withStops([
+        stop("tpe", "2026-07-01", 121.5654, 25.033),
+        stop("apw", "2026-07-05", -171.7514, -13.8333),
+        stop("par", "2026-07-10", 2.3522, 48.8566),
+      ]),
+    );
+    expect(timeline.route.map((p) => Math.round(p.lon))).toEqual([122, 188, 362]);
+    expect(overviewShowsRoute(timeline)).toBe(true);
+  });
+
+  it("shows the widest view for a route around the world", () => {
+    const timeline = compile(
+      withStops([
+        stop("a", "2026-01-01", 0, 0),
+        stop("b", "2026-01-02", 120, 0),
+        stop("c", "2026-01-03", -120, 0),
+        stop("d", "2026-01-04", 0, 10),
+      ]),
+    );
+    expect(timeline.route.at(-1)?.lon).toBe(360);
+    expect(overviewShowsRoute(timeline)).toBe(true);
   });
 });
