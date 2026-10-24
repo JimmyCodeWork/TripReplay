@@ -1,4 +1,11 @@
-export type StorageErrorCode = "invalidId" | "exists" | "sizeMismatch" | "unsupportedVersion" | "invalidProject";
+export type StorageErrorCode =
+  | "invalidId"
+  | "exists"
+  | "sizeMismatch"
+  | "unsupportedVersion"
+  | "invalidProject"
+  | "invalidPackage"
+  | "missingAsset";
 
 export class StorageError extends Error {
   override name = "StorageError";

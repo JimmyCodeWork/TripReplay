@@ -75,7 +75,7 @@ To bypass a hook once, add `--no-verify` to `git commit` or `git push`. To disab
 | `packages/themes/` | Built-in recap themes as data |
 | `packages/timeline/` | Timeline compiler and `renderAt`, which describes each frame of the recap |
 | `packages/app/` | Editor state, commands with undo and redo, autosave, and the ports adapters implement |
-| `packages/storage/` | Projects in IndexedDB and media in OPFS, with crash-safe imports and start-up recovery |
+| `packages/storage/` | Projects in IndexedDB and media in OPFS, with crash-safe imports, start-up recovery and the [project package](project-package.md) |
 | `packages/i18n/` | Locale resolution and message catalogs (`locales/`) |
 | `tools/deps-check/` | Package boundary check used by CI; allowed dependencies in `boundaries.json` |
 | `tools/i18n-check/` | Message catalog check used by CI |

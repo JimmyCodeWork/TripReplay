@@ -30,6 +30,7 @@ Contributions are welcome in English or Traditional Chinese. Please read the [Co
 - [1.0 Definition](docs/release-1.0.md)
 - [Screen Design](docs/ui-design.md)
 - [Application Architecture](docs/architecture.md)
+- [Project Package Format](docs/project-package.md)
 - [Product Specification and Technical Design](docs/specification.md)
 - [Dependency License Policy](docs/license-policy.md)
 - [License Feasibility Assessment](docs/license-assessment.md)
