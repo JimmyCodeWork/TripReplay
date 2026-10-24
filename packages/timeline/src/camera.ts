@@ -9,7 +9,7 @@ import {
   WORLD_SIZE,
 } from "./constants.ts";
 import { easeInOutCubic, lerp } from "./math.ts";
-import { fromWorld, normalizeLon, toWorld } from "./mercator.ts";
+import { fromWorld, toWorld } from "./mercator.ts";
 import type { Camera } from "./model.ts";
 
 /** Zoom at which a span of world units fits the padded reference frame; Infinity for an empty span. */
@@ -25,32 +25,23 @@ export function stopCamera(location: LonLat): Camera {
 }
 
 /**
- * Smallest view showing every point. Longitudes are treated as a circle, so points on both sides of
- * the International Date Line are framed across it rather than across the whole world. The center
- * longitude is shifted by whole turns to lie among the given (possibly unwrapped) longitudes.
+ * Smallest view showing the whole route. The points are the route with unwrapped longitudes (see
+ * `unwrapPath`), so a route across the International Date Line is framed across it, and the view
+ * covers every leg in the direction the route takes, not merely every stop. A route that goes
+ * around the world gets the widest view.
  */
 export function overviewCamera(points: readonly LonLat[], aspectRatio: AspectRatio): Camera {
   if (points.length === 0) return { center: { lon: 0, lat: 0 }, zoom: MIN_ZOOM, bearing: 0 };
-  const lons = points.map((p) => normalizeLon(p.lon)).sort((a, b) => a - b);
-  let west = lons[0] ?? 0;
-  let largestGap = 360 - ((lons.at(-1) ?? 0) - west);
-  for (let i = 1; i < lons.length; i++) {
-    const gap = (lons[i] ?? 0) - (lons[i - 1] ?? 0);
-    if (gap > largestGap) {
-      largestGap = gap;
-      west = lons[i] ?? 0;
-    }
-  }
-  const spanLon = lons.length === 1 ? 0 : 360 - largestGap;
+  const lons = points.map((p) => p.lon);
+  const west = Math.min(...lons);
+  const spanLon = Math.min(360, Math.max(...lons) - west);
   const ys = points.map((p) => toWorld(p).y);
   const north = Math.min(...ys);
   const south = Math.max(...ys);
   const lat = fromWorld({ x: 0, y: (north + south) / 2 }).lat;
   const zoom = fitZoom(spanLon / 360, south - north, aspectRatio);
-  const center = normalizeLon(west + spanLon / 2);
-  const reference = (Math.min(...points.map((p) => p.lon)) + Math.max(...points.map((p) => p.lon))) / 2;
   return {
-    center: { lon: center + 360 * Math.round((reference - center) / 360), lat },
+    center: { lon: west + spanLon / 2, lat },
     zoom: Math.min(MAX_OVERVIEW_ZOOM, Math.max(MIN_ZOOM, zoom)),
     bearing: 0,
   };
