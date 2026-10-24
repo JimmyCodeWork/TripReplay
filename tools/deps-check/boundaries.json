@@ -7,7 +7,7 @@
     "timeline": ["domain", "themes"],
     "app": ["domain", "timeline"],
     "renderer": ["timeline"],
-    "map": ["renderer"],
+    "map": ["renderer", "app"],
     "media": ["domain", "app"],
     "audio": ["timeline", "app"],
     "storage": ["domain", "app"],

@@ -29,7 +29,7 @@ Because TripReplay promises that private data stays on the device ([Specificatio
 - any remote request made while offline mode is enabled;
 - logs that record full local paths, EXIF data or itinerary contents;
 - project package handling that allows path traversal, oversized extraction or overwriting files outside the application's storage;
-- offline package or project data that is readable by other applications where the platform provides isolation.
+- downloaded map or project data that is readable by other applications where the platform provides isolation.
 
 ## Response
 

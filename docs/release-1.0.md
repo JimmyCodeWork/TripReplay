@@ -4,11 +4,11 @@ English | [繁體中文](zh-TW/release-1.0.md)
 
 | | |
 |---|---|
-| Version | 0.2 (draft) |
-| Date | 2026-10-19 |
+| Version | 0.3 (draft) |
+| Date | 2026-10-24 |
 | Status | For review. Defines what "done" means for version 1.0. |
 
-This document defines the scope and quality bar of TripReplay 1.0. The [Product Specification](specification.md) describes the long-term product; where the two differ, this document defines what ships in 1.0. The decisions behind it are recorded in [ADR 0004](adr/0004-web-first-release.md).
+This document defines the scope and quality bar of TripReplay 1.0. The [Product Specification](specification.md) describes the long-term product; where the two differ, this document defines what ships in 1.0. The decisions behind it are recorded in [ADR 0004](adr/0004-web-first-release.md) and [ADR 0006](adr/0006-local-only-operation.md).
 
 Values marked *proposed* are working targets to be confirmed during technical validation (roadmap M1).
 
@@ -16,7 +16,9 @@ Values marked *proposed* are working targets to be confirmed during technical va
 
 TripReplay 1.0 delivers the complete on-screen experience. A traveler can open a website, plan or reconstruct a trip as a list of stops, add the photos, videos and music from that trip, and watch an animated map recap in the browser — entirely on their own device, in English or Traditional Chinese.
 
-Exporting the recap as a video file and preparing trips for offline use follow in the release after 1.0 (§4.3).
+Everything runs on the device. Before first use, the user downloads the map of the regions they need with one button; from then on, editing, place search and preview work without a network connection. The project operates no server.
+
+Exporting the recap as a video file follows in the release after 1.0 (§4.3).
 
 ## 2. Target Users and Core Scenario
 
@@ -24,7 +26,7 @@ Exporting the recap as a video file and preparing trips for offline use follow i
 
 **Core scenario:**
 
-1. Before the trip, or afterwards, the user creates a trip and adds stops by search or by placing pins.
+1. Before the trip, or afterwards, the user downloads the map of the regions they need, creates a trip and adds stops by searching the downloaded map, placing pins or pasting coordinates.
 2. After the trip, the user imports photos and videos; TripReplay suggests a stop for each from GPS data and capture time, and the user confirms or corrects the assignments.
 3. The user chooses a theme and background music, previews the recap and adjusts durations and trimming.
 4. The user plays the recap full-screen, for example to show it to family and friends.
@@ -37,7 +39,7 @@ Exporting the recap as a video file and preparing trips for offline use follow i
 | Devices | Desktop and laptop computers; tablets and phones through their browsers |
 | Installed builds (Windows, macOS, Linux, Android, iOS) | Not in 1.0. Remain the long-term goal ([Specification §1.1](specification.md#11-goals)) |
 | Browsers | Current and previous major versions of Chrome, Edge, Safari and Firefox |
-| Network | Required for map tiles and place search. Trips, media and settings are stored on the device and remain available without a connection |
+| Network | Needed only to open the application and to download maps. After that, everything works without a connection |
 
 ## 4. Features
 
@@ -46,7 +48,8 @@ Exporting the recap as a video file and preparing trips for offline use follow i
 | Area | 1.0 capability |
 |---|---|
 | Trips | Create, open, rename, duplicate and delete trips; storage usage per trip |
-| Itinerary | Stops grouped by day; place search and manual pins; reordering; names and descriptions; multi-day, multi-country and Date Line crossings |
+| Map download | Choose regions and download their map with one button; shows the size before downloading and the space used afterwards; pause, resume, verify, update and delete |
+| Itinerary | Stops grouped by day; search of place names in the downloaded map, entirely on the device; manual pins; pasting coordinates or a map link (for example from Google Maps); reordering; names and descriptions; multi-day, multi-country and Date Line crossings |
 | Media | Import photos and videos from the device; assign to stops; reorder; trim videos; set photo duration, rotation and fit; adjust clip volume |
 | Preview | Animated route, camera moves, stop titles and media on a scrubbable timeline; 16:9 and 9:16; full-screen playback with sound |
 | Projects | Autosave; back up and restore a trip as a project package |
@@ -64,10 +67,10 @@ Exporting the recap as a video file and preparing trips for offline use follow i
 
 | Release | Features |
 |---|---|
-| Next release after 1.0 | MP4 export (H.264, 1080p and 720p, 30 fps) with original audio and background music; offline packages for preview and export without a network connection |
+| Next release after 1.0 | MP4 export (H.264, 1080p and 720p, 30 fps) with original audio and background music |
 | Later | Installed applications for Windows, macOS, Linux, Android and iOS |
 
-The 1.0 architecture must not preclude these: preview is driven by the deterministic `renderAt(timeUs)` of [Specification §7](specification.md#7-preview-and-video-pipeline), so that export can render the same frames, and map resources are accessed through the offline package manager's interface from the start.
+The 1.0 architecture must not preclude these: preview is driven by the deterministic `renderAt(timeUs)` of [Specification §7](specification.md#7-preview-and-video-pipeline), so that export can render the same frames, and map resources are read only from downloaded map files.
 
 ### 4.4 Not planned
 
@@ -77,13 +80,13 @@ Cloud sync and accounts; collaboration; turn-by-turn road routing; live GPS trac
 
 | Aspect | 1.0 approach |
 |---|---|
-| Source | OpenStreetMap data, processed by the project into vector tiles in PMTiles format |
-| Hosting | Static file hosting operated by the project, serving tiles through HTTP range requests; no application server |
-| License | Data under ODbL-1.0; downloaded at runtime and never bundled in release artifacts ([Dependency License Policy §2](license-policy.md#2-scope)). The project publishes its processed tiles under ODbL, as the license requires for derivative databases. |
+| Source | Regional map files in PMTiles format derived from OpenStreetMap, downloaded from a public source that the project does not operate. The application can also open a map file the user already has. The source is an open item (§7) |
+| Download | The user chooses regions; the file is downloaded in parts with HTTP range requests, verified and stored on the device with the import protocol of [spike S6](spikes/s6-web-storage.md) |
+| Use | Rendering and place search read only the downloaded files. No map or search request is made while editing or previewing |
+| License | Data under ODbL-1.0; downloaded by the user and never bundled in release artifacts ([Dependency License Policy §2](license-policy.md#2-scope)) |
 | Attribution | "© OpenStreetMap contributors" shown in the map view and during full-screen playback |
-| Caching | Viewed tiles are cached by the browser for performance; this is not an offline guarantee |
-| Privacy | Tile requests reveal the regions a user views. The hosting is configured without request logging, this is stated in the privacy statement, and users may place pins manually instead of searching |
-| Updates | *Proposed:* tiles regenerated quarterly |
+| Privacy | The download source can see which regions are downloaded, but not trips, stops, searches or media. This is stated in the privacy statement |
+| Updates | The application shows when a newer map is available; updating is the user's choice |
 | Labels | Traditional Chinese names where available in the data, falling back to local names |
 
 ## 6. Quality Bar
@@ -105,7 +108,8 @@ The acceptance scenarios of [Specification §9](specification.md#9-acceptance-cr
 
 - No data loss on browser crash, tab close or device sleep during editing or import.
 - Storage eviction by the browser is detected, explained and recoverable from a project package backup.
-- Missing map tiles never block editing; the preview shows a clear placeholder and retries.
+- A region without a downloaded map never blocks editing; the preview shows a clear placeholder and offers to download it.
+- An interrupted map download leaves no partial map in use and can be resumed.
 
 ### 6.3 Usability and accessibility
 
@@ -124,7 +128,7 @@ The acceptance scenarios of [Specification §9](specification.md#9-acceptance-cr
 
 - Semantic versioning; `1.0.0` tagged from `main` with a changelog.
 - License release gate passes, and `THIRD-PARTY-NOTICES` is served by the application ([Dependency License Policy §6](license-policy.md#6-release-gate)).
-- The deployed site uses HTTPS and a Content Security Policy that permits network access only to the project's tile hosting and the place-search provider.
+- The deployed site uses HTTPS and a Content Security Policy that permits network access only to the map download source.
 
 ## 7. Open Items
 
@@ -132,8 +136,8 @@ These do not block the definition above and are resolved during the milestones n
 
 | Item | Resolved in |
 |---|---|
-| Place-search provider and its terms (geocoding is separate from tile hosting) | M1, spike S1 |
-| Tile hosting provider and monthly bandwidth budget | M1, spike S1 |
+| Map download source and its terms; region size and update cadence | M1, gate |
+| Place-name index built from the downloaded map: coverage of Traditional Chinese names, size, speed | M1, follow-up to spike S1 |
 | Reference laptop and phone models | M1 |
 | Final number and design of themes | M2 |
 | Domain name for the public site | M3 |

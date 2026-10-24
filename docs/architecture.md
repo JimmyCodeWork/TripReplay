@@ -12,7 +12,7 @@ English | [繁體中文](zh-TW/architecture.md)
 
 - **Replaceable parts.** Any module — the map renderer, storage, the UI framework, a theme — can be rewritten or swapped without touching unrelated code.
 - **Testable core.** Everything that decides *what* appears on screen is pure TypeScript that runs without a browser.
-- **Ready for later releases.** MP4 export, offline packages and installed builds ([1.0 Definition §4.3](release-1.0.md#43-after-10)) are added as new modules, not by redesigning existing ones.
+- **Ready for later releases.** MP4 export and installed builds ([1.0 Definition §4.3](release-1.0.md#43-after-10)) are added as new modules, not by redesigning existing ones.
 
 ## 2. Layers
 
@@ -73,7 +73,7 @@ flowchart TD
 | `timeline` | `compile(project, settings)` → immutable Timeline; `renderAt(timeline, timeUs)` → **FrameDescription** | `domain`, `themes` |
 | `app` | Store, commands with undo and redo, autosave scheduling, use cases (import, match, back up, restore); defines the ports below | `domain`, `timeline` |
 | `renderer` | Draws a FrameDescription onto a canvas; defines the `MapLayer` and `MediaSource` ports | `timeline` |
-| `map` | `MapLayer` implementation on the chosen map engine; tile source; offline package interface (online-only implementation in 1.0) | `renderer` |
+| `map` | `MapLayer` implementation on the chosen map engine, reading downloaded map files from the device; region downloads; place-name search in the downloaded maps; implements `PlaceSearch` ([ADR 0006](adr/0006-local-only-operation.md)) | `renderer`, `app` |
 | `media` | File import, metadata (capture time, GPS), thumbnails and proxies, stop-matching suggestions; implements `MediaPort` | `domain`, `app` |
 | `audio` | Preview mixing with Web Audio: music, fades, ducking; implements `AudioPort` | `timeline`, `app` |
 | `storage` | IndexedDB and OPFS persistence, project package backup and restore; implements `ProjectRepository` and `AssetStore` | `domain`, `app` |
@@ -114,7 +114,8 @@ Because the frame is data, the same description drives the preview, the full-scr
 | `AssetStore` — put, get, remove media files | `app` | `storage` (OPFS) | Native file system |
 | `MediaPort` — read metadata, create thumbnails and proxies | `app` | `media` (browser decoders) | Native decoders |
 | `AudioPort` — play, pause, seek the mixed preview | `app` | `audio` (Web Audio) | — |
-| `MapLayer` — draw the base map for a camera | `renderer` | `map` (online tiles) | Offline packages |
+| `MapLayer` — draw the base map for a camera | `renderer` | `map` (downloaded PMTiles) | Native map rendering |
+| `PlaceSearch` — find place names in the downloaded maps | `app` | `map` (place-name index) | — |
 | `MediaSource` — provide a decoded frame for a clip at a time | `renderer` | `media` | Export decoder |
 | `Clock` — current time and frame scheduling | `app` | `requestAnimationFrame` | Fixed-step clock for export |
 | `Scheduler` — run a callback after a delay, for autosave | `app` | `setTimeout` | — |

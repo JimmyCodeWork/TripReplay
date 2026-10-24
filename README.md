@@ -14,12 +14,13 @@ TripReplay turns your itinerary, photos and videos into an animated map recap of
 - Add your own background music and choose a theme.
 - Preview the recap on a scrubbable timeline in 16:9 or 9:16.
 - Play the recap full-screen in the browser.
-- After 1.0: export to MP4 (1080p or 720p, 30 fps), and prepare trips offline so previewing never depends on mobile data.
+- Download the map of the regions you need once; after that, everything works without a connection, including place search.
+- After 1.0: export to MP4 (1080p or 720p, 30 fps).
 - Version 1.0 runs in the browser and can be installed as a Progressive Web App; installed apps for Windows, macOS, Linux, Android and iOS will follow.
 
 ## Privacy
 
-Your photos, videos, metadata and projects never leave your device. There is no account, no analytics and no cloud processing. Network access is used only for public map resources and place searches you initiate, and a fully offline mode is planned after 1.0. See [Specification §4](docs/specification.md#4-offline-operation-and-privacy).
+Your photos, videos, metadata and projects never leave your device. There is no account, no analytics and no cloud processing. The network is used only to load the application and to download the maps you choose; place search runs on your device, and there is no TripReplay server. See [Specification §4](docs/specification.md#4-offline-operation-and-privacy).
 
 ## Contributing
 

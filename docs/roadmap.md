@@ -21,11 +21,10 @@ flowchart LR
     G1 --> M2[M2 End-to-end flow]
     M2 --> M3[M3 Release readiness]
     M3 --> R1([1.0])
-    R1 --> M4[M4 Offline]
     R1 --> M5[M5 Export]
 ```
 
-Milestones M0 to M3 lead to 1.0, which delivers the on-screen experience. M4 and M5 form the next release ([1.0 Definition §4.3](release-1.0.md#43-after-10)).
+Milestones M0 to M3 lead to 1.0, which delivers the on-screen experience entirely on the device. M5 forms the next release ([1.0 Definition §4.3](release-1.0.md#43-after-10)). The former M4 (offline) is part of M2 ([ADR 0006](adr/0006-local-only-operation.md)).
 
 ## M0 — Foundation
 
@@ -57,13 +56,13 @@ Each spike produces a short report in `docs/spikes/` and a throwaway prototype. 
 
 | ID | Spike | Questions to answer | Exit criteria |
 |---|---|---|---|
-| S1 | Map rendering and data | Which renderer is admissible under M0.1? How are OpenStreetMap tiles generated, hosted without request logging, and read by range into an offline package? Which place-search provider permits the intended use? | A license-compliant renderer draws a self-generated OpenStreetMap vector base map from a local file, with Traditional Chinese labels, at 30 fps on the reference devices; hosting cost estimated. **Partly done:** renderer, tile format, labels and hosting ([report](spikes/s1-map-rendering.md)); frame rate on reference devices and the production tile build remain |
+| S1 | Map rendering and data | Which renderer is admissible under M0.1? Which map files can be downloaded by region, and can they be read by range from the device? How are place names searched on the device? | A license-compliant renderer draws an OpenStreetMap vector base map from a file on the device, with Traditional Chinese labels, at 30 fps on the reference devices; place-name search on the downloaded map measured. **Partly done:** renderer, tile format and labels ([report](spikes/s1-map-rendering.md)); frame rate on reference devices, the download source and the place-name index remain |
 | S2 | Timeline compiler | Is `renderAt(timeUs)` deterministic for a fixed timeline? | **Done.** Two runs at identical timestamps yield identical camera, captions and media state; Date Line and identical-coordinate cases covered by tests ([report](spikes/s2-timeline-compiler.md)) |
 | S6 | Web storage | Can OPFS and IndexedDB hold 10 GB of media with crash-safe imports? | **Done for Chromium.** Forced termination during import leaves no referenced partial files; Firefox and Safari to be measured before the gate ([report](spikes/s6-web-storage.md)) |
 
 Spike S3 (Web export) moves to M5. Spikes S4 (installed shell) and S5 (mobile media bridge) are deferred until the installed builds ([ADR 0004](adr/0004-web-first-release.md)).
 
-**Gate — architecture decision.** After S1, S2 and S6, fix the renderer, the map pipeline and the supported browser versions for M2. The renderer must be driven by `renderAt(timeUs)` and map access must go through the offline package interface, so that M4 and M5 can be added without redesign.
+**Gate — architecture decision.** After S1, S2 and S6, fix the renderer, the map pipeline and the supported browser versions for M2. Also choose the map download source ([ADR 0006](adr/0006-local-only-operation.md)). The renderer must be driven by `renderAt(timeUs)` and must read maps only from files on the device, so that M5 can be added without redesign.
 
 ## Core Library Work
 
@@ -86,6 +85,9 @@ Packages follow the [Application Architecture](architecture.md):
 | Automatic media matching, background music and themes ([1.0 Definition §4.2](release-1.0.md#42-additional-features-required-in-10)) |
 | Autosave with revision checks; reopening a project restores its exact state |
 | Versioned project package: back up in one browser and restore in another without loss |
+| Map download by region: size shown in advance, pause, resume, verification, storage display, updates and deletion; insufficient-storage handling |
+| Place search on the downloaded map, pins, and pasted coordinates or map links |
+| Airplane-mode acceptance test passes ([Specification §9](specification.md#9-acceptance-criteria-and-testing)); network inspection confirms no request other than loading the application and downloading maps |
 | All UI strings available in `en` and `zh-TW` |
 
 ## M3 — Release Readiness for 1.0 (Phase E)
@@ -93,22 +95,13 @@ Packages follow the [Application Architecture](architecture.md):
 | Exit criteria |
 |---|
 | Public site deployed over HTTPS with a Content Security Policy; installable as a PWA |
-| Tile hosting operational without request logging; attribution shown in the map and during playback |
+| Map download source confirmed and its terms recorded; attribution shown in the map and during playback |
 | Quality bar of the [1.0 Definition §6](release-1.0.md#6-quality-bar) met, including usability testing |
 | Accessibility review: keyboard operation, screen-reader labels, sufficient contrast, reduced-motion option for previews |
 | License release gate passes ([Dependency License Policy §6](license-policy.md#6-release-gate)) |
 | User guide, privacy statement, known issues and browser support table complete in `en` and `zh-TW`; `1.0.0` tagged with a changelog |
 
 ## After 1.0
-
-### M4 — Offline (Phase C)
-
-| Exit criteria |
-|---|
-| Offline package planning, download, pause, resume, verification and differential updates |
-| Quota display and insufficient-storage handling |
-| Airplane-mode acceptance test passes ([Specification §9](specification.md#9-acceptance-criteria-and-testing)) |
-| Network inspection confirms no private data in any request |
 
 ### M5 — Export (Phase D)
 

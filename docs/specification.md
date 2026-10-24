@@ -4,8 +4,8 @@ English | [繁體中文](zh-TW/specification.md)
 
 | | |
 |---|---|
-| Version | 0.2 (draft) |
-| Date | 2026-10-19 |
+| Version | 0.3 (draft) |
+| Date | 2026-10-24 |
 | Status | Design phase. The technology candidates in this document have not passed the [license audit](license-policy.md). |
 
 > The scope and quality bar of version 1.0 are defined in the [1.0 Definition](release-1.0.md). This specification describes the long-term product.
@@ -22,7 +22,7 @@ TripReplay turns a planned itinerary and the photos and videos captured along th
 - Export the recap as a video file.
 - Run on Web, Windows, macOS, Linux, Android and iOS. Version 1.0 ships on the Web only ([ADR 0004](adr/0004-web-first-release.md)).
 - Keep all private media and processing on the device.
-- Allow network access, but support downloading all required resources in advance so that previewing does not depend on mobile data while traveling.
+- Run entirely on the device: the user downloads the map of the needed regions in advance, after which editing, place search, preview and export work without a network connection. The project operates no server ([ADR 0006](adr/0006-local-only-operation.md)).
 
 ### 1.2 Design Defaults
 
@@ -36,12 +36,12 @@ The following are adjustable defaults for the first release, not additional requ
 
 Original photos, videos and audio, EXIF metadata, project contents, thumbnails, proxy media and exported videos are never sent to a remote service.
 
-Place-search queries and map download extents may allow a provider to infer travel destinations. The interface must disclose this clearly and offer manual pin placement and a fully offline mode. If even destinations must not be disclosed to any provider, the application must instead use larger regional map packages and a local place-name index.
+Place search runs on the device against the downloaded map, so search terms are never sent anywhere. The only information that leaves the device is which map regions are downloaded, which the download source can see. Regions are large (for example a country), and the interface states this before the first download.
 
 ## 2. User Flow and Screens
 
 1. **Trip list** — create, open, rename, back up and delete projects; show local storage usage and offline readiness.
-2. **Itinerary editor** — stops grouped by date; place search or manual pin placement; reordering; name and description. Supports multi-day trips, multiple countries and crossing the International Date Line.
+2. **Itinerary editor** — stops grouped by date; place-name search in the downloaded map, manual pin placement, or pasted coordinates or map links; reordering; name and description. Supports multi-day trips, multiple countries and crossing the International Date Line.
 3. **Media editor** — import from the local file system or the system photo library; assign media to stops; reorder; trim videos; set display duration, rotation and fit mode. GPS and timestamp matching is offered only as a suggestion; when metadata is missing, assignment is manual. The user can correct the time zone.
 4. **Recap preview** — map and media preview; play, pause and scrub the timeline; switch aspect ratio. Desktop uses side panels with a bottom timeline; mobile uses the preview with tabbed panels.
 5. **Trip preparation** — estimate storage; download required maps, fonts and icons; verify that all media is stored on the device; generate preview proxies; list anything missing.
@@ -66,48 +66,42 @@ Transition overlaps are computed by the timeline compiler; durations are not sim
 
 ## 3. First Release Scope
 
-The scope of version 1.0 is defined in the [1.0 Definition §4](release-1.0.md#4-features). 1.0 delivers the on-screen experience — editing, media import and preview — including automatic media matching by GPS and capture time, user-supplied background music, and bundled themes. MP4 export and offline packages follow in the next release.
+The scope of version 1.0 is defined in the [1.0 Definition §4](release-1.0.md#4-features). 1.0 delivers the on-screen experience — editing, media import and preview — including automatic media matching by GPS and capture time, user-supplied background music, and bundled themes. Maps are downloaded by region and used on the device. MP4 export follows in the next release.
 
 **Deferred beyond 1.0:** installed applications, turn-by-turn road routing, live GPS tracking, multi-user collaboration, cloud sync, cloud-based AI organization, 3D buildings, satellite imagery, 4K/HDR output, multi-track editing and a template store. Still-image export is out of scope.
 
 ## 4. Offline Operation and Privacy
 
-### 4.1 Offline Packages
+### 4.1 Map Downloads
 
-An offline package is not a browser cache. Each project maintains a resource manifest covering:
+The application works only with maps stored on the device. The user chooses regions (for example a country) and downloads each with one button. A region is one PMTiles file containing the vector tiles and the place names used by search. Map styles and fonts, including the bundled CJK font, are part of the application.
 
-- every map extent and zoom level visible along the camera path;
-- overview base maps;
-- map styles, glyphs (including CJK fonts) and sprites;
-- media, thumbnails and proxies.
+- Before downloading, the application shows the size and the available space; afterwards it shows the space used per region.
+- Downloads are made in parts with HTTP range requests and support pause, resumption, retry and integrity verification. A file becomes usable only once it is complete and verified ([spike S6](spikes/s6-web-storage.md)).
+- On the Web, where the network type cannot be detected reliably, downloads are started by the user; the application makes no claim of network detection.
+- The user can also open a map file already on the device.
+- Source media is fully copied into application-managed storage on import. Files in a cloud photo library that have not been downloaded are reported as unavailable.
 
-Source media must be fully copied from the system picker into application-managed storage. Files in a cloud photo library that have not been downloaded must not be reported as offline-ready.
+### 4.2 Region States
 
-Before downloading, the application shows the estimated size and available space; afterwards it shows the actual size. Downloads support pause, cancel, retry, resumption and integrity verification. Native platforms should offer an explicit "Download on Wi-Fi only" setting. On the Web, where the network type cannot be detected reliably, downloads are started manually and the application makes no claim of accurate network detection.
+`Not downloaded` → `Downloading` → `Verifying` → `Ready`
 
-### 4.2 Package States
+Additional states: `Paused`, `Insufficient storage`, `Failed`, `Update available`. An existing `Ready` region stays usable while its update downloads.
 
-`Not prepared` → `Planning` → `Pending download` → `Downloading` → `Verifying` → `Ready`
+### 4.3 Rules
 
-Additional states: `Cancelled`, `Insufficient storage`, `Failed`, `Update required`.
-
-Changing the route, zoom, aspect ratio or style triggers a differential re-plan and marks the package `Update required`. The existing usable package is kept until the new one is complete.
-
-### 4.3 Offline Mode Rules
-
-- Offline mode issues no remote requests.
-- When data is missing, the application states the specific cause and falls back to available lower-resolution map data.
-- Final export is blocked if required resources are missing; a blank map is never exported.
-- A `Ready` package covers only the planned timeline and configured aspect ratios. Panning outside the package shows a notice.
+- Editing, place search, preview and export make no remote requests.
+- A stop outside the downloaded regions shows a clear notice and an offer to download that region; editing is never blocked.
+- Export is blocked while a region the recap needs is missing; a blank map is never exported.
 - Readiness is re-verified at every launch and before every export, because Web storage may be evicted.
 
-The map provider's terms must permit pre-download, local storage and use in exported video, and must state attribution and redistribution conditions for offline packages. Bulk pre-download from the OpenStreetMap standard tile servers is prohibited ([OSM Tile Usage Policy](https://operations.osmfoundation.org/policies/tiles/)).
+The download source's terms must permit download, local storage and use in exported video, and must state the attribution requirements. Bulk download from the OpenStreetMap standard tile servers is prohibited ([OSM Tile Usage Policy](https://operations.osmfoundation.org/policies/tiles/)).
 
 ### 4.4 Privacy Defaults
 
 - No remote analytics, no remote media processing, and no automatic upload of crash attachments.
 - Logs never contain full local paths, EXIF data or itinerary contents.
-- Remote services are used only for public map resources and user-initiated place search.
+- The only network requests are loading the application and downloading the map regions the user chooses. Place search runs on the device.
 - Installed builds must define, and verify per platform, a strategy for excluding sensitive data from automatic OS cloud backups.
 
 ## 5. Architecture
@@ -125,8 +119,8 @@ flowchart TD
     Project --> Store[Storage interface]
     Store --> Web[Web: IndexedDB and OPFS]
     Store --> Native[Installed: SQLite and local files]
-    Offline[Offline package manager] --> Store
-    Public[Map service licensed for offline use] --> Offline
+    Maps[Map download manager] --> Store
+    Source[Public map download source] --> Maps
 ```
 
 The package structure, layers and dependency rules are defined in the [Application Architecture](architecture.md), and the screens in the [Screen Design](ui-design.md).
@@ -135,7 +129,7 @@ The package structure, layers and dependency rules are defined in the [Applicati
 
 Web technologies make it easy to share the map and UI, but moving large volumes of video data across the native bridge may become a bottleneck. Between native codec plugins and the shared compositor, use bounded buffers and minimal copying; never pass frames as Base64 over the JavaScript IPC channel. If mobile devices fail validation, keep the domain model and timeline format and move rendering to a native mobile pipeline. This decision must be made before substantial UI work begins.
 
-Candidate map packaging is licensed regional PMTiles or a provider's offline package. PMTiles is only a container format and does not by itself grant offline or redistribution rights. Local random-access reads on the Web and their integration with the map renderer must be implemented and verified; remote HTTP range-request examples do not demonstrate offline support ([Protomaps documentation](https://docs.protomaps.com/)).
+Maps are regional PMTiles files stored in the Origin Private File System and read locally with random access. PMTiles is only a container format and does not by itself grant any right to the data; the download source's terms decide that ([Protomaps documentation](https://docs.protomaps.com/)). Spike S1 verified rendering from PMTiles read by range; reading from OPFS instead of HTTP is the same access pattern.
 
 ## 6. Data Model and Persistence
 
@@ -208,7 +202,7 @@ On mobile, the first release requires export to remain in the foreground. If the
 - Download retries are deduplicated by resource hash and version.
 - Export pins the project revision so that concurrent edits do not alter the output.
 
-The first release requires no backend for private data. If the project operates its own map service, that service only distributes public map packages and version metadata; it never receives user media, project files or encoding jobs.
+The project operates no backend and no map service. Private data never leaves the device; map regions are downloaded from a public source.
 
 ## 9. Acceptance Criteria and Testing
 
@@ -217,9 +211,9 @@ The targets below are proposed and have not yet been measured. Reference devices
 | Scenario | Pass criteria |
 |---|---|
 | End-to-end flow | A trip with 10 stops, 50 photos and 10 short clips can be created, edited, saved, reopened and exported |
-| Airplane mode | After preparation, relaunch the application; full preview and export complete with no remote requests |
+| Airplane mode | After downloading the map, relaunch the application offline; editing, place search, preview and export complete with no remote requests |
 | Network privacy | All requests are inspected; none contain private media, EXIF data, project contents or local paths |
-| Offline invalidation | Changes to stops, style or aspect ratio prompt for additional downloads; missing files are never reported as ready |
+| Missing regions | A stop outside the downloaded regions prompts to download that region; incomplete files are never reported as ready |
 | Video correctness | Order, trimming, rotation, captions and duration are correct; audio-video offset targets ≤ 100 ms |
 | Reproducible frames | Composition and media at a given timestamp are identical across runs; pixel-exact output across GPUs is not required |
 | Interactive performance | Preview targets 30 fps and may reduce quality under load; dropped-frame rate and peak memory are recorded |
@@ -237,19 +231,18 @@ Web testing covers the supported scope of Chrome, Edge, Firefox and Safari; inst
 |---|---|
 | A | Using one short timeline, achieve map rendering, local file access, video decoding and a 30-second MP4 export on all six platform families; validate iOS and Android bridge performance. If this gate fails, revise the native pipeline or the supported scope first. |
 | B | Complete the end-to-end flow for itinerary, media, local persistence and preview; establish the versioned project package. |
-| C | Offline packages, resumable downloads, quota management, missing-resource checks and true disconnected acceptance testing. |
+| C | Map downloads, resumable downloads, quota management, on-device place search and true disconnected acceptance testing. Part of 1.0 ([ADR 0006](adr/0006-local-only-operation.md)). |
 | D | Export on every platform, audio, cancellation and recovery; test long videos, low storage and varied input formats. |
 | E | Platform packaging, code signing, permissions, accessibility and release preparation. iOS builds and tests require macOS, Xcode and physical devices; success on a Windows development environment is not a substitute ([Tauri prerequisites](https://v2.tauri.app/start/prerequisites/)). |
 
-No fixed schedule is estimated yet; staffing, test devices and map budget are still undetermined. The largest risks are the video pipeline and map licensing, not the number of screens.
+No fixed schedule is estimated yet; staffing and test devices are still undetermined. The largest risks are the video pipeline and map licensing, not the number of screens.
 
 ## 11. Open Questions
 
 The following do not block this version of the design:
 
-- Whether "private" also prohibits disclosing stops and download extents to map providers.
 - Release order of the installed platforms after 1.0.
 
 Resolved by the [1.0 Definition](release-1.0.md): map data source (§5), browser support and reference targets (§3, §6), and the inclusion of background music and automatic media matching (§4.2). Its §7 lists the items still open for 1.0.
 
-To be evaluated as the project grows: cross-project deduplication, proxy cache cleanup, larger offline region indexes, 4K/HDR, and native rendering performance. Any future sync or cloud feature requires a fresh privacy review and must not be enabled by default.
+To be evaluated as the project grows: cross-project deduplication, proxy cache cleanup, 4K/HDR, and native rendering performance. Any future sync or cloud feature requires a fresh privacy review and must not be enabled by default.
