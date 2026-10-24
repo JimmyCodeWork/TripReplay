@@ -38,8 +38,12 @@ async function removeOld<File>(
     if (keep(name)) continue;
     const info = await directory.info(name);
     if (info === undefined || info.lastModified > cutoff) continue;
-    await directory.remove(name);
-    removed.push(name);
+    try {
+      await directory.remove(name);
+      removed.push(name);
+    } catch {
+      // In use, for example by a long import in another tab; the next start tries again.
+    }
   }
   return removed;
 }

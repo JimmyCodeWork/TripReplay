@@ -16,6 +16,7 @@
     "format": "biome check --write .",
     "typecheck": "tsc --project tsconfig.json && tsc --project tsconfig.browser.json",
     "test": "pnpm --recursive --if-present run test",
+    "test:browser": "pnpm --recursive --if-present run test:browser",
     "license:check": "node tools/license-check/src/main.ts",
     "i18n:check": "node tools/i18n-check/src/main.ts",
     "deps:check": "node tools/deps-check/src/main.ts"
