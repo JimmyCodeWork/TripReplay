@@ -74,7 +74,7 @@ Packages follow the [Application Architecture](architecture.md):
 - **Done.** Dependency check for the package boundaries (`pnpm run deps:check`).
 - **Done.** Domain model, invariants and editing operations (`domain`) and built-in theme definitions (`themes`).
 - **Done.** Timeline compiler and `renderAt` returning a FrameDescription (`timeline`), accepted from spike S2.
-- Store, commands with undo and redo, and ports (`app`).
+- **Done.** Store, commands with undo and redo, autosave with revision checks, and the persistence ports (`app`). The media, audio and clock ports are added with their adapters.
 - Project package format specification and reader/writer (part of `storage`), including path-traversal and size validation.
 
 ## M2 — End-to-End Flow (Phase B)
