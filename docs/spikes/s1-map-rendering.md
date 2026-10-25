@@ -5,7 +5,7 @@ English | [繁體中文](../zh-TW/spikes/s1-map-rendering.md)
 | | |
 |---|---|
 | Date | 2026-10-24 |
-| Status | Partly complete. Renderer, tile format and labels answered; frame rate on reference devices, the map download source and on-device place search remain (see [Open points](#open-points)). Updated for [ADR 0006](../adr/0006-local-only-operation.md): maps are downloaded and used on the device, with no server. |
+| Status | Partly complete. Renderer, tile format, labels and the map download source (Overture Maps, §3.1) answered; frame rate on reference devices and on-device place search remain (see [Open points](#open-points)). Updated for [ADR 0006](../adr/0006-local-only-operation.md): maps are downloaded and used on the device, with no server. |
 | Roadmap | [M1, S1](../roadmap.md#m1--technical-validation-phase-a) |
 
 ## Questions
@@ -45,10 +45,54 @@ The data hosts and tile tools (Geofabrik, Planetiler releases, Protomaps builds)
 For the product ([ADR 0006](../adr/0006-local-only-operation.md)):
 
 - **Regions:** each region (for example a country) is one PMTiles file derived from OpenStreetMap, downloaded once from a public source that the project does not operate, and stored in OPFS. Map files of this kind are produced with Planetiler and the Protomaps basemap schema; regional extracts of the planet build are a few megabytes to a few gigabytes depending on area and zoom range.
-- **Download source:** to be chosen at the architecture gate. Its terms must permit downloading regional files, storing them and using them in exported video.
+- **Download source:** Overture Maps is proposed and was verified (§3.1). Its terms must permit downloading regional files, storing them and using them in exported video.
 - **Date Line:** polygons crossing the International Date Line must be split in the map files. The prototype's own builder did not do this, which caused horizontal streaks.
 - **Labels:** confirm that the map files carry Traditional Chinese names (for example `name:zh-Hant`) and how they fall back to `name:zh` and the local name.
 - **Attribution:** "© OpenStreetMap contributors" is shown on the map and in every recap.
+
+### 3.1 Overture Maps as the download source
+
+Overture Maps (a Linux Foundation project) publishes its data as one PMTiles archive per theme in a public Amazon S3 bucket, `overturemaps-extras-us-west-2`, under `tiles/<release>/<theme>.pmtiles`. Verified on 2026-10-25 against release `2026-10-21.0`:
+
+| Check | Result |
+|---|---|
+| Browser access | CORS allows any origin (`Access-Control-Allow-Origin: *`), the `Range` header, and exposes `ETag` and `Content-Range`; range reads answer `206 Partial Content` |
+| Release discovery | Listing the bucket (`?list-type=2&prefix=tiles/&delimiter=/`) is also CORS-enabled and lists the releases (`2026-09-23.0`, `2026-09-23.1`, `2026-10-21.0`). The STAC catalog at `stac.overturemaps.org` is the documented alternative; it was not reachable from the spike environment |
+| Cost of planning a download | Reading only the directories to list a region's tiles took 67 requests and 1 MB for four themes and two regions |
+
+Themes and zoom ranges used for a recap:
+
+| Theme | Content | Zoom | License |
+|---|---|---|---|
+| `base` | Land, water, land use, infrastructure | 0–13 | ODbL |
+| `transportation` | Roads | 0–14 | ODbL |
+| `divisions` | Countries, regions, localities and their labels | 0–12 | ODbL |
+| `places` | Points of interest, used for on-device place search | 14 only | CDLA-Permissive-2.0 and Apache-2.0 |
+
+Region sizes, with base, transportation and divisions limited to zoom 12 and places at zoom 14:
+
+| Region | Size |
+|---|---|
+| Taiwan | 342 MB |
+| Western Honshu (Kansai to Chūgoku) | 606 MB |
+
+At full zoom, Taiwan is about 760 MB. Low-zoom tiles cover large areas and are shared between regions, so they are downloaded once.
+
+Names:
+
+| Layer | Finding |
+|---|---|
+| `divisions` near Taipei (zoom 10) | 2,747 of 3,116 features carry a Chinese name in `names`, with `zh-Hant` where available (for example 臺北市) |
+| `divisions` near Kyoto (zoom 10) | Mostly Japanese names (京都市, 宇治市); a few carry `zh-Hant`. Japanese kanji names are generally readable for Traditional Chinese users |
+| `places` | Names are mostly the primary local name only (Taipei: 189 of 13,786 carry a Chinese variant; Kyoto: 2 of 9,951) |
+
+The label order for Traditional Chinese is therefore `zh-Hant`, then `zh`, then the primary name, and place search matches the primary name as well as the localized names.
+
+Limits:
+
+- Overture states that these archives are not designed as a production-ready cartographic basemap. The application supplies its own style for the four themes.
+- Each release stays in the bucket for at most 60 days. Downloaded regions keep working; checking for updates lists the current releases.
+- Attribution: "© OpenStreetMap contributors, Overture Maps Foundation", plus the sources of `places` as listed by Overture.
 
 ## 4. Labels and fonts
 
@@ -77,7 +121,7 @@ Our code uses about 6 % of a 33 ms frame budget; the rest is map rasterization, 
 ## Open points
 
 - **Frame rate on reference devices** with hardware graphics, desktop and mobile, at 1080p, with a real OpenStreetMap basemap.
-- **Map download source** and its terms; region size and update cadence (§3).
+- **Map download source**: Overture verified technically (§3.1); its terms for use in exported video remain to be confirmed against Overture's published license pages.
 - **Place-name index** built from the downloaded map: size, speed, Traditional Chinese coverage (§5).
 - **Latin glyph generation** with a license-compliant tool.
 - **Route shape**: legs are straight lines in Web Mercator. Great-circle arcs would look more natural for long flights; this is a design choice for M2.
@@ -86,3 +130,4 @@ Our code uses about 6 % of a 33 ms frame budget; the rest is map rasterization, 
 
 - [Protomaps basemap downloads](https://docs.protomaps.com/basemaps/downloads) and [building a custom basemap](https://docs.protomaps.com/basemaps/build)
 - [Planetiler](https://github.com/onthegomap/planetiler) and its [planet build notes](https://github.com/onthegomap/planetiler/blob/main/PLANET.md)
+- [Overture PMTiles](https://docs.overturemaps.org/examples/overture-tiles/), [accessing the Overture catalog](https://docs.overturemaps.org/getting-data/cloud-sources/) and [the places theme](https://docs.overturemaps.org/guides/places/)

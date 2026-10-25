@@ -7,7 +7,7 @@
 | | |
 |---|---|
 | 日期 | 2026-10-24 |
-| 狀態 | 部分完成。渲染器、圖磚格式及標籤已有結論；參考裝置上的影格率、地圖下載來源及裝置上的地點搜尋尚待完成（見[待決事項](#待決事項)）。已依 [ADR 0006](../adr/0006-local-only-operation.md) 更新：地圖下載後在裝置上使用，不使用伺服器。 |
+| 狀態 | 部分完成。渲染器、圖磚格式、標籤及地圖下載來源（Overture Maps，§3.1）已有結論；參考裝置上的影格率與裝置上的地點搜尋尚待完成（見[待決事項](#待決事項)）。已依 [ADR 0006](../adr/0006-local-only-operation.md) 更新：地圖下載後在裝置上使用，不使用伺服器。 |
 | 路線圖 | [M1，S1](../roadmap.md#m1--技術驗證階段-a) |
 
 ## 問題
@@ -47,10 +47,54 @@
 產品做法（[ADR 0006](../adr/0006-local-only-operation.md)）：
 
 - **區域：** 每個區域（例如一個國家）為一個衍生自 OpenStreetMap 的 PMTiles 檔案，從非本專案營運的公開來源下載一次，並儲存於 OPFS。此類地圖檔以 Planetiler 與 Protomaps 底圖結構產生；全球建置的區域擷取檔，依範圍與縮放層級從數 MB 到數 GB 不等。
-- **下載來源：** 於架構決策關卡選定。其條款須允許下載區域檔案、儲存，並用於匯出影片。
+- **下載來源：** 提議採用 Overture Maps，並已完成驗證（§3.1）。其條款須允許下載區域檔案、儲存，並用於匯出影片。
 - **換日線：** 地圖檔須切割跨越國際換日線的多邊形。原型自行撰寫的建置器未處理此點，因而出現水平條紋。
 - **標籤：** 須確認地圖檔帶有繁體中文名稱（例如 `name:zh-Hant`），以及如何退回 `name:zh` 與當地名稱。
 - **來源標示：** 地圖及每段回顧皆顯示「© OpenStreetMap contributors」。
+
+### 3.1 以 Overture Maps 作為下載來源
+
+Overture Maps（Linux 基金會旗下專案）將資料依主題各發布為一個 PMTiles 封存檔，置於公開的 Amazon S3 儲存貯體 `overturemaps-extras-us-west-2`，路徑為 `tiles/<版本>/<主題>.pmtiles`。於 2026-10-25 以版本 `2026-10-21.0` 驗證：
+
+| 檢查項目 | 結果 |
+|---|---|
+| 瀏覽器存取 | CORS 允許任何來源（`Access-Control-Allow-Origin: *`）及 `Range` 標頭，並公開 `ETag` 與 `Content-Range`；範圍讀取回應 `206 Partial Content` |
+| 版本探索 | 列出儲存貯體（`?list-type=2&prefix=tiles/&delimiter=/`）同樣啟用 CORS，並列出各版本（`2026-09-23.0`、`2026-09-23.1`、`2026-10-21.0`）。官方文件所述的替代方式為 `stac.overturemaps.org` 的 STAC 目錄；技術驗證環境無法連線至該處 |
+| 規劃下載的成本 | 僅讀取目錄以列出區域內的圖磚，四個主題、兩個區域共 67 次請求、1 MB |
+
+回顧所使用的主題與縮放範圍：
+
+| 主題 | 內容 | 縮放 | 授權 |
+|---|---|---|---|
+| `base` | 陸地、水域、土地利用、基礎設施 | 0–13 | ODbL |
+| `transportation` | 道路 | 0–14 | ODbL |
+| `divisions` | 國家、行政區、地方及其標籤 | 0–12 | ODbL |
+| `places` | 景點，用於裝置上的地點搜尋 | 僅 14 | CDLA-Permissive-2.0 及 Apache-2.0 |
+
+區域大小（base、transportation、divisions 限縮放 12，places 為縮放 14）：
+
+| 區域 | 大小 |
+|---|---|
+| 臺灣 | 342 MB |
+| 本州西部（關西至中國地方） | 606 MB |
+
+完整縮放時，臺灣約 760 MB。低縮放層級的圖磚涵蓋範圍大、為各區域共用，因此只下載一次。
+
+名稱：
+
+| 圖層 | 結果 |
+|---|---|
+| 臺北附近的 `divisions`（縮放 10） | 3,116 個圖徵中有 2,747 個於 `names` 帶有中文名稱，可用時包含 `zh-Hant`（例如臺北市） |
+| 京都附近的 `divisions`（縮放 10） | 多為日文名稱（京都市、宇治市）；少數帶有 `zh-Hant`。日文漢字名稱對繁體中文使用者大致可讀 |
+| `places` | 名稱多僅有當地的主要名稱（臺北：13,786 個中有 189 個帶中文變體；京都：9,951 個中有 2 個） |
+
+因此繁體中文的標籤順序為 `zh-Hant`、`zh`，再退回主要名稱；地點搜尋同時比對主要名稱與在地化名稱。
+
+限制：
+
+- Overture 說明這些封存檔並非為正式製圖底圖而設計。應用程式須為四個主題提供自有樣式。
+- 每個版本於儲存貯體中最多保留 60 天。已下載的區域仍可繼續使用；檢查更新時列出目前的版本。
+- 來源標示：「© OpenStreetMap contributors, Overture Maps Foundation」，另加上 Overture 所列的 `places` 資料來源。
 
 ## 4. 標籤與字型
 
@@ -79,7 +123,7 @@
 ## 待決事項
 
 - **參考裝置上的影格率**：桌面與行動裝置、硬體繪圖、1080p，並使用真實的 OpenStreetMap 底圖。
-- **地圖下載來源**及其條款；區域大小與更新頻率（§3）。
+- **地圖下載來源**：已於技術上驗證 Overture（§3.1）；用於匯出影片的條款，仍須對照 Overture 公布的授權頁面確認。
 - **地名索引**：以已下載的地圖建立；大小、速度、繁體中文涵蓋率（§5）。
 - **拉丁字形產生**：使用符合授權的工具。
 - **路線形狀**：各段在 Web Mercator 中為直線。長途飛行以大圓弧線呈現會更自然；此為 M2 的設計選擇。
@@ -88,3 +132,4 @@
 
 - [Protomaps 底圖下載](https://docs.protomaps.com/basemaps/downloads)及[建置自訂底圖](https://docs.protomaps.com/basemaps/build)
 - [Planetiler](https://github.com/onthegomap/planetiler) 及其[全球建置說明](https://github.com/onthegomap/planetiler/blob/main/PLANET.md)
+- [Overture PMTiles](https://docs.overturemaps.org/examples/overture-tiles/)、[存取 Overture 目錄](https://docs.overturemaps.org/getting-data/cloud-sources/)及 [places 主題](https://docs.overturemaps.org/guides/places/)
