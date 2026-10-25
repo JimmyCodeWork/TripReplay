@@ -73,7 +73,7 @@ Pending translations are listed but do not fail the check. Detection of unused k
 ## 5. Content That Is Not Translated
 
 - User-entered content (trip titles, stop names, descriptions) is stored and displayed exactly as entered.
-- Place names returned by search are stored in the language returned by the provider. Where the provider offers localized names, the application requests the active locale first.
+- Place names found by search come from the downloaded map. The search uses the name in the active locale when the map has one (for example `name:zh-Hant`), then the local name; the chosen name is stored with the stop.
 - Map labels use the localized name field when available and fall back to the default name.
 
 ## 6. Text Rendering
@@ -100,7 +100,8 @@ Translations use the following terms consistently. New product terms are added h
 | Preview | 預覽 | |
 | Export | 匯出 | |
 | Aspect ratio | 畫面比例 | |
-| Offline package | 離線包 | |
+| Map (downloaded) | 地圖 | A downloaded map region on the device |
+| Region | 區域 | The area a map download covers, for example a country |
 | Proxy (media) | 代理檔 | |
 | Project package | 專案包 | Backup and transfer file |
 | Back up / Restore | 備份／還原 | |

@@ -14,7 +14,7 @@
 
 - **可替換的元件。** 任何模組——地圖渲染器、儲存、UI 框架或主題——皆可重寫或替換，而不影響無關的程式碼。
 - **可測試的核心。** 所有決定畫面上*呈現什麼*的邏輯，皆為不需瀏覽器即可執行的純 TypeScript。
-- **為後續版本做好準備。** MP4 匯出、離線包及安裝版（[1.0 定義 §4.3](release-1.0.md#43-10-之後)）以新增模組的方式加入，而非重新設計既有模組。
+- **為後續版本做好準備。** MP4 匯出及安裝版（[1.0 定義 §4.3](release-1.0.md#43-10-之後)）以新增模組的方式加入，而非重新設計既有模組。
 
 ## 2. 分層
 
@@ -75,7 +75,7 @@ flowchart TD
 | `timeline` | `compile(project, settings)` → 不可變的 Timeline；`renderAt(timeline, timeUs)` → **FrameDescription** | `domain`、`themes` |
 | `app` | 狀態、可復原與重做的命令、自動儲存排程、使用案例（匯入、配對、備份、還原）；定義下列連接埠 | `domain`、`timeline` |
 | `renderer` | 將 FrameDescription 繪製到畫布；定義 `MapLayer` 與 `MediaSource` 連接埠 | `timeline` |
-| `map` | 以選定的地圖引擎實作 `MapLayer`；圖磚來源；離線包介面（1.0 僅提供線上實作） | `renderer` |
+| `map` | 以選定的地圖引擎實作 `MapLayer`，從裝置讀取已下載的地圖檔；區域下載；於已下載的地圖中搜尋地名；實作 `PlaceSearch`（[ADR 0006](adr/0006-local-only-operation.md)） | `renderer`、`app` |
 | `media` | 檔案匯入、中繼資料（拍攝時間、GPS）、縮圖與代理檔、景點配對建議；實作 `MediaPort` | `domain`、`app` |
 | `audio` | 以 Web Audio 進行預覽混音：音樂、淡入淡出、自動降低音量；實作 `AudioPort` | `timeline`、`app` |
 | `storage` | IndexedDB 與 OPFS 持久化、專案包備份與還原；實作 `ProjectRepository` 與 `AssetStore` | `domain`、`app` |
@@ -116,7 +116,8 @@ interface FrameDescription {
 | `AssetStore` — 存放、讀取、移除媒體檔案 | `app` | `storage`（OPFS） | 原生檔案系統 |
 | `MediaPort` — 讀取中繼資料、產生縮圖與代理檔 | `app` | `media`（瀏覽器解碼器） | 原生解碼器 |
 | `AudioPort` — 播放、暫停、跳轉混音後的預覽 | `app` | `audio`（Web Audio） | — |
-| `MapLayer` — 依鏡頭繪製底圖 | `renderer` | `map`（線上圖磚） | 離線包 |
+| `MapLayer` — 依鏡頭繪製底圖 | `renderer` | `map`（已下載的 PMTiles） | 原生地圖渲染 |
+| `PlaceSearch` — 於已下載的地圖中搜尋地名 | `app` | `map`（地名索引） | — |
 | `MediaSource` — 提供片段在指定時間的解碼影格 | `renderer` | `media` | 匯出用解碼器 |
 | `Clock` — 目前時間與影格排程 | `app` | `requestAnimationFrame` | 匯出用固定步進時鐘 |
 | `Scheduler` — 延遲後執行回呼，供自動儲存使用 | `app` | `setTimeout` | — |

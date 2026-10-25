@@ -142,4 +142,4 @@ Option A should be retired in either case.
 1. ~~Decide between options B and C, and amend the Dependency License Policy accordingly.~~ Done: option C adopted in policy version 0.3.
 2. Re-evaluate the platform shell: Tauri is admissible under C, subject to review of its CDLA-Permissive-2.0 components.
 3. Implement the CI license gate against the chosen allowlist before the first dependency is added.
-4. Confirm that the chosen map provider's terms permit offline storage and use in exported video ([Specification §4.3](specification.md#43-offline-mode-rules)).
+4. Confirm that the chosen map provider's terms permit offline storage and use in exported video ([Specification §4.3](specification.md#43-rules)).

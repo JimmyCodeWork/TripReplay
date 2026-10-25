@@ -4,8 +4,8 @@ English | [繁體中文](zh-TW/ui-design.md)
 
 | | |
 |---|---|
-| Version | 0.1 (draft) |
-| Date | 2026-10-20 |
+| Version | 0.2 (draft) |
+| Date | 2026-10-24 |
 | Status | Design. Describes the screens of version 1.0 ([1.0 Definition](release-1.0.md)). |
 
 ## 1. Structure
@@ -20,6 +20,8 @@ flowchart LR
     WS --> Settings[Settings dialog]
     List --> Restore[Restore backup dialog]
     List --> Settings
+    List --> Maps[Maps dialog]
+    WS --> Maps
 ```
 
 Editing and preview share **one workspace**, so every change is visible immediately without switching screens.
@@ -30,7 +32,17 @@ Editing and preview share **one workspace**, so every change is visible immediat
 - A "⋯" menu on each card: rename, duplicate, back up, delete.
 - A "New trip" button in the heading and as the last card.
 - With no trips, a single call to action: "Create your first trip".
-- The header offers "Restore backup" and "Settings".
+- The header offers "Maps", "Restore backup" and "Settings".
+
+### 2.1 Maps dialog
+
+Maps are downloaded once and then used on the device ([ADR 0006](adr/0006-local-only-operation.md)).
+
+- A list of regions (for example countries), each with its size and state: not downloaded, downloading with progress, ready with the space used, or update available.
+- One button per region: "Download", "Pause" or "Resume", "Update", "Delete". The size and the free space are shown before a download starts.
+- "Open a map file" adds a map file already on the device.
+- On first use, and whenever a stop lies outside the downloaded regions, the application opens this dialog with the matching region preselected.
+- A note states that the download source can see which regions are downloaded, and nothing else.
 
 ## 3. Trip Workspace
 
@@ -65,7 +77,7 @@ Below 820 px wide, the same parts stack vertically: preview (about half the scre
 
 | Tab | Content |
 |---|---|
-| Itinerary | Stops grouped by day, each with a number, name and media count. Drag the handle to reorder, including across days. Selecting a stop moves the preview to that stop. Place search and "Drop a pin" add stops. |
+| Itinerary | Stops grouped by day, each with a number, name and media count. Drag the handle to reorder, including across days. Selecting a stop moves the preview to that stop. Stops are added by searching place names in the downloaded maps, by "Drop a pin", or by pasting coordinates or a map link (for example from Google Maps). |
 | Media | "Import media" button; thumbnails of the selected stop's media in order. Selecting a photo shows its duration; selecting a video shows trim handles and volume. |
 | Music | Imported tracks; fade-in, fade-out, and "Lower music during clips with sound"; volume. |
 | Themes | Theme cards with a small preview; selecting one applies it immediately. Choosing the portrait theme also switches the preview to 9:16. |
