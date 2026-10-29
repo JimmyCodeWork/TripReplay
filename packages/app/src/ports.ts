@@ -111,14 +111,26 @@ export interface PlannedRegion<Data = unknown> {
   download(signal: AbortSignal, onProgress: (progress: DownloadProgress) => void): Promise<void>;
 }
 
+/** Map files the user opened, checked and ready to be copied into storage as a region. */
+export interface PlannedFiles<Data = unknown> extends PlannedRegion<Data> {
+  /** A name for the region, taken from the file names. */
+  readonly name: string;
+  readonly bounds: RegionBounds;
+}
+
 /**
  * Downloading and keeping map regions (docs/specification.md §4.1). Adapters throw `RegionFailure`
- * for failures the user can act on.
+ * for failures the user can act on. `File` is a file the user opened from the device.
  */
-export interface MapRegions<Data = unknown> {
+export interface MapRegions<Data = unknown, File = unknown> {
   /** The newest map release offered by the download source. */
   latestRelease(signal?: AbortSignal): Promise<string>;
   plan(release: string, bounds: RegionBounds, regionId: string, signal?: AbortSignal): Promise<PlannedRegion<Data>>;
+  /**
+   * Checks map files the user opened from the device and plans copying them into storage as region
+   * `regionId`; `download` then copies them. Reads only the headers and metadata of the files.
+   */
+  planFiles(files: readonly File[], regionId: string): Promise<PlannedFiles<Data>>;
   /** Bytes of the region already stored, for the progress of a paused download. */
   storedBytes(data: Data): Promise<number>;
   /** Verifies a completed download and makes the region usable, including its place search. */

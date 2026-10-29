@@ -104,6 +104,21 @@
   "maps.action.checkUpdates": {
     "message": "檢查更新"
   },
+  "maps.status.copying": {
+    "message": "複製中：{completed}／{total}"
+  },
+  "maps.files.title": {
+    "message": "本裝置上的地圖檔"
+  },
+  "maps.files.hint": {
+    "message": "請一併開啟 Overture Maps 的 base、transportation 與 divisions 主題 PMTiles 檔；若需要景點，另加 places，例如以 pmtiles extract 擷取的檔案。檔案會複製到本應用程式中。"
+  },
+  "maps.files.open": {
+    "message": "開啟地圖檔"
+  },
+  "maps.files.failed": {
+    "message": "{reason, select, damaged {檔案已損壞，或不是 PMTiles 地圖檔。} unsupported {檔案不是 Overture Maps 主題，或有兩個檔案屬於同一主題。} incomplete {必須一併開啟 base、transportation 與 divisions 檔案。} other {無法開啟這些地圖檔。}}"
+  },
   "region.taiwan": {
     "message": "臺灣"
   },

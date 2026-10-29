@@ -139,6 +139,26 @@
     "message": "Check for updates",
     "description": "Button that checks whether newer map versions exist."
   },
+  "maps.status.copying": {
+    "message": "Copying: {completed} of {total}",
+    "description": "Progress while map files opened from the device are copied into the application's storage; sizes are formatted."
+  },
+  "maps.files.title": {
+    "message": "Map files from this device",
+    "description": "Heading of the list of maps opened from files on the device instead of downloaded."
+  },
+  "maps.files.hint": {
+    "message": "Open the PMTiles files of the Overture Maps themes base, transportation and divisions together, and places for points of interest, for example extracts made with pmtiles extract. The files are copied into this application.",
+    "description": "Explains which files can be opened. Keep the theme names and 'pmtiles extract' unchanged."
+  },
+  "maps.files.open": {
+    "message": "Open map files",
+    "description": "Button that opens map files already on the device."
+  },
+  "maps.files.failed": {
+    "message": "{reason, select, damaged {A file is damaged or is not a PMTiles map file.} unsupported {A file is not an Overture Maps theme, or two files hold the same theme.} incomplete {The base, transportation and divisions files are needed together.} other {The map files could not be opened.}}",
+    "description": "Why map files opened from the device cannot be used."
+  },
   "region.taiwan": {
     "message": "Taiwan",
     "description": "Map region name."

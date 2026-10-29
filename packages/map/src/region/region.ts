@@ -1,5 +1,5 @@
 import type { AssetStore } from "@tripreplay/app";
-import { bytesToHeader } from "pmtiles";
+import { bytesToHeader, type Header } from "pmtiles";
 import { RegionError } from "./errors.ts";
 import type { Bounds } from "./tiles.ts";
 
@@ -38,18 +38,27 @@ export async function openRegion(record: RegionRecord, store: AssetStore<Blob>):
   return archives;
 }
 
+/**
+ * Reads the header of a PMTiles v3 archive and checks that the archive is complete: the tile data,
+ * which comes last, ends where the archive ends. `label` names the archive in errors.
+ */
+export async function readArchiveHeader(blob: Blob, label: string): Promise<Header> {
+  const head = new Uint8Array(await blob.slice(0, 127).arrayBuffer());
+  if (head.length < 127 || new TextDecoder().decode(head.subarray(0, 7)) !== "PMTiles" || head[7] !== 3) {
+    throw new RegionError("invalidArchive", `${label} has no PMTiles v3 header`);
+  }
+  const header = bytesToHeader(head.buffer);
+  if (header.tileDataOffset + (header.tileDataLength ?? 0) !== blob.size) {
+    throw new RegionError("invalidArchive", `${label} has the wrong size`);
+  }
+  return header;
+}
+
 /** Checks that every stored archive of the region is complete: all parts present, and header and size agree. */
 export async function verifyRegion(record: RegionRecord, store: AssetStore<Blob>): Promise<void> {
   const archives = await openRegion(record, store);
   for (const [theme, blob] of Object.entries(archives)) {
-    const head = new Uint8Array(await blob.slice(0, 127).arrayBuffer());
-    if (head.length < 127 || new TextDecoder().decode(head.subarray(0, 7)) !== "PMTiles") {
-      throw new RegionError("invalidArchive", `The ${theme} archive of "${record.name}" has no PMTiles header`);
-    }
-    const header = bytesToHeader(head.buffer);
-    if (header.tileDataOffset + (header.tileDataLength ?? 0) !== blob.size) {
-      throw new RegionError("invalidArchive", `The ${theme} archive of "${record.name}" has the wrong size`);
-    }
+    await readArchiveHeader(blob, `The ${theme} archive of "${record.name}"`);
   }
 }
 

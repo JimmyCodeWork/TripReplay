@@ -1,7 +1,14 @@
 import { gzipSync } from "node:zlib";
-import { createRegionManager, type RegionBounds, type RegionRepository, type StoredRegion } from "@tripreplay/app";
+import {
+  createRegionManager,
+  FILE_RELEASE,
+  type RegionBounds,
+  type RegionRepository,
+  type StoredRegion,
+} from "@tripreplay/app";
 import { describe, expect, it } from "vitest";
 import { Compression, TileType } from "../src/pmtiles/archive.ts";
+import { regionName } from "../src/region/map-file.ts";
 import { createMapRegions, type MapRegionData } from "../src/region/map-regions.ts";
 import { OVERTURE_BUCKET } from "../src/region/overture.ts";
 import { tilesInBounds } from "../src/region/tiles.ts";
@@ -14,7 +21,13 @@ const RELEASE = "2026-10-21.0";
 const BOUNDS: RegionBounds = [135.755, 34.98, 135.76, 34.99];
 const KYOTO = { id: "kyoto", name: "Kyoto", bounds: BOUNDS };
 
-function archive(theme: string, zoom: number, layers: Parameters<typeof vectorTile>[0]): Uint8Array {
+function archive(
+  theme: string,
+  zoom: number,
+  layers: Parameters<typeof vectorTile>[0],
+  bounds: RegionBounds = [-180, -85, 180, 85],
+  listLayers = true,
+): Uint8Array {
   const tiles = new Map(
     tilesInBounds(BOUNDS, zoom, zoom).map((id) => [id, new Uint8Array(gzipSync(vectorTile(layers)))]),
   );
@@ -23,9 +36,12 @@ function archive(theme: string, zoom: number, layers: Parameters<typeof vectorTi
     tileCompression: Compression.gzip,
     minZoom: zoom,
     maxZoom: zoom,
-    bounds: [-180, -85, 180, 85],
+    bounds,
     center: [0, 0, zoom],
-    metadata: { theme },
+    // Archives that the application downloads list no layers; Overture's and their extracts do.
+    metadata: listLayers
+      ? { name: `Overture ${theme} overlay`, vector_layers: Object.keys(layers).map((id) => ({ id })) }
+      : {},
   });
 }
 
@@ -197,5 +213,87 @@ describe("map regions", () => {
     await store.put("stray", (async function* () {})(), 0);
     await open().manager.load();
     expect(await store.list()).not.toContain("stray");
+  });
+
+  describe("map files opened from the device", () => {
+    const file = (name: string, bytes: Uint8Array) => new File([bytes as Uint8Array<ArrayBuffer>], name);
+    const kyotoFiles = () => [
+      file(
+        "kyoto-base.pmtiles",
+        archive(
+          "base",
+          13,
+          { land: [], water: [{ point: [1, 1], properties: { "@name": "鴨川", subtype: "river" } }] },
+          BOUNDS,
+        ),
+      ),
+      file("kyoto-transportation.pmtiles", archive("transportation", 12, { segment: [], connector: [] })),
+      file(
+        "kyoto-divisions.pmtiles",
+        archive("divisions", 12, {
+          division: [{ point: [9, 9], properties: { "@name": "下京区", subtype: "borough" } }],
+        }),
+      ),
+    ];
+
+    it("copies the files of the themes into storage and searches their place names", async () => {
+      const { open, repository } = setup();
+      const { maps, manager } = open();
+      const result = await manager.openFiles(kyotoFiles());
+      expect(result.kind).toBe("opened");
+      const [entry] = manager.getState();
+      expect(entry).toMatchObject({ name: "kyoto", release: FILE_RELEASE, status: { kind: "ready" } });
+      expect(entry?.bounds).toEqual(BOUNDS);
+      expect(await maps.placeSearch.search("下京")).toHaveLength(1);
+      const files = await maps.regionFiles(entry?.id as string);
+      expect(await files?.divisions.arrayBuffer()).toEqual(await kyotoFiles()[2]?.arrayBuffer());
+
+      const reopened = open();
+      await reopened.manager.load();
+      expect(reopened.manager.getState()[0]?.status).toEqual({ kind: "ready" });
+      expect(await reopened.maps.placeSearch.search("鴨川")).toHaveLength(1);
+      expect(repository.regions.size).toBe(1);
+    });
+
+    it("recognizes a theme from its tiles when the metadata lists no layers", async () => {
+      const { open } = setup();
+      const [base, transportation] = kyotoFiles() as [File, File, File];
+      const divisions = file(
+        "kyoto-divisions.pmtiles",
+        archive("divisions", 12, { division_area: [{ point: [9, 9] }] }, undefined, false),
+      );
+      expect((await open().manager.openFiles([base, transportation, divisions])).kind).toBe("opened");
+    });
+
+    it("reports files that are not Overture Maps themes, or that lack a theme", async () => {
+      const { open, store } = setup();
+      const { manager } = open();
+      const [base, transportation, divisions] = kyotoFiles() as [File, File, File];
+      const protomaps = file("japan.pmtiles", archive("basemap", 12, { earth: [], water: [], roads: [] }));
+      expect(await manager.openFiles([protomaps])).toEqual({ kind: "failed", reason: "unsupported" });
+      expect(await manager.openFiles([file("notes.txt", new TextEncoder().encode("hello"))])).toEqual({
+        kind: "failed",
+        reason: "damaged",
+      });
+      expect(await manager.openFiles([base, divisions])).toEqual({ kind: "failed", reason: "incomplete" });
+      expect(await manager.openFiles([base, base, transportation, divisions])).toEqual({
+        kind: "failed",
+        reason: "unsupported",
+      });
+      const truncated = file("kyoto-base.pmtiles", new Uint8Array(await base.slice(0, base.size - 1).arrayBuffer()));
+      expect(await manager.openFiles([truncated, transportation, divisions])).toEqual({
+        kind: "failed",
+        reason: "damaged",
+      });
+      expect(manager.getState()).toEqual([]);
+      expect(await store.list()).toEqual([]);
+    });
+
+    it("names the region after its base map file", () => {
+      expect(regionName("taiwan-base.pmtiles")).toBe("taiwan");
+      expect(regionName("Kyoto_Base.PMTILES")).toBe("Kyoto");
+      expect(regionName("base.pmtiles")).toBe("base");
+      expect(regionName("okinawa.pmtiles")).toBe("okinawa");
+    });
   });
 });

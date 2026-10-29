@@ -40,7 +40,7 @@ Maps are downloaded once and then used on the device ([ADR 0006](adr/0006-local-
 
 - A list of regions (for example countries), each with its size and state: not downloaded, downloading with progress, ready with the space used, or update available.
 - One button per region: "Download", "Pause" or "Resume", "Update", "Delete". The size and the free space are shown before a download starts.
-- "Open a map file" adds a map file already on the device.
+- "Open map files" adds a map already on the device: the PMTiles files of the Overture Maps themes base, transportation and divisions, opened together, and places for points of interest. The files are copied into storage; the region is listed by the name of its base file and can only be deleted, not updated.
 - On first use, and whenever a stop lies outside the downloaded regions, the application opens this dialog with the matching region preselected.
 - A note states that the download source can see which regions are downloaded, and nothing else.
 
