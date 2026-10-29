@@ -14,6 +14,7 @@
 | [0004](0004-web-first-release.md) | 1.0 以 Web 與畫面先行，並自行託管 OpenStreetMap 圖磚 | 已接受；地圖託管已由 0006 取代 |
 | [0005](0005-modular-architecture.md) | 模組化的分層應用程式架構 | 已接受 |
 | [0006](0006-local-only-operation.md) | 完全地端執行：下載地圖與裝置上的地點搜尋 | 已接受 |
+| [0007](0007-architecture-gate.md) | 架構決策關卡：渲染器、地圖管線與支援的瀏覽器 | 已接受 |
 
 ## 撰寫紀錄
 

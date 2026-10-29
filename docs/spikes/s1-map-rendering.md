@@ -5,7 +5,7 @@ English | [繁體中文](../zh-TW/spikes/s1-map-rendering.md)
 | | |
 |---|---|
 | Date | 2026-10-24 |
-| Status | Partly complete. Renderer, tile format, labels and the map download source (Overture Maps, §3.1) answered; frame rate on reference devices remains; on-device place search measured (§5) (see [Open points](#open-points)). Updated for [ADR 0006](../adr/0006-local-only-operation.md): maps are downloaded and used on the device, with no server. |
+| Status | Complete. Renderer, tile format, labels and the map download source (Overture Maps, §3.1) answered; on-device place search measured (§5); frame rate measured on three devices (§6.1). Accepted at the architecture gate ([ADR 0007](../adr/0007-architecture-gate.md)); remaining work is listed under [Open points](#open-points). Updated for [ADR 0006](../adr/0006-local-only-operation.md): maps are downloaded and used on the device, with no server. |
 | Roadmap | [M1, S1](../roadmap.md#m1--technical-validation-phase-a) |
 
 ## Questions
@@ -157,11 +157,26 @@ Measured in headless Chromium with SwiftShader, a software WebGL implementation.
 | Real-time playback with software rendering | 10 fps |
 | Export-style stepping (wait until tiles are drawn), median / 95th percentile | 197 ms / 556 ms per frame |
 
-Our code uses about 6 % of a 33 ms frame budget; the rest is map rasterization, which a hardware GPU handles much faster. The 30 fps criterion can only be confirmed on the reference devices.
+Our code uses about 6 % of a 33 ms frame budget; the rest is map rasterization, which a hardware GPU handles much faster.
+
+### 6.1 Devices
+
+A test page played a 24-second recap of six stops in Kyoto in real time. It used Overture files for zoom 8 to 13 (23.9 MB) held on the device, at the device's screen size and at 1920 × 1080 with pixel ratio 1, as for export. Each frame ran `renderAt`, `jumpTo` and overlay drawing. All three devices ran the page in an embedded web view.
+
+| Device | Engine | Canvas | Mean | Median / 95th percentile / slowest | Frames above 34 ms | Our code, 95th percentile |
+|---|---|---|---|---|---|---|
+| Windows desktop, 24 threads, 32 GB, NVIDIA GeForce RTX 5080 | Chromium 152 | 826 × 465 | 128.7 fps | 7 / 13.9 / 34.6 ms | 0 % | 0.3 ms |
+| | | 1920 × 1080 | 136.5 fps | 6.9 / 7.1 / 27.8 ms | 0 % | 0.2 ms |
+| Sony Xperia 1 V (Adreno 740), Android 15 | Android System WebView 156 | 924 × 520 | 118 fps | 8.3 / 8.4 / 33.2 ms | 0 % | 0.6 ms |
+| | | 1920 × 1080 | 109.5 fps | 8.3 / 16.6 / 49.9 ms | 0.1 % | 0.6 ms |
+| 13-inch iPad, Apple GPU | WebKit (iPadOS) | 900 × 506 | 119.9 fps | 8 / 9 / 21 ms | 0 % | 1 ms |
+| | | 1920 × 1080 | 119.8 fps | 8 / 9 / 19 ms | 0 % | 0 ms |
+
+Every device ran at its display refresh rate, so the measurement shows ample headroom rather than a limit. The 30 fps criterion is met on all three at 1080p. Low-end devices were not measured.
 
 ## Open points
 
-- **Frame rate on reference devices** with hardware graphics, desktop and mobile, at 1080p, with a real OpenStreetMap basemap.
+- **Frame rate on low-end devices.** The devices in §6.1 are high-end; a mid-range phone should be added.
 - **Map download source**: Overture verified technically (§3.1); its terms for use in exported video remain to be confirmed against Overture's published license pages.
 - **Place-name index**: measured (§5.2); remaining work is the variant-character table, equivalent suffixes such as 車站 and 駅, and ranking tuned on a fixed test list.
 - **Latin glyph generation** with a license-compliant tool.
