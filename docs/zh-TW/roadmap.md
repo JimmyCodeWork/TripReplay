@@ -97,7 +97,8 @@ flowchart LR
 - `MapLayer` 連接埠（`renderer`）及其 MapLibre 實作，可從裝置上的 PMTiles 檔繪製底圖；
 - 從 Overture Maps 下載區域。規劃時只讀取遠端目錄，因此下載前即可得知大小。檔案分段逐一儲存，暫停或中斷的下載會只補下載缺少的部分。各段以遠端版本命名，下載完成後會驗證已儲存的檔案；
 - 裝置上的地點搜尋（`app` 中的 `PlaceSearch` 連接埠）。索引由已下載的 `divisions`、`base` 及 `places` 檔案建立，並以精簡的二進位檔案儲存。異體字以由 OpenCC 產生的對照表統一，「車站」與「駅」等同義詞亦視為相同（[技術驗證 S1 §5.4](spikes/s1-map-rendering.md#54-產品實作)）；
-- 含[產品規格 §4.2](specification.md#42-區域狀態) 各種狀態的區域列表（`app` 中的 `createRegionManager`、`map` 中的 `createMapRegions`，區域紀錄存放於 IndexedDB）。下載前檢查可用空間。下載可暫停與續傳，重新載入後亦然。每次啟動時重新驗證已儲存的區域。更新下載期間，區域仍可使用。
+- 含[產品規格 §4.2](specification.md#42-區域狀態) 各種狀態的區域列表（`app` 中的 `createRegionManager`、`map` 中的 `createMapRegions`，區域紀錄存放於 IndexedDB）。下載前檢查可用空間。下載可暫停與續傳，重新載入後亦然。每次啟動時重新驗證已儲存的區域。更新下載期間，區域仍可使用；
+- 貼上座標與地圖連結（`app` 中的 `parseLocation`）：支援十進位與度分秒座標、`geo:` URI，以及 Google 地圖、Apple 地圖、OpenStreetMap 與 Bing 地圖的連結，解析時不發出任何請求。`maps.app.goo.gl` 等短網址只有其服務能解析，因此會另行提示。
 
 地圖對話框將接續進行。地圖檔存放於獨立的 OPFS 儲存區，因為媒體儲存區的啟動時復原程序會刪除未被任何專案引用的檔案。
 
