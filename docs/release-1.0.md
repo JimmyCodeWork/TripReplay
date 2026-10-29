@@ -80,14 +80,14 @@ Cloud sync and accounts; collaboration; turn-by-turn road routing; live GPS trac
 
 | Aspect | 1.0 approach |
 |---|---|
-| Source | Regional map files in PMTiles format derived from OpenStreetMap, downloaded from a public source that the project does not operate. The application can also open a map file the user already has. The source is an open item (§7) |
+| Source | Regional extracts of the PMTiles archives published by Overture Maps (base, transportation, divisions and places themes), read by range from Overture's public storage, which the project does not operate ([spike S1 §3.1](spikes/s1-map-rendering.md#31-overture-maps-as-the-download-source)). The application can also open a map file the user already has |
 | Download | The user chooses regions; the file is downloaded in parts with HTTP range requests, verified and stored on the device with the import protocol of [spike S6](spikes/s6-web-storage.md) |
 | Use | Rendering and place search read only the downloaded files. No map or search request is made while editing or previewing |
-| License | Data under ODbL-1.0; downloaded by the user and never bundled in release artifacts ([Dependency License Policy §2](license-policy.md#2-scope)) |
-| Attribution | "© OpenStreetMap contributors" shown in the map view and during full-screen playback |
+| License | Base, transportation and divisions under ODbL-1.0; places under CDLA-Permissive-2.0 and Apache-2.0. Downloaded by the user and never bundled in release artifacts ([Dependency License Policy §2](license-policy.md#2-scope)) |
+| Attribution | "© OpenStreetMap contributors, Overture Maps Foundation" shown in the map view and during full-screen playback |
 | Privacy | The download source can see which regions are downloaded, but not trips, stops, searches or media. This is stated in the privacy statement |
 | Updates | The application shows when a newer map is available; updating is the user's choice |
-| Labels | Traditional Chinese names where available in the data, falling back to local names |
+| Labels | `zh-Hant`, then `zh`, then the local name |
 
 ## 6. Quality Bar
 
@@ -136,7 +136,7 @@ These do not block the definition above and are resolved during the milestones n
 
 | Item | Resolved in |
 |---|---|
-| Map download source and its terms; region size and update cadence | M1, gate |
+| Overture terms for use in exported video; region presets and their sizes | M1, gate |
 | Place-name index built from the downloaded map: coverage of Traditional Chinese names, size, speed | M1, follow-up to spike S1 |
 | Reference laptop and phone models | M1 |
 | Final number and design of themes | M2 |
