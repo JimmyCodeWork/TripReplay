@@ -4,11 +4,27 @@ export { createEditor, type DispatchResult, type Editor, type EditorOptions, typ
 export { createHistory, HISTORY_LIMIT, type History, record, redo, replacePresent, undo } from "./history.ts";
 export type {
   AssetStore,
+  DownloadProgress,
+  MapRegions,
   PlaceMatch,
   PlaceSearch,
+  PlannedRegion,
   ProjectRepository,
+  RegionBounds,
+  RegionRepository,
   SaveResult,
   Scheduler,
+  StoredRegion,
   TripSummary,
 } from "./ports.ts";
+export {
+  createRegionManager,
+  type RegionEntry,
+  RegionFailure,
+  type RegionFailureReason,
+  type RegionManager,
+  type RegionManagerOptions,
+  type RegionStatus,
+  type UpdateStatus,
+} from "./regions.ts";
 export { createStore, type Listener, type Store } from "./store.ts";

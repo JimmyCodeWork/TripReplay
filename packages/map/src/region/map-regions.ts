@@ -1,0 +1,196 @@
+import {
+  type AssetStore,
+  type MapRegions,
+  type PlaceSearch,
+  type PlannedRegion,
+  type RegionBounds,
+  RegionFailure,
+} from "@tripreplay/app";
+import type { MapFiles } from "../maplibre-layer.ts";
+import { decodePlaceIndex, encodePlaceIndex, PLACE_INDEX_VERSION } from "../places/encode.ts";
+import type { PlaceIndex } from "../places/place-index.ts";
+import { buildRegionPlaceIndex, createPlaceSearch } from "../places/region-index.ts";
+import { downloadRegion, regionRecord } from "./download.ts";
+import { RegionError } from "./errors.ts";
+import { listOvertureReleases, overtureRegionRequest } from "./overture.ts";
+import { planRegion } from "./plan.ts";
+import { openRegion, type RegionRecord, verifyRegion } from "./region.ts";
+
+/** What the application stores for a region: the record of its map files. Plain data. */
+export interface MapRegionData {
+  readonly record: RegionRecord;
+}
+
+export interface MapRegionsOptions {
+  /** A store for map files only; the media store removes files that no project refers to. */
+  readonly store: AssetStore<Blob>;
+  readonly fetch?: typeof fetch;
+  /** `navigator.storage.estimate`. */
+  readonly estimate?: () => Promise<{ readonly quota?: number; readonly usage?: number }>;
+  /** Builds a place index; the shell passes one that runs in a worker. */
+  readonly buildIndex?: (archives: Readonly<Record<string, Blob>>, bounds: RegionBounds) => Promise<PlaceIndex>;
+}
+
+export interface OvertureMapRegions extends MapRegions<MapRegionData> {
+  /** Searches the place names of every region that is open. */
+  readonly placeSearch: PlaceSearch;
+  /** The map files of a region for the renderer. */
+  files(data: MapRegionData): Promise<MapFiles>;
+}
+
+/** Part of the quota left free, since browsers count storage approximately. */
+const RESERVE = 0.05;
+
+function indexId(record: RegionRecord): string {
+  const places = record.themes.find((t) => t.theme === "places") ?? record.themes[0];
+  const version = (places?.parts[0]?.id ?? "").split("-").at(-2) ?? "none";
+  return `${record.id}-index${PLACE_INDEX_VERSION}-${version}`;
+}
+
+async function transform(bytes: Uint8Array, stream: CompressionStream | DecompressionStream): Promise<Uint8Array> {
+  const output = new Blob([bytes as Uint8Array<ArrayBuffer>]).stream().pipeThrough(stream);
+  return new Uint8Array(await new Response(output).arrayBuffer());
+}
+
+/** Translates failures into the reasons the application shows; aborts stay aborts. */
+function failure(error: unknown): unknown {
+  if (error instanceof RegionError) {
+    if (error.code === "http") {
+      const gone = error.status === 403 || error.status === 404;
+      return new RegionFailure(gone ? "unavailable" : "network", error.message);
+    }
+    const reason = { changed: "changed", invalidArchive: "damaged", missingPart: "missing" } as const;
+    return new RegionFailure(reason[error.code], error.message);
+  }
+  if (error instanceof TypeError) return new RegionFailure("network", error.message);
+  return error;
+}
+
+async function translated<T>(work: () => Promise<T>): Promise<T> {
+  try {
+    return await work();
+  } catch (error) {
+    throw failure(error);
+  }
+}
+
+/** MapRegions on Overture Maps: regions are downloaded into `store`, with a place index for each. */
+export function createMapRegions(options: MapRegionsOptions): OvertureMapRegions {
+  const { store } = options;
+  const build = options.buildIndex ?? buildRegionPlaceIndex;
+  const indexes = new Map<string, PlaceIndex>();
+
+  const storeIndex = async (record: RegionRecord): Promise<PlaceIndex> => {
+    const index = await build(await openRegion(record, store), record.bounds);
+    const bytes = await transform(encodePlaceIndex(index), new CompressionStream("gzip"));
+    const id = indexId(record);
+    await store.remove(id);
+    await store.put(
+      id,
+      (async function* () {
+        yield bytes;
+      })(),
+      bytes.length,
+    );
+    indexes.set(record.id, index);
+    return index;
+  };
+
+  const loadIndex = async (record: RegionRecord): Promise<void> => {
+    const file = await store.open(indexId(record));
+    if (!file) {
+      await storeIndex(record);
+      return;
+    }
+    try {
+      const bytes = await transform(new Uint8Array(await file.arrayBuffer()), new DecompressionStream("gzip"));
+      indexes.set(record.id, decodePlaceIndex(bytes));
+    } catch {
+      await storeIndex(record);
+    }
+  };
+
+  const filesOf = (record: RegionRecord) => [
+    ...record.themes.flatMap((theme) => theme.parts.map((part) => part.id)),
+    indexId(record),
+  ];
+
+  return {
+    placeSearch: createPlaceSearch(() => [...indexes.values()]),
+
+    async files({ record }) {
+      const archives = await translated(() => openRegion(record, store));
+      return {
+        base: archives.base,
+        transportation: archives.transportation,
+        divisions: archives.divisions,
+      } as MapFiles;
+    },
+
+    latestRelease: () =>
+      translated(async () => {
+        const [latest] = await listOvertureReleases(options.fetch);
+        if (!latest) throw new RegionFailure("unavailable", "The download source lists no map release");
+        return latest;
+      }),
+
+    plan: (release, bounds, regionId, signal) =>
+      translated(async (): Promise<PlannedRegion<MapRegionData>> => {
+        const request = await overtureRegionRequest(release, bounds, {
+          ...(options.fetch ? { fetch: options.fetch } : {}),
+          ...(signal ? { signal } : {}),
+        });
+        const plan = await planRegion(request);
+        const record = regionRecord(plan, regionId, regionId);
+        return {
+          size: plan.size,
+          data: { record },
+          download: (downloadSignal, onProgress) =>
+            translated(async () => {
+              await downloadRegion(plan, { store, regionId, name: regionId, signal: downloadSignal, onProgress });
+            }),
+        };
+      }),
+
+    async storedBytes({ record }) {
+      let bytes = 0;
+      for (const theme of record.themes) {
+        for (const part of theme.parts) if ((await store.open(part.id))?.size === part.size) bytes += part.size;
+      }
+      return bytes;
+    },
+
+    prepare: ({ record }) =>
+      translated(async () => {
+        await verifyRegion(record, store);
+        await storeIndex(record);
+      }),
+
+    async open({ record }) {
+      try {
+        await verifyRegion(record, store);
+      } catch (error) {
+        if (error instanceof RegionError) return false;
+        throw error;
+      }
+      await loadIndex(record);
+      return true;
+    },
+
+    async remove({ record }) {
+      indexes.delete(record.id);
+      for (const id of filesOf(record)) await store.remove(id);
+    },
+
+    async removeUnused(keep) {
+      const used = new Set(keep.flatMap(({ record }) => filesOf(record)));
+      for (const id of await store.list()) if (!used.has(id)) await store.remove(id);
+    },
+
+    async freeSpace() {
+      const estimate = await options.estimate?.();
+      if (estimate?.quota === undefined) return undefined;
+      return Math.max(0, Math.floor(estimate.quota * (1 - RESERVE) - (estimate.usage ?? 0)));
+    },
+  };
+}

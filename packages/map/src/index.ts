@@ -28,6 +28,12 @@ export {
 } from "./region/download.ts";
 export { RegionError, type RegionErrorCode } from "./region/errors.ts";
 export {
+  createMapRegions,
+  type MapRegionData,
+  type MapRegionsOptions,
+  type OvertureMapRegions,
+} from "./region/map-regions.ts";
+export {
   listOvertureReleases,
   OVERTURE_ATTRIBUTION,
   OVERTURE_BUCKET,

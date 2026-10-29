@@ -24,7 +24,7 @@ export function httpRangeSource(url: string, fetchFn: typeof fetch = fetch): Ran
         ...(signal ? { signal } : {}),
       });
       if (response.status !== 206) {
-        throw new RegionError("http", `${url}: HTTP ${response.status} for a range request`);
+        throw new RegionError("http", `${url}: HTTP ${response.status} for a range request`, response.status);
       }
       const start = /^bytes (\d+)-/.exec(response.headers.get("Content-Range") ?? "")?.[1];
       if (Number(start) !== offset) throw new RegionError("http", `${url}: the response is not the requested range`);
