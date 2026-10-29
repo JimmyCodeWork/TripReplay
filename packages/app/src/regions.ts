@@ -52,6 +52,11 @@ export interface RegionManager {
   subscribe(listener: Listener): () => void;
   /** Reads the stored regions and re-verifies them, as every launch must (docs/specification.md §4.3). */
   load(): Promise<void>;
+  /**
+   * The size of a region in the current release and the free storage, shown before a download
+   * starts (docs/specification.md §4.1). Reads only the remote directories.
+   */
+  estimate(bounds: RegionBounds, id: string, signal?: AbortSignal): Promise<RegionEstimate>;
   /** Downloads a region in the current release. */
   download(region: { readonly id: string; readonly name: string; readonly bounds: RegionBounds }): Promise<void>;
   pause(id: string): void;
@@ -62,6 +67,15 @@ export interface RegionManager {
   checkForUpdates(): Promise<void>;
   /** Downloads the newer release of a region while the current one stays in use. */
   update(id: string): Promise<void>;
+}
+
+export interface RegionEstimate {
+  readonly release: string;
+  readonly size: number;
+  /** Bytes still to download, less than `size` when parts are already stored. */
+  readonly neededBytes: number;
+  /** Undefined if the browser does not report it. */
+  readonly freeBytes: number | undefined;
 }
 
 export interface RegionManagerOptions<Data> {
@@ -230,6 +244,13 @@ export function createRegionManager<Data>({ repository, maps }: RegionManagerOpt
     },
 
     download,
+
+    async estimate(bounds, id, signal) {
+      const release = await maps.latestRelease(signal);
+      const planned = await maps.plan(release, bounds, id, signal);
+      const stored = await maps.storedBytes(planned.data);
+      return { release, size: planned.size, neededBytes: planned.size - stored, freeBytes: await maps.freeSpace() };
+    },
 
     pause(id) {
       jobs.get(id)?.controller.abort();

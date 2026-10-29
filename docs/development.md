@@ -70,7 +70,7 @@ To bypass a hook once, add `--no-verify` to `git commit` or `git push`. To disab
 | Path | Contents |
 |---|---|
 | `apps/` | Web build and platform shells (not yet created) |
-| `packages/` | Product packages: `domain`, `themes`, `i18n`, `timeline`, `app`, `renderer`, `map`, `storage`; others planned as defined in the [Application Architecture §3](architecture.md#3-packages) |
+| `packages/` | Product packages: `domain`, `themes`, `i18n`, `timeline`, `app`, `renderer`, `map`, `storage`, `ui`; others planned as defined in the [Application Architecture §3](architecture.md#3-packages) |
 | `packages/domain/` | Data model, invariants and pure editing operations |
 | `packages/themes/` | Built-in recap themes as data |
 | `packages/timeline/` | Timeline compiler and `renderAt`, which describes each frame of the recap |
@@ -78,7 +78,8 @@ To bypass a hook once, add `--no-verify` to `git commit` or `git push`. To disab
 | `packages/renderer/` | Drawing of the recap frames; defines the `MapLayer` port |
 | `packages/map/` | Base map drawn with MapLibre GL JS from PMTiles files on the device, resumable region downloads from Overture Maps, and place search in the downloaded maps |
 | `packages/storage/` | Projects and the list of map regions in IndexedDB, media in OPFS, with crash-safe imports, start-up recovery and the [project package](project-package.md) |
-| `packages/i18n/` | Locale resolution and message catalogs (`locales/`) |
+| `packages/i18n/` | Locale resolution, message catalogs (`locales/`) and message formatting |
+| `packages/ui/` | Screens and components in React, starting with the maps dialog |
 | `tools/deps-check/` | Package boundary check used by CI; allowed dependencies in `boundaries.json` |
 | `tools/i18n-check/` | Message catalog check used by CI |
 | `tools/license-check/` | License check used by CI |

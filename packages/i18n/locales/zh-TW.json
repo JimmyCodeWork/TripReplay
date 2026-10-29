@@ -40,5 +40,107 @@
   },
   "theme.portrait.description": {
     "message": "大標題置頂、媒體在下；適合 9:16"
+  },
+  "maps.title": {
+    "message": "地圖"
+  },
+  "maps.intro": {
+    "message": "請下載旅行所到區域的地圖。地圖會儲存在本裝置上，不需連線即可使用。"
+  },
+  "maps.privacy": {
+    "message": "下載來源只能得知您下載了哪些區域，無法得知其他資訊。"
+  },
+  "maps.attribution": {
+    "message": "地圖資料 © OpenStreetMap 貢獻者、Overture Maps Foundation"
+  },
+  "maps.status.notDownloaded": {
+    "message": "尚未下載"
+  },
+  "maps.status.checking": {
+    "message": "正在確認大小…"
+  },
+  "maps.status.downloading": {
+    "message": "下載中：{completed}／{total}"
+  },
+  "maps.status.paused": {
+    "message": "已暫停：{completed}／{total}"
+  },
+  "maps.status.verifying": {
+    "message": "驗證中…"
+  },
+  "maps.status.ready": {
+    "message": "已就緒 · {size}"
+  },
+  "maps.status.insufficientStorage": {
+    "message": "儲存空間不足：需要 {needed}，可用 {free}"
+  },
+  "maps.status.failed": {
+    "message": "{reason, select, network {無法連線至下載來源。} unavailable {此地圖版本已不再提供，請下載目前的版本。} changed {下載期間地圖已更新，請重新下載。} damaged {下載的資料已損壞。} missing {此地圖的檔案遺失，可能已被瀏覽器清除。} other {下載失敗。}}"
+  },
+  "maps.status.updateAvailable": {
+    "message": "有可用更新（{release}）"
+  },
+  "maps.confirm": {
+    "message": "要下載 {size} 嗎？本裝置可用空間為 {free}。"
+  },
+  "maps.confirmUnknownFree": {
+    "message": "要下載 {size} 嗎？"
+  },
+  "maps.action.download": {
+    "message": "下載"
+  },
+  "maps.action.pause": {
+    "message": "暫停"
+  },
+  "maps.action.resume": {
+    "message": "繼續"
+  },
+  "maps.action.update": {
+    "message": "更新"
+  },
+  "maps.action.delete": {
+    "message": "刪除"
+  },
+  "maps.action.checkUpdates": {
+    "message": "檢查更新"
+  },
+  "region.taiwan": {
+    "message": "臺灣"
+  },
+  "region.japanHokkaido": {
+    "message": "日本・北海道"
+  },
+  "region.japanTohoku": {
+    "message": "日本・東北"
+  },
+  "region.japanKanto": {
+    "message": "日本・關東"
+  },
+  "region.japanChubu": {
+    "message": "日本・中部"
+  },
+  "region.japanKansai": {
+    "message": "日本・關西"
+  },
+  "region.japanChugoku": {
+    "message": "日本・中國地方"
+  },
+  "region.japanShikoku": {
+    "message": "日本・四國"
+  },
+  "region.japanKyushu": {
+    "message": "日本・九州"
+  },
+  "region.japanOkinawa": {
+    "message": "日本・沖繩"
+  },
+  "region.southKorea": {
+    "message": "韓國"
+  },
+  "region.hongKongMacau": {
+    "message": "香港與澳門"
+  },
+  "region.singapore": {
+    "message": "新加坡"
   }
 }

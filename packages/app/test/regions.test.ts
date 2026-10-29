@@ -163,6 +163,20 @@ describe("region manager", () => {
     expect(entry().status).toEqual({ kind: "ready" });
   });
 
+  it("estimates the size and the free space before downloading", async () => {
+    const { repository, maps, manager } = setup();
+    expect(await manager.estimate(TAIWAN.bounds, "tw")).toEqual({
+      release: "2026-10-21.0",
+      size: SIZE,
+      neededBytes: SIZE,
+      freeBytes: 10_000,
+    });
+    expect(repository.regions.size).toBe(0);
+    expect(manager.getState()).toEqual([]);
+    maps.bytes.set("tw@2026-10-21.0", SIZE / 4);
+    expect((await manager.estimate(TAIWAN.bounds, "tw")).neededBytes).toBe((SIZE * 3) / 4);
+  });
+
   it("does not start when the free space is too small", async () => {
     const { repository, maps, manager, entry } = setup();
     maps.free = 400;
