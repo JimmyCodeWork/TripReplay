@@ -1,5 +1,11 @@
 import { addStop, createProject, type Project, type Stop, type TripId } from "@tripreplay/domain";
-import type { ProjectRepository, SaveResult, Scheduler, TripSummary } from "../src/index.ts";
+import {
+  type ProjectRepository,
+  type SaveResult,
+  type Scheduler,
+  summarizeProject,
+  type TripSummary,
+} from "../src/index.ts";
 
 export function stop(id: string, date = "2026-04-01"): Stop {
   return { id, name: id, description: "", date, location: { lon: 135.76, lat: 35.01 } };
@@ -50,7 +56,7 @@ export class MemoryRepository implements ProjectRepository {
   }
 
   async list(): Promise<readonly TripSummary[]> {
-    return [...this.stored.values()].map((p) => ({ id: p.trip.id, title: p.trip.title, revision: p.trip.revision }));
+    return [...this.stored.values()].map(summarizeProject);
   }
 
   async remove(id: TripId): Promise<void> {

@@ -17,7 +17,7 @@ const single = (text: string) => Array.from(text).length === 1;
  * order, and a group keeps the form its first mapping pointed to. Multi-character entries are
  * skipped, since folding works character by character.
  */
-export function foldTable(dictionaries: readonly [string, string[]][][]): Map<string, string> {
+export function foldTable(dictionaries: readonly (readonly [string, string[]][])[]): Map<string, string> {
   const parent = new Map<string, string>();
   const root = (c: string): string => {
     let r = c;
@@ -38,10 +38,30 @@ export function foldTable(dictionaries: readonly [string, string[]][][]): Map<st
   return table;
 }
 
-/** The generated TypeScript module: pairs of characters, the second being the folded form of the first. */
-export function renderModule(table: ReadonlyMap<string, string>, header: string): string {
-  const pairs = [...table].map(([from, to]) => from + to);
-  const lines: string[] = [];
-  for (let i = 0; i < pairs.length; i += 40) lines.push(`  "${pairs.slice(i, i + 40).join("")}",`);
-  return `${header}\nexport const VARIANT_PAIRS: readonly string[] = [\n${lines.join("\n")}\n];\n`;
+/**
+ * Simplified characters mapped to the Traditional form used in Taiwan: the first Traditional
+ * candidate of the Simplified-to-Traditional dictionary, followed through the Taiwan variants.
+ */
+export function simplifiedTable(
+  simplifiedToTraditional: readonly [string, string[]][],
+  taiwanVariants: readonly [string, string[]][],
+): Map<string, string> {
+  const folded = foldTable([simplifiedToTraditional, taiwanVariants]);
+  const table = new Map<string, string>();
+  for (const [key] of simplifiedToTraditional) {
+    const target = folded.get(key);
+    if (target && Array.from(key).length === 1) table.set(key, target);
+  }
+  return table;
+}
+
+/** The generated TypeScript module: per export, pairs of characters, the second replacing the first. */
+export function renderModule(tables: Readonly<Record<string, ReadonlyMap<string, string>>>, header: string): string {
+  const exports = Object.entries(tables).map(([name, table]) => {
+    const pairs = [...table].map(([from, to]) => from + to);
+    const lines: string[] = [];
+    for (let i = 0; i < pairs.length; i += 40) lines.push(`  "${pairs.slice(i, i + 40).join("")}",`);
+    return `export const ${name}: readonly string[] = [\n${lines.join("\n")}\n];\n`;
+  });
+  return `${header}\n${exports.join("\n")}`;
 }

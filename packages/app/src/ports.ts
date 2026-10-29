@@ -1,4 +1,4 @@
-import type { AssetId, LonLat, Project, TripId } from "@tripreplay/domain";
+import type { AssetId, IsoDate, LonLat, Project, TripId } from "@tripreplay/domain";
 
 /**
  * Ports the application layer needs from the outside world (docs/architecture.md §4.2). Adapters
@@ -11,10 +11,17 @@ export type SaveResult =
   /** The stored project has a different revision, for example because another tab saved it. */
   | { readonly kind: "conflict"; readonly storedRevision: number };
 
+/** What the trip list shows of a trip, without loading it for editing; see `summarizeProject`. */
 export interface TripSummary {
   readonly id: TripId;
   readonly title: string;
   readonly revision: number;
+  readonly stopCount: number;
+  /** Date of the first and the last stop; undefined while the trip has no stops. */
+  readonly firstDate: IsoDate | undefined;
+  readonly lastDate: IsoDate | undefined;
+  /** Storage used by the trip's media in bytes. */
+  readonly mediaBytes: number;
 }
 
 export interface ProjectRepository {

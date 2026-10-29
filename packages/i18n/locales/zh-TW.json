@@ -166,5 +166,98 @@
   },
   "search.shortLink": {
     "message": "短網址必須連線至其服務才能解析。請開啟連結後，改為複製完整網址。"
+  },
+  "common.save": {
+    "message": "儲存"
+  },
+  "common.delete": {
+    "message": "刪除"
+  },
+  "common.back": {
+    "message": "返回"
+  },
+  "tripList.create": {
+    "message": "新增旅行"
+  },
+  "tripList.createFirst": {
+    "message": "建立第一趟旅行"
+  },
+  "tripList.newTitle": {
+    "message": "新旅行"
+  },
+  "tripList.copyTitle": {
+    "message": "{title}（副本）"
+  },
+  "tripList.dates": {
+    "message": "{first}－{last}"
+  },
+  "tripList.noDates": {
+    "message": "尚無景點"
+  },
+  "tripList.media": {
+    "message": "媒體 {size}"
+  },
+  "tripList.open": {
+    "message": "開啟"
+  },
+  "tripList.rename": {
+    "message": "重新命名"
+  },
+  "tripList.duplicate": {
+    "message": "建立副本"
+  },
+  "tripList.titleLabel": {
+    "message": "旅行名稱"
+  },
+  "tripList.confirmDelete": {
+    "message": "要刪除「{title}」嗎？若無備份，其景點與媒體安排將無法復原。"
+  },
+  "header.maps": {
+    "message": "地圖"
+  },
+  "header.trips": {
+    "message": "旅行"
+  },
+  "itinerary.title": {
+    "message": "行程"
+  },
+  "itinerary.empty": {
+    "message": "搜尋地點即可加入第一個景點，也可貼上座標或地圖連結。"
+  },
+  "itinerary.day": {
+    "message": "第 {number} 天 · {date}"
+  },
+  "itinerary.dateLabel": {
+    "message": "新景點的日期"
+  },
+  "itinerary.moveUp": {
+    "message": "上移"
+  },
+  "itinerary.moveDown": {
+    "message": "下移"
+  },
+  "itinerary.rename": {
+    "message": "重新命名景點"
+  },
+  "itinerary.remove": {
+    "message": "移除景點"
+  },
+  "itinerary.unnamed": {
+    "message": "景點 {number}"
+  },
+  "save.saved": {
+    "message": "已儲存"
+  },
+  "save.pending": {
+    "message": "即將儲存…"
+  },
+  "save.saving": {
+    "message": "儲存中…"
+  },
+  "save.error": {
+    "message": "未儲存：{message}"
+  },
+  "save.conflict": {
+    "message": "此旅行已在其他分頁變更，請重新載入後再繼續。"
   }
 }

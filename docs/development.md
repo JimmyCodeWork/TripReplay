@@ -81,7 +81,7 @@ To bypass a hook once, add `--no-verify` to `git commit` or `git push`. To disab
 | `packages/map/` | Base map drawn with MapLibre GL JS from PMTiles files on the device, resumable region downloads from Overture Maps, and place search in the downloaded maps |
 | `packages/storage/` | Projects and the list of map regions in IndexedDB, media in OPFS, with crash-safe imports, start-up recovery and the [project package](project-package.md) |
 | `packages/i18n/` | Locale resolution, message catalogs (`locales/`) and message formatting |
-| `packages/ui/` | Screens and components in React, starting with the maps dialog |
+| `packages/ui/` | Screens and components in React, the maps dialog, the trip list and the itinerary |
 | `tools/deps-check/` | Package boundary check used by CI; allowed dependencies in `boundaries.json` |
 | `tools/i18n-check/` | Message catalog check used by CI |
 | `tools/license-check/` | License check used by CI |

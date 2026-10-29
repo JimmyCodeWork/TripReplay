@@ -1,5 +1,6 @@
 import { VectorTile } from "@mapbox/vector-tile";
 import { PbfReader } from "pbf";
+import { toTraditional } from "./normalize.ts";
 
 /** Where a name comes from; OpenStreetMap-derived sources are more reliable for well-known places. */
 export type PlaceSource = "divisions" | "base" | "places";
@@ -61,7 +62,10 @@ function namesOf(properties: Record<string, unknown>): { label: string; names: s
   const names = parse(properties.names);
   const common = (names.common ?? {}) as Record<string, unknown>;
   const text = (key: string) => (typeof common[key] === "string" ? (common[key] as string) : undefined);
-  const label = text("zh-Hant") ?? text("zh-TW") ?? text("zh-HK") ?? text("zh") ?? primary;
+  // A plain `zh` name is usually Simplified; it is shown in Traditional characters.
+  const simplified = text("zh") ?? text("zh-Hans") ?? text("zh-CN");
+  const label =
+    text("zh-Hant") ?? text("zh-TW") ?? text("zh-HK") ?? (simplified && toTraditional(simplified)) ?? primary;
   const all = new Set([primary, ...Object.values(common).filter((v): v is string => typeof v === "string")]);
   return { label, names: [...all] };
 }

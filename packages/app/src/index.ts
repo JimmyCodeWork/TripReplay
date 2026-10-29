@@ -31,3 +31,4 @@ export {
   type UpdateStatus,
 } from "./regions.ts";
 export { createStore, type Listener, type Store } from "./store.ts";
+export { createTripLibrary, summarizeProject, type TripLibrary, type TripLibraryOptions } from "./trips.ts";

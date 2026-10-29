@@ -83,7 +83,7 @@ pnpm run hooks:install   # 選用；見「本機驗證」
 | `packages/map/` | 以 MapLibre GL JS 從裝置上的 PMTiles 檔繪製底圖，可續傳的 Overture Maps 區域下載，以及已下載地圖中的地點搜尋 |
 | `packages/storage/` | 以 IndexedDB 儲存專案及地圖區域列表、以 OPFS 儲存媒體，具備當機安全的匯入、啟動時復原及[專案包](project-package.md) |
 | `packages/i18n/` | 語系判定、訊息目錄（`locales/`）與訊息格式化 |
-| `packages/ui/` | 以 React 實作的畫面與元件，首先是地圖對話框 |
+| `packages/ui/` | 以 React 實作的畫面與元件，包括地圖對話框、旅行列表與行程 |
 | `tools/deps-check/` | CI 使用的套件界線檢查；允許的相依關係定義於 `boundaries.json` |
 | `tools/i18n-check/` | CI 使用的訊息目錄檢查工具 |
 | `tools/license-check/` | CI 使用的授權檢查工具 |

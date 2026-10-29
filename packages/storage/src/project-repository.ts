@@ -1,4 +1,4 @@
-import type { ProjectRepository, SaveResult, TripSummary } from "@tripreplay/app";
+import { type ProjectRepository, type SaveResult, summarizeProject, type TripSummary } from "@tripreplay/app";
 import { type Project, SCHEMA_VERSION, type TripId, validateProject } from "@tripreplay/domain";
 import { DATABASE, openTripReplayDatabase, PROJECTS } from "./database.ts";
 import { StorageError } from "./errors.ts";
@@ -48,7 +48,7 @@ export async function openProjectRepository(name = DATABASE): Promise<IndexedDbP
       });
     },
     async list(): Promise<readonly TripSummary[]> {
-      return (await all()).map((p) => ({ id: p.trip.id, title: p.trip.title, revision: p.trip.revision }));
+      return (await all()).map(summarizeProject);
     },
     async remove(id: TripId) {
       await transaction(db, PROJECTS, "readwrite", (store) => request(store.delete(id)));

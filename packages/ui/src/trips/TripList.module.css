@@ -1,0 +1,123 @@
+.list {
+  display: grid;
+  gap: 16px;
+  color: var(--color-text, #1d2420);
+  font: 15px / 1.5 var(--font-body, system-ui, sans-serif);
+}
+
+.heading {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.heading h2 {
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.card {
+  display: grid;
+  gap: 8px;
+  align-content: space-between;
+  padding: 12px;
+  border: 1px solid var(--color-line, #d6ddd6);
+  border-radius: 8px;
+  background: var(--color-surface, #fff);
+}
+
+.open {
+  display: grid;
+  gap: 2px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+
+.open:focus-visible {
+  outline: 2px solid var(--color-accent, #b33a46);
+  outline-offset: 4px;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.meta,
+.empty p,
+.confirm p {
+  margin: 0;
+  color: var(--color-muted, #5b665f);
+  font-variant-numeric: tabular-nums;
+}
+
+.actions,
+.rename {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.input {
+  flex: 1 1 140px;
+  min-width: 0;
+  padding: 6px 10px;
+  border: 1px solid var(--color-line, #d6ddd6);
+  border-radius: 6px;
+  background: var(--color-surface, #fff);
+  color: inherit;
+  font: inherit;
+}
+
+.empty,
+.confirm {
+  display: grid;
+  gap: 8px;
+  justify-items: start;
+}
+
+.button,
+.primary,
+.danger {
+  padding: 4px 12px;
+  border: 1px solid var(--color-line, #d6ddd6);
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.primary {
+  border-color: var(--color-accent, #b33a46);
+  background: var(--color-accent, #b33a46);
+  color: #fff;
+}
+
+.danger {
+  border-color: #a12a2a;
+  color: #a12a2a;
+}
+
+.button:focus-visible,
+.primary:focus-visible,
+.danger:focus-visible,
+.input:focus-visible {
+  outline: 2px solid var(--color-accent, #b33a46);
+  outline-offset: 2px;
+}
