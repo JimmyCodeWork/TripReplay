@@ -45,7 +45,7 @@ pnpm run hooks:install   # 選用；見「本機驗證」
 
 ### 瀏覽器測試
 
-轉接器套件透過 Vitest 瀏覽器模式與 Playwright，於無頭 Chromium 中測試其使用的瀏覽器 API（OPFS、IndexedDB）。首次使用時以 `pnpm --filter @tripreplay/storage exec playwright install chromium` 安裝瀏覽器。無法下載時，可改將 `CHROMIUM_PATH` 設為既有 Chromium 執行檔的路徑。這些測試不包含於 `verify`，因此執行 `verify` 不需要瀏覽器。
+轉接器套件透過 Vitest 瀏覽器模式與 Playwright，於無頭 Chromium 中測試其使用的瀏覽器 API（OPFS、IndexedDB、WebGL）。首次使用時以 `pnpm --filter @tripreplay/storage exec playwright install chromium` 安裝瀏覽器。無法下載時，可改將 `CHROMIUM_PATH` 設為既有 Chromium 執行檔的路徑。WebGL 使用軟體實作 SwiftShader，因此不需要 GPU。這些測試不包含於 `verify`，因此執行 `verify` 不需要瀏覽器。
 
 ### 驗證層級
 
@@ -72,11 +72,13 @@ pnpm run hooks:install   # 選用；見「本機驗證」
 | 路徑 | 內容 |
 |---|---|
 | `apps/` | Web 版與各平台外殼（尚未建立） |
-| `packages/` | 產品套件：`domain`、`themes`、`i18n`、`timeline`、`app`、`storage`；其餘依[應用程式架構 §3](architecture.md#3-套件) 規劃 |
+| `packages/` | 產品套件：`domain`、`themes`、`i18n`、`timeline`、`app`、`renderer`、`map`、`storage`；其餘依[應用程式架構 §3](architecture.md#3-套件) 規劃 |
 | `packages/domain/` | 資料模型、不變條件及純函式的編輯操作 |
 | `packages/themes/` | 以資料定義的隨附回顧主題 |
 | `packages/timeline/` | 時間軸編譯器及 `renderAt`，描述回顧的每一格畫面 |
 | `packages/app/` | 編輯器狀態、可復原與重做的命令、自動儲存，以及由轉接器實作的連接埠 |
+| `packages/renderer/` | 繪製回顧的每一格畫面；定義 `MapLayer` 連接埠 |
+| `packages/map/` | 以 MapLibre GL JS 從裝置上的 PMTiles 檔繪製底圖，以及供已下載區域使用的 PMTiles 寫入器 |
 | `packages/storage/` | 以 IndexedDB 儲存專案、以 OPFS 儲存媒體，具備當機安全的匯入、啟動時復原及[專案包](project-package.md) |
 | `packages/i18n/` | 語系判定與訊息目錄（`locales/`） |
 | `tools/deps-check/` | CI 使用的套件界線檢查；允許的相依關係定義於 `boundaries.json` |

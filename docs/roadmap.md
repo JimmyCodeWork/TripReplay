@@ -90,6 +90,8 @@ Packages follow the [Application Architecture](architecture.md):
 | Airplane-mode acceptance test passes ([Specification §9](specification.md#9-acceptance-criteria-and-testing)); network inspection confirms no request other than loading the application and downloading maps |
 | All UI strings available in `en` and `zh-TW` |
 
+**In progress.** The `MapLayer` port (`renderer`) and its MapLibre implementation, which draws the base map from PMTiles files on the device, with a PMTiles writer for downloaded regions (`map`). Region download and place search follow.
+
 ## M3 — Release Readiness for 1.0 (Phase E)
 
 | Exit criteria |

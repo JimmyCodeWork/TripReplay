@@ -43,7 +43,7 @@ All checks run locally. The CI workflow ([`.github/workflows/ci.yml`](../.github
 
 ### Browser tests
 
-Adapter packages test their browser APIs (OPFS, IndexedDB) in headless Chromium through Vitest browser mode and Playwright. Install the browser once with `pnpm --filter @tripreplay/storage exec playwright install chromium`. Where the download is not possible, set `CHROMIUM_PATH` to an existing Chromium executable instead. These tests are not part of `verify`, so that `verify` needs no browser.
+Adapter packages test their browser APIs (OPFS, IndexedDB, WebGL) in headless Chromium through Vitest browser mode and Playwright. Install the browser once with `pnpm --filter @tripreplay/storage exec playwright install chromium`. Where the download is not possible, set `CHROMIUM_PATH` to an existing Chromium executable instead. WebGL uses SwiftShader, a software implementation, so no GPU is required. These tests are not part of `verify`, so that `verify` needs no browser.
 
 ### Levels
 
@@ -70,11 +70,13 @@ To bypass a hook once, add `--no-verify` to `git commit` or `git push`. To disab
 | Path | Contents |
 |---|---|
 | `apps/` | Web build and platform shells (not yet created) |
-| `packages/` | Product packages: `domain`, `themes`, `i18n`, `timeline`, `app`, `storage`; others planned as defined in the [Application Architecture §3](architecture.md#3-packages) |
+| `packages/` | Product packages: `domain`, `themes`, `i18n`, `timeline`, `app`, `renderer`, `map`, `storage`; others planned as defined in the [Application Architecture §3](architecture.md#3-packages) |
 | `packages/domain/` | Data model, invariants and pure editing operations |
 | `packages/themes/` | Built-in recap themes as data |
 | `packages/timeline/` | Timeline compiler and `renderAt`, which describes each frame of the recap |
 | `packages/app/` | Editor state, commands with undo and redo, autosave, and the ports adapters implement |
+| `packages/renderer/` | Drawing of the recap frames; defines the `MapLayer` port |
+| `packages/map/` | Base map drawn with MapLibre GL JS from PMTiles files on the device, and the PMTiles writer for downloaded regions |
 | `packages/storage/` | Projects in IndexedDB and media in OPFS, with crash-safe imports, start-up recovery and the [project package](project-package.md) |
 | `packages/i18n/` | Locale resolution and message catalogs (`locales/`) |
 | `tools/deps-check/` | Package boundary check used by CI; allowed dependencies in `boundaries.json` |
