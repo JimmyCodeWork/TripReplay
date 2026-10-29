@@ -1,17 +1,22 @@
 import {
+  type AssetStore,
   createRegionManager,
   createTripLibrary,
+  type MediaPort,
   type ProjectRepository,
   type RegionManager,
   type TripLibrary,
 } from "@tripreplay/app";
+import type { Project } from "@tripreplay/domain";
 import { createMapRegions, type MapRegionData, type OvertureMapRegions } from "@tripreplay/map";
+import { createMediaPort } from "@tripreplay/media";
 import {
   createAssetStore,
   openOpfsVolume,
   openProjectRepository,
   openRegionRepository,
   recoverStorage,
+  referencedAssets,
 } from "@tripreplay/storage";
 import { DEFAULT_THEME_ID } from "@tripreplay/themes";
 
@@ -19,12 +24,17 @@ export interface Services {
   readonly regions: RegionManager<File>;
   readonly maps: OvertureMapRegions;
   readonly projects: ProjectRepository;
+  /** Imported photos and videos, by asset id. */
+  readonly assets: AssetStore<Blob>;
+  readonly media: MediaPort<File>;
   readonly trips: TripLibrary;
   readonly newId: () => string;
 }
 
 /** OPFS directory of the map files, separate from media, whose recovery removes unreferenced files. */
 const MAP_VOLUME = "maps";
+/** OPFS directory of imported media (spike S6). */
+const MEDIA_VOLUME = "media";
 
 /**
  * Creates the adapters and wires them into the application (docs/architecture.md §2, shell). This
@@ -46,9 +56,19 @@ export async function createServices(): Promise<Services> {
   });
   await regions.load();
   const projects = await openProjectRepository();
+  // Removes interrupted imports and media no saved trip refers to, before any trip is opened.
+  const mediaVolume = await openOpfsVolume(MEDIA_VOLUME);
+  const saved: Project[] = [];
+  for (const summary of await projects.list()) {
+    const project = await projects.load(summary.id);
+    if (project) saved.push(project);
+  }
+  await recoverStorage(mediaVolume, { referenced: referencedAssets(saved), now: Date.now() });
+  const assets = createAssetStore(mediaVolume);
+  const media = createMediaPort({ store: assets });
   const trips = createTripLibrary({ repository: projects, newId, themeId: DEFAULT_THEME_ID });
   await trips.refresh();
-  return { regions, maps, projects, trips, newId };
+  return { regions, maps, projects, assets, media, trips, newId };
 }
 
 /**

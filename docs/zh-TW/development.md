@@ -74,11 +74,12 @@ pnpm run hooks:install   # 選用；見「本機驗證」
 | 路徑 | 內容 |
 |---|---|
 | `apps/web/` | Web 應用程式：建立轉接器並掛載介面的組合根；各平台外殼將於日後加入 |
-| `packages/` | 產品套件：`domain`、`themes`、`i18n`、`timeline`、`app`、`renderer`、`map`、`storage`、`ui`；其餘依[應用程式架構 §3](architecture.md#3-套件) 規劃 |
+| `packages/` | 產品套件：`domain`、`themes`、`i18n`、`timeline`、`app`、`renderer`、`map`、`media`、`storage`、`ui`；其餘依[應用程式架構 §3](architecture.md#3-套件) 規劃 |
 | `packages/domain/` | 資料模型、不變條件及純函式的編輯操作 |
 | `packages/themes/` | 以資料定義的隨附回顧主題 |
 | `packages/timeline/` | 時間軸編譯器及 `renderAt`，描述回顧的每一格畫面 |
 | `packages/app/` | 編輯器狀態、可復原與重做的命令、自動儲存，以及由轉接器實作的連接埠 |
+| `packages/media/` | 讀取並儲存匯入的照片與影片：格式辨識、EXIF 與 MP4 中繼資料、內容雜湊值；實作 `MediaPort` |
 | `packages/renderer/` | 在地圖上方繪製回顧的每一格畫面（`createRecapRenderer`）；定義 `MapLayer` 與 `MediaSource` 連接埠 |
 | `packages/map/` | 以 MapLibre GL JS 從裝置上的 PMTiles 檔繪製底圖，可續傳的 Overture Maps 區域下載，以及已下載地圖中的地點搜尋 |
 | `packages/storage/` | 以 IndexedDB 儲存專案及地圖區域列表、以 OPFS 儲存媒體，具備當機安全的匯入、啟動時復原及[專案包](project-package.md) |

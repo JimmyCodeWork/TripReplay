@@ -1,0 +1,148 @@
+.dialog {
+  width: min(720px, calc(100vw - 32px));
+  max-height: calc(100vh - 64px);
+  padding: 20px;
+  border: 1px solid var(--color-line, #d6ddd6);
+  border-radius: 10px;
+  background: var(--color-surface, #fff);
+  color: var(--color-text, #1d2420);
+  font: 15px / 1.5 var(--font-body, system-ui, sans-serif);
+}
+
+.dialog::backdrop {
+  background: rgb(0 0 0 / 40%);
+}
+
+.title {
+  margin: 0 0 12px;
+  font-size: 1.2rem;
+}
+
+.reading {
+  display: grid;
+  gap: 6px;
+}
+
+.reading progress {
+  width: 100%;
+}
+
+.zone,
+.note {
+  margin: 0 0 8px;
+  color: var(--color-muted, #5b665f);
+}
+
+.zonePicker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.section {
+  display: grid;
+  gap: 6px;
+  margin: 12px 0;
+}
+
+.sectionHeader {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sectionTitle {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.list {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  align-items: center;
+  padding: 6px 8px;
+  border: 1px solid var(--color-line, #d6ddd6);
+  border-radius: 6px;
+}
+
+.file {
+  display: grid;
+  flex: 1 1 200px;
+  min-width: 0;
+}
+
+.fileName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.meta,
+.accepted {
+  color: var(--color-muted, #5b665f);
+  font-size: 0.9rem;
+}
+
+.accepted {
+  color: var(--color-accent, #b33a46);
+}
+
+.select {
+  flex: 0 1 260px;
+  min-width: 0;
+  padding: 4px 6px;
+  border: 1px solid var(--color-line, #d6ddd6);
+  border-radius: 6px;
+  background: var(--color-surface, #fff);
+  color: inherit;
+  font: inherit;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 16px;
+}
+
+.button,
+.primary,
+.link {
+  padding: 6px 14px;
+  border: 1px solid var(--color-line, #d6ddd6);
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.link {
+  padding: 0;
+  border: 0;
+  color: var(--color-accent, #b33a46);
+  text-decoration: underline;
+}
+
+.primary {
+  border-color: var(--color-accent, #b33a46);
+  background: var(--color-accent, #b33a46);
+  color: #fff;
+}
+
+.primary:disabled {
+  opacity: 0.5;
+  cursor: default;
+}

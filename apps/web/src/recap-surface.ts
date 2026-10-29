@@ -2,6 +2,7 @@ import type { Clock, PreviewSurface } from "@tripreplay/app";
 import { createMapLibreLayer, type MapFiles } from "@tripreplay/map";
 import { createRecapRenderer, type RecapLabels } from "@tripreplay/renderer";
 import { resolveTheme } from "@tripreplay/themes";
+import type { PreviewMedia } from "./preview-media.ts";
 
 /** The browser's frame clock for playback. */
 export const animationClock: Clock = {
@@ -20,6 +21,7 @@ export async function createRecapSurface(
   container: HTMLElement,
   files: MapFiles | undefined,
   labels: RecapLabels,
+  media: PreviewMedia,
 ): Promise<PreviewSurface> {
   const mapHost = document.createElement("div");
   const canvas = document.createElement("canvas");
@@ -35,12 +37,20 @@ export async function createRecapSurface(
     context,
     labels,
     pixelRatio: window.devicePixelRatio || 1,
+    media,
     ...(map ? { map } : {}),
   });
+  // Draws the last frame again once a photo or video it shows is ready.
+  let last: Parameters<PreviewSurface["draw"]> | undefined;
+  const unsubscribe = media.subscribe(() => last && renderer.draw(...last));
   return {
     resize: (width, height) => renderer.resize(width, height),
-    draw: (timeline, frame) => renderer.draw(timeline, frame),
+    draw: (timeline, frame) => {
+      last = [timeline, frame];
+      renderer.draw(timeline, frame);
+    },
     destroy() {
+      unsubscribe();
       renderer.destroy();
       mapHost.remove();
       canvas.remove();
