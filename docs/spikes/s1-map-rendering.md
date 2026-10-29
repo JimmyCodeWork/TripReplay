@@ -5,7 +5,7 @@ English | [繁體中文](../zh-TW/spikes/s1-map-rendering.md)
 | | |
 |---|---|
 | Date | 2026-10-24 |
-| Status | Partly complete. Renderer, tile format, labels and the map download source (Overture Maps, §3.1) answered; frame rate on reference devices and on-device place search remain (see [Open points](#open-points)). Updated for [ADR 0006](../adr/0006-local-only-operation.md): maps are downloaded and used on the device, with no server. |
+| Status | Partly complete. Renderer, tile format, labels and the map download source (Overture Maps, §3.1) answered; frame rate on reference devices remains; on-device place search measured (§5) (see [Open points](#open-points)). Updated for [ADR 0006](../adr/0006-local-only-operation.md): maps are downloaded and used on the device, with no server. |
 | Roadmap | [M1, S1](../roadmap.md#m1--technical-validation-phase-a) |
 
 ## Questions
@@ -104,7 +104,48 @@ Limits:
 
 The map files already contain the names of places, stations and points of interest, with their positions. After a region is downloaded, the application builds a place-name index from them and searches it on the device; no search request leaves the device. Stops can also be set from photo GPS, by a pin, or by pasting coordinates or a map link.
 
-To be measured in a follow-up: index size and build time per region, search speed, and coverage of Traditional Chinese names. Searching only labels at low zoom levels misses small places, so the index must read the zoom levels that contain them.
+Measured on 2026-10-29 with a throwaway prototype in Node.js, on Overture release `2026-10-21.0`, for Taiwan, Taipei and Kyoto.
+
+### 5.1 Index design
+
+- **Sources:**
+  - `divisions` (zoom 12): countries, regions, towns and neighborhoods;
+  - `base` (zoom 13): OpenStreetMap stations, airports, parks, religious sites, lakes and rivers;
+  - `places` (zoom 14): points of interest.
+- **Filtering:** `places` below confidence 0.6 and categories that are not trip stops (services, offices, shops, parking) are left out.
+- **Normalization:** Unicode NFKC, lower case, no spaces or punctuation, and folding of variant characters, so that Traditional, Simplified and Japanese forms match (臺/台, 稻/稲, 條/条). The prototype used a hand-made sample; the product derives the full table from the Unicode Unihan variant data (Unicode-3.0, on the allowlist).
+- **Lookup:** an inverted index of two-character sequences, so that any part of a name matches (清水 finds 音羽山清水寺), then a check that the whole query appears in the name.
+- **Ranking:**
+  - an exact match beats a prefix match, which beats a match elsewhere in the name;
+  - OpenStreetMap-derived `base` and `divisions` rank above `places`;
+  - regions and towns rank above neighborhoods;
+  - higher confidence ranks higher;
+  - entries with the same name within about 1 km are merged into one result.
+
+### 5.2 Results
+
+| Region | Names kept | Index (compressed) | Build | Query (median / max) |
+|---|---|---|---|---|
+| Taiwan (`divisions` and `places` only) | 392,261 of 988,764 | 21 MB | 2.4 s | 0.5 ms / 62 ms |
+| Taipei, with `base` | 81,575 of 257,092 | 4.5 MB | 0.6 s | under 2 ms |
+| Kyoto, with `base` | 41,480 of 102,727 | 2.5 MB | 0.4 s | under 3 ms |
+
+Queries whose first result was the right place:
+
+- **Taipei:** 台北車站 and 臺北車站, 台北101, 西門町, 國父紀念館, 中正紀念堂, 大安森林公園, 象山.
+- **Kyoto:** 清水寺, 伏見稻荷 (Traditional characters finding the Japanese 伏見稲荷), 伏見稲荷大社, 金閣寺, 銀閣寺, 嵐山, 祇園, 錦市場, 二條城 (finding 京都二條城).
+- **Taiwan:** 九份, 太魯閣, 墾丁, 淡水, 阿里山, 台南, 安平古堡.
+
+Findings:
+
+- **`places` alone is not reliable for well-known places.** Several of its entries are placed at the wrong position. For example, the top `places` results for 台北車站 lay in Taichung and Banqiao, and the real station only came first once the OpenStreetMap `base` features were added. `base` at zoom 13 is therefore part of the index; the renderer needs zoom 13 at stops anyway (`STOP_ZOOM`).
+- **Different words across languages do not match.** 京都車站 does not find 京都駅, because 車站 and 駅 are different words rather than variant characters. A short table of equivalent suffixes (車站, 站, 駅) is needed.
+- **Ranking needs tuning on a test list.** Examples: 故宮 should rank 國立故宮博物院 above shops whose names start with 故宮; 士林夜市 should rank the market above food stalls named after it.
+- **Memory.** The prototype kept everything in JavaScript objects (about 600 MB for all of Taiwan). The product stores the index as compact binary arrays in OPFS, built once in a worker after a region is downloaded, and reads it on demand.
+
+### 5.3 Effect on download size
+
+Adding `base` at zoom 13 increases Taiwan from about 342 MB to about 440 MB (§3.1).
 
 ## 6. Performance
 
@@ -122,7 +163,7 @@ Our code uses about 6 % of a 33 ms frame budget; the rest is map rasterization, 
 
 - **Frame rate on reference devices** with hardware graphics, desktop and mobile, at 1080p, with a real OpenStreetMap basemap.
 - **Map download source**: Overture verified technically (§3.1); its terms for use in exported video remain to be confirmed against Overture's published license pages.
-- **Place-name index** built from the downloaded map: size, speed, Traditional Chinese coverage (§5).
+- **Place-name index**: measured (§5.2); remaining work is the variant-character table, equivalent suffixes such as 車站 and 駅, and ranking tuned on a fixed test list.
 - **Latin glyph generation** with a license-compliant tool.
 - **Route shape**: legs are straight lines in Web Mercator. Great-circle arcs would look more natural for long flights; this is a design choice for M2.
 

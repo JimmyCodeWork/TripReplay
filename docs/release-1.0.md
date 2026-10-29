@@ -137,7 +137,7 @@ These do not block the definition above and are resolved during the milestones n
 | Item | Resolved in |
 |---|---|
 | Overture terms for use in exported video; region presets and their sizes | M1, gate |
-| Place-name index built from the downloaded map: coverage of Traditional Chinese names, size, speed | M1, follow-up to spike S1 |
+| Place-name index: variant-character table, equivalent suffixes (車站, 駅) and ranking tuned on a test list ([spike S1 §5](spikes/s1-map-rendering.md#5-place-search-on-the-device)) | M2 |
 | Reference laptop and phone models | M1 |
 | Final number and design of themes | M2 |
 | Domain name for the public site | M3 |
