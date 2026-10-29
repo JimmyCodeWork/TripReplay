@@ -18,9 +18,11 @@ export type {
   StoredRegion,
   TripSummary,
 } from "./ports.ts";
+export { type CatalogRegion, REGION_CATALOG } from "./region-catalog.ts";
 export {
   createRegionManager,
   type RegionEntry,
+  type RegionEstimate,
   RegionFailure,
   type RegionFailureReason,
   type RegionManager,

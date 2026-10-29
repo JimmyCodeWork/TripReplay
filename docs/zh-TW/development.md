@@ -72,7 +72,7 @@ pnpm run hooks:install   # 選用；見「本機驗證」
 | 路徑 | 內容 |
 |---|---|
 | `apps/` | Web 版與各平台外殼（尚未建立） |
-| `packages/` | 產品套件：`domain`、`themes`、`i18n`、`timeline`、`app`、`renderer`、`map`、`storage`；其餘依[應用程式架構 §3](architecture.md#3-套件) 規劃 |
+| `packages/` | 產品套件：`domain`、`themes`、`i18n`、`timeline`、`app`、`renderer`、`map`、`storage`、`ui`；其餘依[應用程式架構 §3](architecture.md#3-套件) 規劃 |
 | `packages/domain/` | 資料模型、不變條件及純函式的編輯操作 |
 | `packages/themes/` | 以資料定義的隨附回顧主題 |
 | `packages/timeline/` | 時間軸編譯器及 `renderAt`，描述回顧的每一格畫面 |
@@ -80,7 +80,8 @@ pnpm run hooks:install   # 選用；見「本機驗證」
 | `packages/renderer/` | 繪製回顧的每一格畫面；定義 `MapLayer` 連接埠 |
 | `packages/map/` | 以 MapLibre GL JS 從裝置上的 PMTiles 檔繪製底圖，可續傳的 Overture Maps 區域下載，以及已下載地圖中的地點搜尋 |
 | `packages/storage/` | 以 IndexedDB 儲存專案及地圖區域列表、以 OPFS 儲存媒體，具備當機安全的匯入、啟動時復原及[專案包](project-package.md) |
-| `packages/i18n/` | 語系判定與訊息目錄（`locales/`） |
+| `packages/i18n/` | 語系判定、訊息目錄（`locales/`）與訊息格式化 |
+| `packages/ui/` | 以 React 實作的畫面與元件，首先是地圖對話框 |
 | `tools/deps-check/` | CI 使用的套件界線檢查；允許的相依關係定義於 `boundaries.json` |
 | `tools/i18n-check/` | CI 使用的訊息目錄檢查工具 |
 | `tools/license-check/` | CI 使用的授權檢查工具 |

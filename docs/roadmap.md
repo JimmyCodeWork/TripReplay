@@ -96,9 +96,10 @@ Packages follow the [Application Architecture](architecture.md):
 - region download from Overture Maps. Planning reads only the remote directories, so the size is known before the download. Parts are stored one by one, so a paused or interrupted download resumes with the missing parts. Parts are named after the remote version, and the stored archives are verified after download;
 - place search on the device (the `PlaceSearch` port in `app`). The index is built from the downloaded `divisions`, `base` and `places` archives and stored as a compact binary file. Variant characters are folded with a table generated from OpenCC, and equivalent words such as 車站 and 駅 are unified ([spike S1 §5.4](spikes/s1-map-rendering.md#54-in-the-product));
 - the region list with the states of [Specification §4.2](specification.md#42-region-states) (`createRegionManager` in `app`, `createMapRegions` in `map`, region records in IndexedDB). The free space is checked before a download. Downloads can be paused and resumed, also after a reload. Stored regions are re-verified at every launch. A region stays usable while its update downloads;
-- pasted coordinates and map links (`parseLocation` in `app`): decimal and degree-minute-second coordinates, `geo:` URIs, and links from Google Maps, Apple Maps, OpenStreetMap and Bing Maps, read without any request. Short links such as `maps.app.goo.gl` are reported, because only their service can resolve them.
+- pasted coordinates and map links (`parseLocation` in `app`): decimal and degree-minute-second coordinates, `geo:` URIs, and links from Google Maps, Apple Maps, OpenStreetMap and Bing Maps, read without any request. Short links such as `maps.app.goo.gl` are reported, because only their service can resolve them;
+- the maps dialog of [Screen Design §2.1](ui-design.md#21-maps-dialog) (`MapsDialog` in the new `ui` package, React). It offers a catalog of regions (`REGION_CATALOG` in `app`) and shows the size and the free storage before each download.
 
-The maps dialog follows. Map files go to their own OPFS volume, because start-up recovery of the media store removes files that no project refers to.
+The application shell (`apps/web`) that mounts the dialog, and opening a map file already on the device, follow. Map files go to their own OPFS volume, because start-up recovery of the media store removes files that no project refers to.
 
 ## M3 — Release Readiness for 1.0 (Phase E)
 

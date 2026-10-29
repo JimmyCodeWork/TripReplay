@@ -54,5 +54,141 @@
   "theme.portrait.description": {
     "message": "Large title at the top and media below; for 9:16",
     "description": "Description of the portrait theme."
+  },
+  "maps.title": {
+    "message": "Maps",
+    "description": "Heading of the maps dialog, where map regions are downloaded."
+  },
+  "maps.intro": {
+    "message": "Download the map of each region you travel to. Maps are stored on this device and work without a connection.",
+    "description": "Introduction at the top of the maps dialog."
+  },
+  "maps.privacy": {
+    "message": "The download source can see which regions you download, and nothing else.",
+    "description": "Privacy note in the maps dialog. The source is Overture Maps' public storage."
+  },
+  "maps.attribution": {
+    "message": "Map data © OpenStreetMap contributors, Overture Maps Foundation",
+    "description": "Attribution required by the map data licenses. Keep the names unchanged."
+  },
+  "maps.status.notDownloaded": {
+    "message": "Not downloaded",
+    "description": "State of a region whose map is not on the device."
+  },
+  "maps.status.checking": {
+    "message": "Checking the size…",
+    "description": "Shown while the size of a region is determined before downloading."
+  },
+  "maps.status.downloading": {
+    "message": "Downloading: {completed} of {total}",
+    "description": "Download progress; completed and total are formatted sizes such as 120 MB."
+  },
+  "maps.status.paused": {
+    "message": "Paused at {completed} of {total}",
+    "description": "State of a paused download; sizes are formatted."
+  },
+  "maps.status.verifying": {
+    "message": "Verifying…",
+    "description": "State while a downloaded map is verified and its place names are indexed."
+  },
+  "maps.status.ready": {
+    "message": "Ready · {size}",
+    "description": "State of a downloaded region, with the storage it uses."
+  },
+  "maps.status.insufficientStorage": {
+    "message": "Not enough storage: {needed} needed, {free} free",
+    "description": "State when the region does not fit into the free storage; sizes are formatted."
+  },
+  "maps.status.failed": {
+    "message": "{reason, select, network {Could not reach the download source.} unavailable {This map version is no longer offered. Download the current one.} changed {The map changed during the download. Download it again.} damaged {The downloaded data is damaged.} missing {Files of this map are missing, possibly removed by the browser.} other {The download failed.}}",
+    "description": "Why a download failed or a map cannot be used."
+  },
+  "maps.status.updateAvailable": {
+    "message": "Update available ({release})",
+    "description": "Shown on a ready region when a newer map version exists; release is a version such as 2026-11-18.0."
+  },
+  "maps.confirm": {
+    "message": "Download {size}? {free} free on this device.",
+    "description": "Asked before a download starts, with the region size and the free storage."
+  },
+  "maps.confirmUnknownFree": {
+    "message": "Download {size}?",
+    "description": "Asked before a download starts when the browser does not report the free storage."
+  },
+  "maps.action.download": {
+    "message": "Download",
+    "description": "Button that downloads a region."
+  },
+  "maps.action.pause": {
+    "message": "Pause",
+    "description": "Button that pauses a download."
+  },
+  "maps.action.resume": {
+    "message": "Resume",
+    "description": "Button that continues a paused or failed download."
+  },
+  "maps.action.update": {
+    "message": "Update",
+    "description": "Button that downloads the newer version of a region."
+  },
+  "maps.action.delete": {
+    "message": "Delete",
+    "description": "Button that deletes a downloaded region from the device."
+  },
+  "maps.action.checkUpdates": {
+    "message": "Check for updates",
+    "description": "Button that checks whether newer map versions exist."
+  },
+  "region.taiwan": {
+    "message": "Taiwan",
+    "description": "Map region name."
+  },
+  "region.japanHokkaido": {
+    "message": "Japan – Hokkaidō",
+    "description": "Map region name."
+  },
+  "region.japanTohoku": {
+    "message": "Japan – Tōhoku",
+    "description": "Map region name."
+  },
+  "region.japanKanto": {
+    "message": "Japan – Kantō",
+    "description": "Map region name."
+  },
+  "region.japanChubu": {
+    "message": "Japan – Chūbu",
+    "description": "Map region name."
+  },
+  "region.japanKansai": {
+    "message": "Japan – Kansai",
+    "description": "Map region name."
+  },
+  "region.japanChugoku": {
+    "message": "Japan – Chūgoku",
+    "description": "Map region name. Chūgoku is a region of western Japan, not China."
+  },
+  "region.japanShikoku": {
+    "message": "Japan – Shikoku",
+    "description": "Map region name."
+  },
+  "region.japanKyushu": {
+    "message": "Japan – Kyūshū",
+    "description": "Map region name."
+  },
+  "region.japanOkinawa": {
+    "message": "Japan – Okinawa",
+    "description": "Map region name."
+  },
+  "region.southKorea": {
+    "message": "South Korea",
+    "description": "Map region name."
+  },
+  "region.hongKongMacau": {
+    "message": "Hong Kong and Macau",
+    "description": "Map region name."
+  },
+  "region.singapore": {
+    "message": "Singapore",
+    "description": "Map region name."
   }
 }

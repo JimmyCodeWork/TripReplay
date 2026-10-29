@@ -6,7 +6,7 @@ English | [繁體中文](zh-TW/localization.md)
 |---|---|
 | Version | 0.1 (draft) |
 | Date | 2026-10-19 |
-| Status | Design. Libraries to be selected under the [Dependency License Policy](license-policy.md). |
+| Status | Implemented: catalogs, locale resolution and a runtime formatter without third-party libraries (`createTranslator` in `packages/i18n`). |
 
 ## 1. Supported Locales
 

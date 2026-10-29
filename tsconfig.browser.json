@@ -2,8 +2,9 @@
   "$comment": "Adapters use browser APIs and are type-checked with DOM types; all other code is checked without them (docs/architecture.md §5, rule 4).",
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "lib": ["es2024", "dom", "dom.iterable", "dom.asynciterable"]
+    "lib": ["es2024", "dom", "dom.iterable", "dom.asynciterable"],
+    "jsx": "react-jsx"
   },
-  "include": ["packages/storage/**/*.ts", "packages/map/**/*.ts"],
+  "include": ["packages/storage/**/*.ts", "packages/map/**/*.ts", "packages/ui/**/*.ts", "packages/ui/**/*.tsx"],
   "exclude": []
 }

@@ -1,0 +1,104 @@
+/* Design tokens come from the application shell as custom properties; the fallbacks keep the dialog legible alone. */
+
+.dialog {
+  display: grid;
+  gap: 16px;
+  max-width: 640px;
+  color: var(--color-text, #1d2420);
+  font: 15px / 1.5 var(--font-body, system-ui, sans-serif);
+}
+
+.header,
+.footer {
+  display: grid;
+  gap: 4px;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.intro,
+.footer p {
+  margin: 0;
+  color: var(--color-muted, #5b665f);
+}
+
+.list {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.region {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  border: 1px solid var(--color-line, #d6ddd6);
+  border-radius: 8px;
+}
+
+.text {
+  display: grid;
+  flex: 1 1 260px;
+  gap: 2px;
+  min-width: 0;
+}
+
+.name {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.status {
+  margin: 0;
+  color: var(--color-muted, #5b665f);
+  font-variant-numeric: tabular-nums;
+}
+
+.progress {
+  width: 100%;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.button,
+.primary {
+  padding: 6px 14px;
+  border: 1px solid var(--color-line, #d6ddd6);
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.primary {
+  border-color: var(--color-accent, #b33a46);
+  background: var(--color-accent, #b33a46);
+  color: #fff;
+}
+
+.button:focus-visible,
+.primary:focus-visible {
+  outline: 2px solid var(--color-accent, #b33a46);
+  outline-offset: 2px;
+}
+
+.attribution {
+  font-size: 0.85rem;
+}
+
+.footer .button {
+  justify-self: start;
+}

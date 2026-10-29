@@ -96,11 +96,23 @@
       "declared": "ISC",
       "category": "code"
     },
+    "react-dom@19.3.1": {
+      "declared": "MIT",
+      "category": "code"
+    },
+    "react@19.3.1": {
+      "declared": "MIT",
+      "category": "code"
+    },
     "require-from-string@2.0.2": {
       "declared": "MIT",
       "category": "code"
     },
     "resolve-protobuf-schema@2.1.0": {
+      "declared": "MIT",
+      "category": "code"
+    },
+    "scheduler@0.28.0": {
       "declared": "MIT",
       "category": "code"
     },
@@ -112,6 +124,8 @@
   "development": [
     "@biomejs/biome",
     "@types/node",
+    "@types/react",
+    "@types/react-dom",
     "@vitest/browser-playwright",
     "playwright",
     "typescript",
