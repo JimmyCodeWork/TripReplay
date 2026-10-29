@@ -11,6 +11,8 @@
   "scripts": {
     "verify": "pnpm run lint && pnpm run typecheck && pnpm test && pnpm run deps:check && pnpm run i18n:check && pnpm run license:check",
     "verify:clean": "docker build --file tools/ci/Dockerfile --progress plain --output type=cacheonly .",
+    "dev": "pnpm --filter @tripreplay/web dev",
+    "build": "pnpm --filter @tripreplay/web build",
     "hooks:install": "git config core.hooksPath .githooks",
     "lint": "biome ci .",
     "format": "biome check --write .",

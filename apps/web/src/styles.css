@@ -1,0 +1,105 @@
+/* Design tokens shared with the components in packages/ui, which read them as custom properties. */
+:root {
+  color-scheme: light;
+  --color-bg: #f3f5f2;
+  --color-surface: #ffffff;
+  --color-text: #1d2420;
+  --color-muted: #5b665f;
+  --color-line: #d6ddd6;
+  --color-accent: #b33a46;
+  --color-hover: rgb(0 0 0 / 6%);
+  --font-body: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --color-bg: #151a17;
+    --color-surface: #1e2420;
+    --color-text: #e6ebe7;
+    --color-muted: #9aa69e;
+    --color-line: #333c36;
+    --color-accent: #e06a75;
+    --color-hover: rgb(255 255 255 / 8%);
+  }
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font: 15px / 1.5 var(--font-body);
+}
+
+.app {
+  display: grid;
+  gap: 16px;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 16px max(16px, env(safe-area-inset-left));
+}
+
+.app-header h1 {
+  margin: 0;
+  font-size: 1.4rem;
+}
+
+.app-main {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 420px);
+  gap: 24px;
+  align-items: start;
+}
+
+@media (width < 820px) {
+  .app-main {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.app-preview {
+  display: grid;
+  gap: 12px;
+}
+
+.preview {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  border: 1px solid var(--color-line);
+  border-radius: 8px;
+  background: var(--color-surface);
+}
+
+.preview-map {
+  position: absolute;
+  inset: 0;
+}
+
+.preview-pin {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 14px;
+  height: 14px;
+  margin: -7px 0 0 -7px;
+  border: 3px solid #fff;
+  border-radius: 50%;
+  background: var(--color-accent);
+  box-shadow: 0 1px 4px rgb(0 0 0 / 40%);
+}
+
+.preview-empty {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  color: var(--color-muted);
+}
+
+.app-message {
+  max-width: 60ch;
+  margin: 48px auto;
+  padding: 0 16px;
+}

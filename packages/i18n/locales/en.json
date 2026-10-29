@@ -190,5 +190,37 @@
   "region.singapore": {
     "message": "Singapore",
     "description": "Map region name."
+  },
+  "app.loading": {
+    "message": "Opening…",
+    "description": "Shown while the application opens its storage at start-up."
+  },
+  "app.unsupported": {
+    "message": "This browser cannot run TripReplay. It needs WebGL 2, the origin private file system and IndexedDB. Use a current version of Chrome, Edge, Safari or Firefox.",
+    "description": "Shown instead of the application when a required browser feature is missing."
+  },
+  "app.startFailed": {
+    "message": "TripReplay could not open its storage: {message}",
+    "description": "Shown when opening storage fails at start-up; message is the technical error."
+  },
+  "preview.empty": {
+    "message": "Download a map to see it here.",
+    "description": "Shown in the map preview while no region is downloaded."
+  },
+  "search.label": {
+    "message": "Search places in the downloaded maps",
+    "description": "Accessible label and placeholder of the place search box."
+  },
+  "search.noResults": {
+    "message": "No places found",
+    "description": "Shown when a place search has no result."
+  },
+  "search.coordinates": {
+    "message": "Coordinates {lat}, {lon}",
+    "description": "Search result for pasted coordinates or a map link; lat and lon are numbers."
+  },
+  "search.shortLink": {
+    "message": "Short links cannot be read without a connection to their service. Open the link and copy the full address instead.",
+    "description": "Shown when a short map link such as maps.app.goo.gl is pasted into the search box."
   }
 }

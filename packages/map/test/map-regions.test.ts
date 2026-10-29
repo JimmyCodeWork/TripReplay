@@ -30,9 +30,18 @@ function archive(theme: string, zoom: number, layers: Parameters<typeof vectorTi
 }
 
 /** The bucket in memory: the release listing and one archive per theme, read by range. */
-function bucket(releases = [RELEASE]) {
+/** A stand-in for the content hash that S3 returns as the ETag. */
+function etag(url: string): string {
+  let hash = 0;
+  for (const c of url) hash = (hash * 31 + (c.codePointAt(0) ?? 0)) >>> 0;
+  return `"${hash.toString(16)}"`;
+}
+
+function bucket(initial = [RELEASE]) {
   const files = new Map<string, Uint8Array>();
-  for (const release of releases) {
+  const releases: string[] = [];
+  const addRelease = (release: string) => {
+    releases.push(release);
     const prefix = `${OVERTURE_BUCKET}/tiles/${release}`;
     files.set(
       `${prefix}/base.pmtiles`,
@@ -48,11 +57,14 @@ function bucket(releases = [RELEASE]) {
       }),
     );
     files.set(`${prefix}/places.pmtiles`, archive("places", 14, { place: [] }));
-  }
-  const listing = releases.map((r) => `<CommonPrefixes><Prefix>tiles/${r}/</Prefix></CommonPrefixes>`).join("");
+  };
+  for (const release of initial) addRelease(release);
   const fetchFn = (async (input: string, init?: RequestInit) => {
     const url = String(input);
-    if (url.includes("list-type=2")) return new Response(`<ListBucketResult>${listing}</ListBucketResult>`);
+    if (url.includes("list-type=2")) {
+      const listing = releases.map((r) => `<CommonPrefixes><Prefix>tiles/${r}/</Prefix></CommonPrefixes>`).join("");
+      return new Response(`<ListBucketResult>${listing}</ListBucketResult>`);
+    }
     const bytes = files.get(url);
     if (!bytes) return new Response("NoSuchKey", { status: 404 });
     const [start = 0, end = 0] = (new Headers(init?.headers).get("Range") ?? "")
@@ -64,11 +76,11 @@ function bucket(releases = [RELEASE]) {
       status: 206,
       headers: {
         "Content-Range": `bytes ${start}-${start + body.length - 1}/${bytes.length}`,
-        ETag: `"${url.length}"`,
+        ETag: etag(url),
       },
     });
   }) as typeof fetch;
-  return { files, fetch: fetchFn };
+  return { files, fetch: fetchFn, addRelease };
 }
 
 class MemoryRegions implements RegionRepository<MapRegionData> {
@@ -154,6 +166,21 @@ describe("map regions", () => {
     expect(await store.list()).toEqual([]);
   });
 
+  it("keeps place search and map files of a region after an update", async () => {
+    const { open, source, store } = setup();
+    const { maps, manager } = open();
+    await manager.download(KYOTO);
+    const before = await store.list();
+    source.addRelease("2026-11-18.0");
+    await manager.checkForUpdates();
+    await manager.update("kyoto");
+    expect(manager.getState()[0]).toMatchObject({ release: "2026-11-18.0", status: { kind: "ready" } });
+    expect(await maps.placeSearch.search("下京")).toHaveLength(1);
+    expect(await maps.regionFiles("kyoto")).toBeDefined();
+    const after = await store.list();
+    expect(after.some((id) => before.includes(id))).toBe(false);
+  });
+
   it("removes a region with its files and place index", async () => {
     const { open, store } = setup();
     const { maps, manager } = open();
@@ -161,6 +188,7 @@ describe("map regions", () => {
     await manager.remove("kyoto");
     expect(await store.list()).toEqual([]);
     expect(await maps.placeSearch.search("下京")).toEqual([]);
+    expect(await maps.regionFiles("kyoto")).toBeUndefined();
   });
 
   it("removes stray map files at start-up", async () => {

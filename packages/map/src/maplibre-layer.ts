@@ -115,3 +115,11 @@ export async function createMapLibreLayer(options: MapLibreLayerOptions): Promis
     },
   };
 }
+
+/**
+ * Where the map engine loads its worker from. The shell sets it to the worker file its bundler
+ * emitted, since bundlers cannot follow the engine's own lookup.
+ */
+export function setMapWorkerUrl(url: string): void {
+  maplibregl.setWorkerUrl(url);
+}

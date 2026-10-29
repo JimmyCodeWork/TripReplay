@@ -4,6 +4,7 @@ export {
   type MapFiles,
   type MapLibreLayer,
   type MapLibreLayerOptions,
+  setMapWorkerUrl,
 } from "./maplibre-layer.ts";
 export { decodePlaceIndex, encodePlaceIndex, PLACE_INDEX_VERSION } from "./places/encode.ts";
 export { type PlaceFeature, type PlaceSource, placesInTile } from "./places/extract.ts";

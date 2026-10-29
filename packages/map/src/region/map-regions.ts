@@ -36,6 +36,8 @@ export interface OvertureMapRegions extends MapRegions<MapRegionData> {
   readonly placeSearch: PlaceSearch;
   /** The map files of a region for the renderer. */
   files(data: MapRegionData): Promise<MapFiles>;
+  /** The map files of a region that is open (prepared or opened at start-up), by region id. */
+  regionFiles(regionId: string): Promise<MapFiles | undefined>;
 }
 
 /** Part of the quota left free, since browsers count storage approximately. */
@@ -78,7 +80,8 @@ async function translated<T>(work: () => Promise<T>): Promise<T> {
 export function createMapRegions(options: MapRegionsOptions): OvertureMapRegions {
   const { store } = options;
   const build = options.buildIndex ?? buildRegionPlaceIndex;
-  const indexes = new Map<string, PlaceIndex>();
+  /** Open regions by id, with the record they were opened from and their place index. */
+  const open = new Map<string, { readonly record: RegionRecord; readonly index: PlaceIndex }>();
 
   const storeIndex = async (record: RegionRecord): Promise<PlaceIndex> => {
     const index = await build(await openRegion(record, store), record.bounds);
@@ -92,7 +95,7 @@ export function createMapRegions(options: MapRegionsOptions): OvertureMapRegions
       })(),
       bytes.length,
     );
-    indexes.set(record.id, index);
+    open.set(record.id, { record, index });
     return index;
   };
 
@@ -104,27 +107,30 @@ export function createMapRegions(options: MapRegionsOptions): OvertureMapRegions
     }
     try {
       const bytes = await transform(new Uint8Array(await file.arrayBuffer()), new DecompressionStream("gzip"));
-      indexes.set(record.id, decodePlaceIndex(bytes));
+      open.set(record.id, { record, index: decodePlaceIndex(bytes) });
     } catch {
       await storeIndex(record);
     }
   };
 
-  const filesOf = (record: RegionRecord) => [
+  const storedFiles = (record: RegionRecord) => [
     ...record.themes.flatMap((theme) => theme.parts.map((part) => part.id)),
     indexId(record),
   ];
 
-  return {
-    placeSearch: createPlaceSearch(() => [...indexes.values()]),
+  const filesOf = async (record: RegionRecord): Promise<MapFiles> => {
+    const archives = await translated(() => openRegion(record, store));
+    return { base: archives.base, transportation: archives.transportation, divisions: archives.divisions } as MapFiles;
+  };
 
-    async files({ record }) {
-      const archives = await translated(() => openRegion(record, store));
-      return {
-        base: archives.base,
-        transportation: archives.transportation,
-        divisions: archives.divisions,
-      } as MapFiles;
+  return {
+    placeSearch: createPlaceSearch(() => [...open.values()].map((region) => region.index)),
+
+    files: ({ record }) => filesOf(record),
+
+    async regionFiles(regionId) {
+      const region = open.get(regionId);
+      return region && filesOf(region.record);
     },
 
     latestRelease: () =>
@@ -178,12 +184,14 @@ export function createMapRegions(options: MapRegionsOptions): OvertureMapRegions
     },
 
     async remove({ record }) {
-      indexes.delete(record.id);
-      for (const id of filesOf(record)) await store.remove(id);
+      // During an update the new release is already open under the same id; keep it.
+      const current = open.get(record.id);
+      if (current && indexId(current.record) === indexId(record)) open.delete(record.id);
+      for (const id of storedFiles(record)) await store.remove(id);
     },
 
     async removeUnused(keep) {
-      const used = new Set(keep.flatMap(({ record }) => filesOf(record)));
+      const used = new Set(keep.flatMap(({ record }) => storedFiles(record)));
       for (const id of await store.list()) if (!used.has(id)) await store.remove(id);
     },
 
