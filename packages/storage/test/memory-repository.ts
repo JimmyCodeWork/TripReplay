@@ -1,4 +1,4 @@
-import type { ProjectRepository, SaveResult, TripSummary } from "@tripreplay/app";
+import { type ProjectRepository, type SaveResult, summarizeProject, type TripSummary } from "@tripreplay/app";
 import type { Project, TripId } from "@tripreplay/domain";
 
 /** In-memory repository with the same revision check as the IndexedDB one. */
@@ -20,7 +20,7 @@ export class MemoryRepository implements ProjectRepository {
   }
 
   async list(): Promise<readonly TripSummary[]> {
-    return [...this.stored.values()].map((p) => ({ id: p.trip.id, title: p.trip.title, revision: p.trip.revision }));
+    return [...this.stored.values()].map(summarizeProject);
   }
 
   async remove(id: TripId) {

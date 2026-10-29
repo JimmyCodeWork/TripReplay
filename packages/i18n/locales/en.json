@@ -222,5 +222,129 @@
   "search.shortLink": {
     "message": "Short links cannot be read without a connection to their service. Open the link and copy the full address instead.",
     "description": "Shown when a short map link such as maps.app.goo.gl is pasted into the search box."
+  },
+  "common.save": {
+    "message": "Save",
+    "description": "Button that confirms an edit."
+  },
+  "common.delete": {
+    "message": "Delete",
+    "description": "Button that deletes an item after confirmation."
+  },
+  "common.back": {
+    "message": "Back",
+    "description": "Button that returns to the previous screen."
+  },
+  "tripList.create": {
+    "message": "New trip",
+    "description": "Button that creates a trip."
+  },
+  "tripList.createFirst": {
+    "message": "Create your first trip",
+    "description": "Call to action in the trip list when no trip exists."
+  },
+  "tripList.newTitle": {
+    "message": "New trip",
+    "description": "Title of a newly created trip, which the user renames."
+  },
+  "tripList.copyTitle": {
+    "message": "{title} (copy)",
+    "description": "Title of a duplicated trip."
+  },
+  "tripList.dates": {
+    "message": "{first} – {last}",
+    "description": "Date range of a trip on its card; first and last are formatted dates."
+  },
+  "tripList.noDates": {
+    "message": "No stops yet",
+    "description": "Shown on a trip card instead of dates while the trip has no stops."
+  },
+  "tripList.media": {
+    "message": "{size} of media",
+    "description": "Storage used by a trip's media on its card; size is formatted, for example 1.2 GB."
+  },
+  "tripList.open": {
+    "message": "Open",
+    "description": "Button that opens a trip for editing."
+  },
+  "tripList.rename": {
+    "message": "Rename",
+    "description": "Button that renames a trip."
+  },
+  "tripList.duplicate": {
+    "message": "Duplicate",
+    "description": "Button that duplicates a trip."
+  },
+  "tripList.titleLabel": {
+    "message": "Trip name",
+    "description": "Label of the trip name field."
+  },
+  "tripList.confirmDelete": {
+    "message": "Delete “{title}”? Its stops and media assignments cannot be restored without a backup.",
+    "description": "Confirmation before a trip is deleted."
+  },
+  "header.maps": {
+    "message": "Maps",
+    "description": "Header button that opens the maps dialog."
+  },
+  "header.trips": {
+    "message": "Trips",
+    "description": "Header button that returns to the trip list."
+  },
+  "itinerary.title": {
+    "message": "Itinerary",
+    "description": "Heading of the itinerary panel."
+  },
+  "itinerary.empty": {
+    "message": "Add the first stop by searching for a place, or paste coordinates or a map link.",
+    "description": "Shown in the itinerary while the trip has no stops."
+  },
+  "itinerary.day": {
+    "message": "Day {number} · {date}",
+    "description": "Heading of a day in the itinerary; date is a formatted date."
+  },
+  "itinerary.dateLabel": {
+    "message": "Date of new stops",
+    "description": "Label of the date used for stops added next."
+  },
+  "itinerary.moveUp": {
+    "message": "Move up",
+    "description": "Button that moves a stop one place earlier."
+  },
+  "itinerary.moveDown": {
+    "message": "Move down",
+    "description": "Button that moves a stop one place later."
+  },
+  "itinerary.rename": {
+    "message": "Rename stop",
+    "description": "Button and field label for renaming a stop."
+  },
+  "itinerary.remove": {
+    "message": "Remove stop",
+    "description": "Button that removes a stop."
+  },
+  "itinerary.unnamed": {
+    "message": "Stop {number}",
+    "description": "Name of a stop added from bare coordinates; the user can rename it."
+  },
+  "save.saved": {
+    "message": "Saved",
+    "description": "Autosave state: all changes are stored."
+  },
+  "save.pending": {
+    "message": "Saving soon…",
+    "description": "Autosave state: changes wait for the save delay."
+  },
+  "save.saving": {
+    "message": "Saving…",
+    "description": "Autosave state: a save is in progress."
+  },
+  "save.error": {
+    "message": "Not saved: {message}",
+    "description": "Autosave state after a failed save; the next change tries again."
+  },
+  "save.conflict": {
+    "message": "This trip was changed in another tab. Reload it to continue.",
+    "description": "Autosave state when another tab saved a newer version."
   }
 }

@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { foldTable, parseDictionary, renderModule } from "../src/fold.ts";
+import { foldTable, parseDictionary, renderModule, simplifiedTable } from "../src/fold.ts";
 
 const st = parseDictionary("# comment\n台\t臺 檯 颱 台\n驿\t驛\n伪\t僞\n干\t幹 乾 干\n");
 const jp = parseDictionary("駅\t驛\n稲\t稻\n弁\t弁 辨 瓣\n");
@@ -33,10 +33,21 @@ describe("foldTable", () => {
   });
 });
 
+describe("simplifiedTable", () => {
+  it("maps Simplified characters to the Taiwan form and leaves Japanese forms out", () => {
+    const table = simplifiedTable(st, tw);
+    assert.equal(table.get("伪"), "偽");
+    assert.equal(table.get("驿"), "驛");
+    assert.equal(table.has("駅"), false);
+    assert.equal(table.has("稲"), false);
+  });
+});
+
 describe("renderModule", () => {
-  it("writes the pairs as string literals", () => {
-    const text = renderModule(new Map([["台", "臺"]]), "// header");
+  it("writes each table as an export of string literals", () => {
+    const text = renderModule({ A: new Map([["台", "臺"]]), B: new Map([["伪", "偽"]]) }, "// header");
     assert.match(text, /^\/\/ header\n/);
-    assert.match(text, /"台臺",/);
+    assert.match(text, /export const A: readonly string\[\] = \[\n {2}"台臺",/);
+    assert.match(text, /export const B: readonly string\[\] = \[\n {2}"伪偽",/);
   });
 });

@@ -1,0 +1,143 @@
+.panel {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+  color: var(--color-text, #1d2420);
+  font: 15px / 1.5 var(--font-body, system-ui, sans-serif);
+}
+
+.title {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.add {
+  display: grid;
+  gap: 8px;
+}
+
+.date {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  color: var(--color-muted, #5b665f);
+}
+
+.date input,
+.rename input {
+  padding: 4px 8px;
+  border: 1px solid var(--color-line, #d6ddd6);
+  border-radius: 6px;
+  background: var(--color-surface, #fff);
+  color: var(--color-text, #1d2420);
+  font: inherit;
+}
+
+.empty {
+  margin: 0;
+  color: var(--color-muted, #5b665f);
+}
+
+.day {
+  display: grid;
+  gap: 4px;
+}
+
+.dayTitle {
+  margin: 0;
+  color: var(--color-muted, #5b665f);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.stops {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stop,
+.selected {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 4px 6px;
+  border-radius: 6px;
+}
+
+.selected {
+  background: var(--color-hover, rgb(0 0 0 / 6%));
+}
+
+.number {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--color-accent, #b33a46);
+  color: #fff;
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.name {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  padding: 2px 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: start;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.rename {
+  display: flex;
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.rename input {
+  flex: 1 1 120px;
+  min-width: 0;
+}
+
+.tools {
+  display: flex;
+  flex: none;
+  gap: 2px;
+}
+
+.tools button,
+.rename button {
+  min-width: 28px;
+  padding: 2px 6px;
+  border: 1px solid var(--color-line, #d6ddd6);
+  border-radius: 4px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.tools button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.name:focus-visible,
+.tools button:focus-visible,
+.rename button:focus-visible {
+  outline: 2px solid var(--color-accent, #b33a46);
+  outline-offset: 1px;
+}

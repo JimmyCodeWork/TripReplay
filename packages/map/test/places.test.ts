@@ -2,7 +2,7 @@ import { gzipSync } from "node:zlib";
 import { describe, expect, it } from "vitest";
 import { decodePlaceIndex, encodePlaceIndex } from "../src/places/encode.ts";
 import { type PlaceFeature, placesInTile } from "../src/places/extract.ts";
-import { bigrams, normalize } from "../src/places/normalize.ts";
+import { bigrams, normalize, toTraditional } from "../src/places/normalize.ts";
 import { buildPlaceIndex } from "../src/places/place-index.ts";
 import { buildRegionPlaceIndex, createPlaceSearch } from "../src/places/region-index.ts";
 import { searchPlaces } from "../src/places/search.ts";
@@ -26,6 +26,14 @@ function place(name: string, overrides: Partial<PlaceFeature> = {}): PlaceFeatur
 }
 
 const labels = (results: readonly { label: string }[]) => results.map((r) => r.label);
+
+describe("toTraditional", () => {
+  it("converts Simplified characters and leaves Japanese and Traditional ones as they are", () => {
+    expect(toTraditional("鱼尾狮公园")).toBe("魚尾獅公園");
+    expect(toTraditional("京都駅")).toBe("京都駅");
+    expect(toTraditional("臺北車站")).toBe("臺北車站");
+  });
+});
 
 describe("normalize", () => {
   it("folds Traditional, Simplified and Japanese variants to one form", () => {
@@ -178,6 +186,22 @@ describe("placesInTile", () => {
     expect(feature?.names).toEqual(["臺北市", "Taipei"]);
     expect(feature?.lon).toBeCloseTo(0);
     expect(feature?.lat).toBeCloseTo(0);
+  });
+
+  it("shows names the map only has in Simplified Chinese in Traditional characters", () => {
+    const sentosa = vectorTile({
+      division: [
+        {
+          point: [10, 10],
+          properties: {
+            "@name": "Sentosa",
+            names: JSON.stringify({ common: { en: "Sentosa", zh: "圣淘沙" } }),
+            subtype: "locality",
+          },
+        },
+      ],
+    });
+    expect(placesInTile("divisions", sentosa, 0, 0, 0)[0]?.label).toBe("聖淘沙");
   });
 
   it("keeps OpenStreetMap features that can be stops and leaves out the rest", () => {

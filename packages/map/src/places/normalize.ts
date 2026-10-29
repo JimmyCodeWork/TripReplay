@@ -1,4 +1,4 @@
-import { VARIANT_PAIRS } from "./variants.ts";
+import { SIMPLIFIED_PAIRS, VARIANT_PAIRS } from "./variants.ts";
 
 const FOLD = new Map<string, string>();
 for (const line of VARIANT_PAIRS) {
@@ -13,6 +13,25 @@ function fold(text: string): string {
   for (const c of text.normalize("NFKC").toLowerCase()) {
     if (!SEPARATOR.test(c)) out += FOLD.get(c) ?? c;
   }
+  return out;
+}
+
+/** Simplified characters that the variant table maps to one Traditional form; others stay as they are. */
+const SIMPLIFIED_TO_TRADITIONAL = new Map<string, string>();
+for (const line of SIMPLIFIED_PAIRS) {
+  const chars = Array.from(line);
+  for (let i = 0; i + 1 < chars.length; i += 2)
+    SIMPLIFIED_TO_TRADITIONAL.set(chars[i] as string, chars[i + 1] as string);
+}
+
+/**
+ * Converts Simplified Chinese to Traditional character by character, for names that the map only
+ * has in Simplified Chinese (圣淘沙 → 聖淘沙). Words with several Traditional forms take the most
+ * common one, which suits place names; Japanese forms are not changed.
+ */
+export function toTraditional(text: string): string {
+  let out = "";
+  for (const c of text) out += SIMPLIFIED_TO_TRADITIONAL.get(c) ?? c;
   return out;
 }
 
