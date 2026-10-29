@@ -1,4 +1,5 @@
 import type { AssetId, IsoDate, LonLat, Project, TripId } from "@tripreplay/domain";
+import type { FrameDescription, Timeline } from "@tripreplay/timeline";
 
 /**
  * Ports the application layer needs from the outside world (docs/architecture.md §4.2). Adapters
@@ -38,6 +39,22 @@ export interface ProjectRepository {
 /** Runs a callback once after a delay; returns a function that cancels it. */
 export interface Scheduler {
   schedule(delayMs: number, callback: () => void): () => void;
+}
+
+/** Time for playback (docs/architecture.md §4.2): `requestAnimationFrame` in the browser, a fixed step for export. */
+export interface Clock {
+  /** Milliseconds from an arbitrary origin, increasing. */
+  now(): number;
+  /** Runs `callback` before the next frame is drawn; returns a function that cancels it. */
+  requestFrame(callback: () => void): () => void;
+}
+
+/** Where the preview draws frames: the map with the route, markers and overlays on top. */
+export interface PreviewSurface {
+  /** Size of the drawing area in CSS pixels. */
+  resize(width: number, height: number): void;
+  draw(timeline: Timeline, frame: FrameDescription): void;
+  destroy(): void;
 }
 
 /**

@@ -274,5 +274,47 @@
   },
   "save.conflict": {
     "message": "此旅行已在其他分頁變更，請重新載入後再繼續。"
+  },
+  "player.play": {
+    "message": "播放"
+  },
+  "player.pause": {
+    "message": "暫停"
+  },
+  "player.time": {
+    "message": "{current} / {total}"
+  },
+  "player.position": {
+    "message": "播放位置"
+  },
+  "player.aspectRatio": {
+    "message": "畫面比例"
+  },
+  "player.fullscreen": {
+    "message": "全螢幕"
+  },
+  "player.noMap": {
+    "message": "已下載的地圖都不包含這些景點，因此預覽時不顯示底圖。"
+  },
+  "player.segment.opening": {
+    "message": "開場"
+  },
+  "player.segment.travel": {
+    "message": "移動"
+  },
+  "player.segment.title": {
+    "message": "景點標題"
+  },
+  "player.segment.photo": {
+    "message": "照片"
+  },
+  "player.segment.video": {
+    "message": "影片"
+  },
+  "player.segment.closing": {
+    "message": "結尾"
+  },
+  "recap.summary": {
+    "message": "{stops, plural, other {# 個景點}} · {days, plural, other {# 天}}"
   }
 }

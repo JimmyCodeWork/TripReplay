@@ -366,5 +366,61 @@
   "save.conflict": {
     "message": "This trip was changed in another tab. Reload it to continue.",
     "description": "Autosave state when another tab saved a newer version."
+  },
+  "player.play": {
+    "message": "Play",
+    "description": "Button that starts playback of the recap preview."
+  },
+  "player.pause": {
+    "message": "Pause",
+    "description": "Button that pauses playback of the recap preview."
+  },
+  "player.time": {
+    "message": "{current} / {total}",
+    "description": "Playback position and length of the recap, as minutes:seconds."
+  },
+  "player.position": {
+    "message": "Playback position",
+    "description": "Accessible name of the slider that moves through the recap."
+  },
+  "player.aspectRatio": {
+    "message": "Aspect ratio",
+    "description": "Accessible name of the 16:9 and 9:16 buttons."
+  },
+  "player.fullscreen": {
+    "message": "Full screen",
+    "description": "Button that plays the recap in full screen; Escape exits."
+  },
+  "player.noMap": {
+    "message": "No downloaded map contains these stops; the recap is shown without a base map.",
+    "description": "Shown under the preview when no ready map region contains the trip's stops."
+  },
+  "player.segment.opening": {
+    "message": "Opening",
+    "description": "Segment of the recap timeline: overview with the trip title."
+  },
+  "player.segment.travel": {
+    "message": "Travel",
+    "description": "Segment of the recap timeline: the camera moves to the next stop."
+  },
+  "player.segment.title": {
+    "message": "Stop title",
+    "description": "Segment of the recap timeline: the stop name is shown."
+  },
+  "player.segment.photo": {
+    "message": "Photo",
+    "description": "Segment of the recap timeline: a photo is shown."
+  },
+  "player.segment.video": {
+    "message": "Video",
+    "description": "Segment of the recap timeline: a video is played."
+  },
+  "player.segment.closing": {
+    "message": "Closing",
+    "description": "Segment of the recap timeline: overview with the trip summary."
+  },
+  "recap.summary": {
+    "message": "{stops, plural, one {# stop} other {# stops}} · {days, plural, one {# day} other {# days}}",
+    "description": "Trip summary shown at the end of the recap."
   }
 }

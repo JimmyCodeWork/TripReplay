@@ -13,6 +13,7 @@
     "@tripreplay/app": "workspace:*",
     "@tripreplay/i18n": "workspace:*",
     "@tripreplay/map": "workspace:*",
+    "@tripreplay/renderer": "workspace:*",
     "@tripreplay/storage": "workspace:*",
     "@tripreplay/themes": "workspace:*",
     "@tripreplay/ui": "workspace:*",

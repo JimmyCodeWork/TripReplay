@@ -187,6 +187,9 @@ importers:
       '@tripreplay/map':
         specifier: workspace:*
         version: link:../../packages/map
+      '@tripreplay/renderer':
+        specifier: workspace:*
+        version: link:../../packages/renderer
       '@tripreplay/storage':
         specifier: workspace:*
         version: link:../../packages/storage
