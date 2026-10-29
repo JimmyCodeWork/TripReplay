@@ -1,4 +1,4 @@
-import type { AssetId, Project, TripId } from "@tripreplay/domain";
+import type { AssetId, LonLat, Project, TripId } from "@tripreplay/domain";
 
 /**
  * Ports the application layer needs from the outside world (docs/architecture.md §4.2). Adapters
@@ -47,4 +47,20 @@ export interface AssetStore<File = unknown> {
   /** Removes the file; succeeds when it does not exist. */
   remove(id: AssetId): Promise<void>;
   list(): Promise<readonly AssetId[]>;
+}
+
+/** A place found in the downloaded maps. */
+export interface PlaceMatch {
+  /** Name to show: Traditional Chinese where the map has it, otherwise the local name. */
+  readonly label: string;
+  /** Local name, for example 京都駅 when the label is 京都車站. */
+  readonly name: string;
+  /** Category, for example `locality` or `transit/railway_station`. */
+  readonly kind: string;
+  readonly location: LonLat;
+}
+
+/** Finds places by name in the downloaded maps, on the device (ADR 0006); best matches first. */
+export interface PlaceSearch {
+  search(query: string, limit?: number): Promise<readonly PlaceMatch[]>;
 }

@@ -91,6 +91,7 @@ Adding a license to §3 requires a pull request that amends this policy, states 
 | TypeScript | Apache-2.0 | Development tool; exempt. |
 | SQLite | blessing (public domain) | Admissible. Pending review of the binding used (for example, `sql.js` or `rusqlite`). |
 | Noto Sans TC | OFL-1.1 | Admissible as a bundled font. |
+| OpenCC character dictionaries | Apache-2.0 | Admissible. A variant-character table generated from them at a pinned commit is embedded in `map` for place search, with the license text alongside (`packages/map/src/places/`); OpenCC has no `NOTICE` file. |
 
 The feature set, data model and timeline design in the [Product Specification](specification.md) remain valid.
 

@@ -1,4 +1,4 @@
-/** Minimal Mapbox Vector Tile encoder for test fixtures: polygons without attributes. */
+/** Minimal Mapbox Vector Tile encoder for test fixtures: points and polygons with string or number properties. */
 
 const EXTENT = 4096;
 
@@ -31,47 +31,90 @@ class Protobuf {
     this.bytes.push(...bytes);
     return this;
   }
+
+  packed(number: number, values: readonly number[]): this {
+    const inner = new Protobuf();
+    for (const value of values) inner.varint(value);
+    return this.message(number, inner);
+  }
 }
 
 const zigzag = (n: number) => (n << 1) ^ (n >> 31);
 
-/** Encodes one ring in tile coordinates (0 to 4096, y down), listed clockwise. */
-function ringGeometry(ring: readonly (readonly [number, number])[]): number[] {
-  const out: number[] = [];
+type Point = readonly [number, number];
+
+export type TestFeature =
+  /** A point in tile coordinates (0 to 4096, y down). */
+  | { readonly point: Point; readonly properties?: Readonly<Record<string, string | number>> }
+  /** One ring in tile coordinates, listed clockwise. */
+  | { readonly ring: readonly Point[]; readonly properties?: Readonly<Record<string, string | number>> };
+
+function geometry(feature: TestFeature): { type: number; commands: number[] } {
+  if ("point" in feature) {
+    return { type: 1, commands: [(1 << 3) | 1, zigzag(feature.point[0]), zigzag(feature.point[1])] };
+  }
+  const commands: number[] = [];
   let x = 0;
   let y = 0;
-  ring.forEach(([px, py], i) => {
-    if (i === 0) out.push((1 << 3) | 1);
-    if (i === 1) out.push(((ring.length - 1) << 3) | 2);
-    out.push(zigzag(px - x), zigzag(py - y));
+  feature.ring.forEach(([px, py], i) => {
+    if (i === 0) commands.push((1 << 3) | 1);
+    if (i === 1) commands.push(((feature.ring.length - 1) << 3) | 2);
+    commands.push(zigzag(px - x), zigzag(py - y));
     x = px;
     y = py;
   });
-  out.push((1 << 3) | 7);
-  return out;
+  commands.push((1 << 3) | 7);
+  return { type: 3, commands };
+}
+
+/** A tile with the given layers. */
+export function vectorTile(layers: Readonly<Record<string, readonly TestFeature[]>>): Uint8Array {
+  const tile = new Protobuf();
+  for (const [name, features] of Object.entries(layers)) {
+    const keys: string[] = [];
+    const values: (string | number)[] = [];
+    const layer = new Protobuf().field(15, 0).varint(2).text(1, name);
+    features.forEach((feature, i) => {
+      const tags: number[] = [];
+      for (const [key, value] of Object.entries(feature.properties ?? {})) {
+        if (!keys.includes(key)) keys.push(key);
+        if (!values.includes(value)) values.push(value);
+        tags.push(keys.indexOf(key), values.indexOf(value));
+      }
+      const { type, commands } = geometry(feature);
+      const message = new Protobuf()
+        .field(1, 0)
+        .varint(i + 1)
+        .packed(2, tags)
+        .field(3, 0)
+        .varint(type)
+        .packed(4, commands);
+      layer.message(2, message);
+    });
+    for (const key of keys) layer.text(3, key);
+    for (const value of values) {
+      const encoded = new Protobuf();
+      if (typeof value === "string") encoded.text(1, value);
+      else {
+        encoded.field(3, 1);
+        const bytes = new Uint8Array(new Float64Array([value]).buffer);
+        encoded.bytes.push(...bytes);
+      }
+      layer.message(4, encoded);
+    }
+    layer.field(5, 0).varint(EXTENT);
+    tile.message(3, layer);
+  }
+  return Uint8Array.from(tile.bytes);
 }
 
 /** A tile with one layer of polygons, each given as a single clockwise ring. */
-export function polygonTile(layer: string, rings: readonly (readonly (readonly [number, number])[])[]): Uint8Array {
-  const layerMessage = new Protobuf().field(15, 0).varint(2).text(1, layer);
-  rings.forEach((ring, i) => {
-    const geometry = new Protobuf();
-    for (const value of ringGeometry(ring)) geometry.varint(value);
-    const feature = new Protobuf()
-      .field(1, 0)
-      .varint(i + 1)
-      .field(3, 0)
-      .varint(3);
-    feature.field(4, 2).varint(geometry.bytes.length);
-    feature.bytes.push(...geometry.bytes);
-    layerMessage.message(2, feature);
-  });
-  layerMessage.field(5, 0).varint(EXTENT);
-  return Uint8Array.from(new Protobuf().message(3, layerMessage).bytes);
+export function polygonTile(layer: string, rings: readonly (readonly Point[])[]): Uint8Array {
+  return vectorTile({ [layer]: rings.map((ring) => ({ ring })) });
 }
 
 /** The western half of a tile. */
-export const WEST_HALF: readonly (readonly [number, number])[] = [
+export const WEST_HALF: readonly Point[] = [
   [0, 0],
   [EXTENT / 2, 0],
   [EXTENT / 2, EXTENT],
