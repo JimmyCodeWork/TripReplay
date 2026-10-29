@@ -11,8 +11,10 @@
   },
   "dependencies": {
     "@tripreplay/app": "workspace:*",
+    "@tripreplay/domain": "workspace:*",
     "@tripreplay/i18n": "workspace:*",
     "@tripreplay/map": "workspace:*",
+    "@tripreplay/media": "workspace:*",
     "@tripreplay/renderer": "workspace:*",
     "@tripreplay/storage": "workspace:*",
     "@tripreplay/themes": "workspace:*",

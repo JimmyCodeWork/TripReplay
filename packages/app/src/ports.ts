@@ -1,4 +1,4 @@
-import type { AssetId, IsoDate, LonLat, Project, TripId } from "@tripreplay/domain";
+import type { Asset, AssetId, IsoDate, LonLat, Project, TripId } from "@tripreplay/domain";
 import type { FrameDescription, Timeline } from "@tripreplay/timeline";
 
 /**
@@ -71,6 +71,24 @@ export interface AssetStore<File = unknown> {
   /** Removes the file; succeeds when it does not exist. */
   remove(id: AssetId): Promise<void>;
   list(): Promise<readonly AssetId[]>;
+}
+
+/** What the media adapter reads of a file before it is stored: the asset without its id. */
+export type MediaInfo = Asset extends infer A ? (A extends Asset ? Omit<A, "id"> : never) : never;
+
+/**
+ * Reading and storing imported media (docs/architecture.md §4.2). Adapters throw `MediaFailure`
+ * for files they cannot use. `File` is a file the user chose on the device.
+ */
+export interface MediaPort<File = unknown> {
+  /** The file's name, as the import dialog shows it. */
+  fileName(file: File): string;
+  /** Reads the kind, size, dimensions, capture time and position of a file, and its content hash. */
+  inspect(file: File, signal?: AbortSignal): Promise<MediaInfo>;
+  /** Copies the file into the media store as asset `id`; it becomes visible only once complete. */
+  store(file: File, id: AssetId, signal?: AbortSignal): Promise<void>;
+  /** Removes a stored file that no project refers to, as after a cancelled import. */
+  discard(id: AssetId): Promise<void>;
 }
 
 /** A place found in the downloaded maps. */

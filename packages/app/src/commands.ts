@@ -51,6 +51,12 @@ export type Command =
   | { readonly type: "moveStop"; readonly id: StopId; readonly date: IsoDate; readonly position: number }
   | { readonly type: "removeStop"; readonly id: StopId; readonly options?: RemoveStopOptions }
   | { readonly type: "addAssets"; readonly assets: readonly Asset[] }
+  /** The result of an import: its assets and their clips, as one step to undo. */
+  | {
+      readonly type: "importMedia";
+      readonly assets: readonly Asset[];
+      readonly clips: readonly { readonly id: ClipId; readonly stopId: StopId; readonly assetId: AssetId }[];
+    }
   | { readonly type: "removeUnreferencedAssets" }
   | {
       readonly type: "addClips";
@@ -106,6 +112,10 @@ export function applyCommand(project: Project, command: Command): Project {
       return removeStop(project, command.id, command.options);
     case "addAssets":
       return command.assets.reduce((p, asset) => addAsset(p, asset), project);
+    case "importMedia": {
+      const withAssets = command.assets.reduce((p, asset) => addAsset(p, asset), project);
+      return command.clips.reduce((p, clip) => addClip(p, clip), withAssets);
+    }
     case "removeUnreferencedAssets":
       return removeUnreferencedAssets(project).project;
     case "addClips":

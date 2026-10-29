@@ -316,5 +316,101 @@
   },
   "recap.summary": {
     "message": "{stops, plural, other {# 個景點}} · {days, plural, other {# 天}}"
+  },
+  "workspace.tabs": {
+    "message": "側邊面板"
+  },
+  "workspace.tab.itinerary": {
+    "message": "行程"
+  },
+  "workspace.tab.media": {
+    "message": "媒體"
+  },
+  "media.title": {
+    "message": "媒體"
+  },
+  "media.import": {
+    "message": "匯入媒體"
+  },
+  "media.noStops": {
+    "message": "請先加入景點；照片與影片會指派給景點。"
+  },
+  "media.forStop": {
+    "message": "{name} · {date}"
+  },
+  "media.empty": {
+    "message": "這個景點還沒有照片或影片。"
+  },
+  "media.duration": {
+    "message": "秒數"
+  },
+  "media.videoLength": {
+    "message": "影片 · {length}"
+  },
+  "media.moveUp": {
+    "message": "上移"
+  },
+  "media.moveDown": {
+    "message": "下移"
+  },
+  "media.remove": {
+    "message": "從景點移除"
+  },
+  "import.title": {
+    "message": "匯入媒體"
+  },
+  "import.reading": {
+    "message": "正在讀取 {completed}／{total}…"
+  },
+  "import.timeZone": {
+    "message": "時間以旅行的時區（{zone}）顯示。"
+  },
+  "import.changeTimeZone": {
+    "message": "變更"
+  },
+  "import.timeZoneLabel": {
+    "message": "時區"
+  },
+  "import.noStops": {
+    "message": "請先在行程中加入景點，才能指派這些檔案。"
+  },
+  "import.suggested": {
+    "message": "{count, plural, other {建議配對 # 項}}"
+  },
+  "import.acceptAll": {
+    "message": "全部接受"
+  },
+  "import.accept": {
+    "message": "接受"
+  },
+  "import.accepted": {
+    "message": "已接受"
+  },
+  "import.byLocation": {
+    "message": "依位置"
+  },
+  "import.byDate": {
+    "message": "依日期"
+  },
+  "import.undetermined": {
+    "message": "{count, plural, other {無法判斷 # 項}}"
+  },
+  "import.chooseStop": {
+    "message": "選擇景點"
+  },
+  "import.stopFor": {
+    "message": "{file} 的景點"
+  },
+  "import.noTime": {
+    "message": "無拍攝時間"
+  },
+  "import.skipped": {
+    "message": "{count, plural, other {略過 # 個檔案}}"
+  },
+  "import.skipReason": {
+    "message": "{reason, select, duplicate {已在此旅行中} unsupported {不是此瀏覽器可顯示的照片或影片} other {無法讀取或儲存}}"
+  },
+  "import.finish": {
+    "message": "{count, plural, =0 {完成匯入} other {加入 # 個檔案}}"
   }
 }

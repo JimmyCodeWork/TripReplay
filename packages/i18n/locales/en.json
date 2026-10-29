@@ -422,5 +422,133 @@
   "recap.summary": {
     "message": "{stops, plural, one {# stop} other {# stops}} · {days, plural, one {# day} other {# days}}",
     "description": "Trip summary shown at the end of the recap."
+  },
+  "workspace.tabs": {
+    "message": "Side panel",
+    "description": "Accessible name of the tab list in the trip workspace."
+  },
+  "workspace.tab.itinerary": {
+    "message": "Itinerary",
+    "description": "Tab with the stops of the trip."
+  },
+  "workspace.tab.media": {
+    "message": "Media",
+    "description": "Tab with the photos and videos of the selected stop."
+  },
+  "media.title": {
+    "message": "Media",
+    "description": "Heading of the media tab."
+  },
+  "media.import": {
+    "message": "Import media",
+    "description": "Button that opens the file chooser to import photos and videos."
+  },
+  "media.noStops": {
+    "message": "Add a stop first; photos and videos are assigned to stops.",
+    "description": "Shown in the media tab while the trip has no stops."
+  },
+  "media.forStop": {
+    "message": "{name} · {date}",
+    "description": "The stop whose media is listed; date is a formatted date."
+  },
+  "media.empty": {
+    "message": "No photos or videos at this stop yet.",
+    "description": "Shown when the selected stop has no media."
+  },
+  "media.duration": {
+    "message": "Seconds",
+    "description": "Label of the display duration of a photo, from 1 to 15 seconds."
+  },
+  "media.videoLength": {
+    "message": "Video · {length}",
+    "description": "Length of a video clip, as minutes:seconds."
+  },
+  "media.moveUp": {
+    "message": "Move up",
+    "description": "Button that plays a photo or video earlier."
+  },
+  "media.moveDown": {
+    "message": "Move down",
+    "description": "Button that plays a photo or video later."
+  },
+  "media.remove": {
+    "message": "Remove from stop",
+    "description": "Button that removes a photo or video from the stop."
+  },
+  "import.title": {
+    "message": "Import media",
+    "description": "Heading of the import and matching dialog."
+  },
+  "import.reading": {
+    "message": "Reading {completed} of {total}…",
+    "description": "Progress while the chosen files are read and stored."
+  },
+  "import.timeZone": {
+    "message": "Times are shown in the trip's time zone, {zone}.",
+    "description": "Explains how capture times are shown; zone is an IANA name such as Asia/Tokyo."
+  },
+  "import.changeTimeZone": {
+    "message": "Change",
+    "description": "Button that lets the user correct the trip's time zone."
+  },
+  "import.timeZoneLabel": {
+    "message": "Time zone",
+    "description": "Label of the time zone selector."
+  },
+  "import.noStops": {
+    "message": "Add stops to the itinerary to assign these files.",
+    "description": "Shown in the import dialog while the trip has no stops."
+  },
+  "import.suggested": {
+    "message": "{count, plural, one {# suggested match} other {# suggested matches}}",
+    "description": "Heading of the files with a suggested stop."
+  },
+  "import.acceptAll": {
+    "message": "Accept all",
+    "description": "Button that accepts every suggested stop."
+  },
+  "import.accept": {
+    "message": "Accept",
+    "description": "Button that accepts the suggested stop of one file."
+  },
+  "import.accepted": {
+    "message": "Accepted",
+    "description": "Shown for a file whose stop has been accepted."
+  },
+  "import.byLocation": {
+    "message": "by location",
+    "description": "Why a stop was suggested: the file's GPS position is near it."
+  },
+  "import.byDate": {
+    "message": "by date",
+    "description": "Why a stop was suggested: the file was taken on the stop's day."
+  },
+  "import.undetermined": {
+    "message": "{count, plural, one {# file could not be matched} other {# files could not be matched}}",
+    "description": "Heading of the files without GPS data or capture time, to assign by hand."
+  },
+  "import.chooseStop": {
+    "message": "Choose a stop",
+    "description": "Empty choice of the stop selector."
+  },
+  "import.stopFor": {
+    "message": "Stop for {file}",
+    "description": "Accessible name of a file's stop selector; file is a file name."
+  },
+  "import.noTime": {
+    "message": "No capture time",
+    "description": "Shown for a file that records no capture time."
+  },
+  "import.skipped": {
+    "message": "{count, plural, one {# file skipped} other {# files skipped}}",
+    "description": "Heading of the files that are not imported."
+  },
+  "import.skipReason": {
+    "message": "{reason, select, duplicate {Already in this trip} unsupported {Not a photo or video this browser can show} other {Could not be read or stored}}",
+    "description": "Why a file is not imported."
+  },
+  "import.finish": {
+    "message": "{count, plural, =0 {Finish import} one {Add # file} other {Add # files}}",
+    "description": "Button that adds the accepted files to their stops."
   }
 }

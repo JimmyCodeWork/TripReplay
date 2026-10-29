@@ -13,12 +13,33 @@ export { applyCommand, type Command } from "./commands.ts";
 export { createEditor, type DispatchResult, type Editor, type EditorOptions, type EditorState } from "./editor.ts";
 export { createHistory, HISTORY_LIMIT, type History, record, redo, replacePresent, undo } from "./history.ts";
 export { type LocationInput, parseLocation } from "./location-input.ts";
+export {
+  ANY_DAY_DISTANCE_KM,
+  captureDate,
+  distanceKm,
+  type MatchInput,
+  type MatchReason,
+  SAME_DAY_DISTANCE_KM,
+  type StopSuggestion,
+  suggestStop,
+} from "./matching.ts";
+export {
+  createMediaImport,
+  type ImportItem,
+  MediaFailure,
+  type MediaFailureReason,
+  type MediaImport,
+  type MediaImportOptions,
+  type MediaImportState,
+} from "./media-import.ts";
 export { createPlayback, type Playback, type PlaybackOptions, type PlaybackState } from "./playback.ts";
 export type {
   AssetStore,
   Clock,
   DownloadProgress,
   MapRegions,
+  MediaInfo,
+  MediaPort,
   PlaceMatch,
   PlaceSearch,
   PlannedFiles,
