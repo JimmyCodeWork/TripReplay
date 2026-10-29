@@ -93,6 +93,7 @@ TripReplay 以 [MIT 授權](../../LICENSE)釋出。本政策規範哪些第三�
 | TypeScript | Apache-2.0 | 開發工具，豁免。 |
 | SQLite | blessing（公共領域） | 可准入。待審查所採用的綁定（例如 `sql.js` 或 `rusqlite`）。 |
 | Noto Sans TC | OFL-1.1 | 可作為隨附字型准入。 |
+| OpenCC 字元字典 | Apache-2.0 | 准入。以固定版本產生的異體字對照表內嵌於 `map` 供地點搜尋使用，授權條文與之並列（`packages/map/src/places/`）；OpenCC 沒有 `NOTICE` 檔案。 |
 
 [產品規格](specification.md)中的功能範圍、資料模型與時間軸設計維持有效。
 

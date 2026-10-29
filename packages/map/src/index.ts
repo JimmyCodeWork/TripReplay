@@ -5,6 +5,12 @@ export {
   type MapLibreLayer,
   type MapLibreLayerOptions,
 } from "./maplibre-layer.ts";
+export { decodePlaceIndex, encodePlaceIndex, PLACE_INDEX_VERSION } from "./places/encode.ts";
+export { type PlaceFeature, type PlaceSource, placesInTile } from "./places/extract.ts";
+export { normalize } from "./places/normalize.ts";
+export { buildPlaceIndex, type PlaceIndex } from "./places/place-index.ts";
+export { buildRegionPlaceIndex, createPlaceSearch, type IndexProgress } from "./places/region-index.ts";
+export { type PlaceResult, searchPlaces } from "./places/search.ts";
 export {
   type ArchiveInfo,
   type ArchiveLayout,

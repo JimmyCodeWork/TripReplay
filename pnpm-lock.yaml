@@ -212,6 +212,9 @@ importers:
 
   packages/map:
     dependencies:
+      '@mapbox/vector-tile':
+        specifier: 3.0.0
+        version: 3.0.0
       '@tripreplay/app':
         specifier: workspace:*
         version: link:../app
@@ -221,6 +224,9 @@ importers:
       maplibre-gl:
         specifier: 6.15.0
         version: 6.15.0
+      pbf:
+        specifier: 5.1.2
+        version: 5.1.2
       pmtiles:
         specifier: 4.5.0
         version: 4.5.0

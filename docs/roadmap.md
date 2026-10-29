@@ -93,9 +93,10 @@ Packages follow the [Application Architecture](architecture.md):
 **In progress.** Done in `map`:
 
 - the `MapLayer` port (`renderer`) and its MapLibre implementation, which draws the base map from PMTiles files on the device;
-- region download from Overture Maps. Planning reads only the remote directories, so the size is known before the download. Parts are stored one by one, so a paused or interrupted download resumes with the missing parts. Parts are named after the remote version, and the stored archives are verified after download.
+- region download from Overture Maps. Planning reads only the remote directories, so the size is known before the download. Parts are stored one by one, so a paused or interrupted download resumes with the missing parts. Parts are named after the remote version, and the stored archives are verified after download;
+- place search on the device (the `PlaceSearch` port in `app`). The index is built from the downloaded `divisions`, `base` and `places` archives and stored as a compact binary file. Variant characters are folded with a table generated from OpenCC, and equivalent words such as 車站 and 駅 are unified ([spike S1 §5.4](spikes/s1-map-rendering.md#54-in-the-product)).
 
-Place search, the region list with its states, and the maps dialog follow. Map files go to their own OPFS volume, because start-up recovery of the media store removes files that no project refers to.
+The region list with its states and the maps dialog follow. Map files go to their own OPFS volume, because start-up recovery of the media store removes files that no project refers to.
 
 ## M3 — Release Readiness for 1.0 (Phase E)
 
