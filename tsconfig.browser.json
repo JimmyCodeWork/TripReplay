@@ -5,6 +5,13 @@
     "lib": ["es2024", "dom", "dom.iterable", "dom.asynciterable"],
     "jsx": "react-jsx"
   },
-  "include": ["packages/storage/**/*.ts", "packages/map/**/*.ts", "packages/ui/**/*.ts", "packages/ui/**/*.tsx"],
+  "include": [
+    "packages/storage/**/*.ts",
+    "packages/map/**/*.ts",
+    "packages/ui/**/*.ts",
+    "packages/ui/**/*.tsx",
+    "apps/web/**/*.ts",
+    "apps/web/**/*.tsx"
+  ],
   "exclude": []
 }

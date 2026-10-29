@@ -25,6 +25,8 @@ pnpm run hooks:install   # optional; see Local Verification
 |---|---|
 | `pnpm run verify` | Run every check that CI runs, in the same order |
 | `pnpm run verify:clean` | Run `verify` in a clean Linux container (requires Docker) |
+| `pnpm run dev` | Start the Web application in development mode (Vite) at `http://localhost:5173` |
+| `pnpm run build` | Build the Web application into `apps/web/dist` |
 | `pnpm run hooks:install` | Enable the repository's Git hooks |
 | `pnpm run lint` | Check formatting and lint rules (Biome); fails on any issue |
 | `pnpm run format` | Apply formatting and safe lint fixes |
@@ -69,7 +71,7 @@ To bypass a hook once, add `--no-verify` to `git commit` or `git push`. To disab
 
 | Path | Contents |
 |---|---|
-| `apps/` | Web build and platform shells (not yet created) |
+| `apps/web/` | Web application: the composition root that creates the adapters and mounts the UI; platform shells follow later |
 | `packages/` | Product packages: `domain`, `themes`, `i18n`, `timeline`, `app`, `renderer`, `map`, `storage`, `ui`; others planned as defined in the [Application Architecture §3](architecture.md#3-packages) |
 | `packages/domain/` | Data model, invariants and pure editing operations |
 | `packages/themes/` | Built-in recap themes as data |

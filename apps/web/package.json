@@ -1,0 +1,28 @@
+{
+  "name": "@tripreplay/web",
+  "version": "0.0.0",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@tripreplay/app": "workspace:*",
+    "@tripreplay/i18n": "workspace:*",
+    "@tripreplay/map": "workspace:*",
+    "@tripreplay/storage": "workspace:*",
+    "@tripreplay/themes": "workspace:*",
+    "@tripreplay/ui": "workspace:*",
+    "maplibre-gl": "6.15.0",
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "vite": "8.3.4"
+  }
+}

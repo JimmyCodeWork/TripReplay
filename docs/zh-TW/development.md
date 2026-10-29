@@ -27,6 +27,8 @@ pnpm run hooks:install   # 選用；見「本機驗證」
 |---|---|
 | `pnpm run verify` | 依相同順序執行 CI 的所有檢查 |
 | `pnpm run verify:clean` | 於乾淨的 Linux 容器中執行 `verify`（需要 Docker） |
+| `pnpm run dev` | 以開發模式（Vite）啟動 Web 應用程式，網址為 `http://localhost:5173` |
+| `pnpm run build` | 將 Web 應用程式建置至 `apps/web/dist` |
 | `pnpm run hooks:install` | 啟用版本庫的 Git hooks |
 | `pnpm run lint` | 檢查格式與 lint 規則（Biome）；有任何問題即失敗 |
 | `pnpm run format` | 套用格式化及安全的 lint 修正 |
@@ -71,7 +73,7 @@ pnpm run hooks:install   # 選用；見「本機驗證」
 
 | 路徑 | 內容 |
 |---|---|
-| `apps/` | Web 版與各平台外殼（尚未建立） |
+| `apps/web/` | Web 應用程式：建立轉接器並掛載介面的組合根；各平台外殼將於日後加入 |
 | `packages/` | 產品套件：`domain`、`themes`、`i18n`、`timeline`、`app`、`renderer`、`map`、`storage`、`ui`；其餘依[應用程式架構 §3](architecture.md#3-套件) 規劃 |
 | `packages/domain/` | 資料模型、不變條件及純函式的編輯操作 |
 | `packages/themes/` | 以資料定義的隨附回顧主題 |

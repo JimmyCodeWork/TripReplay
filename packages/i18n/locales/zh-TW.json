@@ -142,5 +142,29 @@
   },
   "region.singapore": {
     "message": "新加坡"
+  },
+  "app.loading": {
+    "message": "開啟中…"
+  },
+  "app.unsupported": {
+    "message": "此瀏覽器無法執行 TripReplay，需要 WebGL 2、來源私有檔案系統（OPFS）及 IndexedDB。請使用最新版的 Chrome、Edge、Safari 或 Firefox。"
+  },
+  "app.startFailed": {
+    "message": "TripReplay 無法開啟儲存空間：{message}"
+  },
+  "preview.empty": {
+    "message": "下載地圖後即可在此預覽。"
+  },
+  "search.label": {
+    "message": "搜尋已下載地圖中的地點"
+  },
+  "search.noResults": {
+    "message": "找不到符合的地點"
+  },
+  "search.coordinates": {
+    "message": "座標 {lat}, {lon}"
+  },
+  "search.shortLink": {
+    "message": "短網址必須連線至其服務才能解析。請開啟連結後，改為複製完整網址。"
   }
 }
