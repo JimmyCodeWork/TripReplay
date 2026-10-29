@@ -78,7 +78,7 @@ pnpm run hooks:install   # 選用；見「本機驗證」
 | `packages/timeline/` | 時間軸編譯器及 `renderAt`，描述回顧的每一格畫面 |
 | `packages/app/` | 編輯器狀態、可復原與重做的命令、自動儲存，以及由轉接器實作的連接埠 |
 | `packages/renderer/` | 繪製回顧的每一格畫面；定義 `MapLayer` 連接埠 |
-| `packages/map/` | 以 MapLibre GL JS 從裝置上的 PMTiles 檔繪製底圖，以及供已下載區域使用的 PMTiles 寫入器 |
+| `packages/map/` | 以 MapLibre GL JS 從裝置上的 PMTiles 檔繪製底圖，以及可續傳的 Overture Maps 區域下載 |
 | `packages/storage/` | 以 IndexedDB 儲存專案、以 OPFS 儲存媒體，具備當機安全的匯入、啟動時復原及[專案包](project-package.md) |
 | `packages/i18n/` | 語系判定與訊息目錄（`locales/`） |
 | `tools/deps-check/` | CI 使用的套件界線檢查；允許的相依關係定義於 `boundaries.json` |
