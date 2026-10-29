@@ -4,6 +4,6 @@
   "compilerOptions": {
     "lib": ["es2024", "dom", "dom.iterable", "dom.asynciterable"]
   },
-  "include": ["packages/storage/**/*.ts"],
+  "include": ["packages/storage/**/*.ts", "packages/map/**/*.ts"],
   "exclude": []
 }
