@@ -12,6 +12,7 @@ import type { PlaceIndex } from "../places/place-index.ts";
 import { buildRegionPlaceIndex, createPlaceSearch } from "../places/region-index.ts";
 import { downloadRegion, regionRecord } from "./download.ts";
 import { RegionError } from "./errors.ts";
+import { openMapFiles } from "./map-file.ts";
 import { listOvertureReleases, overtureRegionRequest } from "./overture.ts";
 import { planRegion } from "./plan.ts";
 import { openRegion, type RegionRecord, verifyRegion } from "./region.ts";
@@ -31,7 +32,7 @@ export interface MapRegionsOptions {
   readonly buildIndex?: (archives: Readonly<Record<string, Blob>>, bounds: RegionBounds) => Promise<PlaceIndex>;
 }
 
-export interface OvertureMapRegions extends MapRegions<MapRegionData> {
+export interface OvertureMapRegions extends MapRegions<MapRegionData, File> {
   /** Searches the place names of every region that is open. */
   readonly placeSearch: PlaceSearch;
   /** The map files of a region for the renderer. */
@@ -61,7 +62,13 @@ function failure(error: unknown): unknown {
       const gone = error.status === 403 || error.status === 404;
       return new RegionFailure(gone ? "unavailable" : "network", error.message);
     }
-    const reason = { changed: "changed", invalidArchive: "damaged", missingPart: "missing" } as const;
+    const reason = {
+      changed: "changed",
+      invalidArchive: "damaged",
+      missingPart: "missing",
+      unsupported: "unsupported",
+      incomplete: "incomplete",
+    } as const;
     return new RegionFailure(reason[error.code], error.message);
   }
   if (error instanceof TypeError) return new RegionFailure("network", error.message);
@@ -155,6 +162,19 @@ export function createMapRegions(options: MapRegionsOptions): OvertureMapRegions
             translated(async () => {
               await downloadRegion(plan, { store, regionId, name: regionId, signal: downloadSignal, onProgress });
             }),
+        };
+      }),
+
+    planFiles: (files, regionId) =>
+      translated(async () => {
+        const opened = await openMapFiles(files, regionId, store);
+        const { record } = opened;
+        return {
+          name: record.name,
+          bounds: record.bounds,
+          size: record.size,
+          data: { record },
+          download: (signal, onProgress) => translated(() => opened.copy(signal, onProgress)),
         };
       }),
 

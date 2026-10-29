@@ -28,6 +28,7 @@ export {
   regionRecord,
 } from "./region/download.ts";
 export { RegionError, type RegionErrorCode } from "./region/errors.ts";
+export { inspectMapFile, type MapFileInfo, type OpenedFiles, openMapFiles, regionName } from "./region/map-file.ts";
 export {
   createMapRegions,
   type MapRegionData,
@@ -53,7 +54,14 @@ export {
   type ThemeRequest,
 } from "./region/plan.ts";
 export { httpRangeSource, type RangeSource } from "./region/range-source.ts";
-export { fitsInQuota, openRegion, type RegionRecord, unusedMapFiles, verifyRegion } from "./region/region.ts";
+export {
+  fitsInQuota,
+  openRegion,
+  type RegionRecord,
+  readArchiveHeader,
+  unusedMapFiles,
+  verifyRegion,
+} from "./region/region.ts";
 export { openRemoteArchive, type RemoteArchive } from "./region/remote-archive.ts";
 export { type Bounds, tilesInBounds } from "./region/tiles.ts";
 export { baseMapStyle, MAP_THEMES, type MapTheme, type StyleOptions } from "./style.ts";

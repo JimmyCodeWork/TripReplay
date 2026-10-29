@@ -1,4 +1,12 @@
-import { createStore, type RegionEntry, type RegionEstimate, RegionFailure, type RegionManager } from "@tripreplay/app";
+import {
+  createStore,
+  FILE_RELEASE,
+  type OpenFilesResult,
+  type RegionEntry,
+  type RegionEstimate,
+  RegionFailure,
+  type RegionManager,
+} from "@tripreplay/app";
 import { createTranslator, type Locale } from "@tripreplay/i18n";
 import { act } from "react";
 import { createRoot, type Root } from "react-dom/client";
@@ -11,9 +19,10 @@ const TAIWAN = { id: "taiwan", bounds: [119.3, 21.8, 122.1, 25.4] as const };
 const CATALOG = [TAIWAN, { id: "singapore", bounds: [103.6, 1.15, 104.1, 1.48] as const }];
 
 /** A RegionManager whose list is set by the test and whose calls are recorded. */
-class FakeManager implements RegionManager {
+class FakeManager implements RegionManager<File> {
   readonly store = createStore<readonly RegionEntry[]>([]);
   readonly calls: string[] = [];
+  openResult: OpenFilesResult = { kind: "opened", id: "file-1" };
   estimateResult: RegionEstimate | Error = { release: "r1", size: 440e6, neededBytes: 440e6, freeBytes: 12e9 };
 
   getState = () => this.store.getState();
@@ -22,6 +31,10 @@ class FakeManager implements RegionManager {
     this.store.setState(() => entries);
   }
   load = async () => {};
+  openFiles = async (files: readonly File[]) => {
+    this.calls.push(`openFiles ${files.map((f) => f.name).join(" ")}`);
+    return this.openResult;
+  };
   estimate = async (_bounds: unknown, id: string) => {
     this.calls.push(`estimate ${id}`);
     if (this.estimateResult instanceof Error) throw this.estimateResult;
@@ -150,5 +163,47 @@ describe("MapsDialog", () => {
     await click(taiwan, "更新");
     await click(view, "檢查更新");
     expect(manager.calls).toEqual(["update taiwan", "checkForUpdates"]);
+  });
+
+  describe("map files from the device", () => {
+    async function choose(view: HTMLElement, names: string[]) {
+      const input = view.querySelector('input[type="file"]') as HTMLInputElement;
+      const transfer = new DataTransfer();
+      for (const name of names) transfer.items.add(new File(["PMTiles"], name));
+      input.files = transfer.files;
+      await act(async () => input.dispatchEvent(new Event("change", { bubbles: true })));
+    }
+
+    it("opens the chosen files and explains files that cannot be used", async () => {
+      const manager = new FakeManager();
+      const view = await render(manager, "zh-TW");
+      expect(buttons(view)).toContain("開啟地圖檔");
+      await choose(view, ["kyoto-base.pmtiles", "kyoto-divisions.pmtiles"]);
+      expect(manager.calls).toEqual(["openFiles kyoto-base.pmtiles kyoto-divisions.pmtiles"]);
+      expect(view.querySelector('[role="alert"]')).toBeNull();
+      manager.openResult = { kind: "failed", reason: "incomplete" };
+      await choose(view, ["kyoto-base.pmtiles"]);
+      expect(view.querySelector('[role="alert"]')?.textContent).toBe(
+        "必須一併開啟 base、transportation 與 divisions 檔案。",
+      );
+      manager.openResult = { kind: "insufficientStorage", neededBytes: 2e9, freeBytes: 1e9 };
+      await choose(view, ["japan-base.pmtiles"]);
+      expect(view.querySelector('[role="alert"]')?.textContent).toBe("儲存空間不足：需要 2 GB，可用 1 GB");
+    });
+
+    it("lists regions opened from files, with their copy progress, and deletes them", async () => {
+      const manager = new FakeManager();
+      const view = await render(manager);
+      const kyoto = (status: RegionEntry["status"]) =>
+        entry(status, { id: "file-1", name: "kyoto", release: FILE_RELEASE, size: 80e6 });
+      await act(async () => manager.set([kyoto({ kind: "copying", completedBytes: 20e6, totalBytes: 80e6 })]));
+      expect(status(row(view, "kyoto"))).toBe("Copying: 20 MB of 80 MB");
+      expect(row(view, "kyoto").querySelector("progress")?.value).toBe(25);
+      await act(async () => manager.set([kyoto({ kind: "ready" })]));
+      expect(status(row(view, "kyoto"))).toBe("Ready · 80 MB");
+      expect(status(row(view, "Taiwan"))).toBe("Not downloaded");
+      await click(row(view, "kyoto"), "Delete");
+      expect(manager.calls).toEqual(["remove file-1"]);
+    });
   });
 });

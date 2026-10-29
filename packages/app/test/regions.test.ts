@@ -1,7 +1,9 @@
 import { describe, expect, it } from "vitest";
 import {
   createRegionManager,
+  FILE_RELEASE,
   type MapRegions,
+  type PlannedFiles,
   type PlannedRegion,
   type RegionBounds,
   type RegionEntry,
@@ -35,7 +37,7 @@ class MemoryRegions implements RegionRepository<Data> {
 }
 
 /** Stores bytes per data in four steps; a step can be held to pause in the middle. */
-class FakeMaps implements MapRegions<Data> {
+class FakeMaps implements MapRegions<Data, string> {
   release = "2026-10-21.0";
   free: number | undefined = 10_000;
   readonly bytes = new Map<string, number>();
@@ -79,6 +81,16 @@ class FakeMaps implements MapRegions<Data> {
     };
   }
 
+  /** Files named `bad` are not map files. */
+  async planFiles(files: readonly string[], regionId: string): Promise<PlannedFiles<Data>> {
+    if (files.includes("bad")) throw new RegionFailure("unsupported", "not a map file");
+    return {
+      ...(await this.plan(FILE_RELEASE, TAIWAN.bounds, regionId)),
+      name: files.join("+"),
+      bounds: TAIWAN.bounds,
+    };
+  }
+
   /** Waits until the download reaches the held step. */
   async held(): Promise<void> {
     while (!this.resumeHeld) await new Promise((r) => setTimeout(r, 0));
@@ -115,7 +127,8 @@ class FakeMaps implements MapRegions<Data> {
 function setup() {
   const repository = new MemoryRegions();
   const maps = new FakeMaps();
-  const manager = createRegionManager({ repository, maps });
+  let ids = 0;
+  const manager = createRegionManager({ repository, maps, newId: () => String(++ids) });
   const statuses: string[] = [];
   manager.subscribe(() => {
     const kind = manager.getState()[0]?.status.kind ?? "none";
@@ -270,5 +283,66 @@ describe("region manager", () => {
     expect(manager.getState()).toEqual([]);
     expect(repository.regions.size).toBe(0);
     expect(maps.bytes.size).toBe(0);
+  });
+
+  describe("map files opened from the device", () => {
+    it("copies, verifies and stores them as a region that is not updated from the source", async () => {
+      const { repository, maps, manager, statuses, entry } = setup();
+      expect(await manager.openFiles(["taiwan-base", "taiwan-roads"])).toEqual({ kind: "opened", id: "file-1" });
+      expect(statuses).toEqual(["copying", "verifying", "ready"]);
+      expect(entry()).toMatchObject({ id: "file-1", name: "taiwan-base+taiwan-roads", size: SIZE });
+      expect(repository.regions.get("file-1")).toMatchObject({ ready: true, release: FILE_RELEASE });
+      expect(maps.prepared.has(`file-1@${FILE_RELEASE}`)).toBe(true);
+      await manager.checkForUpdates();
+      expect(entry().update).toBeUndefined();
+    });
+
+    it("leaves a region opened from files to be deleted when its files are gone", async () => {
+      const { repository, maps, manager } = setup();
+      await manager.openFiles(["taiwan"]);
+      maps.bytes.clear();
+      const reloaded = createRegionManager({ repository, maps });
+      await reloaded.load();
+      const [region] = reloaded.getState();
+      expect(region?.status).toEqual({ kind: "failed", reason: "missing" });
+      await reloaded.resume(region?.id as string);
+      expect(reloaded.getState()[0]?.status).toEqual({ kind: "failed", reason: "missing" });
+    });
+
+    it("reports files that are not map files, and too little space, without adding a region", async () => {
+      const { repository, maps, manager } = setup();
+      expect(await manager.openFiles(["bad"])).toEqual({ kind: "failed", reason: "unsupported" });
+      maps.free = 10;
+      expect(await manager.openFiles(["taiwan"])).toEqual({
+        kind: "insufficientStorage",
+        neededBytes: SIZE,
+        freeBytes: 10,
+      });
+      expect(manager.getState()).toEqual([]);
+      expect(repository.regions.size).toBe(0);
+      expect(maps.bytes.size).toBe(0);
+    });
+
+    it("removes the region and the copied data when copying fails", async () => {
+      const { repository, maps, manager } = setup();
+      maps.failDownload = new RegionFailure("damaged", "read error");
+      expect(await manager.openFiles(["taiwan"])).toEqual({ kind: "failed", reason: "damaged" });
+      expect(manager.getState()).toEqual([]);
+      expect(repository.regions.size).toBe(0);
+      expect(maps.bytes.size).toBe(0);
+    });
+
+    it("stops copying when the region is deleted", async () => {
+      const { repository, maps, manager } = setup();
+      maps.holdAt = SIZE / 4;
+      const opening = manager.openFiles(["taiwan"]);
+      await maps.held();
+      expect(manager.getState()[0]?.status).toMatchObject({ kind: "copying", completedBytes: SIZE / 4 });
+      await manager.remove(manager.getState()[0]?.id as string);
+      expect(await opening).toEqual({ kind: "cancelled" });
+      expect(manager.getState()).toEqual([]);
+      expect(repository.regions.size).toBe(0);
+      expect(maps.bytes.size).toBe(0);
+    });
   });
 });

@@ -9,6 +9,7 @@ export type {
   MapRegions,
   PlaceMatch,
   PlaceSearch,
+  PlannedFiles,
   PlannedRegion,
   ProjectRepository,
   RegionBounds,
@@ -21,6 +22,8 @@ export type {
 export { type CatalogRegion, REGION_CATALOG } from "./region-catalog.ts";
 export {
   createRegionManager,
+  FILE_RELEASE,
+  type OpenFilesResult,
   type RegionEntry,
   type RegionEstimate,
   RegionFailure,

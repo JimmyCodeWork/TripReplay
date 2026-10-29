@@ -1,4 +1,4 @@
-import type { MapRegions, RegionBounds, RegionRepository, StoredRegion } from "./ports.ts";
+import type { MapRegions, PlannedFiles, RegionBounds, RegionRepository, StoredRegion } from "./ports.ts";
 import { createStore, type Listener } from "./store.ts";
 
 /** Why a region could not be downloaded or used, in terms the user can act on. */
@@ -12,7 +12,11 @@ export type RegionFailureReason =
   /** The downloaded data is not valid. */
   | "damaged"
   /** Stored files are gone, for example because the browser evicted storage. */
-  | "missing";
+  | "missing"
+  /** An opened file is not a map file the application can use. */
+  | "unsupported"
+  /** The opened map files lack a part of the map, such as its roads. */
+  | "incomplete";
 
 export class RegionFailure extends Error {
   override name = "RegionFailure";
@@ -28,6 +32,8 @@ export class RegionFailure extends Error {
 export type RegionStatus =
   | { readonly kind: "downloading"; readonly completedBytes: number; readonly totalBytes: number }
   | { readonly kind: "paused"; readonly completedBytes: number; readonly totalBytes: number }
+  /** Map files opened from the device are being copied into storage. */
+  | { readonly kind: "copying"; readonly completedBytes: number; readonly totalBytes: number }
   | { readonly kind: "verifying" }
   | { readonly kind: "ready" }
   | { readonly kind: "insufficientStorage"; readonly neededBytes: number; readonly freeBytes: number }
@@ -47,7 +53,17 @@ export interface RegionEntry {
   readonly update?: { readonly release: string; readonly status: UpdateStatus };
 }
 
-export interface RegionManager {
+/** The release of regions opened from map files; they are not updated from the download source. */
+export const FILE_RELEASE = "file";
+
+export type OpenFilesResult =
+  | { readonly kind: "opened"; readonly id: string }
+  | { readonly kind: "insufficientStorage"; readonly neededBytes: number; readonly freeBytes: number }
+  | { readonly kind: "failed"; readonly reason: RegionFailureReason }
+  /** The region was deleted while its files were copied. */
+  | { readonly kind: "cancelled" };
+
+export interface RegionManager<File = unknown> {
   getState(): readonly RegionEntry[];
   subscribe(listener: Listener): () => void;
   /** Reads the stored regions and re-verifies them, as every launch must (docs/specification.md §4.3). */
@@ -57,6 +73,12 @@ export interface RegionManager {
    * starts (docs/specification.md §4.1). Reads only the remote directories.
    */
   estimate(bounds: RegionBounds, id: string, signal?: AbortSignal): Promise<RegionEstimate>;
+  /**
+   * Adds a region from map files on the device (docs/specification.md §4.1): checks them, copies
+   * them into storage and prepares them. The region is listed while it is copied, and only stored
+   * once it is ready; if anything fails it is removed again.
+   */
+  openFiles(files: readonly File[]): Promise<OpenFilesResult>;
   /** Downloads a region in the current release. */
   download(region: { readonly id: string; readonly name: string; readonly bounds: RegionBounds }): Promise<void>;
   pause(id: string): void;
@@ -78,10 +100,18 @@ export interface RegionEstimate {
   readonly freeBytes: number | undefined;
 }
 
-export interface RegionManagerOptions<Data> {
+export interface RegionManagerOptions<Data, File> {
   readonly repository: RegionRepository<Data>;
-  readonly maps: MapRegions<Data>;
+  readonly maps: MapRegions<Data, File>;
+  /** Ids of regions opened from map files; by default from the clock and a counter. */
+  readonly newId?: () => string;
 }
+
+let lastId = 0;
+const defaultId = () => `${Date.now().toString(36)}${(++lastId).toString(36)}`;
+
+const reasonOf = (error: unknown, fallback: RegionFailureReason): RegionFailureReason =>
+  error instanceof RegionFailure ? error.reason : fallback;
 
 type Target = "region" | "update";
 
@@ -90,7 +120,11 @@ type Target = "region" | "update";
  * space, store the record, download, verify and prepare. A paused or interrupted download keeps its
  * stored parts and continues where it stopped.
  */
-export function createRegionManager<Data>({ repository, maps }: RegionManagerOptions<Data>): RegionManager {
+export function createRegionManager<Data, File = unknown>({
+  repository,
+  maps,
+  newId = defaultId,
+}: RegionManagerOptions<Data, File>): RegionManager<File> {
   const store = createStore<readonly RegionEntry[]>([]);
   const stored = new Map<string, StoredRegion<Data>>();
   const jobs = new Map<string, { controller: AbortController; done: Promise<void> }>();
@@ -159,7 +193,7 @@ export function createRegionManager<Data>({ repository, maps }: RegionManagerOpt
         const completedBytes = data === undefined ? 0 : await maps.storedBytes(data).catch(() => 0);
         setStatus(id, target, { kind: "paused", completedBytes, totalBytes });
       } else {
-        setStatus(id, target, { kind: "failed", reason: error instanceof RegionFailure ? error.reason : "network" });
+        setStatus(id, target, { kind: "failed", reason: reasonOf(error, "network") });
       }
     }
   }
@@ -180,6 +214,52 @@ export function createRegionManager<Data>({ repository, maps }: RegionManagerOpt
     await job.done;
   }
 
+  async function copy(planned: PlannedFiles<Data>, id: string, signal: AbortSignal): Promise<OpenFilesResult> {
+    const { name, bounds, size, data } = planned;
+    try {
+      await planned.download(signal, (progress) => setStatus(id, "region", { kind: "copying", ...progress }));
+      setStatus(id, "region", { kind: "verifying" });
+      await maps.prepare(data, signal);
+      await save({ id, name, bounds, release: FILE_RELEASE, size, data, ready: true });
+      setStatus(id, "region", { kind: "ready" });
+      return { kind: "opened", id };
+    } catch (error) {
+      await maps.remove(data).catch(() => {});
+      store.setState((entries) => entries.filter((e) => e.id !== id));
+      return signal.aborted ? { kind: "cancelled" } : { kind: "failed", reason: reasonOf(error, "damaged") };
+    }
+  }
+
+  async function openFiles(files: readonly File[]): Promise<OpenFilesResult> {
+    const id = `file-${newId()}`;
+    let planned: PlannedFiles<Data>;
+    try {
+      planned = await maps.planFiles(files, id);
+    } catch (error) {
+      return { kind: "failed", reason: reasonOf(error, "unsupported") };
+    }
+    const freeBytes = await maps.freeSpace();
+    if (freeBytes !== undefined && planned.size > freeBytes) {
+      return { kind: "insufficientStorage", neededBytes: planned.size, freeBytes };
+    }
+    const entry: RegionEntry = {
+      id,
+      name: planned.name,
+      bounds: planned.bounds,
+      release: FILE_RELEASE,
+      size: planned.size,
+      status: { kind: "copying", completedBytes: 0, totalBytes: planned.size },
+    };
+    store.setState((entries) => [...entries, entry]);
+    const controller = new AbortController();
+    const result = copy(planned, id, controller.signal).finally(() => jobs.delete(id));
+    jobs.set(id, {
+      controller,
+      done: result.then(() => {}),
+    });
+    return result;
+  }
+
   async function download(region: { readonly id: string; readonly name: string; readonly bounds: RegionBounds }) {
     const existing = store.getState().find((e) => e.id === region.id);
     if (existing?.status.kind === "ready" || jobs.has(region.id)) return;
@@ -196,10 +276,7 @@ export function createRegionManager<Data>({ repository, maps }: RegionManagerOpt
     try {
       release = await maps.latestRelease();
     } catch (error) {
-      setStatus(region.id, "region", {
-        kind: "failed",
-        reason: error instanceof RegionFailure ? error.reason : "network",
-      });
+      setStatus(region.id, "region", { kind: "failed", reason: reasonOf(error, "network") });
       return;
     }
     await start(region.id, release, "region");
@@ -243,6 +320,8 @@ export function createRegionManager<Data>({ repository, maps }: RegionManagerOpt
       await maps.removeUnused(regions.flatMap((r) => (r.update ? [r.data, r.update.data] : [r.data])));
     },
 
+    openFiles,
+
     download,
 
     async estimate(bounds, id, signal) {
@@ -258,7 +337,8 @@ export function createRegionManager<Data>({ repository, maps }: RegionManagerOpt
 
     async resume(id) {
       const entry = store.getState().find((e) => e.id === id);
-      if (!entry || jobs.has(id)) return;
+      // A region opened from files can only be opened again from the files.
+      if (!entry || jobs.has(id) || entry.release === FILE_RELEASE) return;
       if (entry.update && entry.update.status.kind !== "available") return start(id, entry.update.release, "update");
       if (entry.status.kind === "ready") return;
       if (entry.release === undefined || (entry.status.kind === "failed" && entry.status.reason === "unavailable")) {
@@ -283,7 +363,7 @@ export function createRegionManager<Data>({ repository, maps }: RegionManagerOpt
       const latest = await maps.latestRelease();
       store.setState((entries) =>
         entries.map((entry) =>
-          entry.status.kind === "ready" && entry.release !== latest && !entry.update
+          entry.status.kind === "ready" && entry.release !== latest && entry.release !== FILE_RELEASE && !entry.update
             ? { ...entry, update: { release: latest, status: { kind: "available" } } }
             : entry,
         ),

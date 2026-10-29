@@ -102,3 +102,13 @@
 .footer .button {
   justify-self: start;
 }
+
+.files {
+  display: grid;
+  gap: 8px;
+}
+
+.error {
+  margin: 0;
+  color: var(--color-accent, #b33a46);
+}

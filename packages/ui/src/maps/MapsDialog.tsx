@@ -1,5 +1,7 @@
 import {
   type CatalogRegion,
+  FILE_RELEASE,
+  type OpenFilesResult,
   type RegionEntry,
   type RegionEstimate,
   RegionFailure,
@@ -7,12 +9,12 @@ import {
   type RegionManager,
 } from "@tripreplay/app";
 import type { Locale, MessageKey, Translate } from "@tripreplay/i18n";
-import { type ReactNode, useId, useState, useSyncExternalStore } from "react";
+import { type ChangeEvent, type ReactNode, useId, useRef, useState, useSyncExternalStore } from "react";
 import { formatBytes } from "../format-bytes.ts";
 import styles from "./MapsDialog.module.css";
 
 export interface MapsDialogProps {
-  readonly manager: RegionManager;
+  readonly manager: RegionManager<File>;
   readonly catalog: readonly CatalogRegion[];
   readonly locale: Locale;
   readonly t: Translate;
@@ -28,7 +30,7 @@ type Step =
 interface RowProps {
   readonly region: CatalogRegion;
   readonly entry: RegionEntry | undefined;
-  readonly manager: RegionManager;
+  readonly manager: RegionManager<File>;
   readonly locale: Locale;
   readonly t: Translate;
 }
@@ -106,6 +108,10 @@ function RegionRow({ region, entry, manager, locale, t }: RowProps) {
           button("maps.action.delete", remove),
         );
         break;
+      case "copying":
+        status = t("maps.status.copying", { completed: size(current.completedBytes), total: size(current.totalBytes) });
+        progress = { completed: current.completedBytes, total: current.totalBytes };
+        break;
       case "verifying":
         status = t("maps.status.verifying");
         break;
@@ -175,6 +181,118 @@ function RegionRow({ region, entry, manager, locale, t }: RowProps) {
   );
 }
 
+interface FileRowProps {
+  readonly entry: RegionEntry;
+  readonly manager: RegionManager<File>;
+  readonly locale: Locale;
+  readonly t: Translate;
+}
+
+/** A region opened from map files: it is copied, not downloaded, and can only be deleted. */
+function FileRegionRow({ entry, manager, locale, t }: FileRowProps) {
+  const size = (bytes: number) => formatBytes(locale, bytes);
+  const headingId = useId();
+  const current = entry.status;
+  let status: string;
+  let progress: { completed: number; total: number } | undefined;
+  if (current.kind === "copying") {
+    status = t("maps.status.copying", { completed: size(current.completedBytes), total: size(current.totalBytes) });
+    progress = { completed: current.completedBytes, total: current.totalBytes };
+  } else if (current.kind === "verifying") status = t("maps.status.verifying");
+  else if (current.kind === "failed") status = t("maps.status.failed", { reason: current.reason });
+  else status = t("maps.status.ready", { size: size(entry.size) });
+  return (
+    <li className={styles.region} aria-labelledby={headingId}>
+      <div className={styles.text}>
+        <h3 id={headingId} className={styles.name}>
+          {entry.name}
+        </h3>
+        <p className={styles.status} role="status">
+          {status}
+        </p>
+        {progress && (
+          <progress
+            className={styles.progress}
+            value={percent(progress.completed, progress.total)}
+            max={100}
+            aria-labelledby={headingId}
+          />
+        )}
+      </div>
+      {current.kind !== "verifying" && (
+        <div className={styles.actions}>
+          <button type="button" className={styles.button} onClick={() => void manager.remove(entry.id)}>
+            {t("maps.action.delete")}
+          </button>
+        </div>
+      )}
+    </li>
+  );
+}
+
+interface FilesProps {
+  readonly entries: readonly RegionEntry[];
+  readonly manager: RegionManager<File>;
+  readonly locale: Locale;
+  readonly t: Translate;
+}
+
+/** Maps opened from files already on the device (docs/ui-design.md §2.1, "Open a map file"). */
+function MapFiles({ entries, manager, locale, t }: FilesProps) {
+  const input = useRef<HTMLInputElement>(null);
+  const [result, setResult] = useState<OpenFilesResult | undefined>();
+  const titleId = useId();
+  const choose = async (event: ChangeEvent<HTMLInputElement>) => {
+    const files = [...(event.target.files ?? [])];
+    event.target.value = "";
+    if (files.length === 0) return;
+    setResult(undefined);
+    setResult(await manager.openFiles(files));
+  };
+  let message: string | undefined;
+  if (result?.kind === "failed") message = t("maps.files.failed", { reason: result.reason });
+  else if (result?.kind === "insufficientStorage") {
+    message = t("maps.status.insufficientStorage", {
+      needed: formatBytes(locale, result.neededBytes),
+      free: formatBytes(locale, result.freeBytes),
+    });
+  }
+  return (
+    <section className={styles.files} aria-labelledby={titleId}>
+      <h3 id={titleId} className={styles.name}>
+        {t("maps.files.title")}
+      </h3>
+      <p className={styles.status}>{t("maps.files.hint")}</p>
+      {entries.length > 0 && (
+        <ul className={styles.list}>
+          {entries.map((entry) => (
+            <FileRegionRow key={entry.id} entry={entry} manager={manager} locale={locale} t={t} />
+          ))}
+        </ul>
+      )}
+      {message && (
+        <p className={styles.error} role="alert">
+          {message}
+        </p>
+      )}
+      <div className={styles.actions}>
+        <button type="button" className={styles.button} onClick={() => input.current?.click()}>
+          {t("maps.files.open")}
+        </button>
+        <input
+          ref={input}
+          type="file"
+          accept=".pmtiles"
+          multiple
+          hidden
+          onChange={(event) => void choose(event)}
+          aria-label={t("maps.files.open")}
+        />
+      </div>
+    </section>
+  );
+}
+
 /**
  * The maps dialog (docs/ui-design.md §2.1): every region with its size and state, and one button
  * per action. The size and the free storage are shown before a download starts.
@@ -202,6 +320,12 @@ export function MapsDialog({ manager, catalog, locale, t }: MapsDialogProps) {
           />
         ))}
       </ul>
+      <MapFiles
+        entries={entries.filter((entry) => entry.release === FILE_RELEASE)}
+        manager={manager}
+        locale={locale}
+        t={t}
+      />
       <footer className={styles.footer}>
         <p>{t("maps.privacy")}</p>
         <p className={styles.attribution}>{t("maps.attribution")}</p>
