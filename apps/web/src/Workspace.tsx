@@ -1,8 +1,16 @@
-import { createEditor, type Editor, type SaveStatus, type Scheduler } from "@tripreplay/app";
+import {
+  createEditor,
+  createPlayback,
+  createTimelineCache,
+  type Editor,
+  type RegionEntry,
+  type SaveStatus,
+  type Scheduler,
+} from "@tripreplay/app";
 import type { Locale, Translate } from "@tripreplay/i18n";
-import { ItineraryPanel } from "@tripreplay/ui";
-import { useEffect, useState, useSyncExternalStore } from "react";
-import { MapPreview } from "./MapPreview.tsx";
+import { ItineraryPanel, RecapPlayer, recapTexts } from "@tripreplay/ui";
+import { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from "react";
+import { animationClock, createRecapSurface } from "./recap-surface.ts";
 import type { Services } from "./services.ts";
 
 const scheduler: Scheduler = {
@@ -27,6 +35,34 @@ function saveText(status: SaveStatus, t: Translate): string {
   }
 }
 
+function contains({ bounds: [west, south, east, north] }: RegionEntry, { lon, lat }: { lon: number; lat: number }) {
+  const inLon = west <= east ? lon >= west && lon <= east : lon >= west || lon <= east;
+  return inLon && lat >= south && lat <= north;
+}
+
+/** The ready region that contains the most stops; the preview draws one region's map. */
+function regionFor(regions: readonly RegionEntry[], stops: readonly { location: { lon: number; lat: number } }[]) {
+  let best: { region: RegionEntry; count: number } | undefined;
+  for (const region of regions) {
+    if (region.status.kind !== "ready") continue;
+    const count = stops.filter((stop) => contains(region, stop.location)).length;
+    if (count > 0 && (!best || count > best.count)) best = { region, count };
+  }
+  return best?.region;
+}
+
+/** Whether the user asked the system for less motion; the recap then cross-fades instead of flying. */
+function useReducedMotion(): boolean {
+  const query = useMemo(() => window.matchMedia("(prefers-reduced-motion: reduce)"), []);
+  return useSyncExternalStore(
+    (listener) => {
+      query.addEventListener("change", listener);
+      return () => query.removeEventListener("change", listener);
+    },
+    () => query.matches,
+  );
+}
+
 interface EditorViewProps {
   readonly editor: Editor;
   readonly services: Services;
@@ -41,12 +77,29 @@ function EditorView({ editor, services, locale, t, onClose }: EditorViewProps) {
   const [selectedId, setSelectedId] = useState<string | undefined>();
   const { project } = state;
   const selected = project.stops.find((stop) => stop.id === selectedId) ?? project.stops[0];
-  const ready = regions.filter((entry) => entry.status.kind === "ready");
-  const focus = selected?.location;
-  const region =
-    (focus &&
-      ready.find(({ bounds: [w, s, e, n] }) => focus.lon >= w && focus.lon <= e && focus.lat >= s && focus.lat <= n)) ||
-    ready[0];
+  const region = regionFor(regions, project.stops);
+  const regionId = region?.id;
+
+  const playback = useMemo(() => createPlayback({ clock: animationClock }), []);
+  useEffect(() => () => playback.dispose(), [playback]);
+  const compileTimeline = useMemo(() => createTimelineCache(), []);
+  const reducedMotion = useReducedMotion();
+  const timeline = compileTimeline(project, { reducedMotion });
+  const labels = useMemo(() => recapTexts(locale, t), [locale, t]);
+  const createSurface = useCallback(
+    async (container: HTMLElement) =>
+      createRecapSurface(container, regionId ? await services.maps.regionFiles(regionId) : undefined, labels),
+    [services, regionId, labels],
+  );
+
+  /** Selecting a stop moves the preview to its title (docs/ui-design.md §3.3). */
+  const select = (id: string) => {
+    setSelectedId(id);
+    const index = timeline.stops.findIndex((stop) => stop.id === id);
+    const title = timeline.segments.find((s) => s.kind === "title" && s.stopIndex === index);
+    playback.pause();
+    if (title) playback.seek(title.startUs + (title.endUs - title.startUs) / 2);
+  };
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
@@ -85,12 +138,21 @@ function EditorView({ editor, services, locale, t, onClose }: EditorViewProps) {
             search={services.maps.placeSearch}
             newId={services.newId}
             selectedStopId={selected?.id}
-            onSelect={setSelectedId}
+            onSelect={select}
             locale={locale}
             t={t}
           />
         </aside>
-        <MapPreview maps={services.maps} region={region} focus={focus} t={t} />
+        <div className="workspace-preview">
+          <RecapPlayer
+            timeline={timeline}
+            playback={playback}
+            createSurface={createSurface}
+            onAspectRatio={(aspectRatio) => editor.dispatch({ type: "setAspectRatio", aspectRatio })}
+            {...(project.stops.length > 0 && !region ? { notice: t("player.noMap") } : {})}
+            t={t}
+          />
+        </div>
       </div>
     </div>
   );

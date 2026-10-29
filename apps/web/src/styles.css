@@ -161,6 +161,10 @@ body {
   align-items: start;
 }
 
+.workspace-preview {
+  min-width: 0;
+}
+
 .workspace-panel {
   padding: 12px;
   border: 1px solid var(--color-line);
@@ -174,7 +178,7 @@ body {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .workspace-main > .preview {
+  .workspace-main > .workspace-preview {
     order: -1;
   }
 }

@@ -1,0 +1,156 @@
+.player {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  color: var(--color-text, #1d2420);
+  font: 15px / 1.5 var(--font-body, system-ui, sans-serif);
+}
+
+.frame {
+  display: grid;
+  place-items: center;
+  min-height: 0;
+}
+
+/* The stage keeps the aspect ratio of the recap (`--ratio`) and fits into the available height. */
+.stage {
+  --height: 70vh;
+  position: relative;
+  overflow: hidden;
+  width: min(100%, calc(var(--height) * var(--ratio)));
+  aspect-ratio: var(--ratio);
+  border-radius: 8px;
+  background: var(--color-surface, #fff);
+}
+
+/* The MapLibre map and the overlay canvas fill the stage, one above the other. */
+.stage > * {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.notice {
+  margin: 0;
+  color: var(--color-muted, #5b665f);
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  align-items: center;
+}
+
+.time {
+  min-width: 7.5em;
+  font-variant-numeric: tabular-nums;
+}
+
+.slider {
+  flex: 1 1 200px;
+  accent-color: var(--color-accent, #b33a46);
+}
+
+.aspect {
+  display: flex;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+.play,
+.option {
+  padding: 6px 14px;
+  border: 1px solid var(--color-line, #d6ddd6);
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.play {
+  min-width: 5.5em;
+  border-color: var(--color-accent, #b33a46);
+  background: var(--color-accent, #b33a46);
+  color: #fff;
+}
+
+.option[aria-pressed="true"] {
+  border-color: var(--color-accent, #b33a46);
+  color: var(--color-accent, #b33a46);
+}
+
+.strip {
+  position: relative;
+  display: flex;
+  height: 28px;
+  overflow: hidden;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.segment {
+  min-width: 2px;
+  border-right: 1px solid var(--color-surface, #fff);
+  background: var(--color-line, #d6ddd6);
+}
+
+.opening,
+.closing {
+  background: #8a958e;
+}
+
+.travel {
+  background: #c9d3cc;
+}
+
+.title {
+  background: #e0a4ab;
+}
+
+.photo {
+  background: #8fb6d0;
+}
+
+.video {
+  background: #6f9a7c;
+}
+
+.playhead {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  margin-left: -1px;
+  background: var(--color-text, #1d2420);
+  pointer-events: none;
+}
+
+/* Full-screen playback: only the recap, letterboxed on black (docs/ui-design.md §5). */
+.player:fullscreen {
+  grid-template-rows: minmax(0, 1fr) auto auto;
+  padding: 16px;
+  background: #000;
+  color: #fff;
+}
+
+.player:fullscreen .stage {
+  --height: calc(100vh - 140px);
+  border-radius: 0;
+}
+
+.player:fullscreen .notice {
+  color: #bbb;
+}
