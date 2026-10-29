@@ -12,6 +12,7 @@ This directory records significant architecture and policy decisions. Each recor
 | [0004](0004-web-first-release.md) | Web-first, screen-first 1.0 with self-hosted OpenStreetMap tiles | Accepted; map hosting superseded by 0006 |
 | [0005](0005-modular-architecture.md) | Modular, layered application architecture | Accepted |
 | [0006](0006-local-only-operation.md) | Local-only operation: downloaded maps and on-device place search | Accepted |
+| [0007](0007-architecture-gate.md) | Architecture gate: renderer, map pipeline and supported browsers | Accepted |
 
 ## Writing a Record
 

@@ -7,7 +7,7 @@
 | | |
 |---|---|
 | 日期 | 2026-10-24 |
-| 狀態 | Chromium 部分已完成。Firefox 與 Safari 尚待量測（見[待決事項](#待決事項)）。 |
+| 狀態 | 已完成。已在 Chromium 中驗證；並在三台裝置上檢查 Chromium、Android System WebView 及 WebKit 的功能支援與配額。已於架構決策關卡接受（[ADR 0007](../adr/0007-architecture-gate.md)）；Firefox 尚待量測（見[待決事項](#待決事項)）。 |
 | 路線圖 | [M1，S6](../roadmap.md#m1--技術驗證階段-a) |
 
 ## 問題
@@ -51,16 +51,31 @@ Chromium 141（無頭模式）、Linux、Playwright 1.56、持久化設定檔；
 
 傳輸速率包含產生測試資料的時間，且取決於裝置；此為本環境的下限，而非目標值。
 
+### 實機
+
+[S1 §6.1](s1-map-rendering.md#61-實機) 的測試頁也檢查了匯入協定所需的功能，並在 OPFS 中寫入、移動、讀回及刪除一個 256 MB 的檔案。三台裝置皆在內嵌網頁檢視中執行。
+
+| 裝置 | 引擎 | `createWritable()`／`move()`／Worker 同步存取／IndexedDB | 配額 | `persist()` | 寫入／讀取 |
+|---|---|---|---|---|---|
+| Windows 桌上型電腦，RTX 5080 | Chromium 152 | 全部支援 | 321 GB | 遭拒絕 | 179–192／504–519 MB/s |
+| Sony Xperia 1 V，Android 15 | Android System WebView 156 | 全部支援 | 10.7 GB | 遭拒絕 | 151／402 MB/s |
+| 13 吋 iPad | WebKit（iPadOS） | 全部支援 | 1 GB | 遭拒絕 | 數據不可靠 |
+
+測試資料大多為 0。iPad 回報的寫入速率為 3,048 MB/s，顯示檔案系統可能並未照原樣寫入資料。測試現已改為寫入擬隨機位元組；其餘傳輸速率僅供參考。
+
+因此，匯入協定可在 WebKit 中原樣運作。真正的限制是 iPad 只有 1 GB 的配額：一個臺灣區域（約 440 MB）就幾乎用掉一半。
+
 ## `storage` 的決策
 
 - 媒體存放於 OPFS，每個素材一個檔案；中繼資料與專案存放於 IndexedDB。
 - 採用上述匯入協定與啟動時復原程序。復原程序於顯示旅行列表之前執行。
-- 首次匯入後以 `navigator.storage.persist()` 請求持久化儲存，並以 `navigator.storage.estimate()` 顯示用量與配額。
+- 首次匯入後以 `navigator.storage.persist()` 請求持久化儲存，但不依賴它：所有量測的裝置皆拒絕。以 `navigator.storage.estimate()` 顯示用量與配額，並在每次下載與匯入前檢查可用配額，假設配額可能只有 1 GB（[ADR 0007](../adr/0007-architecture-gate.md)）。
 - 透過 OPFS 的 `File` 物件讀取媒體，可隨機存取以跳轉影片，而不需載入整個檔案。
 
 ## 待決事項
 
-- **Firefox 與 Safari。** 本環境僅有 Chromium。在架構決策關卡之前須量測兩者：OPFS 中 `createWritable()` 與 `move()` 的支援、配額、`persist()` 的行為，以及網站資料的清除規則，包含 iOS 上網站與主畫面 App 的差異。無法使用 `createWritable()` 時，同一協定可改於專用 Worker 中使用 `createSyncAccessHandle()`。
+- **Firefox。** 未量測。M2 期間，`packages/storage` 的瀏覽器測試須另透過 Playwright 在 Firefox 中執行。無法使用 `createWritable()` 時，同一協定可改於專用 Worker 中使用 `createSyncAccessHandle()`。
+- **Safari 本身與 iOS 主畫面 App。** 僅量測了內嵌的 WebKit 檢視。M2 期間須在 Safari 及主畫面 App 上量測配額與網站資料的清除行為。
 - **內容雜湊。** Web Crypto 無法對串流逐步計算雜湊，因此重複檢查需要在 Worker 中執行可逐步計算的 SHA-256 實作，且須符合相依套件授權政策。
 - **斷電。** 已測試行程終止；作業系統層級的斷電未測試。
 - **參考裝置。** 傳輸速率與 10 GB 媒體庫須以實際相機檔案，在參考裝置上重新測試。
