@@ -118,6 +118,8 @@ interface FrameDescription {
 | `AudioPort` — 播放、暫停、跳轉混音後的預覽 | `app` | `audio`（Web Audio） | — |
 | `MapLayer` — 依鏡頭繪製底圖 | `renderer` | `map`（已下載的 PMTiles） | 原生地圖渲染 |
 | `PlaceSearch` — 於已下載的地圖中搜尋地名 | `app` | `map`（地名索引） | — |
+| `MapRegions` — 規劃、下載、驗證及刪除地圖區域 | `app` | `map`（Overture Maps） | — |
+| `RegionRepository` — 儲存已下載區域的列表 | `app` | `storage`（IndexedDB） | 安裝版使用 SQLite |
 | `MediaSource` — 提供片段在指定時間的解碼影格 | `renderer` | `media` | 匯出用解碼器 |
 | `Clock` — 目前時間與影格排程 | `app` | `requestAnimationFrame` | 匯出用固定步進時鐘 |
 | `Scheduler` — 延遲後執行回呼，供自動儲存使用 | `app` | `setTimeout` | — |

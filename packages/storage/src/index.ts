@@ -25,5 +25,6 @@ export {
   recoverStorage,
   referencedAssets,
 } from "./recovery.ts";
+export { type IndexedDbRegionRepository, openRegionRepository } from "./region-repository.ts";
 export type { Directory, FileInfo, Volume, Writer } from "./volume.ts";
 export type { ByteSource } from "./zip/zip-read.ts";

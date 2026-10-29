@@ -116,6 +116,8 @@ Because the frame is data, the same description drives the preview, the full-scr
 | `AudioPort` — play, pause, seek the mixed preview | `app` | `audio` (Web Audio) | — |
 | `MapLayer` — draw the base map for a camera | `renderer` | `map` (downloaded PMTiles) | Native map rendering |
 | `PlaceSearch` — find place names in the downloaded maps | `app` | `map` (place-name index) | — |
+| `MapRegions` — plan, download, verify and remove map regions | `app` | `map` (Overture Maps) | — |
+| `RegionRepository` — store the list of downloaded regions | `app` | `storage` (IndexedDB) | SQLite in installed builds |
 | `MediaSource` — provide a decoded frame for a clip at a time | `renderer` | `media` | Export decoder |
 | `Clock` — current time and frame scheduling | `app` | `requestAnimationFrame` | Fixed-step clock for export |
 | `Scheduler` — run a callback after a delay, for autosave | `app` | `setTimeout` | — |

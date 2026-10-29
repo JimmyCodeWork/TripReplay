@@ -11,9 +11,12 @@ export type RegionErrorCode =
 export class RegionError extends Error {
   override name = "RegionError";
   readonly code: RegionErrorCode;
+  /** HTTP status for `http` errors. */
+  readonly status: number | undefined;
 
-  constructor(code: RegionErrorCode, message: string) {
+  constructor(code: RegionErrorCode, message: string, status?: number) {
     super(message);
     this.code = code;
+    this.status = status;
   }
 }

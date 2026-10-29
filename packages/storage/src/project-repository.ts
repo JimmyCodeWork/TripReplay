@@ -1,11 +1,8 @@
 import type { ProjectRepository, SaveResult, TripSummary } from "@tripreplay/app";
 import { type Project, SCHEMA_VERSION, type TripId, validateProject } from "@tripreplay/domain";
+import { DATABASE, openTripReplayDatabase, PROJECTS } from "./database.ts";
 import { StorageError } from "./errors.ts";
-import { openDatabase, request, transaction } from "./idb.ts";
-
-const DATABASE = "tripreplay";
-const VERSION = 1;
-const PROJECTS = "projects";
+import { request, transaction } from "./idb.ts";
 
 /** Checks a project read from storage, which may come from another version of the application. */
 export function checkStoredProject(project: Project): Project {
@@ -30,9 +27,7 @@ export interface IndexedDbProjectRepository extends ProjectRepository {
 
 /** Stores projects in IndexedDB, keyed by trip id, with the revision check of `ProjectRepository.save`. */
 export async function openProjectRepository(name = DATABASE): Promise<IndexedDbProjectRepository> {
-  const db = await openDatabase(name, VERSION, (database) => {
-    if (!database.objectStoreNames.contains(PROJECTS)) database.createObjectStore(PROJECTS);
-  });
+  const db = await openTripReplayDatabase(name);
   const all = () => transaction(db, PROJECTS, "readonly", (store) => request<Project[]>(store.getAll()));
   return {
     async load(id: TripId) {
