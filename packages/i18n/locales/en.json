@@ -431,6 +431,18 @@
     "message": "{start}–{end} s",
     "description": "Start and end of the selected piece on the recap, in seconds."
   },
+  "player.zoomOut": {
+    "message": "Zoom out the timeline",
+    "description": "Button that shows more of the recap on the timeline."
+  },
+  "player.zoomIn": {
+    "message": "Zoom in the timeline",
+    "description": "Button that shows the timeline in more detail, to scroll sideways."
+  },
+  "player.zoomLevel": {
+    "message": "{zoom}×",
+    "description": "How many times the timeline is enlarged."
+  },
   "player.noMap": {
     "message": "No downloaded map contains these stops; the recap is shown without a base map.",
     "description": "Shown under the preview when no ready map region contains the trip's stops."

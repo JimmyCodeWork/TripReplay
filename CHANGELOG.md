@@ -15,7 +15,8 @@ All notable changes to TripReplay are recorded here. The format follows [Keep a 
 - Media import with stop suggestions from GPS position and capture time, to confirm before anything is added.
 - Recap preview: animated route, camera moves, titles, photos and videos with captions, clip sound and background music, 16:9 and 9:16, full screen.
 - Editing on the timeline: photo durations, video trimming, moving and trimming music, by dragging or as numbers in seconds for a selected segment; the lengths of the opening, travel, stop titles and closing for the whole trip; a time scale above the timeline.
-- A stop's journal entry shown on a card under its title in the recap, which stays on screen long enough to read it.
+- Zooming the timeline, with an overview bar to scroll it, for long recaps.
+- A stop's journal entry shown under its title in the recap, line by line in a serif face on a soft glow, which stays on screen long enough to read it; photo and video notes over the bottom of the picture in the same face.
 - Themes: Classic, Night and Portrait.
 - An installable Web application that starts without a connection, with a Content Security Policy that allows network access only to the map download source.
 - Every release ships an SBOM and third-party notices generated from the code it bundles.

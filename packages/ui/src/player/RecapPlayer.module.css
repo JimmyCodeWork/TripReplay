@@ -104,6 +104,81 @@
 .timeline {
   display: grid;
   gap: 4px;
+  min-width: 100%;
+}
+
+/* Scrolls the timeline sideways when it is zoomed in; the overview below shows where. */
+.viewport {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+}
+
+.viewport::-webkit-scrollbar {
+  display: none;
+}
+
+.zoom {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.zoomButton {
+  width: 2.25em;
+  height: 2.25em;
+  padding: 0;
+  border: 1px solid var(--color-line, #d6ddd6);
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.zoomButton:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.zoomLevel {
+  min-width: 3em;
+  color: var(--color-muted, #5b665f);
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+/* The whole recap in miniature, with the part in view as a window that can be dragged. */
+.overview {
+  position: relative;
+  height: 22px;
+  border-radius: 11px;
+  background: var(--color-line, #d6ddd6);
+  cursor: pointer;
+  touch-action: none;
+}
+
+.overviewWindow {
+  position: absolute;
+  top: 2px;
+  bottom: 2px;
+  min-width: 18px;
+  border: 2px solid var(--color-accent, #b33a46);
+  border-radius: 9px;
+  background: rgb(255 255 255 / 55%);
+  cursor: grab;
+}
+
+.overviewHead {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--color-text, #1d2420);
 }
 
 /* Seconds above the strips. */

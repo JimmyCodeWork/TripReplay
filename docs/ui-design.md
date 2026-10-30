@@ -87,7 +87,8 @@ Below 820 px wide, the same parts stack vertically: preview (about half the scre
 
 - One row of segments in order: opening, travel (→), stop title, photos, videos, closing. Width is proportional to duration; segment colors distinguish the types.
 - A separate row shows the background music, with darker regions where it is lowered under clips with sound.
-- A scale above the segments marks the time, every 1, 2, 5, 10, 15 or 30 seconds or more, with at most eight marks.
+- A scale above the segments marks the time, every 1, 2, 5, 10, 15 or 30 seconds or more, with at most eight marks in view.
+- **Zoom:** − and + buttons above the timeline halve or double its width, from the whole recap up to the zoom at which 5 seconds fill the width; they appear only for a recap long enough to zoom. A zoomed timeline scrolls sideways by swiping, and an overview bar under it shows the whole recap with the part in view as a window that can be dragged, or moved by clicking beside it. Zooming keeps the playhead where it was in view; during playback the timeline scrolls to keep the playhead in view.
 - Clicking or dragging on the timeline moves the playhead; space toggles playback.
 - **Durations are edited by dragging, or as numbers:**
 
@@ -122,14 +123,14 @@ Below 820 px wide, the same parts stack vertically: preview (about half the scre
 |---|---|---|
 | Opening | 3 s | Overview of the whole trip with all stops marked; trip name and dates fade in |
 | Travel | 2 s | The camera flies to the next stop, zooming out for long distances; the route draws itself along the way |
-| Stop title | 1 s, longer with a journal entry | The camera settles on the stop; its name and day appear, and the first 80 characters of its journal entry on a card of up to three lines. The title lasts at least 1.5 s plus 0.12 s per character of the entry, up to 10 s |
-| Photo | 3 s each | A framed photo over the map with a slow push-in, and its note as a caption of up to two lines, left-aligned beside a bar in the route color; the stop name stays in a corner |
-| Video | Trimmed length | A framed video with its original sound, its note as a caption, and a progress bar |
+| Stop title | 1 s, longer with a journal entry | The camera settles on the stop; its name and day appear, and the first 80 characters of its journal entry in up to three centered lines in the theme's journal serif, on a soft dark glow. A fine rule parts around the stop's marker (or shows a diamond in the route color) between the date and the entry, and the lines rise into place one after another, all within the first half of the title. The title lasts at least 1.5 s plus 0.12 s per character of the entry, up to 10 s |
+| Photo | 3 s each | A framed photo over the map with a slow push-in, and its note in up to two centered lines of the journal serif over the bottom of the picture, on a shade that deepens downwards, appearing shortly after the photo; the stop name stays in a corner |
+| Video | Trimmed length | A framed video with its original sound, its note over the picture like a photo's, and a progress bar |
 | Closing | 3 s | The camera returns to the overview with the complete route; trip summary fades in |
 
 The opening, travel, stop title and closing lengths come from the theme unless the trip sets its own (§3.4).
 
-With "Reduce motion" enabled, camera moves and push-ins are replaced by cross-fades. The **Reduce motion** button under the preview starts as the system setting and keeps the user's choice in the browser.
+With "Reduce motion" enabled, camera moves and push-ins are replaced by cross-fades, and journal lines and notes fade in without rising. The **Reduce motion** button under the preview starts as the system setting and keeps the user's choice in the browser.
 
 ## 7. Themes
 

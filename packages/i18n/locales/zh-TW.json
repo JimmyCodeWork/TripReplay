@@ -323,6 +323,15 @@
   "player.edit.range": {
     "message": "{start}–{end} 秒"
   },
+  "player.zoomOut": {
+    "message": "縮小時間軸"
+  },
+  "player.zoomIn": {
+    "message": "放大時間軸"
+  },
+  "player.zoomLevel": {
+    "message": "{zoom}×"
+  },
   "player.noMap": {
     "message": "已下載的地圖都不包含這些景點，因此預覽時不顯示底圖。"
   },

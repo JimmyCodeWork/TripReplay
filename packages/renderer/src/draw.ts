@@ -46,11 +46,29 @@ const PROGRESS_HEIGHT = 0.006;
 const CAPTION_LINES = 2;
 /** Lines of a stop's journal excerpt under its title. */
 const JOURNAL_LINES = 3;
-const LINE_HEIGHT = 1.45;
-/** Width of the accent bar beside a note, in fractions of the shorter frame side. */
-const ACCENT_WIDTH = 0.005;
-/** Width of the journal card under a stop title, in fractions of the frame width. */
+/** Line height of journal text, in its font size; generous, like a printed diary. */
+const LINE_HEIGHT = 1.75;
+/** Space between letters of journal text, in its font size. */
+const LETTER_SPACING = 0.06;
+/** Width of a stop's journal under its title, in fractions of the frame width. */
 const JOURNAL_WIDTH: Readonly<Record<Timeline["aspectRatio"], number>> = { "16:9": 0.56, "9:16": 0.84 };
+/** Width of the ornament between a stop's subtitle and its journal, in fractions of the shorter side. */
+const ORNAMENT_WIDTH = 0.16;
+/** The dark glow behind a stop title with a journal, and the shade under a caption on a picture. */
+const SHADE = "rgba(8, 12, 10, 0.5)";
+const SHADE_SOFT = "rgba(8, 12, 10, 0.28)";
+const SHADE_CLEAR = "rgba(8, 12, 10, 0)";
+const CAPTION_SHADE = "rgba(8, 12, 10, 0.62)";
+/** Text on a picture, which is shaded dark under it whatever the theme. */
+const ON_PICTURE = "#ffffff";
+
+/**
+ * When journal lines appear: the first after the title has faded in, then one after another, each
+ * fading in over a while. A short title fits them all into its first half.
+ */
+const REVEAL = { delayUs: 300_000, staggerUs: 450_000, fadeUs: 700_000 } as const;
+/** When a picture's caption appears, after its card. */
+const CAPTION_REVEAL = { delayUs: 400_000, fadeUs: 800_000 } as const;
 
 /**
  * Breaks a caption into at most `maxLines` lines that fit `maxWidth`. Words stay whole where
@@ -182,69 +200,194 @@ function text(
   ctx.fillText(value, anchor.x * width, anchor.y * height + offsetY * height);
 }
 
-/** Height of a note of `lines` lines at `size`, for laying it out. */
-const noteHeight = (lines: number, size: number) => lines * size * LINE_HEIGHT;
-
-/** Width in pixels of the accent bar beside a note, and the indent of its text. */
-function accent(unit: number, size: number): { bar: number; indent: number } {
-  const bar = Math.max(2, ACCENT_WIDTH * unit);
-  return { bar, indent: bar + size * 0.7 };
+/** Opacity and rise of text that fades in from `startUs` over `fadeUs`, at `shownUs`. */
+function reveal(shownUs: number, startUs: number, fadeUs: number, reducedMotion: boolean, size: number) {
+  const t = Math.min(1, Math.max(0, (shownUs - startUs) / fadeUs));
+  const eased = 1 - (1 - t) ** 3;
+  return { alpha: eased, rise: reducedMotion ? 0 : (1 - eased) * size * 0.4 };
 }
 
-/**
- * A note set like a journal: left-aligned lines beside an accent bar in the route's color, which
- * ties it to the trip. `at` is the top left corner of the bar.
- */
-function drawNote(
-  ctx: Canvas2D,
-  lines: readonly string[],
-  at: { x: number; y: number },
-  size: number,
-  unit: number,
-  colors: { readonly text: string; readonly accent: string },
-): void {
-  const { bar, indent } = accent(unit, size);
-  ctx.shadowBlur = 0;
-  ctx.fillStyle = colors.accent;
-  ctx.beginPath();
-  ctx.roundRect(at.x, at.y, bar, noteHeight(lines.length, size), bar / 2);
-  ctx.fill();
-  ctx.fillStyle = colors.text;
-  ctx.textAlign = "left";
-  ctx.textBaseline = "middle";
-  lines.forEach((line, i) => {
-    ctx.fillText(line, at.x + indent, at.y + size * LINE_HEIGHT * (i + 0.5));
-  });
+/** Sets the journal face at `size`, with its letter spacing, for measuring and drawing. */
+function journalText(ctx: Canvas2D, size: number, fontFamily: string): void {
+  ctx.font = `400 ${Math.round(size)}px ${fontFamily}`;
+  ctx.letterSpacing = `${(size * LETTER_SPACING).toFixed(1)}px`;
 }
 
-/**
- * The start of a stop's journal entry under its title, on a card like the media cards, so that it
- * reads well over any map.
- */
-function drawJournal(ctx: Canvas2D, options: DrawOptions, journal: string): void {
+interface JournalLayout {
+  readonly lines: readonly string[];
+  readonly size: number;
+  readonly ornamentY: number;
+  readonly firstLineY: number;
+  /** The band behind the title and the journal. */
+  readonly top: number;
+  readonly bottom: number;
+}
+
+/** Where a stop's journal goes under its title, wrapped to at most three lines. */
+function journalLayout(ctx: Canvas2D, options: DrawOptions, journal: string): JournalLayout | undefined {
   const { width, height, timeline } = options;
   const unit = Math.min(width, height);
   const layout = timeline.theme.layouts[timeline.aspectRatio];
-  const { card, typography, route } = timeline.theme;
-  const size = typography.captionSize * unit * 1.1;
-  const padding = size * 0.9;
-  const cardWidth = JOURNAL_WIDTH[timeline.aspectRatio] * width;
-  const textWidth = cardWidth - padding * 2 - accent(unit, size).indent;
-  ctx.font = `400 ${Math.round(size)}px ${typography.fontFamily}`;
-  const lines = wrapText(journal, textWidth, (t) => ctx.measureText(t).width, JOURNAL_LINES);
-  if (lines.length === 0) return;
-  const cardHeight = noteHeight(lines.length, size) + padding * 2;
-  const x = layout.title.x * width - cardWidth / 2;
-  const y = (layout.title.y + layout.subtitleGap) * height + typography.subtitleSize * unit * 1.2;
+  const typography = timeline.theme.typography;
+  const size = typography.captionSize * unit * 1.2;
+  // Measured in the journal's face, which the title drawn next must not keep.
   ctx.save();
-  ctx.shadowColor = card.shadow;
-  ctx.shadowBlur = unit * 0.03;
-  ctx.fillStyle = card.background;
-  ctx.beginPath();
-  ctx.roundRect(x, y, cardWidth, cardHeight, card.radius * unit);
-  ctx.fill();
+  journalText(ctx, size, typography.journalFontFamily);
+  const lines = wrapText(
+    journal,
+    JOURNAL_WIDTH[timeline.aspectRatio] * width,
+    (t) => ctx.measureText(t).width,
+    JOURNAL_LINES,
+  );
   ctx.restore();
-  drawNote(ctx, lines, { x: x + padding, y: y + padding }, size, unit, { text: card.caption, accent: route.color });
+  if (lines.length === 0) return undefined;
+  const ornamentY = (layout.title.y + layout.subtitleGap) * height + typography.subtitleSize * unit * 1.3;
+  const firstLineY = ornamentY + size * 1.5;
+  const titleTop = layout.title.y * height - typography.titleSize * unit * 0.7;
+  return {
+    lines,
+    size,
+    ornamentY,
+    firstLineY,
+    top: titleTop - size * 2.5,
+    bottom: firstLineY + lines.length * size * LINE_HEIGHT + size * 2.5,
+  };
+}
+
+/**
+ * A soft dark glow behind a stop title and its journal, fading out in every direction, so that they
+ * read over any map without hiding it.
+ */
+function drawGlow(ctx: Canvas2D, options: DrawOptions, placed: JournalLayout): void {
+  const { width, height, timeline } = options;
+  const x = timeline.theme.layouts[timeline.aspectRatio].title.x * width;
+  const y = (placed.top + placed.bottom) / 2;
+  const radius = Math.max(JOURNAL_WIDTH[timeline.aspectRatio] * width * 0.7, (placed.bottom - placed.top) * 0.75);
+  const shade = ctx.createRadialGradient(x, y, 0, x, y, radius);
+  shade.addColorStop(0, SHADE);
+  shade.addColorStop(0.55, SHADE_SOFT);
+  shade.addColorStop(1, SHADE_CLEAR);
+  ctx.save();
+  ctx.shadowBlur = 0;
+  ctx.fillStyle = shade;
+  ctx.fillRect(0, 0, width, height);
+  ctx.restore();
+}
+
+/**
+ * A stop's journal under its title, set like a page of a diary: a fine rule with a diamond in the
+ * route's color, then centered serif lines that rise into place one after another.
+ */
+function drawJournal(
+  ctx: Canvas2D,
+  options: DrawOptions,
+  overlay: Extract<Overlay, { kind: "stopTitle" }>,
+  placed: JournalLayout,
+): void {
+  const { width, height, timeline } = options;
+  const unit = Math.min(width, height);
+  const { typography, text: style, route } = timeline.theme;
+  const reduced = timeline.reducedMotion;
+  const { lines, size } = placed;
+  const x = timeline.theme.layouts[timeline.aspectRatio].title.x * width;
+  const base = ctx.globalAlpha;
+  // A short title shows every line in its first half.
+  const whole = REVEAL.delayUs + (lines.length - 1) * REVEAL.staggerUs + REVEAL.fadeUs;
+  const pace = Math.min(1, (overlay.lengthUs * 0.5) / whole);
+
+  const rule = reveal(overlay.shownUs, 0, REVEAL.delayUs + REVEAL.fadeUs, reduced, size);
+  const half = ((ORNAMENT_WIDTH * unit) / 2) * (reduced ? 1 : rule.alpha);
+  // The stop's own marker usually sits where the rule goes; the rule then parts around it instead
+  // of a diamond.
+  const current = options.frame.markers.find((m) => m.state === "current");
+  const pin = current ? options.project(current.location) : undefined;
+  const onRule = pin !== undefined && Math.abs(pin.x - x) < size && Math.abs(pin.y - placed.ornamentY) < size * 1.5;
+  const gap = onRule ? CURRENT_MARKER_RADIUS * unit + size * 0.45 : size * 0.55;
+  const y = onRule ? pin.y : placed.ornamentY;
+  ctx.shadowBlur = 0;
+  ctx.globalAlpha = base * rule.alpha * 0.75;
+  ctx.strokeStyle = style.color;
+  ctx.lineWidth = Math.max(1, unit * 0.0018);
+  ctx.beginPath();
+  if (half > gap) {
+    ctx.moveTo(x - half, y);
+    ctx.lineTo(x - gap, y);
+    ctx.moveTo(x + gap, y);
+    ctx.lineTo(x + half, y);
+  }
+  ctx.stroke();
+  if (!onRule) {
+    const d = size * 0.2;
+    ctx.globalAlpha = base * rule.alpha;
+    ctx.fillStyle = route.color;
+    ctx.beginPath();
+    ctx.moveTo(x, y - d);
+    ctx.lineTo(x + d, y);
+    ctx.lineTo(x, y + d);
+    ctx.lineTo(x - d, y);
+    ctx.fill();
+  }
+
+  journalText(ctx, size, typography.journalFontFamily);
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillStyle = style.color;
+  ctx.shadowColor = style.shadow;
+  ctx.shadowBlur = size * 0.5;
+  lines.forEach((line, i) => {
+    const shown = reveal(
+      overlay.shownUs,
+      (REVEAL.delayUs + i * REVEAL.staggerUs) * pace,
+      REVEAL.fadeUs * pace,
+      reduced,
+      size,
+    );
+    if (shown.alpha <= 0) return;
+    ctx.globalAlpha = base * shown.alpha;
+    ctx.fillText(line, x, placed.firstLineY + size * LINE_HEIGHT * (i + 0.5) + shown.rise);
+  });
+  ctx.globalAlpha = base;
+}
+
+/**
+ * A picture's note over the bottom of the picture, on a shade that deepens downwards, in the
+ * journal's serif; it rises into place shortly after the card appears.
+ */
+function drawCaption(
+  ctx: Canvas2D,
+  options: DrawOptions,
+  overlay: Extract<Overlay, { kind: "media" }>,
+  area: { x: number; y: number; width: number; height: number },
+): void {
+  const { width, height, timeline } = options;
+  const unit = Math.min(width, height);
+  const size = timeline.theme.typography.captionSize * unit * 1.05;
+  const padding = size * 1.1;
+  journalText(ctx, size, timeline.theme.typography.journalFontFamily);
+  const lines = wrapText(overlay.caption, area.width - padding * 2, (t) => ctx.measureText(t).width);
+  if (lines.length === 0) return;
+  const bottom = area.y + area.height;
+  const textTop = bottom - padding - lines.length * size * LINE_HEIGHT;
+  const shadeTop = Math.max(area.y, textTop - padding * 2.5);
+  const shade = ctx.createLinearGradient(0, shadeTop, 0, bottom);
+  shade.addColorStop(0, SHADE_CLEAR);
+  shade.addColorStop(1, CAPTION_SHADE);
+  ctx.shadowBlur = 0;
+  ctx.fillStyle = shade;
+  ctx.fillRect(area.x, shadeTop, area.width, bottom - shadeTop);
+  const shown = reveal(overlay.shownUs, CAPTION_REVEAL.delayUs, CAPTION_REVEAL.fadeUs, timeline.reducedMotion, size);
+  if (shown.alpha <= 0) return;
+  const base = ctx.globalAlpha;
+  ctx.globalAlpha = base * shown.alpha;
+  ctx.fillStyle = ON_PICTURE;
+  ctx.shadowColor = SHADE;
+  ctx.shadowBlur = size * 0.4;
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  lines.forEach((line, i) => {
+    ctx.fillText(line, area.x + area.width / 2, textTop + size * LINE_HEIGHT * (i + 0.5) + shown.rise);
+  });
+  ctx.globalAlpha = base;
 }
 
 function drawMedia(ctx: Canvas2D, options: DrawOptions, overlay: Extract<Overlay, { kind: "media" }>): void {
@@ -255,47 +398,39 @@ function drawMedia(ctx: Canvas2D, options: DrawOptions, overlay: Extract<Overlay
   const y = overlay.frame.y * height;
   const w = overlay.frame.width * width;
   const h = overlay.frame.height * height;
-  const captionSize = timeline.theme.typography.captionSize * unit;
-  const padding = captionSize * 0.8;
-  const { indent } = accent(unit, captionSize);
-  ctx.font = `400 ${Math.round(captionSize)}px ${timeline.theme.typography.fontFamily}`;
-  const lines = overlay.caption
-    ? wrapText(overlay.caption, w - padding * 2 - indent, (t) => ctx.measureText(t).width)
-    : [];
-  // The caption takes a band at the bottom of the card; the picture fits above it.
-  const band = lines.length > 0 ? noteHeight(lines.length, captionSize) + padding * 2 : 0;
-  const ih = h - band;
+  const radius = card.radius * unit;
   ctx.save();
   ctx.shadowColor = card.shadow;
   ctx.shadowBlur = unit * 0.03;
   ctx.fillStyle = card.background;
   ctx.beginPath();
-  ctx.roundRect(x, y, w, h, card.radius * unit);
+  ctx.roundRect(x, y, w, h, radius);
   ctx.fill();
   ctx.restore();
+  ctx.save();
+  ctx.beginPath();
+  ctx.roundRect(x, y, w, h, radius);
+  ctx.clip();
+  // The caption lies on the part of the picture in view, or on the card while the picture loads.
+  let area = { x, y, width: w, height: h };
   const picture = media?.frame(overlay.assetId, overlay.mediaTimeUs);
   if (picture) {
     // Fits the picture inside the card, then pushes in by `scale` around the center.
-    const fit = Math.min(w / picture.width, ih / picture.height) * overlay.scale;
+    const fit = Math.min(w / picture.width, h / picture.height) * overlay.scale;
     const pw = picture.width * fit;
     const ph = picture.height * fit;
-    ctx.save();
-    ctx.beginPath();
-    if (band > 0) ctx.rect(x, y, w, ih);
-    else ctx.roundRect(x, y, w, h, card.radius * unit);
-    ctx.clip();
-    ctx.drawImage(picture.image, x + (w - pw) / 2, y + (ih - ph) / 2, pw, ph);
-    ctx.restore();
+    const px = x + (w - pw) / 2;
+    const py = y + (h - ph) / 2;
+    ctx.drawImage(picture.image, px, py, pw, ph);
+    const left = Math.max(x, px);
+    const top = Math.max(y, py);
+    area = { x: left, y: top, width: Math.min(x + w, px + pw) - left, height: Math.min(y + h, py + ph) - top };
   }
-  if (lines.length > 0) {
-    drawNote(ctx, lines, { x: x + padding, y: y + ih + padding }, captionSize, unit, {
-      text: card.caption,
-      accent: timeline.theme.route.color,
-    });
-  }
+  if (overlay.caption) drawCaption(ctx, options, overlay, area);
+  ctx.restore();
   if (overlay.mediaKind === "video") {
     ctx.fillStyle = timeline.theme.route.color;
-    ctx.fillRect(x, y + ih - PROGRESS_HEIGHT * unit, w * overlay.progress, PROGRESS_HEIGHT * unit);
+    ctx.fillRect(x, y + h - PROGRESS_HEIGHT * unit, w * overlay.progress, PROGRESS_HEIGHT * unit);
   }
 }
 
@@ -318,7 +453,9 @@ function drawOverlay(ctx: Canvas2D, options: DrawOptions, overlay: Overlay): voi
         layout.subtitleGap,
       );
       break;
-    case "stopTitle":
+    case "stopTitle": {
+      const placed = overlay.journal ? journalLayout(ctx, options, overlay.journal) : undefined;
+      if (placed) drawGlow(ctx, options, placed);
       text(ctx, options, overlay.name, layout.title, type.titleSize, type.titleWeight);
       text(
         ctx,
@@ -329,8 +466,9 @@ function drawOverlay(ctx: Canvas2D, options: DrawOptions, overlay: Overlay): voi
         400,
         layout.subtitleGap,
       );
-      if (overlay.journal) drawJournal(ctx, options, overlay.journal);
+      if (placed) drawJournal(ctx, options, overlay, placed);
       break;
+    }
     case "stopLabel":
       text(ctx, options, overlay.name, layout.stopLabel, type.labelSize, type.titleWeight);
       break;
