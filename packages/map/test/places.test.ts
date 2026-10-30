@@ -2,7 +2,7 @@ import { gzipSync } from "node:zlib";
 import { describe, expect, it } from "vitest";
 import { decodePlaceIndex, encodePlaceIndex } from "../src/places/encode.ts";
 import { type PlaceFeature, placesInTile } from "../src/places/extract.ts";
-import { bigrams, normalize, toTraditional } from "../src/places/normalize.ts";
+import { bigrams, normalize, queryForms, toTraditional } from "../src/places/normalize.ts";
 import { buildPlaceIndex } from "../src/places/place-index.ts";
 import { buildRegionPlaceIndex, createPlaceSearch } from "../src/places/region-index.ts";
 import { searchPlaces } from "../src/places/search.ts";
@@ -54,9 +54,13 @@ describe("normalize", () => {
     expect(normalize("京都駅")).toBe(normalize("京都站"));
     expect(normalize("台北火車站")).toBe(normalize("台北站"));
     expect(normalize("關西機場")).toBe(normalize("関西空港"));
-    // "International" is usually left out: 桃園機場 is found in 臺灣桃園國際機場.
-    expect(normalize("臺灣桃園國際機場")).toContain(normalize("桃園機場"));
-    expect(normalize("関西国際空港")).toBe(normalize("關西機場"));
+  });
+
+  it("also searches an airport with the word for international, which people leave out", () => {
+    expect(queryForms("桃園機場")).toEqual([normalize("桃園機場"), normalize("桃園國際機場")]);
+    expect(queryForms("関西国際空港")).toEqual([normalize("關西國際機場")]);
+    expect(queryForms("機場")).toEqual([normalize("機場")]);
+    expect(queryForms(" ")).toEqual([]);
   });
 
   it("splits a key into overlapping pairs of characters", () => {

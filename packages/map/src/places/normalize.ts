@@ -37,16 +37,13 @@ export function toTraditional(text: string): string {
 
 /**
  * Words that mean the same in Chinese and Japanese but are written differently, so that 京都車站
- * finds 京都駅, and "international" before "airport", which people leave out: 桃園機場 finds
- * 臺灣桃園國際機場. Applied after folding; longer words first.
+ * finds 京都駅. Applied after folding; longer words first.
  */
 const EQUIVALENT_WORDS: readonly [string, string][] = (
   [
     ["火車站", "站"],
     ["車站", "站"],
     ["駅", "站"],
-    ["國際機場", "空港"],
-    ["國際空港", "空港"],
     ["機場", "空港"],
   ] as const
 ).map(([word, replacement]) => [fold(word), fold(replacement)]);
@@ -59,6 +56,21 @@ export function normalize(text: string): string {
   let out = fold(text);
   for (const [word, replacement] of EQUIVALENT_WORDS) out = out.replaceAll(word, replacement);
   return out;
+}
+
+const AIRPORT = normalize("機場");
+const INTERNATIONAL = normalize("國際");
+
+/**
+ * The normalized forms a query is searched in: the query itself and, for an airport named
+ * without "international", the form with it, which people usually leave out: 桃園機場 finds
+ * 臺灣桃園國際機場. Done at search time, so that stored indexes stay valid.
+ */
+export function queryForms(query: string): string[] {
+  const q = normalize(query);
+  const at = q.indexOf(AIRPORT);
+  if (q === "" || at <= 0 || q.slice(0, at).endsWith(INTERNATIONAL)) return q === "" ? [] : [q];
+  return [q, q.slice(0, at) + INTERNATIONAL + q.slice(at)];
 }
 
 /** Overlapping two-character sequences of a normalized key; a one-character key is its own sequence. */

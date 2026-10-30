@@ -1,5 +1,5 @@
 import type { PlaceSource } from "./extract.ts";
-import { bigrams, normalize } from "./normalize.ts";
+import { bigrams, queryForms } from "./normalize.ts";
 import { KEY_SEPARATOR, type PlaceIndex, SOURCES } from "./place-index.ts";
 
 export interface PlaceResult {
@@ -95,8 +95,16 @@ interface Group {
  * several sources agree on ranks higher.
  */
 export function searchPlaces(index: PlaceIndex, query: string, limit = 8): PlaceResult[] {
-  const q = normalize(query);
-  if (q === "") return [];
+  const best = new Map<string, PlaceResult>();
+  for (const result of queryForms(query).flatMap((q) => searchForm(index, q))) {
+    const id = `${result.label}|${result.lon}|${result.lat}`;
+    if ((best.get(id)?.score ?? Number.NEGATIVE_INFINITY) < result.score) best.set(id, result);
+  }
+  return [...best.values()].sort((a, b) => b.score - a.score).slice(0, limit);
+}
+
+/** The results for one normalized form of the query, best first. */
+function searchForm(index: PlaceIndex, q: string): PlaceResult[] {
   const lists = bigrams(q)
     .map((gram) => postings(index, gram))
     .sort((a, b) => a.length - b.length);
@@ -153,6 +161,5 @@ export function searchPlaces(index: PlaceIndex, query: string, limit = 8): Place
         score: g.match + g.value + (KIND_WEIGHT[kind] ?? 0) + 8 * Math.log2(g.count) - Array.from(g.key).length / 2,
       };
     })
-    .sort((a, b) => b.score - a.score)
-    .slice(0, limit);
+    .sort((a, b) => b.score - a.score);
 }
