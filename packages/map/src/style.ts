@@ -12,7 +12,7 @@ const BOUNDARY = "#9c8f7a";
 const LABEL = "#4a4033";
 
 export interface StyleOptions {
-  /** Source URL of each theme, for example `pmtiles://<key>`. */
+  /** Source URL of each theme, for example `tripreplay://<key>`. */
   readonly sources: Readonly<Record<MapTheme, string>>;
   readonly colors: MapColors;
   /**

@@ -399,6 +399,10 @@
     "message": "Reduce motion",
     "description": "Toggle button: the recap cross-fades between stops instead of moving the camera. Starts as the system setting."
   },
+  "player.partialMap": {
+    "message": "Some stops are in no downloaded map and are shown without a base map. Download their regions in Maps.",
+    "description": "Notice under the preview when the downloaded maps contain only some of the trip's stops."
+  },
   "player.noMap": {
     "message": "No downloaded map contains these stops; the recap is shown without a base map.",
     "description": "Shown under the preview when no ready map region contains the trip's stops."

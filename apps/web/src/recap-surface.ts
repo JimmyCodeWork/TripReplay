@@ -19,7 +19,7 @@ export const animationClock: Clock = {
  */
 export async function createRecapSurface(
   container: HTMLElement,
-  files: MapFiles | undefined,
+  files: readonly MapFiles[],
   labels: RecapLabels,
   media: PreviewMedia,
 ): Promise<PreviewSurface> {
@@ -29,9 +29,10 @@ export async function createRecapSurface(
   container.append(mapHost, canvas);
   const context = canvas.getContext("2d");
   if (!context) throw new Error("Canvas 2D is not available");
-  const map = files
-    ? await createMapLibreLayer({ container: mapHost, files, colors: resolveTheme("classic").map })
-    : undefined;
+  const map =
+    files.length > 0
+      ? await createMapLibreLayer({ container: mapHost, files, colors: resolveTheme("classic").map })
+      : undefined;
   const renderer = createRecapRenderer<CanvasImageSource>({
     canvas,
     context,

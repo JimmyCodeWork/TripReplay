@@ -1,6 +1,6 @@
 import type { LonLat, MapColors, MapLayer, MapView } from "@tripreplay/renderer";
 import * as maplibregl from "maplibre-gl";
-import { PMTiles, Protocol } from "pmtiles";
+import { PMTiles } from "pmtiles";
 import { blobSource } from "./blob-source.ts";
 import { baseMapStyle, MAP_THEMES, type MapTheme } from "./style.ts";
 
@@ -9,7 +9,8 @@ export type MapFiles = Readonly<Record<MapTheme, Blob>>;
 
 export interface MapLibreLayerOptions {
   readonly container: HTMLElement;
-  readonly files: MapFiles;
+  /** The files of each region to draw, such as every region a trip passes through. */
+  readonly files: MapFiles | readonly MapFiles[];
   readonly colors: MapColors;
   /** See StyleOptions.glyphs. */
   readonly glyphs?: string;
@@ -26,16 +27,42 @@ export interface MapLibreLayer extends MapLayer {
 /** Fonts for Chinese and Japanese labels, drawn locally instead of from glyph files. */
 const LOCAL_FONTS = "'PingFang TC', 'Noto Sans TC', 'Microsoft JhengHei', 'Hiragino Sans', sans-serif";
 
-// MapLibre registers URL protocols globally; one protocol serves the archives of every layer.
-let protocol: Protocol | undefined;
+const PROTOCOL = "tripreplay";
+
+/** The archives of one theme of a layer, one per region, by source key. */
+const sources = new Map<string, readonly PMTiles[]>();
+let registered = false;
 let nextLayer = 0;
 
-function pmtilesProtocol(): Protocol {
-  if (!protocol) {
-    protocol = new Protocol();
-    maplibregl.addProtocol("pmtiles", protocol.tile);
-  }
-  return protocol;
+/**
+ * Registers the protocol that serves a theme from the archives of several regions: each tile
+ * comes from the first region that has it, so that a trip through Taiwan and Kyūshū draws both.
+ * MapLibre registers URL protocols globally; one protocol serves the sources of every layer.
+ */
+function registerProtocol(): void {
+  if (registered) return;
+  registered = true;
+  maplibregl.addProtocol(PROTOCOL, async (params, abort) => {
+    const match = /^tripreplay:\/\/([^/]+)(?:\/(\d+)\/(\d+)\/(\d+))?$/.exec(params.url);
+    const archives = match && sources.get(match[1] as string);
+    if (!match || !archives) throw new Error(`Unknown map source ${params.url}`);
+    if (match[2] === undefined) {
+      const headers = await Promise.all(archives.map((archive) => archive.getHeader()));
+      return {
+        data: {
+          tiles: [`${PROTOCOL}://${match[1]}/{z}/{x}/{y}`],
+          minzoom: Math.min(...headers.map((h) => h.minZoom)),
+          maxzoom: Math.max(...headers.map((h) => h.maxZoom)),
+        },
+      };
+    }
+    const [z, x, y] = [Number(match[2]), Number(match[3]), Number(match[4])];
+    for (const archive of archives) {
+      const tile = await archive.getZxy(z, x, y, abort.signal);
+      if (tile) return { data: new Uint8Array(tile.data) };
+    }
+    return { data: new Uint8Array() };
+  });
 }
 
 /**
@@ -43,20 +70,28 @@ function pmtilesProtocol(): Protocol {
  * is loaded; tiles load as views need them.
  */
 export async function createMapLibreLayer(options: MapLibreLayerOptions): Promise<MapLibreLayer> {
-  const tiles = pmtilesProtocol();
-  const prefix = `tripreplay-${nextLayer++}`;
+  registerProtocol();
+  const regions: readonly MapFiles[] = Array.isArray(options.files) ? options.files : [options.files as MapFiles];
+  const layer = nextLayer++;
   const keys = MAP_THEMES.map((theme) => {
-    const key = `${prefix}-${theme}`;
-    tiles.add(new PMTiles(blobSource(key, options.files[theme])));
+    const key = `layer${layer}-${theme}`;
+    sources.set(
+      key,
+      regions.map((files, i) => new PMTiles(blobSource(`${key}-${i}`, files[theme]))),
+    );
     return key;
   });
-  const sources = Object.fromEntries(MAP_THEMES.map((theme, i) => [theme, `pmtiles://${keys[i]}`])) as Record<
+  const styleSources = Object.fromEntries(MAP_THEMES.map((theme, i) => [theme, `${PROTOCOL}://${keys[i]}`])) as Record<
     MapTheme,
     string
   >;
   const map = new maplibregl.Map({
     container: options.container,
-    style: baseMapStyle({ sources, colors: options.colors, ...(options.glyphs ? { glyphs: options.glyphs } : {}) }),
+    style: baseMapStyle({
+      sources: styleSources,
+      colors: options.colors,
+      ...(options.glyphs ? { glyphs: options.glyphs } : {}),
+    }),
     interactive: false,
     attributionControl: false,
     fadeDuration: 0,
@@ -67,7 +102,7 @@ export async function createMapLibreLayer(options: MapLibreLayerOptions): Promis
     zoom: 0,
   });
   const release = () => {
-    for (const key of keys) tiles.tiles.delete(key);
+    for (const key of keys) sources.delete(key);
   };
 
   try {
