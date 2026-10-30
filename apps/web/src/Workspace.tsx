@@ -64,15 +64,20 @@ function contains({ bounds: [west, south, east, north] }: RegionEntry, { lon, la
   return inLon && lat >= south && lat <= north;
 }
 
-/** The ready region that contains the most stops; the preview draws one region's map. */
-function regionFor(regions: readonly RegionEntry[], stops: readonly { location: { lon: number; lat: number } }[]) {
-  let best: { region: RegionEntry; count: number } | undefined;
-  for (const region of regions) {
-    if (region.status.kind !== "ready") continue;
-    const count = stops.filter((stop) => contains(region, stop.location)).length;
-    if (count > 0 && (!best || count > best.count)) best = { region, count };
-  }
-  return best?.region;
+/**
+ * The ready regions that contain the trip's stops, the one with the most first: the preview draws
+ * them together, so that a trip from Taiwan to Kyūshū shows both. Also how many stops none of
+ * them contains.
+ */
+function regionsFor(regions: readonly RegionEntry[], stops: readonly { location: { lon: number; lat: number } }[]) {
+  const ready = regions.filter((region) => region.status.kind === "ready");
+  const used = ready
+    .map((region) => ({ region, count: stops.filter((stop) => contains(region, stop.location)).length }))
+    .filter(({ count }) => count > 0)
+    .sort((a, b) => b.count - a.count)
+    .map(({ region }) => region);
+  const uncovered = stops.filter((stop) => !used.some((region) => contains(region, stop.location))).length;
+  return { ids: used.map((region) => region.id), uncovered };
 }
 
 const TABS = ["itinerary", "media", "journal", "music", "themes"] as const;
@@ -126,8 +131,9 @@ function EditorView({ editor, services, locale, t, onClose }: EditorViewProps) {
   const [selectedId, setSelectedId] = useState<string | undefined>();
   const { project } = state;
   const selected = project.stops.find((stop) => stop.id === selectedId) ?? project.stops[0];
-  const region = regionFor(regions, project.stops);
-  const regionId = region?.id;
+  const covering = regionsFor(regions, project.stops);
+  // The ids as one string, so that the map is created again only when they change.
+  const regionIds = covering.ids.join("\n");
 
   const playback = useMemo(() => createPlayback({ clock: animationClock }), []);
   useEffect(() => () => playback.dispose(), [playback]);
@@ -170,9 +176,21 @@ function EditorView({ editor, services, locale, t, onClose }: EditorViewProps) {
     };
   }, [playback, media]);
   const createSurface = useCallback(
-    async (container: HTMLElement) =>
-      createRecapSurface(container, regionId ? await services.maps.regionFiles(regionId) : undefined, labels, media),
-    [services, regionId, labels, media],
+    async (container: HTMLElement) => {
+      const files = await Promise.all(
+        regionIds
+          .split("\n")
+          .filter(Boolean)
+          .map((id) => services.maps.regionFiles(id)),
+      );
+      return createRecapSurface(
+        container,
+        files.filter((f) => f !== undefined),
+        labels,
+        media,
+      );
+    },
+    [services, regionIds, labels, media],
   );
 
   const [tab, setTab] = useState<Tab>("itinerary");
@@ -363,7 +381,9 @@ function EditorView({ editor, services, locale, t, onClose }: EditorViewProps) {
             onEdit={(command) => editor.dispatch(command)}
             onReducedMotion={setReducedMotion}
             fullScreen={NATIVE ? "page" : "browser"}
-            {...(project.stops.length > 0 && !region ? { notice: t("player.noMap") } : {})}
+            {...(covering.uncovered === 0
+              ? {}
+              : { notice: t(covering.ids.length === 0 ? "player.noMap" : "player.partialMap") })}
             t={t}
           />
         </div>
