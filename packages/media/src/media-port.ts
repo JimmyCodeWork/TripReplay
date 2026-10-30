@@ -1,4 +1,5 @@
 import { type AssetStore, MediaFailure, type MediaInfo, type MediaPort } from "@tripreplay/app";
+import { audioFormat } from "./audio-format.ts";
 import { IMAGE_HEAD_BYTES, readImageMetadata } from "./image-metadata.ts";
 import { isHeif, readVideoMetadata, type VideoMetadata } from "./video-metadata.ts";
 
@@ -65,6 +66,27 @@ function probeVideo(file: Blob): Promise<{ durationUs: number; width: number; he
   });
 }
 
+/** Whether the browser can play the audio, with its duration as the browser reads it. */
+function probeAudio(file: Blob): Promise<number | undefined> {
+  return new Promise((resolve) => {
+    const audio = document.createElement("audio");
+    const url = URL.createObjectURL(file);
+    const done = (durationUs: number | undefined) => {
+      clearTimeout(timer);
+      audio.removeAttribute("src");
+      audio.load();
+      URL.revokeObjectURL(url);
+      resolve(durationUs);
+    };
+    const timer = setTimeout(() => done(undefined), VIDEO_PROBE_MS);
+    audio.preload = "metadata";
+    audio.onloadedmetadata = () =>
+      done(Number.isFinite(audio.duration) && audio.duration > 0 ? Math.round(audio.duration * 1_000_000) : undefined);
+    audio.onerror = () => done(undefined);
+    audio.src = url;
+  });
+}
+
 async function* chunks(file: Blob): AsyncIterable<Uint8Array> {
   const reader = file.stream().getReader();
   try {
@@ -81,9 +103,22 @@ async function* chunks(file: Blob): AsyncIterable<Uint8Array> {
 const read = (file: Blob) => async (offset: number, length: number) =>
   new Uint8Array(await file.slice(offset, offset + length).arrayBuffer());
 
+async function audioInfo(file: File, mimeType: string, durationUs?: number): Promise<MediaInfo> {
+  const probed = await probeAudio(file);
+  if (!probed) throw new MediaFailure("unsupported", `"${file.name}" is not audio this browser can play`);
+  return {
+    kind: "audio",
+    fileName: file.name,
+    byteSize: file.size,
+    contentHash: await contentHash(file),
+    mimeType,
+    durationUs: durationUs || probed,
+  };
+}
+
 /**
- * Reads what the application needs of a photo or video file. The format is recognized from the
- * file's bytes, never from its name, and only files the browser can decode are accepted.
+ * Reads what the application needs of a photo, video or music file. The format is recognized from
+ * the file's bytes, never from its name, and only files the browser can decode are accepted.
  */
 export async function inspectMediaFile(file: File): Promise<MediaInfo> {
   const head = new Uint8Array(await file.slice(0, IMAGE_HEAD_BYTES).arrayBuffer());
@@ -103,12 +138,16 @@ export async function inspectMediaFile(file: File): Promise<MediaInfo> {
       ...(image?.gps ? { gps: image.gps } : {}),
     };
   }
+  const audio = audioFormat(head);
+  if (audio) return audioInfo(file, audio);
   let metadata: VideoMetadata | undefined;
   try {
     metadata = await readVideoMetadata(read(file), file.size);
   } catch {
     metadata = undefined;
   }
+  // An MP4 file with sound and no picture, such as M4A, is music.
+  if (metadata && metadata.width === 0 && metadata.hasAudio) return audioInfo(file, "audio/mp4", metadata.durationUs);
   const probed = await probeVideo(file);
   if (!probed) throw new MediaFailure("unsupported", `"${file.name}" is not a photo or video this browser can show`);
   const quickTime = String.fromCharCode(...head.subarray(8, 12)) === "qt  ";

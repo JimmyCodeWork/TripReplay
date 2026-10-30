@@ -82,6 +82,31 @@ function SegmentStrip({
   );
 }
 
+/** The background music row under the segments, darker where it is lowered under clips with sound. */
+function MusicRow({ timeline, t }: { readonly timeline: Timeline; readonly t: Translate }) {
+  const total = timeline.durationUs || 1;
+  const percent = (us: number) => `${(us / total) * 100}%`;
+  return (
+    <div className={styles.music} aria-hidden="true" title={t("player.music")}>
+      {timeline.music.map((track) => (
+        <div
+          key={track.trackId}
+          className={styles.track}
+          style={{ left: percent(track.startUs), width: percent(track.endUs - track.startUs) }}
+        />
+      ))}
+      {timeline.music.some((track) => track.duckUnderClips) &&
+        timeline.audibleClips.map((clip) => (
+          <div
+            key={clip.startUs}
+            className={styles.ducked}
+            style={{ left: percent(clip.startUs), width: percent(clip.endUs - clip.startUs) }}
+          />
+        ))}
+    </div>
+  );
+}
+
 /**
  * The recap preview with its controls (docs/ui-design.md §3.1, §3.4, §5): play and pause, the
  * position, the segments of the recap, the aspect ratio and full-screen playback. Space toggles
@@ -211,6 +236,7 @@ export function RecapPlayer({ timeline, playback, createSurface, onAspectRatio, 
         </button>
       </div>
       <SegmentStrip timeline={timeline} timeUs={state.timeUs} onSeek={(us) => playback.seek(us)} t={t} />
+      {timeline.music.length > 0 && <MusicRow timeline={timeline} t={t} />}
     </div>
   );
 }

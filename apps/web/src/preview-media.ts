@@ -14,6 +14,8 @@ type Picture = { readonly image: CanvasImageSource; readonly width: number; read
 export interface PreviewMedia extends MediaSource<CanvasImageSource> {
   /** A URL of the stored file, for thumbnails; undefined when it is not stored. */
   url(assetId: string): Promise<string | undefined>;
+  /** The video element that shows a clip, whose sound the audio mixer takes over. */
+  videoElement(assetId: string): HTMLVideoElement;
   /** Called when a picture finished loading or a video reached the requested time, to draw again. */
   subscribe(listener: () => void): () => void;
   /** Stops every video and releases the decoded pictures and URLs. */
@@ -81,6 +83,7 @@ export function createPreviewMedia(store: AssetStore<Blob>, assets: () => readon
 
   return {
     url,
+    videoElement: (assetId) => video(assetId).element,
 
     frame(assetId, mediaTimeUs) {
       const asset = assets().find((a) => a.id === assetId);

@@ -128,6 +128,29 @@
   background: #6f9a7c;
 }
 
+.music {
+  position: relative;
+  height: 10px;
+  overflow: hidden;
+  border-radius: 4px;
+  background: var(--color-line, #d6ddd6);
+}
+
+.track {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: #c9a227;
+}
+
+/* Lowered under clips with sound. */
+.ducked {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: rgb(0 0 0 / 30%);
+}
+
 .playhead {
   position: absolute;
   top: 0;

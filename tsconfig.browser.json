@@ -6,6 +6,7 @@
     "jsx": "react-jsx"
   },
   "include": [
+    "packages/audio/**/*.ts",
     "packages/storage/**/*.ts",
     "packages/map/**/*.ts",
     "packages/media/**/*.ts",

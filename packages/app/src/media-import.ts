@@ -66,6 +66,24 @@ export interface MediaImport {
   cancel(): Promise<void>;
 }
 
+/**
+ * Prepares adding a music file as a track at the start of the recap: reads and stores it, or
+ * reuses the trip's asset with the same content. The command adds both in one undoable step.
+ * Throws `MediaFailure` for a file that is not audio the browser can play.
+ */
+export async function prepareMusic<File>(
+  file: File,
+  { media, project, newId }: Omit<MediaImportOptions<File>, "files">,
+): Promise<Command> {
+  const info = await media.inspect(file);
+  if (info.kind !== "audio") throw new MediaFailure("unsupported", `"${media.fileName(file)}" is not music`);
+  const existing = project().assets.find((asset) => asset.contentHash === info.contentHash);
+  if (existing) return { type: "addMusic", trackId: newId(), assetId: existing.id };
+  const id = newId();
+  await media.store(file, id);
+  return { type: "addMusic", asset: { ...info, id }, trackId: newId(), assetId: id };
+}
+
 export interface MediaImportOptions<File> {
   readonly files: readonly File[];
   readonly media: MediaPort<File>;
@@ -109,7 +127,10 @@ export function createMediaImport<File>({ files, media, project, newId }: MediaI
         if (controller.signal.aborted) return;
         try {
           const info = await media.inspect(file, controller.signal);
-          if (hashes.has(info.contentHash)) {
+          // Music is added in the music tab, not to stops.
+          if (info.kind === "audio") {
+            update(index, (item) => ({ ...item, status: "unsupported" }));
+          } else if (hashes.has(info.contentHash)) {
             update(index, (item) => ({ ...item, status: "duplicate" }));
           } else {
             hashes.add(info.contentHash);

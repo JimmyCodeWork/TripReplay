@@ -31,10 +31,12 @@ export {
   type MediaImport,
   type MediaImportOptions,
   type MediaImportState,
+  prepareMusic,
 } from "./media-import.ts";
 export { createPlayback, type Playback, type PlaybackOptions, type PlaybackState } from "./playback.ts";
 export type {
   AssetStore,
+  AudioPort,
   Clock,
   DownloadProgress,
   MapRegions,
