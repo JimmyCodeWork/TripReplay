@@ -54,6 +54,9 @@ describe("normalize", () => {
     expect(normalize("京都駅")).toBe(normalize("京都站"));
     expect(normalize("台北火車站")).toBe(normalize("台北站"));
     expect(normalize("關西機場")).toBe(normalize("関西空港"));
+    // "International" is usually left out: 桃園機場 is found in 臺灣桃園國際機場.
+    expect(normalize("臺灣桃園國際機場")).toContain(normalize("桃園機場"));
+    expect(normalize("関西国際空港")).toBe(normalize("關西機場"));
   });
 
   it("splits a key into overlapping pairs of characters", () => {
@@ -86,6 +89,20 @@ describe("searchPlaces", () => {
     ]);
     const [first] = searchPlaces(index, "台北車站");
     expect(first).toMatchObject({ label: "臺北車站", source: "base" });
+  });
+
+  it("ranks an airport above a wrongly placed `places` entry with the exact name", () => {
+    const index = buildPlaceIndex([
+      place("桃園空港", { kind: "travel_and_transportation", confidence: 0.95, lon: 121.409, lat: 25.057 }),
+      place("臺灣桃園國際機場", {
+        source: "base",
+        kind: "airport/international_airport",
+        prominence: 60,
+        lon: 121.232,
+        lat: 25.077,
+      }),
+    ]);
+    expect(searchPlaces(index, "桃園機場")[0]).toMatchObject({ label: "臺灣桃園國際機場", source: "base" });
   });
 
   it("finds a station that OpenStreetMap names without the word for station", () => {

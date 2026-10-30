@@ -1,7 +1,7 @@
 import type { PlaceIndex } from "./place-index.ts";
 
 const MAGIC = 0x49505254; // "TRPI" in little-endian byte order
-export const PLACE_INDEX_VERSION = 1;
+export const PLACE_INDEX_VERSION = 2;
 
 interface Header {
   readonly count: number;

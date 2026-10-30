@@ -114,11 +114,13 @@ export function searchPlaces(index: PlaceIndex, query: string, limit = 8): Place
       if (k.includes(q) && (key === undefined || k.length < key.length)) key = k;
     }
     if (key === undefined) continue;
-    const match = key === q ? 100 : key.startsWith(q) ? 60 : 30;
+    const source = SOURCES[index.source[record] as number] as PlaceSource;
+    // An exact name in `places` may still be wrongly placed, so it does not outrank the
+    // OpenStreetMap-derived place it names (桃園機場 is the airport, not a point 18 km away).
+    const exact = source === "places" ? 60 : 100;
+    const match = key === q ? exact : key.startsWith(q) ? 60 : key.endsWith(q) ? 45 : 30;
     const value =
-      SOURCE_WEIGHT[SOURCES[index.source[record] as number] as PlaceSource] +
-      (index.confidence[record] as number) / 10 +
-      (index.prominence[record] as number) / 4;
+      SOURCE_WEIGHT[source] + (index.confidence[record] as number) / 10 + (index.prominence[record] as number) / 4;
     const lon = index.lon[record] as number;
     const lat = index.lat[record] as number;
     const sameKey = byKey.get(key) ?? [];

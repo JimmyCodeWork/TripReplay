@@ -37,13 +37,16 @@ export function toTraditional(text: string): string {
 
 /**
  * Words that mean the same in Chinese and Japanese but are written differently, so that 京都車站
- * finds 京都駅. Applied after folding; longer words first.
+ * finds 京都駅, and "international" before "airport", which people leave out: 桃園機場 finds
+ * 臺灣桃園國際機場. Applied after folding; longer words first.
  */
 const EQUIVALENT_WORDS: readonly [string, string][] = (
   [
     ["火車站", "站"],
     ["車站", "站"],
     ["駅", "站"],
+    ["國際機場", "空港"],
+    ["國際空港", "空港"],
     ["機場", "空港"],
   ] as const
 ).map(([word, replacement]) => [fold(word), fold(replacement)]);
