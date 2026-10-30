@@ -28,3 +28,9 @@ node_modules/
 dist/
 coverage/
 .vitest/
+
+# Android application (apps/android): the page built for it, and signing settings
+apps/web/dist-native/
+keystore.properties
+*.jks
+*.keystore

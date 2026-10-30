@@ -196,19 +196,32 @@
   pointer-events: none;
 }
 
-/* Full-screen playback: only the recap, letterboxed on black (docs/ui-design.md §5). */
-.player:fullscreen {
+/*
+ * Full-screen playback: only the recap, letterboxed on black (docs/ui-design.md §5); or the whole
+ * page, where the WebView offers no Fullscreen API (`fullScreen="page"`).
+ */
+.player:fullscreen,
+.player.filling {
   grid-template-rows: minmax(0, 1fr) auto auto;
   padding: 16px;
   background: #000;
   color: #fff;
 }
 
-.player:fullscreen .stage {
+.player:fullscreen .stage,
+.player.filling .stage {
   --height: calc(100vh - 140px);
   border-radius: 0;
 }
 
-.player:fullscreen .notice {
+.player:fullscreen .notice,
+.player.filling .notice {
   color: #bbb;
+}
+
+.player.filling {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  overflow: auto;
 }

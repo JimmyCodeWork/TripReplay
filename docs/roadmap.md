@@ -114,10 +114,14 @@ Packages follow the [Application Architecture](architecture.md):
 
 Map files go to their own OPFS volume, because start-up recovery of the media store removes files that no project refers to.
 
+- the Android application ([ADR 0008](adr/0008-android-in-1-0.md)): Capacitor packages the same page, built with `vite build --mode native`, into an APK that runs in the Android System WebView. A plugin of the project saves backups where the user chooses, "Full screen" fills the window, and the licenses open in a dialog. The Maven libraries that Gradle resolves pass their own license gate, and the APK's notices and SBOM list them. CI builds a debug APK for every change; the release workflow signs the APK and attaches it to the release. Tauri, the earlier candidate, was dropped because every Tauri application links MPL-2.0 crates.
+
 Still to do for 1.0, in this order:
 
-1. the checks that need people and other browsers ([Accessibility Review §5](accessibility-review.md#5-still-to-do-before-100)): a screen-reader pass with NVDA and VoiceOver, the core scenario in Firefox and Safari, and usability testing with first-time users;
-2. the `1.0.0` release: version, changelog and tag ([Releasing](releasing.md)).
+1. the Android application on a device: install the debug APK from CI and go through the core scenario, including a backup and its restore;
+2. the checks that need people and other browsers ([Accessibility Review §5](accessibility-review.md#5-still-to-do-before-100)): a screen-reader pass with NVDA and VoiceOver (TalkBack on Android), the core scenario in Firefox and Safari, and usability testing with first-time users;
+3. the Android signing key in the repository secrets ([Releasing §4](releasing.md#4-android-signing-key));
+4. the `1.0.0` release: version, changelog and tag ([Releasing](releasing.md)).
 
 ## M3 — Release Readiness for 1.0 (Phase E)
 
@@ -129,6 +133,7 @@ Still to do for 1.0, in this order:
 | Accessibility review: keyboard operation, screen-reader labels, sufficient contrast, reduced-motion option for previews |
 | License release gate passes ([Dependency License Policy §6](license-policy.md#6-release-gate)) |
 | User guide, privacy statement, known issues and browser support table complete in `en` and `zh-TW`; `1.0.0` tagged with a changelog |
+| Signed Android APK attached to the release, its libraries covered by the license gate ([ADR 0008](adr/0008-android-in-1-0.md)) |
 
 ## After 1.0
 

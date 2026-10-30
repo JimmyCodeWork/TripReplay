@@ -73,7 +73,7 @@ Adding a license to §3 requires a pull request that amends this policy, states 
 
 ### 3.6 Enforcement
 
-[`licenses/policy.json`](../licenses/policy.json) is the machine-readable form of §3 and must be amended in the same pull request as this document. [`licenses/inventory.json`](../licenses/inventory.json) records every reviewed component shipped in release artifacts and every approved direct development dependency. CI rejects any installed component that is unreviewed, whose declared license has changed, or whose license is not permitted for its category. See the [Development Guide](development.md#license-check).
+[`licenses/policy.json`](../licenses/policy.json) is the machine-readable form of §3 and must be amended in the same pull request as this document. [`licenses/inventory.json`](../licenses/inventory.json) records every reviewed component shipped in release artifacts and every approved direct development dependency. CI rejects any installed component that is unreviewed, whose declared license has changed, or whose license is not permitted for its category. The Maven libraries of the Android application are reviewed in its `maven` section, and the Android build fails on any library Gradle resolves that is not reviewed there. See the [Development Guide](development.md#license-check).
 
 ## 4. Candidate Review
 
@@ -86,7 +86,8 @@ Adding a license to §3 requires a pull request that amends this policy, states 
 | FFmpeg (including WASM builds) | LGPL or GPL depending on build configuration | Prohibited. |
 | mediabunny | MPL-2.0 | Prohibited. |
 | mp4-muxer | MIT | Admissible. Pending review; maintenance status to be confirmed. |
-| Tauri | Apache-2.0 OR MIT (transitive Apache-2.0, ISC, Unicode-3.0, CDLA-Permissive-2.0) | Admissible. Pending pinned-version and transitive review. |
+| Tauri | Apache-2.0 OR MIT (transitive Apache-2.0, ISC, Unicode-3.0, CDLA-Permissive-2.0, MPL-2.0) | Not admissible. Every Tauri application links MPL-2.0 crates (`cssparser`, `selectors`, `dtoa-short`, `option-ext`) that cannot be turned off ([ADR 0008](adr/0008-android-in-1-0.md)). |
+| Capacitor (Android) | MIT; Android Jetpack libraries Apache-2.0 | Admissible. Used for the Android application; the Maven libraries are reviewed in the `maven` section of the inventory. |
 | React | MIT | Admissible. Pending review. |
 | TypeScript | Apache-2.0 | Development tool; exempt. |
 | SQLite | blessing (public domain) | Admissible. Pending review of the binding used (for example, `sql.js` or `rusqlite`). |

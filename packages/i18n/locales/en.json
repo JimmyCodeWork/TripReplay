@@ -251,6 +251,10 @@
     "message": "Delete",
     "description": "Button that deletes an item after confirmation."
   },
+  "common.close": {
+    "message": "Close",
+    "description": "Button that closes a dialog."
+  },
   "common.back": {
     "message": "Back",
     "description": "Button that returns to the previous screen."

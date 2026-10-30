@@ -1,0 +1,13 @@
+{
+  "appId": "io.github.jimmycodework.tripreplay",
+  "appName": "TripReplay",
+  "webDir": "../web/dist-native",
+  "android": {
+    "allowMixedContent": false,
+    "captureInput": false,
+    "webContentsDebuggingEnabled": false
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}

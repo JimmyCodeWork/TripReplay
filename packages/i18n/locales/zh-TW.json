@@ -188,6 +188,9 @@
   "common.delete": {
     "message": "刪除"
   },
+  "common.close": {
+    "message": "關閉"
+  },
   "common.back": {
     "message": "返回"
   },

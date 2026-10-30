@@ -5,7 +5,7 @@ English | [繁體中文](zh-TW/privacy.md)
 | | |
 |---|---|
 | Date | 2026-10-30 |
-| Applies to | TripReplay 1.0, the Web application |
+| Applies to | TripReplay 1.0, the Web application and the Android application |
 
 TripReplay processes your trips, photos, videos, journal and music only on your device. It has no account, no analytics, no advertising and no server of its own. This statement lists every network request the application makes, and what it stores on your device.
 
@@ -40,14 +40,23 @@ Everything TripReplay stores is kept by your browser for the website you opened 
 
 The browser may clear this data, for example when the device is short of space ([Browser Support §3](browser-support.md#3-known-issues)). Back up trips you want to keep ([User Guide §9](user-guide.md#9-back-up-and-restore)).
 
-## 3. Files You Choose
+## 3. The Android Application
+
+The Android application ([ADR 0008](adr/0008-android-in-1-0.md)) contains the same application and makes the same map requests. It differs in these points:
+
+- Its files are in the package, so it makes no request to a website, not even to check for a new version. New versions come with a new APK.
+- It asks Android only for network access, which the map downloads need.
+- It stores its data in the application's own storage on the device, separate from any browser. Uninstalling the application deletes that data.
+- Android's automatic backup is turned off for the application, so trips and media are not copied to a Google account. Use TripReplay's own backup (§2) instead.
+
+## 4. Files You Choose
 
 TripReplay reads only the files you choose: photos, videos, music, map files and backups. It copies them into its storage on your device. A backup file that you save contains a whole trip with its media, including their GPS positions; share it only with people who may see them.
 
-## 4. Links
+## 5. Links
 
 The **Open-source licenses** link opens a file of the application itself. Links in this documentation, such as the issue tracker, lead to other websites with their own privacy policies.
 
-## 5. Changes and Contact
+## 6. Changes and Contact
 
 Changes to this statement are recorded in the [changelog](../CHANGELOG.md). Report a privacy problem as described in the [Security Policy](../SECURITY.md).

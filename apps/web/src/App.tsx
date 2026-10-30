@@ -1,9 +1,10 @@
 import { REGION_CATALOG } from "@tripreplay/app";
 import type { Locale, Translate } from "@tripreplay/i18n";
 import { MapsDialog, PlaceSearchBox, TripList } from "@tripreplay/ui";
-import { useRef, useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { backupTrip, inspectBackup, restoreBackup } from "./backup.ts";
 import { MapPreview } from "./MapPreview.tsx";
+import { NATIVE } from "./platform.ts";
 import type { Services } from "./services.ts";
 import { Workspace } from "./Workspace.tsx";
 
@@ -170,10 +171,49 @@ export function App({ services, locale, t }: AppProps) {
       )}
       {screen.kind === "maps" && <MapsScreen services={services} locale={locale} t={t} />}
       <footer className="app-footer">
-        <a href="./THIRD-PARTY-NOTICES.txt" target="_blank" rel="noopener">
-          {t("app.notices")}
-        </a>
+        {NATIVE ? (
+          <NoticesButton t={t} />
+        ) : (
+          <a href="./THIRD-PARTY-NOTICES.txt" target="_blank" rel="noopener">
+            {t("app.notices")}
+          </a>
+        )}
       </footer>
     </div>
+  );
+}
+
+/**
+ * The open-source licenses in the Android application, whose WebView does not open links in a
+ * new window: the notices file of the package, shown in a dialog (docs/license-policy.md §5).
+ */
+function NoticesButton({ t }: { readonly t: Translate }) {
+  const dialog = useRef<HTMLDialogElement>(null);
+  const [text, setText] = useState<string | undefined>();
+  useEffect(() => {
+    if (text !== undefined) dialog.current?.showModal();
+  }, [text]);
+  return (
+    <>
+      <button
+        type="button"
+        className="link-button"
+        onClick={() =>
+          void fetch("./THIRD-PARTY-NOTICES.txt")
+            .then((response) => response.text())
+            .then(setText)
+        }
+      >
+        {t("app.notices")}
+      </button>
+      {text !== undefined && (
+        <dialog ref={dialog} className="notices" aria-label={t("app.notices")} onClose={() => setText(undefined)}>
+          <button type="button" className="header-button" onClick={() => dialog.current?.close()}>
+            {t("common.close")}
+          </button>
+          <pre>{text}</pre>
+        </dialog>
+      )}
+    </>
   );
 }

@@ -13,6 +13,8 @@
     "verify:clean": "docker build --file tools/ci/Dockerfile --progress plain --output type=cacheonly .",
     "dev": "pnpm --filter @tripreplay/web dev",
     "build": "pnpm --filter @tripreplay/web build",
+    "build:native": "pnpm --filter @tripreplay/web exec vite build --mode native",
+    "android:build": "pnpm run build:native && pnpm --filter @tripreplay/android exec cap sync android && cd apps/android/android && ./gradlew assembleRelease",
     "hooks:install": "git config core.hooksPath .githooks",
     "lint": "biome ci .",
     "format": "biome check --write .",

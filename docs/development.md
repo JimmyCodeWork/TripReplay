@@ -10,6 +10,7 @@ English | [繁體中文](zh-TW/development.md)
 | pnpm | 12.14.0 | Pinned in `package.json`; run `corepack enable` to use the pinned version automatically. |
 | Git | Any recent version | |
 | Docker | Optional | Required only for `pnpm run verify:clean`. |
+| JDK and Android SDK | 21; Android SDK platform 36 | Optional. Required only to build the Android application; Android Studio installs both. Set `ANDROID_HOME`, and `JAVA_HOME` to JDK 21. |
 
 ## Getting Started
 
@@ -27,6 +28,8 @@ pnpm run hooks:install   # optional; see Local Verification
 | `pnpm run verify:clean` | Run `verify` in a clean Linux container (requires Docker) |
 | `pnpm run dev` | Start the Web application in development mode (Vite) at `http://localhost:5173` |
 | `pnpm run build` | Build the Web application into `apps/web/dist`, with its SBOM, third-party notices and service worker ([Releasing](releasing.md)) |
+| `pnpm run build:native` | Build the page of the Android application into `apps/web/dist-native` |
+| `pnpm run android:build` | Build the Android application into `apps/android/android/app/build/outputs/apk/` (release, unsigned without a key). For a debug APK, run `./gradlew assembleDebug` in `apps/android/android` after the first build |
 | `pnpm run hooks:install` | Enable the repository's Git hooks |
 | `pnpm run lint` | Check formatting and lint rules (Biome); fails on any issue |
 | `pnpm run format` | Apply formatting and safe lint fixes |
@@ -71,7 +74,8 @@ To bypass a hook once, add `--no-verify` to `git commit` or `git push`. To disab
 
 | Path | Contents |
 |---|---|
-| `apps/web/` | Web application: the composition root that creates the adapters and mounts the UI; platform shells follow later |
+| `apps/web/` | Web application: the composition root that creates the adapters and mounts the UI |
+| `apps/android/` | Android application ([ADR 0008](adr/0008-android-in-1-0.md)): Capacitor configuration and the Gradle project in `android/`, with the `SaveFile` plugin for backups |
 | `packages/` | Product packages: `domain`, `themes`, `i18n`, `timeline`, `app`, `renderer`, `map`, `media`, `audio`, `storage`, `ui`; others planned as defined in the [Application Architecture §3](architecture.md#3-packages) |
 | `packages/domain/` | Data model, invariants and pure editing operations |
 | `packages/themes/` | Built-in recap themes as data |
@@ -87,6 +91,7 @@ To bypass a hook once, add `--no-verify` to `git commit` or `git push`. To disab
 | `tools/deps-check/` | Package boundary check used by CI; allowed dependencies in `boundaries.json` |
 | `tools/i18n-check/` | Message catalog check used by CI |
 | `tools/license-check/` | License check used by CI |
+| `tools/release/` | Notices and SBOM of the builds, including the Android libraries (`src/android.ts`), and the release notes |
 | `tools/variants/` | Generates the variant-character table for place search from the OpenCC dictionaries |
 | `tools/ci/` | Container definition for `verify:clean` |
 | `.githooks/` | Optional Git hooks |

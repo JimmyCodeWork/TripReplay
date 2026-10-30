@@ -116,10 +116,14 @@ flowchart LR
 
 地圖檔存放於獨立的 OPFS 儲存區，因為媒體儲存區的啟動時復原程序會刪除未被任何專案引用的檔案。
 
+- Android 應用程式（[ADR 0008](adr/0008-android-in-1-0.md)）：Capacitor 將以 `vite build --mode native` 建置的同一個頁面封裝為 APK，在 Android System WebView 中執行。專案自有的外掛會將備份儲存到使用者選擇的位置，「全螢幕」會填滿視窗，授權資訊則以對話框開啟。Gradle 解析出的 Maven 函式庫須通過其專屬的授權門檻，並列於 APK 的授權聲明與 SBOM 中。CI 會為每次變更建置除錯版 APK；發行流程會簽署 APK 並附於發行版本。先前的候選方案 Tauri 因每個 Tauri 應用程式都會連結 MPL-2.0 套件而放棄。
+
 1.0 尚待完成的項目，依序為：
 
-1. 需要人員與其他瀏覽器參與的檢查（[無障礙審查 §5](accessibility-review.md#5-100-之前尚待完成)）：以 NVDA 與 VoiceOver 進行螢幕閱讀器檢查、在 Firefox 與 Safari 中完成核心情境，以及與初次使用者進行易用性測試；
-2. `1.0.0` 發行：版本號、變更記錄與標籤（[發行流程](releasing.md)）。
+1. 在裝置上測試 Android 應用程式：安裝 CI 的除錯版 APK，完整走過核心情境，包括一次備份與還原；
+2. 需要人員與其他瀏覽器參與的檢查（[無障礙審查 §5](accessibility-review.md#5-100-之前尚待完成)）：以 NVDA 與 VoiceOver（Android 上為 TalkBack）進行螢幕閱讀器檢查、在 Firefox 與 Safari 中完成核心情境，以及與初次使用者進行易用性測試；
+3. 將 Android 簽署金鑰加入儲存庫的 Secrets（[發行流程 §4](releasing.md#4-android-簽署金鑰)）；
+4. `1.0.0` 發行：版本號、變更記錄與標籤（[發行流程](releasing.md)）。
 
 ## M3 — 1.0 發行準備（階段 E）
 
@@ -131,6 +135,7 @@ flowchart LR
 | 無障礙審查：鍵盤操作、螢幕閱讀器標籤、足夠的對比度，以及預覽的減少動態效果選項 |
 | 通過授權發行門檻（[相依套件授權政策 §6](license-policy.md#6-發行門檻)） |
 | 使用者指南、隱私聲明、已知問題及瀏覽器支援表皆提供 `en` 與 `zh-TW`；以變更紀錄建立 `1.0.0` 標籤 |
+| 發行版本附上簽署過的 Android APK，其函式庫皆通過授權門檻（[ADR 0008](adr/0008-android-in-1-0.md)） |
 
 ## 1.0 之後
 

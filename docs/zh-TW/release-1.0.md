@@ -37,9 +37,9 @@ TripReplay 1.0 交付完整的畫面體驗。旅行者可以開啟網站，以�
 
 | | 1.0 |
 |---|---|
-| 散布方式 | 以公開網址提供的 Web 應用程式，可安裝為漸進式網頁應用程式（PWA） |
+| 散布方式 | 以公開網址提供的 Web 應用程式，可安裝為漸進式網頁應用程式（PWA）；以及 Android 應用程式，以簽署過的 APK 附於每個 GitHub 發行版本（[ADR 0008](adr/0008-android-in-1-0.md)） |
 | 裝置 | 桌上型與筆記型電腦；平板與手機透過瀏覽器使用 |
-| 安裝版（Windows、macOS、Linux、Android、iOS） | 不在 1.0 範圍內，仍為長期目標（[產品規格 §1.1](specification.md#11-目標)） |
+| 安裝版（Windows、macOS、Linux、iOS）與應用程式商店 | 不在 1.0 範圍內，仍為長期目標（[產品規格 §1.1](specification.md#11-目標)） |
 | 瀏覽器 | Chrome、Edge、Safari 及 Firefox 的目前與前一個主要版本 |
 | 網路 | 僅於開啟應用程式及下載地圖時需要。之後所有功能皆可在無連線時使用 |
 
@@ -71,7 +71,7 @@ TripReplay 1.0 交付完整的畫面體驗。旅行者可以開啟網站，以�
 | 版本 | 功能 |
 |---|---|
 | 1.0 之後的下一個版本 | MP4 匯出（H.264，1080p 與 720p，30 fps），含原始音訊與背景音樂 |
-| 之後 | Windows、macOS、Linux、Android 及 iOS 安裝版 |
+| 之後 | Windows、macOS、Linux 及 iOS 安裝版，以及應用程式商店上架 |
 
 1.0 的架構不得妨礙上述功能：預覽由[產品規格 §7](specification.md#7-預覽與影片管線) 的確定性 `renderAt(timeUs)` 驅動，使匯出能渲染相同的影格；地圖資源僅從已下載的地圖檔讀取。
 
@@ -130,7 +130,8 @@ TripReplay 1.0 交付完整的畫面體驗。旅行者可以開啟網站，以�
 ### 6.5 發行工程
 
 - 採用語意化版本；`1.0.0` 自 `main` 建立標籤，並附上變更紀錄。
-- 通過授權發行門檻，且應用程式提供 `THIRD-PARTY-NOTICES`（[相依套件授權政策 §6](license-policy.md#6-發行門檻)）。
+- 通過授權發行門檻（包括 Android 函式庫），且 Web 應用程式提供、Android 應用程式顯示 `THIRD-PARTY-NOTICES`（[相依套件授權政策 §6](license-policy.md#6-發行門檻)）。
+- Android 應用程式以專案的發行金鑰簽署。
 - 部署的網站使用 HTTPS，並以內容安全政策（CSP）限制網路存取僅限地圖下載來源。
 
 ## 7. 待決事項

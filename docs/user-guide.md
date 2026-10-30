@@ -14,6 +14,7 @@ This guide follows the core scenario: download a map, plan the trip, add your ph
 ## 1. Before You Start
 
 - **Browser.** Use a current version of Chrome, Edge, Safari or Firefox. See [Browser Support](browser-support.md) for the differences between them.
+- **Android application.** On an Android phone or tablet (Android 7.0 or later), you can install TripReplay as an application instead: download `tripreplay-android-….apk` from the project's [releases](https://github.com/JimmyCodeWork/TripReplay/releases), open it and allow your browser or file manager to install it. Keep the Android System WebView up to date through Google Play. The application works like the website, with the differences noted below; it keeps its own trips, so move trips between the two with a backup (§9).
 - **Install it (optional).** Your browser can install TripReplay as an app, for example with the install button in Chrome's or Edge's address bar, or with **Share → Add to Home Screen** in Safari on iPhone and iPad. The installed app opens in its own window and starts without a connection.
 - **Storage.** Maps and media are stored by the browser on this device. A region map takes a few hundred megabytes, and your photos and videos take as much space as the files themselves. TripReplay checks the free space before every download and import.
 - **Offline.** You need a connection only to open TripReplay the first time and to download maps. After that, everything works without one, including place search.
@@ -99,7 +100,7 @@ The preview on the right always shows the current recap.
 - The bar under the slider shows the parts of the recap: opening, travel, stop titles, photos, videos and closing. Select a part to jump to it.
 - On the timeline you can also drag the right edge of a photo to change its duration, drag the edges of a video to trim it, and drag the music to move it. The same changes can be made with the fields in the **Media** and **Music** tabs.
 - **Reduce motion** replaces camera flights and zooms with cross-fades. It starts as your system's "Reduce motion" setting, and TripReplay remembers your choice in this browser.
-- **Full screen** plays the recap on the whole screen, for example to show it to family and friends. Press **Escape** to leave full screen.
+- **Full screen** plays the recap on the whole screen, for example to show it to family and friends. Press **Escape** to leave full screen. In the Android application, it fills the application window; select **Full screen** again to leave it.
 
 If no downloaded map contains your stops, the preview says so and draws the recap on the theme's background; download the region in **Maps** (§2) to see the map.
 
@@ -107,7 +108,7 @@ If no downloaded map contains your stops, the preview says so and draws the reca
 
 The browser can clear stored data, for example when the device runs out of space or, in Safari, after a website has not been used for some time ([Browser Support](browser-support.md)). Back up the trips you care about.
 
-- **Back up.** In **Trips**, select **Back up** on a trip. TripReplay saves one `.tripreplay` file with the trip, its journal, its music and all its photos and videos. Chrome and Edge ask where to save it; other browsers put it in your downloads folder.
+- **Back up.** In **Trips**, select **Back up** on a trip. TripReplay saves one `.tripreplay` file with the trip, its journal, its music and all its photos and videos. Chrome, Edge and the Android application ask where to save it; other browsers put it in your downloads folder.
 - **Restore.** Select **Restore backup** and choose a `.tripreplay` file. If the trip is already on this device, you can **Restore as a copy**; the existing trip is not changed.
 
 A backup also moves a trip to another device or browser: back it up on one and restore it on the other. Maps are not part of a backup; download them again on the new device.

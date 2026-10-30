@@ -12,6 +12,7 @@
     "audio": ["timeline", "app"],
     "storage": ["domain", "app"],
     "ui": ["app", "i18n", "themes"],
-    "web": "*"
+    "web": "*",
+    "android": []
   }
 }

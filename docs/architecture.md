@@ -79,6 +79,7 @@ flowchart TD
 | `storage` | IndexedDB and OPFS persistence, project package backup and restore; implements `ProjectRepository` and `AssetStore` | `domain`, `app` |
 | `ui` | Screens and components (trip list, workspace, dialogs, player) | `app`, `i18n`, `themes` |
 | `apps/web` | Composition root and PWA shell | all |
+| `apps/android` | Android shell (Capacitor): packages the build of `apps/web` and saves backups through its `SaveFile` plugin ([ADR 0008](adr/0008-android-in-1-0.md)) | — |
 
 Later releases add packages without changing these: `export` (encodes frames from `renderer`), an offline implementation inside `map`, and platform shells under `apps/`.
 

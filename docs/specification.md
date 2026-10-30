@@ -20,7 +20,7 @@ TripReplay turns a planned itinerary and the photos and videos captured along th
 
 - Build an itinerary, import photos and videos, and generate an animated recap ordered by stop.
 - Export the recap as a video file.
-- Run on Web, Windows, macOS, Linux, Android and iOS. Version 1.0 ships on the Web only ([ADR 0004](adr/0004-web-first-release.md)).
+- Run on Web, Windows, macOS, Linux, Android and iOS. Version 1.0 ships on the Web and as an Android application ([ADR 0004](adr/0004-web-first-release.md), [ADR 0008](adr/0008-android-in-1-0.md)).
 - Keep all private media and processing on the device.
 - Run entirely on the device: the user downloads the map of the needed regions in advance, after which editing, place search, preview and export work without a network connection. The project operates no server ([ADR 0006](adr/0006-local-only-operation.md)).
 
@@ -107,7 +107,7 @@ The download source's terms must permit download, local storage and use in expor
 
 ## 5. Architecture
 
-The proposed stack uses a shared React and TypeScript code base for the UI, data model and timeline; a Progressive Web App on the Web; and Tauri 2 as the candidate shell for the five installed platforms, with Kotlin and Swift plugins for native mobile capabilities ([Tauri mobile plugins](https://v2.tauri.app/develop/plugins/develop-mobile/)). These are proposals pending technical validation and license audit; not every platform has been verified.
+The proposed stack uses a shared React and TypeScript code base for the UI, data model and timeline; a Progressive Web App on the Web; and Tauri 2 as the candidate shell for the five installed platforms, with Kotlin and Swift plugins for native mobile capabilities ([Tauri mobile plugins](https://v2.tauri.app/develop/plugins/develop-mobile/)). These are proposals pending technical validation and license audit; not every platform has been verified. Tauri failed the license audit, and the Android application of 1.0 uses Capacitor instead ([ADR 0008](adr/0008-android-in-1-0.md)).
 
 ```mermaid
 flowchart TD
