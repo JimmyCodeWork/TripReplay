@@ -49,6 +49,16 @@ export interface Clock {
   requestFrame(callback: () => void): () => void;
 }
 
+/**
+ * The preview's sound (docs/architecture.md §4.2): clip sound and music, mixed as each frame
+ * describes them (FrameDescription.audio).
+ */
+export interface AudioPort {
+  /** Plays what `audio` describes while `playing`, at its positions and gains, and silences the rest. */
+  render(audio: FrameDescription["audio"], playing: boolean): void;
+  dispose(): void;
+}
+
 /** Where the preview draws frames: the map with the route, markers and overlays on top. */
 export interface PreviewSurface {
   /** Size of the drawing area in CSS pixels. */

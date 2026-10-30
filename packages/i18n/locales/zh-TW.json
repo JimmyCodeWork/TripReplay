@@ -436,5 +436,53 @@
   },
   "journal.notePlaceholder": {
     "message": "為這一刻寫幾句話"
+  },
+  "workspace.tab.music": {
+    "message": "音樂"
+  },
+  "music.title": {
+    "message": "背景音樂"
+  },
+  "music.import": {
+    "message": "加入音樂"
+  },
+  "music.rights": {
+    "message": "請只使用您擁有權利的音樂。TripReplay 不附帶任何音樂。"
+  },
+  "music.empty": {
+    "message": "尚未加入音樂。沒有音樂時，回顧只會播放影片的聲音。"
+  },
+  "music.failed": {
+    "message": "{reason, select, unsupported {此檔案不是此瀏覽器可播放的音樂。} other {無法讀取或儲存此音樂檔。}}"
+  },
+  "music.remove": {
+    "message": "移除 {name}"
+  },
+  "music.start": {
+    "message": "開始時間（秒）"
+  },
+  "music.fadeIn": {
+    "message": "淡入（秒）"
+  },
+  "music.fadeOut": {
+    "message": "淡出（秒）"
+  },
+  "music.volume": {
+    "message": "音量"
+  },
+  "music.volumeFor": {
+    "message": "{name} 的音量"
+  },
+  "music.duck": {
+    "message": "有聲影片播放時降低音樂"
+  },
+  "player.music": {
+    "message": "背景音樂"
+  },
+  "media.volume": {
+    "message": "音量"
+  },
+  "media.volumeFor": {
+    "message": "{file} 的音量"
   }
 }

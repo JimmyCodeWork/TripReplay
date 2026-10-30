@@ -70,6 +70,14 @@ export type Command =
   | { readonly type: "setClipVolume"; readonly id: ClipId; readonly volume: number }
   | { readonly type: "setClipFit"; readonly id: ClipId; readonly fit: Fit }
   | { readonly type: "setClipNote"; readonly id: ClipId; readonly note: string }
+  /** An imported music file, if new, and its track, as one step to undo. */
+  | {
+      readonly type: "addMusic";
+      readonly asset?: Asset;
+      readonly trackId: MusicTrackId;
+      readonly assetId: AssetId;
+      readonly startUs?: Microseconds;
+    }
   | {
       readonly type: "addMusicTrack";
       readonly id: MusicTrackId;
@@ -136,6 +144,12 @@ export function applyCommand(project: Project, command: Command): Project {
       return setClipFit(project, command.id, command.fit);
     case "setClipNote":
       return setClipNote(project, command.id, command.note);
+    case "addMusic":
+      return addMusicTrack(command.asset ? addAsset(project, command.asset) : project, {
+        id: command.trackId,
+        assetId: command.assetId,
+        ...(command.startUs === undefined ? {} : { startUs: command.startUs }),
+      });
     case "addMusicTrack":
       return addMusicTrack(project, {
         id: command.id,

@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import { isHeif, parseIso6709, readImageMetadata, readVideoMetadata } from "../src/index.ts";
+import { audioFormat, isHeif, parseIso6709, readImageMetadata, readVideoMetadata } from "../src/index.ts";
 import { withExif } from "./support/exif.ts";
 
 /*
@@ -124,5 +124,21 @@ describe("readVideoMetadata", () => {
     heic.set(new TextEncoder().encode("ftypheic"), 4);
     expect(isHeif(heic)).toBe(true);
     expect(isHeif(fixture("kyoto.mp4"))).toBe(false);
+  });
+});
+
+describe("audioFormat", () => {
+  const bytes = (...values: (number | string)[]) =>
+    new Uint8Array(values.flatMap((v) => (typeof v === "string" ? [...v].map((c) => c.charCodeAt(0)) : [v])));
+
+  it("recognizes music files by their first bytes", () => {
+    expect(audioFormat(bytes("ID3", 4, 0))).toBe("audio/mpeg");
+    expect(audioFormat(bytes(0xff, 0xfb, 0x90))).toBe("audio/mpeg");
+    expect(audioFormat(bytes(0xff, 0xf1, 0x50))).toBe("audio/aac");
+    expect(audioFormat(bytes("RIFF", 0, 0, 0, 0, "WAVE"))).toBe("audio/wav");
+    expect(audioFormat(bytes("OggS"))).toBe("audio/ogg");
+    expect(audioFormat(bytes("fLaC"))).toBe("audio/flac");
+    expect(audioFormat(fixture("plain.jpg"))).toBeUndefined();
+    expect(audioFormat(fixture("kyoto.mp4"))).toBeUndefined();
   });
 });

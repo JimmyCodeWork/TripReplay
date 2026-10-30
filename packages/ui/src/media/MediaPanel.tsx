@@ -1,6 +1,7 @@
 import type { Command, DispatchResult, EditorState } from "@tripreplay/app";
 import type { Locale, Translate } from "@tripreplay/i18n";
 import { useEffect, useId, useState } from "react";
+import { CommitRange } from "../controls/CommitRange.tsx";
 import { formatDate } from "../format-date.ts";
 import { formatTime } from "../player/RecapPlayer.tsx";
 import styles from "./MediaPanel.module.css";
@@ -92,9 +93,27 @@ export function MediaPanel({ project, selectedStopId, dispatch, mediaUrl, onImpo
                         />
                       </label>
                     ) : (
-                      <span className={styles.duration}>
-                        {t("media.videoLength", { length: formatTime(clip.outUs - clip.inUs) })}
-                      </span>
+                      <>
+                        <span className={styles.duration}>
+                          {t("media.videoLength", { length: formatTime(clip.outUs - clip.inUs) })}
+                        </span>
+                        {asset.kind === "video" && asset.hasAudio && (
+                          <span className={styles.duration}>
+                            {t("media.volume")}
+                            <CommitRange
+                              value={Math.round(clip.volume * 100)}
+                              min={0}
+                              max={100}
+                              step={5}
+                              label={t("media.volumeFor", { file: asset.fileName })}
+                              valueText={`${Math.round(clip.volume * 100)}%`}
+                              onCommit={(percent) =>
+                                dispatch({ type: "setClipVolume", id: clip.id, volume: percent / 100 })
+                              }
+                            />
+                          </span>
+                        )}
+                      </>
                     )}
                   </div>
                   <div className={styles.tools}>

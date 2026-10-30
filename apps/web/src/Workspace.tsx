@@ -4,13 +4,24 @@ import {
   createPlayback,
   createTimelineCache,
   type Editor,
+  MediaFailure,
   type MediaImport,
+  prepareMusic,
   type RegionEntry,
   type SaveStatus,
   type Scheduler,
 } from "@tripreplay/app";
+import { createAudioMixer } from "@tripreplay/audio";
 import type { Locale, Translate } from "@tripreplay/i18n";
-import { ImportDialog, ItineraryPanel, JournalPanel, MediaPanel, RecapPlayer, recapTexts } from "@tripreplay/ui";
+import {
+  ImportDialog,
+  ItineraryPanel,
+  JournalPanel,
+  MediaPanel,
+  MusicPanel,
+  RecapPlayer,
+  recapTexts,
+} from "@tripreplay/ui";
 import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { createPreviewMedia } from "./preview-media.ts";
 import { animationClock, createRecapSurface } from "./recap-surface.ts";
@@ -94,14 +105,58 @@ function EditorView({ editor, services, locale, t, onClose }: EditorViewProps) {
     [services, editor],
   );
   useEffect(() => () => media.dispose(), [media]);
+
+  // Clip sound and music follow the playback, frame by frame (docs/ui-design.md §3.3, Music).
+  useEffect(() => {
+    const music = new Map<string, HTMLAudioElement>();
+    const mixer = createAudioMixer({
+      context: () => new AudioContext(),
+      element: (state) => {
+        if (state.kind === "clip") return media.videoElement(state.assetId);
+        let audio = music.get(state.trackId);
+        if (!audio) {
+          const element = document.createElement("audio");
+          element.preload = "auto";
+          void media.url(state.assetId).then((src) => {
+            if (src) element.src = src;
+          });
+          audio = element;
+          music.set(state.trackId, element);
+        }
+        return audio;
+      },
+    });
+    const render = () => mixer.render(playback.frame()?.audio ?? [], playback.getState().playing);
+    const unsubscribe = playback.subscribe(render);
+    return () => {
+      unsubscribe();
+      mixer.dispose();
+      for (const audio of music.values()) audio.removeAttribute("src");
+    };
+  }, [playback, media]);
   const createSurface = useCallback(
     async (container: HTMLElement) =>
       createRecapSurface(container, regionId ? await services.maps.regionFiles(regionId) : undefined, labels, media),
     [services, regionId, labels, media],
   );
 
-  const [tab, setTab] = useState<"itinerary" | "media" | "journal">("itinerary");
+  const [tab, setTab] = useState<"itinerary" | "media" | "journal" | "music">("itinerary");
   const fileInput = useRef<HTMLInputElement>(null);
+  const musicInput = useRef<HTMLInputElement>(null);
+  const [musicError, setMusicError] = useState<string | undefined>();
+  const addMusic = async (file: File) => {
+    setMusicError(undefined);
+    try {
+      const command = await prepareMusic(file, {
+        media: services.media,
+        project: () => editor.getState().project,
+        newId: services.newId,
+      });
+      editor.dispatch(command);
+    } catch (error) {
+      setMusicError(t("music.failed", { reason: error instanceof MediaFailure ? error.reason : "failed" }));
+    }
+  };
   const [importing, setImporting] = useState<MediaImport | undefined>();
   const startImport = (files: File[]) => {
     if (files.length === 0) return;
@@ -167,7 +222,7 @@ function EditorView({ editor, services, locale, t, onClose }: EditorViewProps) {
       <div className="workspace-main">
         <aside className="workspace-panel">
           <div className="workspace-tabs" role="tablist" aria-label={t("workspace.tabs")}>
-            {(["itinerary", "media", "journal"] as const).map((name) => (
+            {(["itinerary", "media", "journal", "music"] as const).map((name) => (
               <button
                 key={name}
                 type="button"
@@ -191,6 +246,15 @@ function EditorView({ editor, services, locale, t, onClose }: EditorViewProps) {
                 onSelect={select}
                 mediaUrl={media.url}
                 locale={locale}
+                t={t}
+              />
+            )}
+            {tab === "music" && (
+              <MusicPanel
+                project={project}
+                dispatch={editor.dispatch}
+                onImport={() => musicInput.current?.click()}
+                error={musicError}
                 t={t}
               />
             )}
@@ -218,6 +282,17 @@ function EditorView({ editor, services, locale, t, onClose }: EditorViewProps) {
               />
             )}
           </div>
+          <input
+            ref={musicInput}
+            type="file"
+            accept="audio/*"
+            hidden
+            onChange={(event) => {
+              const file = event.target.files?.[0];
+              event.target.value = "";
+              if (file) void addMusic(file);
+            }}
+          />
           <input
             ref={fileInput}
             type="file"

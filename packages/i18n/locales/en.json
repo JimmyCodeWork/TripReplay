@@ -582,5 +582,69 @@
   "journal.notePlaceholder": {
     "message": "A few words about this moment",
     "description": "Placeholder of an empty note on a photo or video."
+  },
+  "workspace.tab.music": {
+    "message": "Music",
+    "description": "Tab with the background music of the recap."
+  },
+  "music.title": {
+    "message": "Background music",
+    "description": "Heading of the music tab."
+  },
+  "music.import": {
+    "message": "Add music",
+    "description": "Button that opens the file chooser for a music file."
+  },
+  "music.rights": {
+    "message": "Use only music you hold the rights to. No music is included with TripReplay.",
+    "description": "Note in the music tab; the user is responsible for the music's rights."
+  },
+  "music.empty": {
+    "message": "No music yet. Without music the recap plays the sound of its videos only.",
+    "description": "Shown in the music tab while the trip has no music."
+  },
+  "music.failed": {
+    "message": "{reason, select, unsupported {This file is not music this browser can play.} other {The music file could not be read or stored.}}",
+    "description": "Why a music file could not be added."
+  },
+  "music.remove": {
+    "message": "Remove {name}",
+    "description": "Button that removes a music track; name is the file name."
+  },
+  "music.start": {
+    "message": "Starts at (s)",
+    "description": "Position of the track on the recap, in seconds."
+  },
+  "music.fadeIn": {
+    "message": "Fade in (s)",
+    "description": "Length of the fade-in, in seconds."
+  },
+  "music.fadeOut": {
+    "message": "Fade out (s)",
+    "description": "Length of the fade-out, in seconds."
+  },
+  "music.volume": {
+    "message": "Volume",
+    "description": "Label of a music track's volume."
+  },
+  "music.volumeFor": {
+    "message": "Volume of {name}",
+    "description": "Accessible name of a track's volume slider; name is the file name."
+  },
+  "music.duck": {
+    "message": "Lower music during clips with sound",
+    "description": "Checkbox: the music gets quieter while a video with sound plays."
+  },
+  "player.music": {
+    "message": "Background music",
+    "description": "Hover text of the music row under the recap's segments."
+  },
+  "media.volume": {
+    "message": "Volume",
+    "description": "Label of a video clip's sound volume."
+  },
+  "media.volumeFor": {
+    "message": "Volume of {file}",
+    "description": "Accessible name of a video's volume slider; file is the file name."
   }
 }

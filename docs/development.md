@@ -72,11 +72,12 @@ To bypass a hook once, add `--no-verify` to `git commit` or `git push`. To disab
 | Path | Contents |
 |---|---|
 | `apps/web/` | Web application: the composition root that creates the adapters and mounts the UI; platform shells follow later |
-| `packages/` | Product packages: `domain`, `themes`, `i18n`, `timeline`, `app`, `renderer`, `map`, `media`, `storage`, `ui`; others planned as defined in the [Application Architecture §3](architecture.md#3-packages) |
+| `packages/` | Product packages: `domain`, `themes`, `i18n`, `timeline`, `app`, `renderer`, `map`, `media`, `audio`, `storage`, `ui`; others planned as defined in the [Application Architecture §3](architecture.md#3-packages) |
 | `packages/domain/` | Data model, invariants and pure editing operations |
 | `packages/themes/` | Built-in recap themes as data |
 | `packages/timeline/` | Timeline compiler and `renderAt`, which describes each frame of the recap |
 | `packages/app/` | Editor state, commands with undo and redo, autosave, and the ports adapters implement |
+| `packages/audio/` | The preview's sound with Web Audio: clip sound and music with fades and lowering; implements `AudioPort` |
 | `packages/media/` | Reading and storing imported photos and videos: format recognition, EXIF and MP4 metadata, content hashes; implements `MediaPort` |
 | `packages/renderer/` | Drawing of the recap frames over the map (`createRecapRenderer`); defines the `MapLayer` and `MediaSource` ports |
 | `packages/map/` | Base map drawn with MapLibre GL JS from PMTiles files on the device, resumable region downloads from Overture Maps, and place search in the downloaded maps |

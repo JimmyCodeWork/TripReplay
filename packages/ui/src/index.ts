@@ -5,6 +5,7 @@ export { JournalPanel, type JournalPanelProps } from "./journal/JournalPanel.tsx
 export { MapsDialog, type MapsDialogProps } from "./maps/MapsDialog.tsx";
 export { formatCaptureTime, ImportDialog, type ImportDialogProps } from "./media/ImportDialog.tsx";
 export { MediaPanel, type MediaPanelProps } from "./media/MediaPanel.tsx";
+export { MusicPanel, type MusicPanelProps } from "./music/MusicPanel.tsx";
 export { PlaceSearchBox, type PlaceSearchBoxProps } from "./places/PlaceSearchBox.tsx";
 export { formatTime, RecapPlayer, type RecapPlayerProps } from "./player/RecapPlayer.tsx";
 export { type RecapTexts, recapTexts } from "./player/recap-labels.ts";

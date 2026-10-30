@@ -8,6 +8,7 @@ import {
   MediaFailure,
   type MediaInfo,
   type MediaPort,
+  prepareMusic,
   suggestStop,
 } from "../src/index.ts";
 
@@ -189,5 +190,47 @@ describe("media import", () => {
     await session.run();
     await session.cancel();
     expect(media.stored.size).toBe(0);
+  });
+});
+
+describe("prepareMusic", () => {
+  const song = {
+    name: "song.mp3",
+    info: {
+      kind: "audio",
+      contentHash: "song",
+      fileName: "song.mp3",
+      mimeType: "audio/mpeg",
+      byteSize: 9,
+      durationUs: 180_000_000,
+    } as MediaInfo,
+  };
+
+  it("stores a music file and adds it as a track in one step, reusing a known file", async () => {
+    const media = new FakeMedia();
+    let next = 0;
+    const options = { media, project: kyoto, newId: () => `m${++next}` };
+    const command = await prepareMusic(song, options);
+    expect(command).toMatchObject({
+      type: "addMusic",
+      trackId: "m2",
+      assetId: "m1",
+      asset: { id: "m1", kind: "audio" },
+    });
+    expect(media.stored.has("m1")).toBe(true);
+    const withSong = applyCommand(kyoto(), command);
+    expect(withSong.music).toMatchObject([{ id: "m2", assetId: "m1", startUs: 0, outUs: 180_000_000 }]);
+    const again = await prepareMusic(song, { ...options, project: () => withSong });
+    expect(again).toEqual({ type: "addMusic", trackId: "m3", assetId: "m1" });
+    expect(applyCommand(withSong, again).music).toHaveLength(2);
+  });
+
+  it("rejects photos, and music in the photo and video import", async () => {
+    await expect(
+      prepareMusic({ name: "a" }, { media: new FakeMedia(), project: kyoto, newId: () => "x" }),
+    ).rejects.toThrow(MediaFailure);
+    const { session } = setup([song]);
+    await session.run();
+    expect(session.getState().items[0]?.status).toBe("unsupported");
   });
 });

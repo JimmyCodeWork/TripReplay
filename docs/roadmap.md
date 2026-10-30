@@ -104,18 +104,18 @@ Packages follow the [Application Architecture](architecture.md):
 - the recap preview in the trip workspace ([Screen Design §3.1](ui-design.md#31-desktop-layout), [§3.4](ui-design.md#34-timeline), [§5](ui-design.md#5-full-screen-player)): `createPlayback` in `app` plays the compiled timeline in real time from a `Clock`, and `createRecapRenderer` in `renderer` draws each `FrameDescription`. The map moves to the frame's camera, and the route, markers, titles and attribution are drawn on a canvas above it. Play and pause (also with the space bar), a position slider, the segments of the recap, 16:9 and 9:16, and full screen. Selecting a stop moves the preview to its title. "Reduce motion" in the system settings switches to cross-fades. Without a downloaded map of the stops, the recap is drawn on the theme's background. Music, dragging durations on the timeline and the fading player controls follow;
 - media import ([Screen Design §4](ui-design.md#4-import-and-matching-dialog), [1.0 Definition §4.2](release-1.0.md#42-additional-features-required-in-10)): the new `media` package recognizes JPEG, PNG, HEIF, MP4 and QuickTime files by their bytes and accepts only what the browser can decode. It reads the capture time, its offset and the GPS position from EXIF, and the duration, size, rotation, sound, creation time and location from the `moov` box. Files are copied into their own OPFS volume, with the import protocol of [spike S6](spikes/s6-web-storage.md). `suggestStop` in `app` suggests the nearest stop of the capture date in the trip's time zone, or the first stop of that day without a position. The dialog lists suggestions to accept one by one or all at once, items to assign by hand, and skipped files with the reason, and lets the user correct the time zone. Nothing is added before "Finish import", and the import is undone in one step. The media tab lists the selected stop's photos and videos with their duration, order and removal. The preview shows photos and muted videos. Clip sound, music, video trimming and thumbnails at preview size follow;
 
-- the journal: an entry for each stop and a note for each photo or video (`setClipNote`, at most 500 characters), written in a journal tab that reads the trip day by day. Notes are shown as captions under the pictures in the recap, wrapped to two lines.
+- the journal: an entry for each stop and a note for each photo or video (`setClipNote`, at most 500 characters), written in a journal tab that reads the trip day by day. Notes are shown as captions under the pictures in the recap, wrapped to two lines;
+- clip sound and background music: the new `audio` package mixes the preview with Web Audio. Each source plays through its media element and a gain node takes the gain of each frame, including fades and the lowering under clips with sound. Music files (MP3, AAC, M4A, WAV, Ogg, FLAC) are recognized by their bytes and added in the music tab, with their start, fades, volume and lowering; video clips get a volume. A row under the recap's segments shows the music and where it is lowered.
 
 Map files go to their own OPFS volume, because start-up recovery of the media store removes files that no project refers to.
 
 Still to do for 1.0, in this order:
 
-1. clip sound and background music (the `audio` package);
-2. video trimming, and dragging durations on the timeline;
-3. the themes tab;
-4. backing up and restoring a trip as a project package;
-5. release engineering: SBOM, `THIRD-PARTY-NOTICES`, Content Security Policy, an installable PWA and a release workflow, which M3 requires;
-6. the user guide, privacy statement and browser support table, and the accessibility review.
+1. video trimming, and dragging durations on the timeline;
+2. the themes tab;
+3. backing up and restoring a trip as a project package;
+4. release engineering: SBOM, `THIRD-PARTY-NOTICES`, Content Security Policy, an installable PWA and a release workflow, which M3 requires;
+5. the user guide, privacy statement and browser support table, and the accessibility review.
 
 ## M3 — Release Readiness for 1.0 (Phase E)
 
