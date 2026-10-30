@@ -169,6 +169,11 @@ export function App({ services, locale, t }: AppProps) {
         />
       )}
       {screen.kind === "maps" && <MapsScreen services={services} locale={locale} t={t} />}
+      <footer className="app-footer">
+        <a href="./THIRD-PARTY-NOTICES.txt" target="_blank" rel="noopener">
+          {t("app.notices")}
+        </a>
+      </footer>
     </div>
   );
 }

@@ -218,6 +218,9 @@ importers:
         specifier: 19.3.1
         version: 19.3.1(react@19.3.1)
     devDependencies:
+      '@tripreplay/release':
+        specifier: workspace:*
+        version: link:../../tools/release
       '@types/react':
         specifier: 19.3.0
         version: 19.3.0
@@ -442,6 +445,12 @@ importers:
   tools/i18n-check: {}
 
   tools/license-check: {}
+
+  tools/release:
+    devDependencies:
+      vite:
+        specifier: 8.3.4
+        version: 8.3.4(@types/node@24.19.2)
 
   tools/variants: {}
 

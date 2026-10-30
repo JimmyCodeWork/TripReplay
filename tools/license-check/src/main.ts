@@ -49,7 +49,10 @@ function directDevelopmentDependencies(): string[] {
     const manifest = JSON.parse(readFileSync(join(project.path, "package.json"), "utf8")) as {
       devDependencies?: Record<string, string>;
     };
-    return Object.keys(manifest.devDependencies ?? {});
+    // Workspace packages are the project's own code under its MIT License.
+    return Object.entries(manifest.devDependencies ?? {})
+      .filter(([, spec]) => !spec.startsWith("workspace:"))
+      .map(([name]) => name);
   });
 }
 

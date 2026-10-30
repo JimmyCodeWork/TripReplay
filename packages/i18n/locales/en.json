@@ -730,5 +730,9 @@
   "restore.copyTitle": {
     "message": "{title} (restored)",
     "description": "Title of a trip restored as a copy."
+  },
+  "app.notices": {
+    "message": "Open-source licenses",
+    "description": "Footer link to the licenses of the third-party software in the application."
   }
 }

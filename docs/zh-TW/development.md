@@ -28,7 +28,7 @@ pnpm run hooks:install   # 選用；見「本機驗證」
 | `pnpm run verify` | 依相同順序執行 CI 的所有檢查 |
 | `pnpm run verify:clean` | 於乾淨的 Linux 容器中執行 `verify`（需要 Docker） |
 | `pnpm run dev` | 以開發模式（Vite）啟動 Web 應用程式，網址為 `http://localhost:5173` |
-| `pnpm run build` | 將 Web 應用程式建置至 `apps/web/dist` |
+| `pnpm run build` | 將 Web 應用程式建置至 `apps/web/dist`，並產生其 SBOM、第三方授權聲明與 service worker（[發行流程](releasing.md)） |
 | `pnpm run hooks:install` | 啟用版本庫的 Git hooks |
 | `pnpm run lint` | 檢查格式與 lint 規則（Biome）；有任何問題即失敗 |
 | `pnpm run format` | 套用格式化及安全的 lint 修正 |
