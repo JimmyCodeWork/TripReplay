@@ -1,7 +1,8 @@
 import { REGION_CATALOG } from "@tripreplay/app";
 import type { Locale, Translate } from "@tripreplay/i18n";
 import { MapsDialog, PlaceSearchBox, TripList } from "@tripreplay/ui";
-import { useState, useSyncExternalStore } from "react";
+import { useRef, useState, useSyncExternalStore } from "react";
+import { backupTrip, inspectBackup, restoreBackup } from "./backup.ts";
 import { MapPreview } from "./MapPreview.tsx";
 import type { Services } from "./services.ts";
 import { Workspace } from "./Workspace.tsx";
@@ -50,6 +51,35 @@ export function App({ services, locale, t }: AppProps) {
   const list = useSyncExternalStore(trips.subscribe, trips.getState);
   const [screen, setScreen] = useState<Screen>({ kind: "trips" });
   const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const [status, setStatus] = useState<string | undefined>();
+  /** A backup whose trip is already stored, waiting for the user to restore it as a copy or not. */
+  const [conflict, setConflict] = useState<{ readonly file: File; readonly title: string } | undefined>();
+  const restoreInput = useRef<HTMLInputElement>(null);
+
+  const failed = (key: "backup.failed" | "restore.failed") => (error: unknown) =>
+    setStatus(t(key, { message: error instanceof Error ? error.message : String(error) }));
+  const backup = (id: string) => {
+    setStatus(t("backup.working"));
+    backupTrip(services, id, t("backup.fileType")).then(
+      (saved) => setStatus(saved ? t("backup.done") : undefined),
+      failed("backup.failed"),
+    );
+  };
+  const restore = (file: File, asCopy?: { title: string }) => {
+    setConflict(undefined);
+    setStatus(t("restore.working"));
+    restoreBackup(services, file, asCopy).then(
+      (project) => setStatus(t("restore.done", { title: project.trip.title })),
+      failed("restore.failed"),
+    );
+  };
+  const chooseBackup = (file: File) => {
+    setStatus(undefined);
+    inspectBackup(services, file).then(({ project, exists }) => {
+      if (exists) setConflict({ file, title: project.trip.title });
+      else restore(file);
+    }, failed("restore.failed"));
+  };
 
   return (
     <div className="app">
@@ -92,8 +122,39 @@ export function App({ services, locale, t }: AppProps) {
             void trips.duplicate(id, t("tripList.copyTitle", { title }));
           }}
           onDelete={(id) => void trips.remove(id)}
+          onBackup={backup}
+          onRestore={() => restoreInput.current?.click()}
+          status={status}
         />
       )}
+      {screen.kind === "trips" && conflict && (
+        <div className="app-alert" role="alert">
+          <p>{t("restore.exists", { title: conflict.title })}</p>
+          <div className="app-alert-actions">
+            <button
+              type="button"
+              className="header-button"
+              onClick={() => restore(conflict.file, { title: t("restore.copyTitle", { title: conflict.title }) })}
+            >
+              {t("restore.asCopy")}
+            </button>
+            <button type="button" className="header-button" onClick={() => setConflict(undefined)}>
+              {t("common.cancel")}
+            </button>
+          </div>
+        </div>
+      )}
+      <input
+        ref={restoreInput}
+        type="file"
+        accept=".tripreplay,application/zip"
+        hidden
+        onChange={(event) => {
+          const file = event.target.files?.[0];
+          event.target.value = "";
+          if (file) chooseBackup(file);
+        }}
+      />
       {screen.kind === "trip" && (
         <Workspace
           key={screen.id}

@@ -1,5 +1,5 @@
 import type { AssetStore, ProjectRepository } from "@tripreplay/app";
-import { type AssetId, type Project, SCHEMA_VERSION } from "@tripreplay/domain";
+import { type AssetId, type Project, SCHEMA_VERSION, type TripId } from "@tripreplay/domain";
 import { isSafeAssetId } from "./asset-store.ts";
 import { StorageError } from "./errors.ts";
 import { checkStoredProject } from "./project-repository.ts";
@@ -170,18 +170,27 @@ export async function readProjectPackage(source: ByteSource): Promise<OpenedPack
   };
 }
 
+/** Restores the trip under another id and title, for a trip that is already stored. */
+export interface RestoreAsCopy {
+  readonly tripId: TripId;
+  readonly title: string;
+}
+
 /**
  * Restores a package: stores its media first and saves the project last, so an interrupted restore
  * leaves only unreferenced files, which start-up recovery removes. Fails with `exists` when the
- * trip is already stored. Media already stored with the same id and size is reused, as when a
- * backup is restored in the browser it came from.
+ * trip is already stored, unless `asCopy` gives it another id. Media already stored with the same
+ * id and size is reused, as when a backup is restored in the browser it came from.
  */
 export async function restoreProjectPackage<File extends { readonly size: number }>(
   source: ByteSource,
   target: { readonly assets: AssetStore<File>; readonly repository: ProjectRepository },
+  asCopy?: RestoreAsCopy,
 ): Promise<Project> {
   const opened = await readProjectPackage(source);
-  const { project } = opened;
+  const project: Project = asCopy
+    ? { ...opened.project, trip: { ...opened.project.trip, id: asCopy.tripId, title: asCopy.title } }
+    : opened.project;
   if (await target.repository.load(project.trip.id)) {
     throw new StorageError("exists", `Trip "${project.trip.id}" already exists`);
   }

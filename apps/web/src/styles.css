@@ -206,3 +206,23 @@ body {
     order: -1;
   }
 }
+
+.app-alert {
+  display: grid;
+  gap: 8px;
+  max-width: 640px;
+  margin-top: 12px;
+  padding: 12px;
+  border: 1px solid var(--color-accent);
+  border-radius: 8px;
+  background: var(--color-surface);
+}
+
+.app-alert p {
+  margin: 0;
+}
+
+.app-alert-actions {
+  display: flex;
+  gap: 8px;
+}

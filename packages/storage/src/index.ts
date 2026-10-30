@@ -9,6 +9,7 @@ export {
   PACKAGE_VERSION,
   type PackageManifest,
   type PackageMedia,
+  type RestoreAsCopy,
   readProjectPackage,
   restoreProjectPackage,
   writeProjectPackage,

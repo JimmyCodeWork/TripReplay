@@ -682,5 +682,53 @@
   "themes.intro": {
     "message": "A theme sets the map colors, the route and the titles of the recap. Choosing one applies it at once; Portrait also switches to 9:16.",
     "description": "Introduction of the themes tab."
+  },
+  "tripList.backup": {
+    "message": "Back up",
+    "description": "Button that saves a trip with all its media as one backup file."
+  },
+  "tripList.restore": {
+    "message": "Restore backup",
+    "description": "Button that opens a backup file to restore its trip."
+  },
+  "backup.fileType": {
+    "message": "TripReplay backup",
+    "description": "Name of the backup file type in the save dialog."
+  },
+  "backup.working": {
+    "message": "Backing up…",
+    "description": "Shown while a backup file is written."
+  },
+  "backup.done": {
+    "message": "Backup saved. Keep the file somewhere safe: it holds the trip and all its photos and videos.",
+    "description": "Shown after a backup file is saved."
+  },
+  "backup.failed": {
+    "message": "The backup could not be saved: {message}",
+    "description": "Shown when a backup fails; message is the technical reason."
+  },
+  "restore.working": {
+    "message": "Restoring…",
+    "description": "Shown while a backup file is restored."
+  },
+  "restore.done": {
+    "message": "“{title}” was restored.",
+    "description": "Shown after a trip is restored from a backup."
+  },
+  "restore.failed": {
+    "message": "The backup could not be restored: {message}",
+    "description": "Shown when a restore fails; message is the technical reason."
+  },
+  "restore.exists": {
+    "message": "“{title}” is already on this device. Restore the backup as a copy?",
+    "description": "Asked when the backup's trip is already stored."
+  },
+  "restore.asCopy": {
+    "message": "Restore as a copy",
+    "description": "Button that restores a backup under a new trip."
+  },
+  "restore.copyTitle": {
+    "message": "{title} (restored)",
+    "description": "Title of a trip restored as a copy."
   }
 }

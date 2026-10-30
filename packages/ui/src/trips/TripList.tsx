@@ -14,6 +14,12 @@ export interface TripListProps {
   readonly onRename: (id: string, title: string) => void;
   readonly onDuplicate: (id: string) => void;
   readonly onDelete: (id: string) => void;
+  /** Saves a trip with its media as a backup file. */
+  readonly onBackup?: (id: string) => void;
+  /** Opens a backup file to restore. */
+  readonly onRestore?: () => void;
+  /** Progress or the outcome of a backup or restore. */
+  readonly status?: string | undefined;
 }
 
 type Mode =
@@ -29,6 +35,7 @@ function TripCard({
   onRename,
   onDuplicate,
   onDelete,
+  onBackup,
 }: Omit<TripListProps, "trips" | "onCreate"> & { readonly trip: TripSummary }) {
   const [mode, setMode] = useState<Mode>({ kind: "idle" });
   const headingId = useId();
@@ -102,6 +109,11 @@ function TripCard({
             <button type="button" className={styles.button} onClick={() => onDuplicate(trip.id)}>
               {t("tripList.duplicate")}
             </button>
+            {onBackup && (
+              <button type="button" className={styles.button} onClick={() => onBackup(trip.id)}>
+                {t("tripList.backup")}
+              </button>
+            )}
             <button type="button" className={styles.button} onClick={() => setMode({ kind: "deleting" })}>
               {t("common.delete")}
             </button>
@@ -114,18 +126,30 @@ function TripCard({
 
 /** The trip list (docs/ui-design.md §2): one card per trip, with its dates, stops and storage. */
 export function TripList(props: TripListProps) {
-  const { trips, t, onCreate } = props;
+  const { trips, t, onCreate, onRestore, status } = props;
   const titleId = useId();
   return (
     <section className={styles.list} aria-labelledby={titleId}>
       <div className={styles.heading}>
         <h2 id={titleId}>{t("tripList.title")}</h2>
-        {trips.length > 0 && (
-          <button type="button" className={styles.primary} onClick={onCreate}>
-            {t("tripList.create")}
-          </button>
-        )}
+        <div className={styles.actions}>
+          {onRestore && (
+            <button type="button" className={styles.button} onClick={onRestore}>
+              {t("tripList.restore")}
+            </button>
+          )}
+          {trips.length > 0 && (
+            <button type="button" className={styles.primary} onClick={onCreate}>
+              {t("tripList.create")}
+            </button>
+          )}
+        </div>
       </div>
+      {status && (
+        <p className={styles.status} role="status">
+          {status}
+        </p>
+      )}
       {trips.length === 0 ? (
         <div className={styles.empty}>
           <p>{t("tripList.empty")}</p>

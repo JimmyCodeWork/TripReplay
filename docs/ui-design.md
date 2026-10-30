@@ -32,7 +32,7 @@ Editing and preview share **one workspace**, so every change is visible immediat
 - A "⋯" menu on each card: rename, duplicate, back up, delete.
 - A "New trip" button in the heading and as the last card.
 - With no trips, a single call to action: "Create your first trip".
-- The header offers "Maps", "Restore backup" and "Settings".
+- The header offers "Trips", "Maps" and "Settings"; the trip list offers "Restore backup", and each card "Back up". A backup is one project package file ([Project Package Format](project-package.md)); where the browser can, it is written straight to the chosen file. A backup whose trip is already on the device can be restored as a copy.
 
 ### 2.1 Maps dialog
 

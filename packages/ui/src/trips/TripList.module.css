@@ -121,3 +121,8 @@
   outline: 2px solid var(--color-accent, #b33a46);
   outline-offset: 2px;
 }
+
+.status {
+  margin: 0;
+  color: var(--color-muted, #5b665f);
+}
