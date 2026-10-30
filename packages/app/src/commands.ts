@@ -48,6 +48,8 @@ export type Command =
   | { readonly type: "setTimeZone"; readonly timeZone: string }
   | { readonly type: "setTheme"; readonly themeId: string }
   | { readonly type: "setAspectRatio"; readonly aspectRatio: AspectRatio }
+  /** A theme chosen in the themes tab, with the aspect ratio it switches to, as one step to undo. */
+  | { readonly type: "chooseTheme"; readonly themeId: string; readonly aspectRatio?: AspectRatio }
   | { readonly type: "addStop"; readonly stop: Stop; readonly position?: number }
   | { readonly type: "updateStop"; readonly id: StopId; readonly changes: StopChanges }
   | { readonly type: "moveStop"; readonly id: StopId; readonly date: IsoDate; readonly position: number }
@@ -118,6 +120,10 @@ export function applyCommand(project: Project, command: Command): Project {
       return setTheme(project, command.themeId);
     case "setAspectRatio":
       return setAspectRatio(project, command.aspectRatio);
+    case "chooseTheme": {
+      const themed = setTheme(project, command.themeId);
+      return command.aspectRatio ? setAspectRatio(themed, command.aspectRatio) : themed;
+    }
     case "addStop":
       return addStop(project, command.stop, command.position);
     case "updateStop":

@@ -106,16 +106,16 @@ Packages follow the [Application Architecture](architecture.md):
 
 - the journal: an entry for each stop and a note for each photo or video (`setClipNote`, at most 500 characters), written in a journal tab that reads the trip day by day. Notes are shown as captions under the pictures in the recap, wrapped to two lines;
 - clip sound and background music: the new `audio` package mixes the preview with Web Audio. Each source plays through its media element and a gain node takes the gain of each frame, including fades and the lowering under clips with sound. Music files (MP3, AAC, M4A, WAV, Ogg, FLAC) are recognized by their bytes and added in the music tab, with their start, fades, volume and lowering; video clips get a volume. A row under the recap's segments shows the music and where it is lowered;
-- editing on the timeline ([Screen Design §3.4](ui-design.md#34-timeline)): dragging the right edge of a photo changes its duration on the 0.5 s grid, the edges of a video trim it, and music is moved by dragging it or trimmed at either end, the start keeping the rest of the music in place. Each drag is one undoable command, and the timeline shows the change while dragging. The media tab offers the same trimming in seconds from the keyboard.
+- editing on the timeline ([Screen Design §3.4](ui-design.md#34-timeline)): dragging the right edge of a photo changes its duration on the 0.5 s grid, the edges of a video trim it, and music is moved by dragging it or trimmed at either end, the start keeping the rest of the music in place. Each drag is one undoable command, and the timeline shows the change while dragging. The media tab offers the same trimming in seconds from the keyboard;
+- the themes tab ([Screen Design §3.3](ui-design.md#33-side-panel-tabs), [§7](ui-design.md#7-themes)): a card for each bundled theme with a small preview of its map colors, route, markers and title. Choosing one applies it at once, to the map as well; the portrait theme also switches the recap to 9:16, in the same undoable step (`chooseTheme`).
 
 Map files go to their own OPFS volume, because start-up recovery of the media store removes files that no project refers to.
 
 Still to do for 1.0, in this order:
 
-1. the themes tab;
-2. backing up and restoring a trip as a project package;
-3. release engineering: SBOM, `THIRD-PARTY-NOTICES`, Content Security Policy, an installable PWA and a release workflow, which M3 requires;
-4. the user guide, privacy statement and browser support table, and the accessibility review.
+1. backing up and restoring a trip as a project package;
+2. release engineering: SBOM, `THIRD-PARTY-NOTICES`, Content Security Policy, an installable PWA and a release workflow, which M3 requires;
+3. the user guide, privacy statement and browser support table, and the accessibility review.
 
 ## M3 — Release Readiness for 1.0 (Phase E)
 

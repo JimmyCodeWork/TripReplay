@@ -111,6 +111,15 @@ describe("applyCommand", () => {
     expect(dragged.music[0]).toMatchObject({ startUs: seconds(5), inUs: 0 });
   });
 
+  it("chooses a theme and its aspect ratio in one step", () => {
+    const p = applyCommand(sampleProject(), { type: "chooseTheme", themeId: "portrait", aspectRatio: "9:16" });
+    expect(p.trip).toMatchObject({ themeId: "portrait", aspectRatio: "9:16" });
+    expect(applyCommand(p, { type: "chooseTheme", themeId: "night" }).trip).toMatchObject({
+      themeId: "night",
+      aspectRatio: "9:16",
+    });
+  });
+
   it("throws DomainError for invalid commands", () => {
     expect(() => applyCommand(sampleProject(), { type: "removeStop", id: "missing" })).toThrow(DomainError);
   });

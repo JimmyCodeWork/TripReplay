@@ -21,6 +21,7 @@ import {
   MusicPanel,
   RecapPlayer,
   recapTexts,
+  ThemePanel,
 } from "@tripreplay/ui";
 import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { createPreviewMedia } from "./preview-media.ts";
@@ -140,7 +141,7 @@ function EditorView({ editor, services, locale, t, onClose }: EditorViewProps) {
     [services, regionId, labels, media],
   );
 
-  const [tab, setTab] = useState<"itinerary" | "media" | "journal" | "music">("itinerary");
+  const [tab, setTab] = useState<"itinerary" | "media" | "journal" | "music" | "themes">("itinerary");
   const fileInput = useRef<HTMLInputElement>(null);
   const musicInput = useRef<HTMLInputElement>(null);
   const [musicError, setMusicError] = useState<string | undefined>();
@@ -222,7 +223,7 @@ function EditorView({ editor, services, locale, t, onClose }: EditorViewProps) {
       <div className="workspace-main">
         <aside className="workspace-panel">
           <div className="workspace-tabs" role="tablist" aria-label={t("workspace.tabs")}>
-            {(["itinerary", "media", "journal", "music"] as const).map((name) => (
+            {(["itinerary", "media", "journal", "music", "themes"] as const).map((name) => (
               <button
                 key={name}
                 type="button"
@@ -249,6 +250,7 @@ function EditorView({ editor, services, locale, t, onClose }: EditorViewProps) {
                 t={t}
               />
             )}
+            {tab === "themes" && <ThemePanel project={project} dispatch={editor.dispatch} t={t} />}
             {tab === "music" && (
               <MusicPanel
                 project={project}
