@@ -66,7 +66,9 @@ const maven = libraries.map((library): Component => {
     name: `${library.group}:${library.artifact}`,
     version: library.version,
     license: entry.declared,
-    licenseText: licenseText(entry.declared),
+    licenseText: entry.noticeFile
+      ? `${readFileSync(join(root, entry.noticeFile), "utf8").trim()}\n\n${licenseText(entry.declared)}`
+      : licenseText(entry.declared),
     homepage: entry.homepage,
     type: "library",
     purl: mavenPurl(library),

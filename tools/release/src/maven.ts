@@ -14,6 +14,8 @@ export interface MavenEntry {
   readonly declared: string;
   readonly category: "code" | "asset";
   readonly homepage?: string;
+  /** The library's Apache-2.0 `NOTICE` text, kept in the repository, which the notices reproduce. */
+  readonly noticeFile?: string;
   readonly note?: string;
 }
 
