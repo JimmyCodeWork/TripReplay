@@ -18,3 +18,5 @@ All notable changes to TripReplay are recorded here. The format follows [Keep a 
 - Themes: Classic, Night and Portrait.
 - An installable Web application that starts without a connection, with a Content Security Policy that allows network access only to the map download source.
 - Every release ships an SBOM and third-party notices generated from the code it bundles.
+- "Reduce motion" in the preview, starting as the system setting; the workspace tabs work with the arrow keys; contrast of text on the accent color and of field borders meets WCAG 2.2 AA in the light and dark schemes.
+- [User guide](docs/user-guide.md), [privacy statement](docs/privacy.md), [browser support and known issues](docs/browser-support.md) and [accessibility review](docs/accessibility-review.md).

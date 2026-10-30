@@ -6,7 +6,11 @@
   --color-text: #1d2420;
   --color-muted: #5b665f;
   --color-line: #d6ddd6;
+  /* Borders of text fields, at least 3:1 against the surfaces (WCAG 2.2, 1.4.11). */
+  --color-field: #7a857e;
   --color-accent: #b33a46;
+  /* Text on accent backgrounds, at least 4.5:1 against the accent. */
+  --color-on-accent: #ffffff;
   --color-hover: rgb(0 0 0 / 6%);
   --font-body: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
 }
@@ -19,7 +23,9 @@
     --color-text: #e6ebe7;
     --color-muted: #9aa69e;
     --color-line: #333c36;
+    --color-field: #7a867e;
     --color-accent: #e06a75;
+    --color-on-accent: #151a17;
     --color-hover: rgb(255 255 255 / 8%);
   }
 }

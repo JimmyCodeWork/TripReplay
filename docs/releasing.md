@@ -26,16 +26,17 @@ The built page carries a Content Security Policy that allows network access only
 ## 2. Steps
 
 1. On a branch, set the new version in the root `package.json`.
-2. In `CHANGELOG.md` and its translation, rename `## [Unreleased]` to `## [x.y.z] - YYYY-MM-DD` and add a new empty `## [Unreleased]` section above it.
-3. Open a pull request and merge it once CI passes.
-4. Tag the merged commit on `main` and push the tag:
+2. Build the release and check the core scenario of the [User Guide](user-guide.md) by hand in Firefox and Safari, which the automated tests do not cover yet. Record what changed in [Browser Support and Known Issues](browser-support.md) and its translation.
+3. In `CHANGELOG.md` and its translation, rename `## [Unreleased]` to `## [x.y.z] - YYYY-MM-DD` and add a new empty `## [Unreleased]` section above it.
+4. Open a pull request and merge it once CI passes.
+5. Tag the merged commit on `main` and push the tag:
 
    ```sh
    git tag vx.y.z
    git push origin vx.y.z
    ```
 
-5. The release workflow checks that the tag matches the version, runs `verify`, the build and the browser tests, and publishes a GitHub release with:
+6. The release workflow checks that the tag matches the version, runs `verify`, the build and the browser tests, and publishes a GitHub release with:
    - `tripreplay-web-vx.y.z.zip`: the contents of `apps/web/dist`, ready to serve;
    - `tripreplay-vx.y.z.sbom.cdx.json` and `THIRD-PARTY-NOTICES.txt`;
    - `SHA256SUMS` of these files.

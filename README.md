@@ -20,7 +20,7 @@ TripReplay turns your itinerary, photos and videos into an animated map recap of
 
 ## Privacy
 
-Your photos, videos, metadata and projects never leave your device. There is no account, no analytics and no cloud processing. The network is used only to load the application and to download the maps you choose; place search runs on your device, and there is no TripReplay server. See [Specification §4](docs/specification.md#4-offline-operation-and-privacy).
+Your photos, videos, metadata and projects never leave your device. There is no account, no analytics and no cloud processing. The network is used only to load the application and to download the maps you choose; place search runs on your device, and there is no TripReplay server. See the [Privacy Statement](docs/privacy.md) for every network request the application makes.
 
 ## Contributing
 
@@ -28,6 +28,10 @@ Contributions are welcome in English or Traditional Chinese. Please read the [Co
 
 ## Documentation
 
+- [User Guide](docs/user-guide.md)
+- [Privacy Statement](docs/privacy.md)
+- [Browser Support and Known Issues](docs/browser-support.md)
+- [Accessibility Review](docs/accessibility-review.md)
 - [1.0 Definition](docs/release-1.0.md)
 - [Screen Design](docs/ui-design.md)
 - [Application Architecture](docs/architecture.md)

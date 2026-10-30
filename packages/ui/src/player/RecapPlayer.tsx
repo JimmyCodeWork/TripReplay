@@ -25,6 +25,11 @@ export interface RecapPlayerProps {
   readonly onAspectRatio: (aspectRatio: AspectRatio) => void;
   /** Applies an edit made on the timeline, such as a trimmed video; without it the timeline is read-only. */
   readonly onEdit?: (command: Command) => void;
+  /**
+   * Turns "Reduce motion" on or off: the recap then cross-fades instead of moving the camera
+   * (docs/ui-design.md §6). Without it the button is not shown.
+   */
+  readonly onReducedMotion?: (reducedMotion: boolean) => void;
   /** A note shown under the preview, for example that no map of the stops is downloaded. */
   readonly notice?: string;
   readonly t: Translate;
@@ -50,7 +55,16 @@ function typing(target: EventTarget | null): boolean {
  * position, the segments of the recap, the aspect ratio and full-screen playback. Space toggles
  * playback while no control has the focus.
  */
-export function RecapPlayer({ timeline, playback, createSurface, onAspectRatio, onEdit, notice, t }: RecapPlayerProps) {
+export function RecapPlayer({
+  timeline,
+  playback,
+  createSurface,
+  onAspectRatio,
+  onEdit,
+  onReducedMotion,
+  notice,
+  t,
+}: RecapPlayerProps) {
   const state = useSyncExternalStore(playback.subscribe, playback.getState);
   const player = useRef<HTMLDivElement>(null);
   const stage = useRef<HTMLDivElement>(null);
@@ -169,6 +183,16 @@ export function RecapPlayer({ timeline, playback, createSurface, onAspectRatio, 
             </button>
           ))}
         </fieldset>
+        {onReducedMotion && (
+          <button
+            type="button"
+            className={styles.option}
+            aria-pressed={timeline.reducedMotion}
+            onClick={() => onReducedMotion(!timeline.reducedMotion)}
+          >
+            {t("player.reduceMotion")}
+          </button>
+        )}
         <button type="button" className={styles.option} onClick={fullscreen}>
           {t("player.fullscreen")}
         </button>

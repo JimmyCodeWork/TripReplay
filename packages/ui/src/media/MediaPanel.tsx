@@ -35,7 +35,10 @@ function Thumbnail({ asset, mediaUrl }: { readonly asset: Asset; readonly mediaU
   }, [asset.id, mediaUrl]);
   if (!url) return <span className={styles.thumbnail} aria-hidden="true" />;
   return asset.kind === "video" ? (
-    <video className={styles.thumbnail} src={`${url}#t=0.1`} preload="metadata" muted tabIndex={-1} />
+    // A thumbnail only; the item is named by the text next to it.
+    <span className={styles.decorative} aria-hidden="true">
+      <video className={styles.thumbnail} src={`${url}#t=0.1`} preload="metadata" muted tabIndex={-1} />
+    </span>
   ) : (
     <img className={styles.thumbnail} src={url} alt="" />
   );
