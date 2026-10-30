@@ -9,6 +9,7 @@ import {
   projectWithView,
   type RecapLabels,
   routePoints,
+  wrapText,
 } from "../src/index.ts";
 
 type Project = Parameters<typeof compile>[0];
@@ -68,6 +69,8 @@ function recorder() {
     {
       get(target, key: string) {
         if (key in target) return target[key];
+        // Every character is 10 pixels wide.
+        if (key === "measureText") return (text: string) => ({ width: Array.from(text).length * 10 });
         return (...args: unknown[]) => {
           if (key === "save") stack.push({ ...(target as typeof state) });
           if (key === "restore") Object.assign(target, stack.pop());
@@ -212,5 +215,51 @@ describe("createRecapRenderer", () => {
     expect(views).toHaveLength(2);
     expect(views[0]?.zoom).toBeCloseTo(timeline.overview.zoom - 1);
     expect(colorChanges).toBe(1);
+  });
+});
+
+describe("wrapText", () => {
+  const measure = (text: string) => Array.from(text).length * 10;
+
+  it("keeps short captions on one line", () => {
+    expect(wrapText("Sunset", 100, measure)).toEqual(["Sunset"]);
+  });
+
+  it("breaks Chinese text between characters and Latin text between words", () => {
+    expect(wrapText("早上的清水寺人還不多", 50, measure)).toEqual(["早上的清水", "寺人還不多"]);
+    expect(wrapText("the light over the bay", 100, measure)).toEqual(["the light", "over the…"]);
+  });
+
+  it("ends a cut caption with an ellipsis", () => {
+    expect(wrapText("一二三四五六七八九十十一十二", 50, measure)).toEqual(["一二三四五", "六七八九…"]);
+  });
+});
+
+describe("captions", () => {
+  it("draws a clip's note under its picture", () => {
+    const timeline = compile(project);
+    const frame = renderAt(timeline, 0);
+    const card = {
+      kind: "media" as const,
+      mediaKind: "photo" as const,
+      clipId: "c1",
+      assetId: "p1",
+      mediaTimeUs: 0,
+      frame: { x: 0.2, y: 0.1, width: 0.6, height: 0.7 },
+      scale: 1,
+      progress: 0,
+      caption: "早上的清水寺，人還不多。",
+      opacity: 1,
+    };
+    const { ctx, texts } = recorder();
+    drawFrame(ctx, {
+      timeline,
+      frame: { ...frame, overlays: [card] },
+      width: WIDTH,
+      height: HEIGHT,
+      project: () => ({ x: 0, y: 0 }),
+      labels,
+    });
+    expect(texts()).toEqual(["早上的清水寺，人還不多。"]);
   });
 });

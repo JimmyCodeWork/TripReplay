@@ -11,3 +11,8 @@ export const MIN_MUSIC_CLIP = seconds(1);
 export const DEFAULT_CLIP_VOLUME = 1;
 export const DEFAULT_MUSIC_VOLUME = 0.7;
 export const DEFAULT_MUSIC_FADE = seconds(2);
+
+/** Longest journal entry of a stop, in characters (UTF-16 code units). */
+export const MAX_JOURNAL_LENGTH = 10_000;
+/** Longest note of a photo or video; it is shown as the caption in the recap. */
+export const MAX_NOTE_LENGTH = 500;

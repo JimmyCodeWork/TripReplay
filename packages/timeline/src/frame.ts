@@ -49,6 +49,8 @@ export interface MediaOverlay {
   readonly scale: number;
   /** Playback progress from 0 to 1, shown as a progress bar on videos. */
   readonly progress: number;
+  /** The clip's note, shown under the picture; empty when there is none. */
+  readonly caption: string;
   readonly opacity: number;
 }
 

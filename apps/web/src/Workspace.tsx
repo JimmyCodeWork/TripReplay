@@ -10,7 +10,7 @@ import {
   type Scheduler,
 } from "@tripreplay/app";
 import type { Locale, Translate } from "@tripreplay/i18n";
-import { ImportDialog, ItineraryPanel, MediaPanel, RecapPlayer, recapTexts } from "@tripreplay/ui";
+import { ImportDialog, ItineraryPanel, JournalPanel, MediaPanel, RecapPlayer, recapTexts } from "@tripreplay/ui";
 import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { createPreviewMedia } from "./preview-media.ts";
 import { animationClock, createRecapSurface } from "./recap-surface.ts";
@@ -100,7 +100,7 @@ function EditorView({ editor, services, locale, t, onClose }: EditorViewProps) {
     [services, regionId, labels, media],
   );
 
-  const [tab, setTab] = useState<"itinerary" | "media">("itinerary");
+  const [tab, setTab] = useState<"itinerary" | "media" | "journal">("itinerary");
   const fileInput = useRef<HTMLInputElement>(null);
   const [importing, setImporting] = useState<MediaImport | undefined>();
   const startImport = (files: File[]) => {
@@ -138,7 +138,7 @@ function EditorView({ editor, services, locale, t, onClose }: EditorViewProps) {
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       if (!(event.ctrlKey || event.metaKey) || event.key.toLowerCase() !== "z") return;
-      if (event.target instanceof HTMLInputElement) return;
+      if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) return;
       event.preventDefault();
       if (event.shiftKey) editor.redo();
       else editor.undo();
@@ -167,7 +167,7 @@ function EditorView({ editor, services, locale, t, onClose }: EditorViewProps) {
       <div className="workspace-main">
         <aside className="workspace-panel">
           <div className="workspace-tabs" role="tablist" aria-label={t("workspace.tabs")}>
-            {(["itinerary", "media"] as const).map((name) => (
+            {(["itinerary", "media", "journal"] as const).map((name) => (
               <button
                 key={name}
                 type="button"
@@ -183,7 +183,18 @@ function EditorView({ editor, services, locale, t, onClose }: EditorViewProps) {
             ))}
           </div>
           <div role="tabpanel" id={`panel-${tab}`} aria-labelledby={`tab-${tab}`}>
-            {tab === "itinerary" ? (
+            {tab === "journal" && (
+              <JournalPanel
+                project={project}
+                dispatch={editor.dispatch}
+                selectedStopId={selected?.id}
+                onSelect={select}
+                mediaUrl={media.url}
+                locale={locale}
+                t={t}
+              />
+            )}
+            {tab === "itinerary" && (
               <ItineraryPanel
                 project={project}
                 dispatch={editor.dispatch}
@@ -194,7 +205,8 @@ function EditorView({ editor, services, locale, t, onClose }: EditorViewProps) {
                 locale={locale}
                 t={t}
               />
-            ) : (
+            )}
+            {tab === "media" && (
               <MediaPanel
                 project={project}
                 selectedStopId={selected?.id}

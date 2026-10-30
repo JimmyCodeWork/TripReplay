@@ -75,6 +75,8 @@ export interface PhotoClip {
   readonly assetId: AssetId;
   readonly durationUs: Microseconds;
   readonly fit: Fit;
+  /** The user's note about the photo, shown as its caption; absent when empty. */
+  readonly note?: string;
 }
 
 export interface VideoClip {
@@ -87,6 +89,8 @@ export interface VideoClip {
   /** 0 (muted) to 1 (original level). */
   readonly volume: number;
   readonly fit: Fit;
+  /** The user's note about the video, shown as its caption; absent when empty. */
+  readonly note?: string;
 }
 
 export type Clip = PhotoClip | VideoClip;

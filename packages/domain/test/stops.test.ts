@@ -32,6 +32,12 @@ describe("updateStop", () => {
   it("rejects an unknown stop", () => {
     expect(() => updateStop(sampleProject(), "nope", { name: "x" })).toThrow(/does not exist/);
   });
+
+  it("keeps a journal entry within its length", () => {
+    const entry = "第一天抵達京都。\n傍晚去了清水寺。";
+    expect(updateStop(sampleProject(), "a", { description: entry }).stops[0]?.description).toBe(entry);
+    expect(() => updateStop(sampleProject(), "a", { description: "x".repeat(10_001) })).toThrow(DomainError);
+  });
 });
 
 describe("moveStop", () => {

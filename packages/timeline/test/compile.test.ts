@@ -1,6 +1,6 @@
-import { addStop, seconds, setTheme } from "@tripreplay/domain";
+import { addStop, seconds, setClipNote, setTheme } from "@tripreplay/domain";
 import { describe, expect, it } from "vitest";
-import { compile, type MediaSegment, TIMELINE_VERSION } from "../src/index.ts";
+import { compile, type MediaSegment, renderAt, TIMELINE_VERSION } from "../src/index.ts";
 import { kyoto, stop, withStops } from "./fixtures.ts";
 
 describe("compile", () => {
@@ -69,5 +69,16 @@ describe("compile", () => {
     const project = addStop(kyoto(), stop("d", "2026-04-04", 139.7, 35.68));
     const { segments } = compile(project);
     for (let i = 1; i < segments.length; i++) expect(segments[i]?.from).toEqual(segments[i - 1]?.to);
+  });
+});
+
+describe("captions", () => {
+  it("carries a clip's note to its media overlay, and an empty caption otherwise", () => {
+    const timeline = compile(setClipNote(kyoto(), "c1", "朝の清水寺"));
+    const media = timeline.segments.filter((s): s is MediaSegment => s.kind === "photo" || s.kind === "video");
+    expect(media.map((s) => s.caption)).toEqual(["朝の清水寺", "", "", ""]);
+    const first = media[0] as MediaSegment;
+    const overlay = renderAt(timeline, (first.startUs + first.endUs) / 2).overlays.find((o) => o.kind === "media");
+    expect(overlay).toMatchObject({ clipId: "c1", caption: "朝の清水寺" });
   });
 });

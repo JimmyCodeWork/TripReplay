@@ -51,6 +51,7 @@ Exporting the recap as a video file follows in the release after 1.0 (§4.3).
 | Map download | Choose regions and download their map with one button; shows the size before downloading and the space used afterwards; pause, resume, verify, update and delete |
 | Itinerary | Stops grouped by day; search of place names in the downloaded map, entirely on the device; manual pins; pasting coordinates or a map link (for example from Google Maps); reordering; names and descriptions; multi-day, multi-country and Date Line crossings |
 | Media | Import photos and videos from the device; assign to stops; reorder; trim videos; set photo duration, rotation and fit; adjust clip volume |
+| Journal | A journal entry per stop and a note per photo or video, written like a diary and read day by day; notes are shown as captions in the recap |
 | Preview | Animated route, camera moves, stop titles and media on a scrubbable timeline; 16:9 and 9:16; full-screen playback with sound |
 | Projects | Autosave; back up and restore a trip as a project package |
 | Languages | English and Traditional Chinese for the whole interface and documentation |

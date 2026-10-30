@@ -42,6 +42,7 @@ export function buildSegments(
         assetId: clip.assetId,
         mediaInUs: clip.kind === "video" ? clip.inUs : 0,
         gain: audible ? clip.volume : 0,
+        caption: clip.note ?? "",
       });
     }
     camera = here;

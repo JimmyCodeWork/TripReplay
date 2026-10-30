@@ -42,6 +42,49 @@ const CURRENT_MARKER_RADIUS = 0.017;
 const MARKER_OUTLINE = 0.004;
 const ATTRIBUTION_SIZE = 0.6;
 const PROGRESS_HEIGHT = 0.006;
+/** Lines of a caption under a picture; longer captions end with an ellipsis. */
+const CAPTION_LINES = 2;
+const LINE_HEIGHT = 1.35;
+
+/**
+ * Breaks a caption into at most `maxLines` lines that fit `maxWidth`. Words stay whole where
+ * there are spaces; Chinese and Japanese text, which has none, breaks between characters. A cut
+ * last line ends with an ellipsis.
+ */
+export function wrapText(
+  text: string,
+  maxWidth: number,
+  measure: (text: string) => number,
+  maxLines = CAPTION_LINES,
+): string[] {
+  const tokens =
+    text
+      .replace(/\s+/g, " ")
+      .trim()
+      .match(
+        /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{P}]|[^\s\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{P}]+|\s/gu,
+      ) ?? [];
+  const lines: string[] = [];
+  let line = "";
+  for (const token of tokens) {
+    const next = line + token;
+    if (measure(next) <= maxWidth || line.trim() === "") {
+      line = next;
+      continue;
+    }
+    lines.push(line.trimEnd());
+    line = token.trimStart();
+    if (lines.length === maxLines) break;
+  }
+  if (lines.length < maxLines && line.trim() !== "") lines.push(line.trimEnd());
+  const shown = lines.slice(0, maxLines);
+  if (shown.join("").replace(/\s/g, "").length < text.replace(/\s/g, "").length) {
+    let last = shown.at(-1) ?? "";
+    while (last.length > 0 && measure(`${last}…`) > maxWidth) last = Array.from(last).slice(0, -1).join("");
+    shown[shown.length - 1] = `${last}…`;
+  }
+  return shown;
+}
 
 function lerpPoint(a: ScreenPoint, b: ScreenPoint, t: number): ScreenPoint {
   return { x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t };
@@ -137,6 +180,13 @@ function drawMedia(ctx: Canvas2D, options: DrawOptions, overlay: Extract<Overlay
   const y = overlay.frame.y * height;
   const w = overlay.frame.width * width;
   const h = overlay.frame.height * height;
+  const captionSize = timeline.theme.typography.captionSize * unit;
+  const padding = captionSize * 0.6;
+  ctx.font = `400 ${Math.round(captionSize)}px ${timeline.theme.typography.fontFamily}`;
+  const lines = overlay.caption ? wrapText(overlay.caption, w - padding * 2, (t) => ctx.measureText(t).width) : [];
+  // The caption takes a band at the bottom of the card; the picture fits above it.
+  const band = lines.length > 0 ? lines.length * captionSize * LINE_HEIGHT + padding * 2 : 0;
+  const ih = h - band;
   ctx.save();
   ctx.shadowColor = card.shadow;
   ctx.shadowBlur = unit * 0.03;
@@ -148,19 +198,28 @@ function drawMedia(ctx: Canvas2D, options: DrawOptions, overlay: Extract<Overlay
   const picture = media?.frame(overlay.assetId, overlay.mediaTimeUs);
   if (picture) {
     // Fits the picture inside the card, then pushes in by `scale` around the center.
-    const fit = Math.min(w / picture.width, h / picture.height) * overlay.scale;
+    const fit = Math.min(w / picture.width, ih / picture.height) * overlay.scale;
     const pw = picture.width * fit;
     const ph = picture.height * fit;
     ctx.save();
     ctx.beginPath();
-    ctx.roundRect(x, y, w, h, card.radius * unit);
+    if (band > 0) ctx.rect(x, y, w, ih);
+    else ctx.roundRect(x, y, w, h, card.radius * unit);
     ctx.clip();
-    ctx.drawImage(picture.image, x + (w - pw) / 2, y + (h - ph) / 2, pw, ph);
+    ctx.drawImage(picture.image, x + (w - pw) / 2, y + (ih - ph) / 2, pw, ph);
     ctx.restore();
+  }
+  if (lines.length > 0) {
+    ctx.fillStyle = card.caption;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    lines.forEach((line, i) => {
+      ctx.fillText(line, x + w / 2, y + ih + padding + captionSize * LINE_HEIGHT * (i + 0.5));
+    });
   }
   if (overlay.mediaKind === "video") {
     ctx.fillStyle = timeline.theme.route.color;
-    ctx.fillRect(x, y + h - PROGRESS_HEIGHT * unit, w * overlay.progress, PROGRESS_HEIGHT * unit);
+    ctx.fillRect(x, y + ih - PROGRESS_HEIGHT * unit, w * overlay.progress, PROGRESS_HEIGHT * unit);
   }
 }
 

@@ -1,6 +1,6 @@
 import { isIsoDate, isValidTimeZone } from "./calendar.ts";
 import { isValidLonLat } from "./geo.ts";
-import { MIN_MUSIC_CLIP, MIN_VIDEO_CLIP, PHOTO_DURATION } from "./limits.ts";
+import { MAX_JOURNAL_LENGTH, MAX_NOTE_LENGTH, MIN_MUSIC_CLIP, MIN_VIDEO_CLIP, PHOTO_DURATION } from "./limits.ts";
 import type { Project } from "./model.ts";
 
 export interface ValidationIssue {
@@ -38,6 +38,8 @@ export function validateProject(project: Project): ValidationIssue[] {
     else if (i > 0 && (project.stops[i - 1]?.date ?? "") > stop.date)
       add(`stops[${i}].date`, "stops are not in date order");
     if (!isValidLonLat(stop.location)) add(`stops[${i}].location`, "is outside the valid range");
+    if (typeof stop.description !== "string" || stop.description.length > MAX_JOURNAL_LENGTH)
+      add(`stops[${i}].description`, `must be text of at most ${MAX_JOURNAL_LENGTH} characters`);
   });
 
   const stopIds = new Set(project.stops.map((s) => s.id));
@@ -53,6 +55,8 @@ export function validateProject(project: Project): ValidationIssue[] {
     const asset = assets.get(clip.assetId);
     if (!asset) add(`${path}.assetId`, `asset "${clip.assetId}" does not exist`);
     else if (asset.kind !== clip.kind) add(`${path}.assetId`, `a ${clip.kind} clip refers to a ${asset.kind} asset`);
+    if (clip.note !== undefined && (typeof clip.note !== "string" || clip.note.length > MAX_NOTE_LENGTH))
+      add(`${path}.note`, `must be text of at most ${MAX_NOTE_LENGTH} characters`);
     if (clip.kind === "photo") {
       if (clip.durationUs < PHOTO_DURATION.min || clip.durationUs > PHOTO_DURATION.max)
         add(`${path}.durationUs`, "is outside the allowed range");

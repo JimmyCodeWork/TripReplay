@@ -29,5 +29,6 @@ export interface Canvas2D<Image = unknown> {
   fill(): void;
   stroke(): void;
   fillText(text: string, x: number, y: number): void;
+  measureText(text: string): { readonly width: number };
   drawImage(image: Image, dx: number, dy: number, dw: number, dh: number): void;
 }

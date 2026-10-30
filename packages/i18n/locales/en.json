@@ -550,5 +550,37 @@
   "import.finish": {
     "message": "{count, plural, =0 {Finish import} one {Add # file} other {Add # files}}",
     "description": "Button that adds the accepted files to their stops."
+  },
+  "workspace.tab.journal": {
+    "message": "Journal",
+    "description": "Tab with the trip's journal: an entry per stop and a note per photo or video."
+  },
+  "journal.title": {
+    "message": "Journal",
+    "description": "Heading of the journal tab."
+  },
+  "journal.intro": {
+    "message": "Write down what happened at each stop. Notes on photos and videos become their captions in the recap.",
+    "description": "Introduction of the journal tab."
+  },
+  "journal.empty": {
+    "message": "Add stops to the itinerary to start the journal.",
+    "description": "Shown in the journal tab while the trip has no stops."
+  },
+  "journal.entryFor": {
+    "message": "Journal entry for {name}",
+    "description": "Accessible name of a stop's journal entry; name is the stop name."
+  },
+  "journal.entryPlaceholder": {
+    "message": "What happened here?",
+    "description": "Placeholder of an empty journal entry."
+  },
+  "journal.noteFor": {
+    "message": "Note on {file}",
+    "description": "Accessible name of the note of a photo or video; file is a file name."
+  },
+  "journal.notePlaceholder": {
+    "message": "A few words about this moment",
+    "description": "Placeholder of an empty note on a photo or video."
   }
 }
