@@ -1,4 +1,4 @@
-import type { Asset, ClipId, Project, StopId } from "@tripreplay/domain";
+import { type Asset, type ClipId, isAssetReferenced, type Project, type StopId } from "@tripreplay/domain";
 import type { Command } from "./commands.ts";
 import { type StopSuggestion, suggestStop } from "./matching.ts";
 import type { MediaPort } from "./ports.ts";
@@ -122,7 +122,17 @@ export function createMediaImport<File>({ files, media, project, newId }: MediaI
     subscribe: store.subscribe,
 
     async run() {
-      const hashes = new Set(project().assets.map((asset) => asset.contentHash));
+      // Only files in use are duplicates. A file whose clips were all removed is still stored
+      // with the trip, and importing it again brings it back without storing it twice.
+      const current = project();
+      const hashes = new Set(
+        current.assets.filter((asset) => isAssetReferenced(current, asset.id)).map((asset) => asset.contentHash),
+      );
+      const unused = new Map(
+        current.assets
+          .filter((asset) => !isAssetReferenced(current, asset.id))
+          .map((asset) => [asset.contentHash, asset]),
+      );
       for (const [index, file] of files.entries()) {
         if (controller.signal.aborted) return;
         try {
@@ -132,6 +142,10 @@ export function createMediaImport<File>({ files, media, project, newId }: MediaI
             update(index, (item) => ({ ...item, status: "unsupported" }));
           } else if (hashes.has(info.contentHash)) {
             update(index, (item) => ({ ...item, status: "duplicate" }));
+          } else if (unused.has(info.contentHash)) {
+            hashes.add(info.contentHash);
+            const asset = unused.get(info.contentHash) as Asset;
+            update(index, (item) => ({ ...item, status: "ready", asset, ...suggested(asset) }));
           } else {
             hashes.add(info.contentHash);
             const id = newId();
@@ -202,9 +216,10 @@ export function createMediaImport<File>({ files, media, project, newId }: MediaI
         const [ta, tb] = [time(a.asset), time(b.asset)];
         return ta === tb ? 0 : ta < tb ? -1 : 1;
       });
+      const known = new Set(project().assets.map((asset) => asset.id));
       return {
         type: "importMedia",
-        assets: chosen.map((item) => item.asset),
+        assets: chosen.map((item) => item.asset).filter((asset) => !known.has(asset.id)),
         clips: byTime.map((item) => ({ id: newId() as ClipId, stopId: item.stopId, assetId: item.asset.id })),
       };
     },

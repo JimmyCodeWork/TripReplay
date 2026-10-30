@@ -169,7 +169,11 @@ describe("media import", () => {
   });
 
   it("skips duplicates and reports files it cannot use", async () => {
-    const project = applyCommand(kyoto(), { type: "addAssets", assets: [{ ...photo("known"), id: "old" }] as never });
+    const project = applyCommand(kyoto(), {
+      type: "importMedia",
+      assets: [{ ...photo("known"), id: "old" }] as never,
+      clips: [{ id: "c-old" as never, stopId: "station" as never, assetId: "old" as never }],
+    });
     const { session, media } = setup(
       [{ name: "known" }, { name: "x" }, { name: "x" }, { name: "bad" }, { name: "broken" }],
       project,
@@ -183,6 +187,25 @@ describe("media import", () => {
       "failed",
     ]);
     expect(media.stored.size).toBe(1);
+  });
+
+  it("brings back a file whose clip was removed, without storing it again", async () => {
+    let project = applyCommand(kyoto(), {
+      type: "importMedia",
+      assets: [{ ...photo("known"), id: "old" }] as never,
+      clips: [{ id: "c-old" as never, stopId: "station" as never, assetId: "old" as never }],
+    });
+    project = applyCommand(project, { type: "removeClip", id: "c-old" as never });
+    const { session, media } = setup([{ name: "known" }], project);
+    await session.run();
+    expect(session.getState().items[0]).toMatchObject({ status: "ready", asset: { id: "old" } });
+    expect(media.stored.size).toBe(0);
+    session.choose(0, "kiyomizu" as never);
+    const command = await session.finish();
+    expect(command).toMatchObject({ type: "importMedia", assets: [], clips: [{ stopId: "kiyomizu", assetId: "old" }] });
+    const restored = applyCommand(project, command as never);
+    expect(restored.clips.map((c) => c.assetId)).toEqual(["old"]);
+    expect(restored.assets).toHaveLength(1);
   });
 
   it("removes every stored file when cancelled", async () => {
