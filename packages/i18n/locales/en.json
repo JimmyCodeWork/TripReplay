@@ -670,5 +670,17 @@
   "media.trimOut": {
     "message": "To (s)",
     "description": "End of the used part of a video, in seconds into the file."
+  },
+  "workspace.tab.themes": {
+    "message": "Themes",
+    "description": "Tab with the bundled recap themes."
+  },
+  "themes.title": {
+    "message": "Themes",
+    "description": "Heading of the themes tab."
+  },
+  "themes.intro": {
+    "message": "A theme sets the map colors, the route and the titles of the recap. Choosing one applies it at once; Portrait also switches to 9:16.",
+    "description": "Introduction of the themes tab."
   }
 }

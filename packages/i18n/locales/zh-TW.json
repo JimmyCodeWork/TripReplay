@@ -502,5 +502,14 @@
   },
   "media.trimOut": {
     "message": "到（秒）"
+  },
+  "workspace.tab.themes": {
+    "message": "主題"
+  },
+  "themes.title": {
+    "message": "主題"
+  },
+  "themes.intro": {
+    "message": "主題決定回顧的地圖配色、路線與標題樣式。選取後立即套用；選擇「直式」時也會切換為 9:16。"
   }
 }

@@ -11,4 +11,5 @@ export { formatTime, RecapPlayer, type RecapPlayerProps } from "./player/RecapPl
 export { type RecapTexts, recapTexts } from "./player/recap-labels.ts";
 export { TimelineStrips, type TimelineStripsProps } from "./player/TimelineStrips.tsx";
 export { type DragTarget, dragCommand, dragPreview, snapPhotoDuration } from "./player/timeline-drag.ts";
+export { ThemePanel, type ThemePanelProps } from "./themes/ThemePanel.tsx";
 export { TripList, type TripListProps } from "./trips/TripList.tsx";

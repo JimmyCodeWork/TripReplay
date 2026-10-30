@@ -14,6 +14,7 @@
   "dependencies": {
     "@tripreplay/app": "workspace:*",
     "@tripreplay/i18n": "workspace:*",
+    "@tripreplay/themes": "workspace:*",
     "react": "19.3.1",
     "react-dom": "19.3.1"
   },
