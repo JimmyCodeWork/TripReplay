@@ -9,4 +9,6 @@ export { MusicPanel, type MusicPanelProps } from "./music/MusicPanel.tsx";
 export { PlaceSearchBox, type PlaceSearchBoxProps } from "./places/PlaceSearchBox.tsx";
 export { formatTime, RecapPlayer, type RecapPlayerProps } from "./player/RecapPlayer.tsx";
 export { type RecapTexts, recapTexts } from "./player/recap-labels.ts";
+export { TimelineStrips, type TimelineStripsProps } from "./player/TimelineStrips.tsx";
+export { type DragTarget, dragCommand, dragPreview, snapPhotoDuration } from "./player/timeline-drag.ts";
 export { TripList, type TripListProps } from "./trips/TripList.tsx";

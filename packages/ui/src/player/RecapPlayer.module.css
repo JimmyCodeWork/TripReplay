@@ -101,7 +101,13 @@
   cursor: pointer;
 }
 
+.timeline {
+  display: grid;
+  gap: 4px;
+}
+
 .segment {
+  position: relative;
   min-width: 2px;
   border-right: 1px solid var(--color-surface, #fff);
   background: var(--color-line, #d6ddd6);
@@ -130,7 +136,7 @@
 
 .music {
   position: relative;
-  height: 10px;
+  height: 16px;
   overflow: hidden;
   border-radius: 4px;
   background: var(--color-line, #d6ddd6);
@@ -141,6 +147,35 @@
   top: 0;
   bottom: 0;
   background: #c9a227;
+}
+
+.movable {
+  cursor: grab;
+}
+
+/* Edges that change a photo's duration or trim a video or music when dragged. */
+.handleStart,
+.handleEnd {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 1;
+  width: 8px;
+  cursor: ew-resize;
+  touch-action: none;
+}
+
+.handleStart {
+  left: 0;
+}
+
+.handleEnd {
+  right: 0;
+}
+
+.handleStart:hover,
+.handleEnd:hover {
+  background: rgb(0 0 0 / 25%);
 }
 
 /* Lowered under clips with sound. */

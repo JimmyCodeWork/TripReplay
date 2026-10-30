@@ -484,5 +484,23 @@
   },
   "media.volumeFor": {
     "message": "{file} 的音量"
+  },
+  "player.dragDuration": {
+    "message": "拖曳以調整長度"
+  },
+  "player.dragTrimStart": {
+    "message": "拖曳以剪輯開頭"
+  },
+  "player.dragTrimEnd": {
+    "message": "拖曳以剪輯結尾"
+  },
+  "player.dragMusic": {
+    "message": "拖曳以移動音樂"
+  },
+  "media.trimIn": {
+    "message": "從（秒）"
+  },
+  "media.trimOut": {
+    "message": "到（秒）"
   }
 }
