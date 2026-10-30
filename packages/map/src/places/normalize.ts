@@ -58,6 +58,21 @@ export function normalize(text: string): string {
   return out;
 }
 
+const AIRPORT = normalize("機場");
+const INTERNATIONAL = normalize("國際");
+
+/**
+ * The normalized forms a query is searched in: the query itself and, for an airport named
+ * without "international", the form with it, which people usually leave out: 桃園機場 finds
+ * 臺灣桃園國際機場. Done at search time, so that stored indexes stay valid.
+ */
+export function queryForms(query: string): string[] {
+  const q = normalize(query);
+  const at = q.indexOf(AIRPORT);
+  if (q === "" || at <= 0 || q.slice(0, at).endsWith(INTERNATIONAL)) return q === "" ? [] : [q];
+  return [q, q.slice(0, at) + INTERNATIONAL + q.slice(at)];
+}
+
 /** Overlapping two-character sequences of a normalized key; a one-character key is its own sequence. */
 export function bigrams(key: string): string[] {
   const chars = Array.from(key);

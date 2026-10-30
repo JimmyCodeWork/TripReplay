@@ -44,19 +44,37 @@ export function createPreviewMedia(store: AssetStore<Blob>, assets: () => readon
     return pending;
   };
 
-  const loadPhoto = (id: string) => {
+  /**
+   * Decodes a photo straight at preview size, from the size recorded at import, so that a phone
+   * photo of 50 megapixels never needs its full size in memory, which a WebView may refuse. Where
+   * the browser cannot decode it that way, an image element decodes it instead.
+   */
+  const decodePhoto = async (id: string, width: number, height: number): Promise<Picture> => {
+    const blob = await store.open(id);
+    if (!blob) throw new Error("missing");
+    const scale = Math.min(1, PREVIEW_SIZE / Math.max(width, height));
+    try {
+      const bitmap = await createImageBitmap(blob, {
+        resizeWidth: Math.max(1, Math.round(width * scale)),
+        resizeHeight: Math.max(1, Math.round(height * scale)),
+        resizeQuality: "high",
+      });
+      return { image: bitmap, width: bitmap.width, height: bitmap.height };
+    } catch {
+      const src = await url(id);
+      if (!src) throw new Error("missing");
+      const image = new Image();
+      image.src = src;
+      await image.decode();
+      return { image, width: image.naturalWidth, height: image.naturalHeight };
+    }
+  };
+
+  const loadPhoto = (id: string, width: number, height: number) => {
     photos.set(id, "loading");
-    void (async () => {
-      const blob = await store.open(id);
-      if (!blob) throw new Error("missing");
-      const full = await createImageBitmap(blob);
-      const scale = Math.min(1, PREVIEW_SIZE / Math.max(full.width, full.height));
-      if (scale === 1) return full;
-      full.close();
-      return createImageBitmap(blob, { resizeWidth: Math.round(full.width * scale), resizeQuality: "high" });
-    })().then(
-      (bitmap) => {
-        photos.set(id, { image: bitmap, width: bitmap.width, height: bitmap.height });
+    decodePhoto(id, width, height).then(
+      (picture) => {
+        photos.set(id, picture);
         notify();
       },
       () => photos.set(id, "failed"),
@@ -89,7 +107,7 @@ export function createPreviewMedia(store: AssetStore<Blob>, assets: () => readon
       const asset = assets().find((a) => a.id === assetId);
       if (asset?.kind === "photo") {
         const photo = photos.get(assetId);
-        if (photo === undefined) loadPhoto(assetId);
+        if (photo === undefined) loadPhoto(assetId, asset.width, asset.height);
         return typeof photo === "object" ? photo : undefined;
       }
       if (asset?.kind !== "video") return undefined;
@@ -120,7 +138,9 @@ export function createPreviewMedia(store: AssetStore<Blob>, assets: () => readon
         element.removeAttribute("src");
         element.load();
       }
-      for (const photo of photos.values()) if (typeof photo === "object") (photo.image as ImageBitmap).close();
+      for (const photo of photos.values()) {
+        if (typeof photo === "object" && photo.image instanceof ImageBitmap) photo.image.close();
+      }
       for (const pending of urls.values()) void pending.then((u) => u && URL.revokeObjectURL(u));
       videos.clear();
       photos.clear();

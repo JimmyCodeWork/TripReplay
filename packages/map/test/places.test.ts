@@ -2,7 +2,7 @@ import { gzipSync } from "node:zlib";
 import { describe, expect, it } from "vitest";
 import { decodePlaceIndex, encodePlaceIndex } from "../src/places/encode.ts";
 import { type PlaceFeature, placesInTile } from "../src/places/extract.ts";
-import { bigrams, normalize, toTraditional } from "../src/places/normalize.ts";
+import { bigrams, normalize, queryForms, toTraditional } from "../src/places/normalize.ts";
 import { buildPlaceIndex } from "../src/places/place-index.ts";
 import { buildRegionPlaceIndex, createPlaceSearch } from "../src/places/region-index.ts";
 import { searchPlaces } from "../src/places/search.ts";
@@ -56,6 +56,13 @@ describe("normalize", () => {
     expect(normalize("關西機場")).toBe(normalize("関西空港"));
   });
 
+  it("also searches an airport with the word for international, which people leave out", () => {
+    expect(queryForms("桃園機場")).toEqual([normalize("桃園機場"), normalize("桃園國際機場")]);
+    expect(queryForms("関西国際空港")).toEqual([normalize("關西國際機場")]);
+    expect(queryForms("機場")).toEqual([normalize("機場")]);
+    expect(queryForms(" ")).toEqual([]);
+  });
+
   it("splits a key into overlapping pairs of characters", () => {
     expect(bigrams("清水寺")).toEqual(["清水", "水寺"]);
     expect(bigrams("山")).toEqual(["山"]);
@@ -86,6 +93,20 @@ describe("searchPlaces", () => {
     ]);
     const [first] = searchPlaces(index, "台北車站");
     expect(first).toMatchObject({ label: "臺北車站", source: "base" });
+  });
+
+  it("ranks an airport above a wrongly placed `places` entry with the exact name", () => {
+    const index = buildPlaceIndex([
+      place("桃園空港", { kind: "travel_and_transportation", confidence: 0.95, lon: 121.409, lat: 25.057 }),
+      place("臺灣桃園國際機場", {
+        source: "base",
+        kind: "airport/international_airport",
+        prominence: 60,
+        lon: 121.232,
+        lat: 25.077,
+      }),
+    ]);
+    expect(searchPlaces(index, "桃園機場")[0]).toMatchObject({ label: "臺灣桃園國際機場", source: "base" });
   });
 
   it("finds a station that OpenStreetMap names without the word for station", () => {
