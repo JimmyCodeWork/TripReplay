@@ -32,6 +32,7 @@ function mediaCard(timeline: Timeline, index: number, timeUs: Microseconds): Med
     frame: timeline.theme.layouts[timeline.aspectRatio].mediaFrame,
     scale: isPhoto && !timeline.reducedMotion ? lerp(1, PHOTO_PUSH_IN, played) : 1,
     progress: played,
+    caption: segment.caption,
     opacity,
   };
 }

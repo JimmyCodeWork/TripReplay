@@ -79,6 +79,7 @@ Below 820 px wide, the same parts stack vertically: preview (about half the scre
 |---|---|
 | Itinerary | Stops grouped by day, each with a number, name and media count. Drag the handle to reorder, including across days. Selecting a stop moves the preview to that stop. Stops are added by searching place names in the downloaded maps, by "Drop a pin", or by pasting coordinates or a map link (for example from Google Maps). |
 | Media | "Import media" button; thumbnails of the selected stop's media in order. Selecting a photo shows its duration; selecting a video shows trim handles and volume. |
+| Journal | The trip as a diary, day by day: each stop with its journal entry, and each photo or video with a short note (at most 500 characters) that becomes its caption. An entry is saved as one undoable change when the field loses focus, or with Ctrl+Enter or Cmd+Enter. Selecting a stop's name moves the preview to that stop. |
 | Music | Imported tracks; fade-in, fade-out, and "Lower music during clips with sound"; volume. |
 | Themes | Theme cards with a small preview; selecting one applies it immediately. Choosing the portrait theme also switches the preview to 9:16. |
 
@@ -120,8 +121,8 @@ Below 820 px wide, the same parts stack vertically: preview (about half the scre
 | Opening | 3 s | Overview of the whole trip with all stops marked; trip name and dates fade in |
 | Travel | 2 s | The camera flies to the next stop, zooming out for long distances; the route draws itself along the way |
 | Stop title | 1 s | The camera settles on the stop; its name and day appear |
-| Photo | 3 s each | A framed photo over the map with a slow push-in; the stop name stays in a corner |
-| Video | Trimmed length | A framed video with its original sound and a progress bar |
+| Photo | 3 s each | A framed photo over the map with a slow push-in, and its note as a caption of up to two lines; the stop name stays in a corner |
+| Video | Trimmed length | A framed video with its original sound, its note as a caption, and a progress bar |
 | Closing | 3 s | The camera returns to the overview with the complete route; trip summary fades in |
 
 With "Reduce motion" enabled, camera moves and push-ins are replaced by cross-fades.

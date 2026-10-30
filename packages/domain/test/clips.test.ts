@@ -4,6 +4,7 @@ import {
   addClip,
   clipDuration,
   DomainError,
+  MAX_NOTE_LENGTH,
   moveClip,
   normalizePhotoDuration,
   PHOTO_DURATION,
@@ -11,6 +12,7 @@ import {
   removeClip,
   seconds,
   setClipFit,
+  setClipNote,
   setClipVolume,
   setPhotoDuration,
   trimVideo,
@@ -91,5 +93,21 @@ describe("trimVideo", () => {
   it("clamps volume and sets fit", () => {
     const p = setClipFit(setClipVolume(withClips(), "c2", 3), "c2", "cover");
     expect(p.clips[1]).toMatchObject({ volume: 1, fit: "cover" });
+  });
+});
+
+describe("setClipNote", () => {
+  it("sets a trimmed note on photos and videos, and removes an empty one", () => {
+    let p = setClipNote(withClips(), "c1", "  早上的清水寺，人還不多。 ");
+    p = setClipNote(p, "c2", "Sunset");
+    expect(p.clips[0]).toMatchObject({ note: "早上的清水寺，人還不多。" });
+    expect(p.clips[1]).toMatchObject({ note: "Sunset" });
+    p = setClipNote(p, "c1", "   ");
+    expect(p.clips[0]).not.toHaveProperty("note");
+  });
+
+  it("rejects notes that are too long", () => {
+    expect(() => setClipNote(withClips(), "c1", "x".repeat(MAX_NOTE_LENGTH + 1))).toThrow(DomainError);
+    expect(setClipNote(withClips(), "c1", "x".repeat(MAX_NOTE_LENGTH)).clips[0]).toHaveProperty("note");
   });
 });

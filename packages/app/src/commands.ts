@@ -27,6 +27,7 @@ import {
   type StopId,
   setAspectRatio,
   setClipFit,
+  setClipNote,
   setClipVolume,
   setPhotoDuration,
   setTheme,
@@ -68,6 +69,7 @@ export type Command =
   | { readonly type: "trimVideo"; readonly id: ClipId; readonly inUs?: Microseconds; readonly outUs?: Microseconds }
   | { readonly type: "setClipVolume"; readonly id: ClipId; readonly volume: number }
   | { readonly type: "setClipFit"; readonly id: ClipId; readonly fit: Fit }
+  | { readonly type: "setClipNote"; readonly id: ClipId; readonly note: string }
   | {
       readonly type: "addMusicTrack";
       readonly id: MusicTrackId;
@@ -132,6 +134,8 @@ export function applyCommand(project: Project, command: Command): Project {
       return setClipVolume(project, command.id, command.volume);
     case "setClipFit":
       return setClipFit(project, command.id, command.fit);
+    case "setClipNote":
+      return setClipNote(project, command.id, command.note);
     case "addMusicTrack":
       return addMusicTrack(project, {
         id: command.id,

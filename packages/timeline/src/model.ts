@@ -10,7 +10,7 @@ import type {
 } from "@tripreplay/domain";
 import type { Theme } from "@tripreplay/themes";
 
-export const TIMELINE_VERSION = 1;
+export const TIMELINE_VERSION = 2;
 
 /**
  * A map view. `zoom` is the Web Mercator zoom level for the reference frame size of the aspect
@@ -65,6 +65,8 @@ export interface MediaSegment extends SegmentBase {
   readonly mediaInUs: Microseconds;
   /** Clip gain from 0 to 1 when the source has sound, otherwise 0. */
   readonly gain: number;
+  /** The clip's note, shown under the picture; empty when there is none. */
+  readonly caption: string;
 }
 
 export interface ClosingSegment extends SegmentBase {

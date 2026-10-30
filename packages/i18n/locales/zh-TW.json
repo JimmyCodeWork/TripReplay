@@ -412,5 +412,29 @@
   },
   "import.finish": {
     "message": "{count, plural, =0 {完成匯入} other {加入 # 個檔案}}"
+  },
+  "workspace.tab.journal": {
+    "message": "日記"
+  },
+  "journal.title": {
+    "message": "日記"
+  },
+  "journal.intro": {
+    "message": "記下每個景點發生的事。照片與影片的備註會成為回顧中的說明文字。"
+  },
+  "journal.empty": {
+    "message": "在行程中加入景點後，就可以開始寫日記。"
+  },
+  "journal.entryFor": {
+    "message": "{name} 的日記"
+  },
+  "journal.entryPlaceholder": {
+    "message": "這裡發生了什麼事？"
+  },
+  "journal.noteFor": {
+    "message": "{file} 的備註"
+  },
+  "journal.notePlaceholder": {
+    "message": "為這一刻寫幾句話"
   }
 }

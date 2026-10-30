@@ -1,6 +1,7 @@
 import { type IsoDate, isIsoDate } from "./calendar.ts";
 import { invalid, notFound } from "./errors.ts";
 import { isValidLonLat, type LonLat } from "./geo.ts";
+import { MAX_JOURNAL_LENGTH } from "./limits.ts";
 import { findStop, replaceById } from "./lookup.ts";
 import type { Project, Stop, StopId } from "./model.ts";
 
@@ -13,6 +14,9 @@ function checkStop(stop: Stop): void {
   if (stop.name.trim() === "") throw invalid("Stop name must not be empty");
   if (!isIsoDate(stop.date)) throw invalid(`"${stop.date}" is not a valid date`);
   if (!isValidLonLat(stop.location)) throw invalid("Stop location is outside the valid range");
+  if (stop.description.length > MAX_JOURNAL_LENGTH) {
+    throw invalid(`A stop's journal must not exceed ${MAX_JOURNAL_LENGTH} characters`);
+  }
 }
 
 /** Index after the last stop on or before `date`, which keeps stops ordered by date. */

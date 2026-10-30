@@ -26,6 +26,12 @@ describe("validateProject", () => {
       (p) => ({ ...p, clips: p.clips.map((c) => (c.kind === "video" ? { ...c, outUs: 99e6 } : c)) }),
       "clips[1]",
     ],
+    [
+      "journal too long",
+      (p) => ({ ...p, stops: p.stops.map((s, i) => (i === 1 ? { ...s, description: "x".repeat(10_001) } : s)) }),
+      "stops[1].description",
+    ],
+    ["note too long", (p) => ({ ...p, clips: p.clips.map((c) => ({ ...c, note: "x".repeat(501) })) }), "clips[0].note"],
     ["fades too long", (p) => ({ ...p, music: p.music.map((m) => ({ ...m, fadeInUs: 1e12 })) }), "music[0]"],
   ])("reports %s", (_name, corrupt, path) => {
     expect(validateProject(corrupt(full())).map((i) => i.path)).toContain(path);

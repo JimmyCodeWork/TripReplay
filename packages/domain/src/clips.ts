@@ -1,5 +1,5 @@
 import { DomainError, invalid } from "./errors.ts";
-import { DEFAULT_CLIP_VOLUME, MIN_VIDEO_CLIP, PHOTO_DURATION } from "./limits.ts";
+import { DEFAULT_CLIP_VOLUME, MAX_NOTE_LENGTH, MIN_VIDEO_CLIP, PHOTO_DURATION } from "./limits.ts";
 import { findAsset, findClip, findStop, replaceById } from "./lookup.ts";
 import type { AssetId, Clip, ClipId, Fit, PhotoClip, Project, StopId, VideoClip } from "./model.ts";
 import { clamp, type Microseconds } from "./time.ts";
@@ -121,6 +121,17 @@ export function setClipVolume(project: Project, id: ClipId, volume: number): Pro
 export function setClipFit(project: Project, id: ClipId, fit: Fit): Project {
   const clip = findClip(project, id);
   return { ...project, clips: replaceById(project.clips, { ...clip, fit }) };
+}
+
+/**
+ * Sets the note of a photo or video, its caption in the recap. Leading and trailing spaces are
+ * dropped, and an empty note removes the field.
+ */
+export function setClipNote(project: Project, id: ClipId, note: string): Project {
+  const text = note.trim();
+  if (text.length > MAX_NOTE_LENGTH) throw invalid(`A note must not exceed ${MAX_NOTE_LENGTH} characters`);
+  const { note: _, ...clip } = findClip(project, id);
+  return { ...project, clips: replaceById(project.clips, text === "" ? clip : { ...clip, note: text }) };
 }
 
 /** Length of a clip on the recap timeline. */

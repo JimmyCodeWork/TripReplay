@@ -43,9 +43,10 @@ Place search runs on the device against the downloaded map, so search terms are 
 1. **Trip list** — create, open, rename, back up and delete projects; show local storage usage and offline readiness.
 2. **Itinerary editor** — stops grouped by date; place-name search in the downloaded map, manual pin placement, or pasted coordinates or map links; reordering; name and description. Supports multi-day trips, multiple countries and crossing the International Date Line.
 3. **Media editor** — import from the local file system or the system photo library; assign media to stops; reorder; trim videos; set display duration, rotation and fit mode. GPS and timestamp matching is offered only as a suggestion; when metadata is missing, assignment is manual. The user can correct the time zone.
-4. **Recap preview** — map and media preview; play, pause and scrub the timeline; switch aspect ratio. Desktop uses side panels with a bottom timeline; mobile uses the preview with tabbed panels.
-5. **Trip preparation** — estimate storage; download required maps, fonts and icons; verify that all media is stored on the device; generate preview proxies; list anything missing.
-6. **Video export** — resolution, aspect ratio, title, original-audio toggle; preflight checks, progress, cancellation, actionable error messages, and save or share through the operating system.
+4. **Journal** — a journal entry for each stop and a short note for each photo or video, read day by day like a diary. Notes become the captions of their media in the recap.
+5. **Recap preview** — map and media preview; play, pause and scrub the timeline; switch aspect ratio. Desktop uses side panels with a bottom timeline; mobile uses the preview with tabbed panels.
+6. **Trip preparation** — estimate storage; download required maps, fonts and icons; verify that all media is stored on the device; generate preview proxies; list anything missing.
+7. **Video export** — resolution, aspect ratio, title, original-audio toggle; preflight checks, progress, cancellation, actionable error messages, and save or share through the operating system.
 
 ### 2.1 Recap Structure
 

@@ -7,6 +7,7 @@ export {
   normalizePhotoDuration,
   removeClip,
   setClipFit,
+  setClipNote,
   setClipVolume,
   setPhotoDuration,
   trimVideo,
