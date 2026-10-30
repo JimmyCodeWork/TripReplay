@@ -646,5 +646,29 @@
   "media.volumeFor": {
     "message": "Volume of {file}",
     "description": "Accessible name of a video's volume slider; file is the file name."
+  },
+  "player.dragDuration": {
+    "message": "Drag to change the duration",
+    "description": "Hover text of a photo's edge on the timeline."
+  },
+  "player.dragTrimStart": {
+    "message": "Drag to trim the start",
+    "description": "Hover text of the left edge of a video or music track on the timeline."
+  },
+  "player.dragTrimEnd": {
+    "message": "Drag to trim the end",
+    "description": "Hover text of the right edge of a video or music track on the timeline."
+  },
+  "player.dragMusic": {
+    "message": "Drag to move the music",
+    "description": "Hover text of a music track on the timeline."
+  },
+  "media.trimIn": {
+    "message": "From (s)",
+    "description": "Start of the used part of a video, in seconds into the file."
+  },
+  "media.trimOut": {
+    "message": "To (s)",
+    "description": "End of the used part of a video, in seconds into the file."
   }
 }

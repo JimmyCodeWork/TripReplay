@@ -8,6 +8,7 @@ import {
   addStop,
   type ClipId,
   type Fit,
+  findMusicTrack,
   type IsoDate,
   type Microseconds,
   type MusicSettings,
@@ -90,6 +91,11 @@ export type Command =
       readonly id: MusicTrackId;
       readonly inUs?: Microseconds;
       readonly outUs?: Microseconds;
+      /**
+       * Moves the track's start by as much as its in point moved, so that the rest of the music
+       * stays where it was on the recap, as when its left end is dragged on the timeline.
+       */
+      readonly keepAligned?: boolean;
     }
   | { readonly type: "updateMusicSettings"; readonly id: MusicTrackId; readonly settings: MusicSettings }
   | { readonly type: "removeMusicTrack"; readonly id: MusicTrackId };
@@ -158,8 +164,13 @@ export function applyCommand(project: Project, command: Command): Project {
       });
     case "moveMusicTrack":
       return moveMusicTrack(project, command.id, command.startUs);
-    case "trimMusicTrack":
-      return trimMusicTrack(project, command.id, trim(command));
+    case "trimMusicTrack": {
+      const trimmed = trimMusicTrack(project, command.id, trim(command));
+      if (!command.keepAligned) return trimmed;
+      const before = findMusicTrack(project, command.id);
+      const after = findMusicTrack(trimmed, command.id);
+      return moveMusicTrack(trimmed, command.id, before.startUs + (after.inUs - before.inUs));
+    }
     case "updateMusicSettings":
       return updateMusicSettings(project, command.id, command.settings);
     case "removeMusicTrack":

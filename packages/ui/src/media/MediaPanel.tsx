@@ -41,6 +41,41 @@ function Thumbnail({ asset, mediaUrl }: { readonly asset: Asset; readonly mediaU
   );
 }
 
+/** A time in seconds, saved as one change when the field loses focus or on Enter. */
+function SecondsField({
+  label,
+  value,
+  max,
+  onCommit,
+}: {
+  readonly label: string;
+  readonly value: number;
+  readonly max: number;
+  readonly onCommit: (us: number) => void;
+}) {
+  return (
+    <label className={styles.duration}>
+      {label}
+      <input
+        type="number"
+        min={0}
+        max={max / SECOND}
+        step={0.1}
+        key={value}
+        defaultValue={Math.round(value / 100_000) / 10}
+        onBlur={(event) => {
+          const seconds = Number(event.target.value);
+          if (Number.isFinite(seconds) && Math.round(seconds * SECOND) !== value)
+            onCommit(Math.round(seconds * SECOND));
+        }}
+        onKeyDown={(event) => {
+          if (event.key === "Enter") event.currentTarget.blur();
+        }}
+      />
+    </label>
+  );
+}
+
 /**
  * The media tab (docs/ui-design.md §3.3): the selected stop's photos and videos in playing order,
  * with their duration; "Import media" starts the import and matching dialog.
@@ -97,6 +132,22 @@ export function MediaPanel({ project, selectedStopId, dispatch, mediaUrl, onImpo
                         <span className={styles.duration}>
                           {t("media.videoLength", { length: formatTime(clip.outUs - clip.inUs) })}
                         </span>
+                        {asset.kind === "video" && (
+                          <span className={styles.duration}>
+                            <SecondsField
+                              label={t("media.trimIn")}
+                              value={clip.inUs}
+                              max={asset.durationUs}
+                              onCommit={(inUs) => dispatch({ type: "trimVideo", id: clip.id, inUs })}
+                            />
+                            <SecondsField
+                              label={t("media.trimOut")}
+                              value={clip.outUs}
+                              max={asset.durationUs}
+                              onCommit={(outUs) => dispatch({ type: "trimVideo", id: clip.id, outUs })}
+                            />
+                          </span>
+                        )}
                         {asset.kind === "video" && asset.hasAudio && (
                           <span className={styles.duration}>
                             {t("media.volume")}

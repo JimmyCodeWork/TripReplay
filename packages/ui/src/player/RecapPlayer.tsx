@@ -1,5 +1,5 @@
-import type { Playback, PreviewSurface, Segment, Timeline } from "@tripreplay/app";
-import type { MessageKey, Translate } from "@tripreplay/i18n";
+import type { Command, Playback, PreviewSurface, Timeline } from "@tripreplay/app";
+import type { Translate } from "@tripreplay/i18n";
 import {
   type CSSProperties,
   type KeyboardEvent as ReactKeyboardEvent,
@@ -10,6 +10,7 @@ import {
   useSyncExternalStore,
 } from "react";
 import styles from "./RecapPlayer.module.css";
+import { TimelineStrips } from "./TimelineStrips.tsx";
 
 type AspectRatio = Timeline["aspectRatio"];
 
@@ -22,6 +23,8 @@ export interface RecapPlayerProps {
    */
   readonly createSurface: (container: HTMLElement) => Promise<PreviewSurface>;
   readonly onAspectRatio: (aspectRatio: AspectRatio) => void;
+  /** Applies an edit made on the timeline, such as a trimmed video; without it the timeline is read-only. */
+  readonly onEdit?: (command: Command) => void;
   /** A note shown under the preview, for example that no map of the stops is downloaded. */
   readonly notice?: string;
   readonly t: Translate;
@@ -42,77 +45,12 @@ function typing(target: EventTarget | null): boolean {
   return target instanceof HTMLElement && target.closest("input, textarea, select, button, [contenteditable]") !== null;
 }
 
-function SegmentStrip({
-  timeline,
-  timeUs,
-  onSeek,
-  t,
-}: {
-  readonly timeline: Timeline;
-  readonly timeUs: number;
-  readonly onSeek: (timeUs: number) => void;
-  readonly t: Translate;
-}) {
-  const total = timeline.durationUs || 1;
-  const name = (segment: Segment) => {
-    const kind = t(`player.segment.${segment.kind}` as MessageKey);
-    const stop = "stopIndex" in segment ? timeline.stops[segment.stopIndex]?.name : undefined;
-    return stop ? `${kind} · ${stop}` : kind;
-  };
-  return (
-    // The slider above is the accessible control; the strip is a pointer shortcut to the same position.
-    <div
-      className={styles.strip}
-      aria-hidden="true"
-      onClick={(event) => {
-        const box = event.currentTarget.getBoundingClientRect();
-        onSeek(((event.clientX - box.left) / box.width) * total);
-      }}
-    >
-      {timeline.segments.map((segment) => (
-        <div
-          key={segment.startUs}
-          className={`${styles.segment} ${styles[segment.kind] ?? ""}`}
-          style={{ flexGrow: segment.endUs - segment.startUs }}
-          title={name(segment)}
-        />
-      ))}
-      <div className={styles.playhead} style={{ left: `${(timeUs / total) * 100}%` }} />
-    </div>
-  );
-}
-
-/** The background music row under the segments, darker where it is lowered under clips with sound. */
-function MusicRow({ timeline, t }: { readonly timeline: Timeline; readonly t: Translate }) {
-  const total = timeline.durationUs || 1;
-  const percent = (us: number) => `${(us / total) * 100}%`;
-  return (
-    <div className={styles.music} aria-hidden="true" title={t("player.music")}>
-      {timeline.music.map((track) => (
-        <div
-          key={track.trackId}
-          className={styles.track}
-          style={{ left: percent(track.startUs), width: percent(track.endUs - track.startUs) }}
-        />
-      ))}
-      {timeline.music.some((track) => track.duckUnderClips) &&
-        timeline.audibleClips.map((clip) => (
-          <div
-            key={clip.startUs}
-            className={styles.ducked}
-            style={{ left: percent(clip.startUs), width: percent(clip.endUs - clip.startUs) }}
-          />
-        ))}
-    </div>
-  );
-}
-
 /**
  * The recap preview with its controls (docs/ui-design.md §3.1, §3.4, §5): play and pause, the
  * position, the segments of the recap, the aspect ratio and full-screen playback. Space toggles
  * playback while no control has the focus.
  */
-export function RecapPlayer({ timeline, playback, createSurface, onAspectRatio, notice, t }: RecapPlayerProps) {
+export function RecapPlayer({ timeline, playback, createSurface, onAspectRatio, onEdit, notice, t }: RecapPlayerProps) {
   const state = useSyncExternalStore(playback.subscribe, playback.getState);
   const player = useRef<HTMLDivElement>(null);
   const stage = useRef<HTMLDivElement>(null);
@@ -235,8 +173,13 @@ export function RecapPlayer({ timeline, playback, createSurface, onAspectRatio, 
           {t("player.fullscreen")}
         </button>
       </div>
-      <SegmentStrip timeline={timeline} timeUs={state.timeUs} onSeek={(us) => playback.seek(us)} t={t} />
-      {timeline.music.length > 0 && <MusicRow timeline={timeline} t={t} />}
+      <TimelineStrips
+        timeline={timeline}
+        timeUs={state.timeUs}
+        onSeek={(us) => playback.seek(us)}
+        onEdit={onEdit}
+        t={t}
+      />
     </div>
   );
 }

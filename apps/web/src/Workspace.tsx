@@ -312,6 +312,7 @@ function EditorView({ editor, services, locale, t, onClose }: EditorViewProps) {
             playback={playback}
             createSurface={createSurface}
             onAspectRatio={(aspectRatio) => editor.dispatch({ type: "setAspectRatio", aspectRatio })}
+            onEdit={(command) => editor.dispatch(command)}
             {...(project.stops.length > 0 && !region ? { notice: t("player.noMap") } : {})}
             t={t}
           />

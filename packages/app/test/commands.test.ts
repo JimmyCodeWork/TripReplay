@@ -84,6 +84,33 @@ describe("applyCommand", () => {
     expect(p.music[0]).toMatchObject({ startUs: seconds(5), duckUnderClips: false });
   });
 
+  it("trims the start of music and keeps the rest in place when asked", () => {
+    const song = {
+      kind: "audio",
+      id: "m",
+      contentHash: "m",
+      fileName: "m.mp3",
+      mimeType: "audio/mpeg",
+      byteSize: 1,
+      durationUs: seconds(60),
+    } as const;
+    const base = [
+      { type: "addAssets", assets: [song] },
+      { type: "addMusicTrack", id: "t", assetId: "m", startUs: seconds(5) },
+    ] satisfies Command[];
+    const p = base.reduce<ReturnType<typeof sampleProject>>(applyCommand, sampleProject());
+    expect(applyCommand(p, { type: "trimMusicTrack", id: "t", inUs: seconds(3) }).music[0]).toMatchObject({
+      startUs: seconds(5),
+      inUs: seconds(3),
+    });
+    expect(
+      applyCommand(p, { type: "trimMusicTrack", id: "t", inUs: seconds(3), keepAligned: true }).music[0],
+    ).toMatchObject({ startUs: seconds(8), inUs: seconds(3) });
+    // The in point cannot go below zero, so the start moves only as far as the in point did.
+    const dragged = applyCommand(p, { type: "trimMusicTrack", id: "t", inUs: -seconds(2), keepAligned: true });
+    expect(dragged.music[0]).toMatchObject({ startUs: seconds(5), inUs: 0 });
+  });
+
   it("throws DomainError for invalid commands", () => {
     expect(() => applyCommand(sampleProject(), { type: "removeStop", id: "missing" })).toThrow(DomainError);
   });
