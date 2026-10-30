@@ -226,3 +226,13 @@ body {
   display: flex;
   gap: 8px;
 }
+
+.app-footer {
+  margin-top: 32px;
+  color: var(--color-muted);
+  font-size: 0.85rem;
+}
+
+.app-footer a {
+  color: inherit;
+}

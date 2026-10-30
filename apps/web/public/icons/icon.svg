@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <title>TripReplay</title>
+  <rect width="512" height="512" rx="96" fill="#efe9df"/>
+  <path d="M0 380 Q256 300 512 400 V512 H0Z" fill="#a8cfe3"/>
+  <path d="M110 360 L210 230 L310 290 L400 140" fill="none" stroke="#b33a46" stroke-width="28" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="110" cy="360" r="30" fill="#b33a46" stroke="#fff" stroke-width="10"/>
+  <circle cx="210" cy="230" r="30" fill="#b33a46" stroke="#fff" stroke-width="10"/>
+  <circle cx="310" cy="290" r="30" fill="#b33a46" stroke="#fff" stroke-width="10"/>
+  <circle cx="400" cy="140" r="38" fill="#fff" stroke="#b33a46" stroke-width="14"/>
+</svg>

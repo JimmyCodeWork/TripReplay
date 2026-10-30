@@ -26,7 +26,7 @@ pnpm run hooks:install   # optional; see Local Verification
 | `pnpm run verify` | Run every check that CI runs, in the same order |
 | `pnpm run verify:clean` | Run `verify` in a clean Linux container (requires Docker) |
 | `pnpm run dev` | Start the Web application in development mode (Vite) at `http://localhost:5173` |
-| `pnpm run build` | Build the Web application into `apps/web/dist` |
+| `pnpm run build` | Build the Web application into `apps/web/dist`, with its SBOM, third-party notices and service worker ([Releasing](releasing.md)) |
 | `pnpm run hooks:install` | Enable the repository's Git hooks |
 | `pnpm run lint` | Check formatting and lint rules (Biome); fails on any issue |
 | `pnpm run format` | Apply formatting and safe lint fixes |

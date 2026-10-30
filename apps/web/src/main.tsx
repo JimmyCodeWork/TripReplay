@@ -10,6 +10,11 @@ import "./styles.css";
 
 setMapWorkerUrl(mapWorkerUrl);
 
+// The installed application starts without a connection from the files the service worker keeps.
+if (import.meta.env.PROD && "serviceWorker" in navigator) {
+  void navigator.serviceWorker.register("./sw.js").catch(() => {});
+}
+
 const locale = resolveLocale(navigator.languages);
 const t = createTranslator(locale);
 document.documentElement.lang = locale;

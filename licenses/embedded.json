@@ -1,0 +1,14 @@
+{
+  "$comment": "Third-party content embedded in the project's own files, reviewed by hand (docs/license-policy.md §6, item 4). Listed in the SBOM and THIRD-PARTY-NOTICES of every release.",
+  "content": [
+    {
+      "name": "OpenCC dictionaries",
+      "version": "9e9d730659fc7db366b43b4437b307444d87e23e",
+      "license": "Apache-2.0",
+      "category": "asset",
+      "homepage": "https://github.com/BYVoid/OpenCC",
+      "licenseFile": "packages/map/src/places/OPENCC-LICENSE.txt",
+      "usedIn": "packages/map/src/places/variants.ts: character tables generated from STCharacters, JPShinjitaiCharacters, TWVariants and HKVariants"
+    }
+  ]
+}

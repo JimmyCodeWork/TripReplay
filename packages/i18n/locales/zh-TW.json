@@ -547,5 +547,8 @@
   },
   "restore.copyTitle": {
     "message": "{title}（還原）"
+  },
+  "app.notices": {
+    "message": "開放原始碼授權"
   }
 }
