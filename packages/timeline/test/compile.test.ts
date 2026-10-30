@@ -1,6 +1,14 @@
-import { addStop, seconds, setClipNote, setTheme } from "@tripreplay/domain";
+import { addStop, seconds, setClipNote, setTheme, setTiming, updateStop } from "@tripreplay/domain";
 import { describe, expect, it } from "vitest";
-import { compile, type MediaSegment, renderAt, TIMELINE_VERSION } from "../src/index.ts";
+import {
+  compile,
+  JOURNAL_EXCERPT,
+  journalExcerpt,
+  type MediaSegment,
+  renderAt,
+  TIMELINE_VERSION,
+  titleLength,
+} from "../src/index.ts";
 import { kyoto, stop, withStops } from "./fixtures.ts";
 
 describe("compile", () => {
@@ -30,6 +38,31 @@ describe("compile", () => {
     // opening 3 + 3 × (travel 2 + title 1) + photos 3 + 3 + videos 4 + 2 + closing 3
     expect(durationUs).toBe(seconds(3 + 9 + 6 + 6 + 3));
     expect(segments.at(-1)?.endUs).toBe(durationUs);
+  });
+
+  it("takes the trip's own phase lengths over the theme's", () => {
+    const timeline = compile(
+      setTiming(kyoto(), { openingUs: seconds(5), travelUs: seconds(4), closingUs: seconds(6) }),
+    );
+    const lengths = (kind: string) => timeline.segments.filter((s) => s.kind === kind).map((s) => s.endUs - s.startUs);
+    expect(lengths("opening")).toEqual([seconds(5)]);
+    expect(lengths("travel")).toEqual([seconds(4), seconds(4), seconds(4)]);
+    expect(lengths("closing")).toEqual([seconds(6)]);
+    expect(timeline.theme.timing.travelUs).toBe(seconds(4));
+  });
+
+  it("shows the start of a stop's journal under its title, long enough to read", () => {
+    const entry = "清水寺的舞台看出去是一整片楓葉，人很多但值得。".repeat(6);
+    const timeline = compile(updateStop(kyoto(), "a", { description: `${entry}\n\n後記` }));
+    const stop = timeline.stops[0];
+    expect(Array.from(stop?.journal ?? "")).toHaveLength(JOURNAL_EXCERPT + 1);
+    expect(stop?.journal.endsWith("…")).toBe(true);
+    const titles = timeline.segments.filter((s) => s.kind === "title").map((s) => s.endUs - s.startUs);
+    // Stop a has a long entry: the title stays up to ten seconds; b and c keep the theme's second.
+    expect(titles).toEqual([seconds(10), seconds(1), seconds(1)]);
+    expect(titleLength(seconds(1), "短短一句")).toBe(seconds(1.5) + seconds(0.48));
+    expect(titleLength(seconds(3), "短短一句")).toBe(seconds(3));
+    expect(journalExcerpt("  第一行\n第二行  ")).toBe("第一行 第二行");
   });
 
   it("numbers days from the first stop's date", () => {

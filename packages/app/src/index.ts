@@ -1,4 +1,7 @@
 /** Timeline types for the presentation layer, which reaches the timeline only through the application. */
+
+/** Limits the presentation layer offers in its fields. */
+export { PHASE_DURATION, PHOTO_DURATION } from "@tripreplay/domain";
 export type {
   AudioState,
   CompileSettings,

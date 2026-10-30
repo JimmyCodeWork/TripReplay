@@ -33,6 +33,8 @@ import {
   setPhotoDuration,
   setTheme,
   setTimeZone,
+  setTiming,
+  type TimingChanges,
   trimMusicTrack,
   trimVideo,
   updateMusicSettings,
@@ -48,6 +50,8 @@ export type Command =
   | { readonly type: "setTimeZone"; readonly timeZone: string }
   | { readonly type: "setTheme"; readonly themeId: string }
   | { readonly type: "setAspectRatio"; readonly aspectRatio: AspectRatio }
+  /** Lengths of recap phases for the whole trip; undefined returns a phase to the theme's length. */
+  | { readonly type: "setTiming"; readonly timing: TimingChanges }
   /** A theme chosen in the themes tab, with the aspect ratio it switches to, as one step to undo. */
   | { readonly type: "chooseTheme"; readonly themeId: string; readonly aspectRatio?: AspectRatio }
   | { readonly type: "addStop"; readonly stop: Stop; readonly position?: number }
@@ -120,6 +124,8 @@ export function applyCommand(project: Project, command: Command): Project {
       return setTheme(project, command.themeId);
     case "setAspectRatio":
       return setAspectRatio(project, command.aspectRatio);
+    case "setTiming":
+      return setTiming(project, command.timing);
     case "chooseTheme": {
       const themed = setTheme(project, command.themeId);
       return command.aspectRatio ? setAspectRatio(themed, command.aspectRatio) : themed;

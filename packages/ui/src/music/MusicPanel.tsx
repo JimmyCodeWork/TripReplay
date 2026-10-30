@@ -2,7 +2,7 @@ import type { Command, DispatchResult, EditorState } from "@tripreplay/app";
 import type { Translate } from "@tripreplay/i18n";
 import { useId } from "react";
 import { CommitRange } from "../controls/CommitRange.tsx";
-import { formatTime } from "../player/RecapPlayer.tsx";
+import { formatTime } from "../player/format-time.ts";
 import styles from "./MusicPanel.module.css";
 
 type Project = EditorState["project"];

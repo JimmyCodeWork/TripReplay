@@ -106,6 +106,86 @@
   gap: 4px;
 }
 
+/* Seconds above the strips. */
+.scale {
+  position: relative;
+  height: 1.1em;
+  color: var(--color-muted, #5b665f);
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.tick {
+  position: absolute;
+  top: 0;
+  padding-left: 3px;
+  border-left: 1px solid var(--color-field, #7a857e);
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+/* The piece whose numbers the editor shows. */
+.selected {
+  outline: 2px solid var(--color-text, #1d2420);
+  outline-offset: -2px;
+  z-index: 1;
+}
+
+/* Numbers of the selected piece, under the timeline. */
+.editor {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  align-items: center;
+  padding: 8px 12px;
+  border: 1px solid var(--color-line, #d6ddd6);
+  border-radius: 8px;
+}
+
+.editorTitle {
+  display: flex;
+  flex-basis: 100%;
+  gap: 8px;
+  align-items: baseline;
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.editorTime {
+  color: var(--color-muted, #5b665f);
+  font-size: 0.85rem;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+}
+
+.editorFields {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  align-items: center;
+}
+
+.field {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.field input {
+  width: 5em;
+  padding: 2px 6px;
+  border: 1px solid var(--color-field, #7a857e);
+  border-radius: 4px;
+  background: var(--color-surface, #fff);
+  color: var(--color-text, #1d2420);
+  font: inherit;
+}
+
+.hint {
+  color: var(--color-muted, #5b665f);
+  font-size: 0.85rem;
+}
+
 .segment {
   position: relative;
   min-width: 2px;

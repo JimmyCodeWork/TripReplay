@@ -24,6 +24,8 @@ export interface StopTitleOverlay {
   readonly name: string;
   readonly date: IsoDate;
   readonly day: number;
+  /** The start of the stop's journal entry, shown under the title; empty without one. */
+  readonly journal: string;
   readonly opacity: number;
 }
 

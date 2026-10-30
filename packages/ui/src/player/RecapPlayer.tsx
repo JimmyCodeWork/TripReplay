@@ -9,6 +9,7 @@ import {
   useState,
   useSyncExternalStore,
 } from "react";
+import { formatTime } from "./format-time.ts";
 import styles from "./RecapPlayer.module.css";
 import { TimelineStrips } from "./TimelineStrips.tsx";
 
@@ -43,12 +44,6 @@ export interface RecapPlayerProps {
 const ASPECT_RATIOS: readonly AspectRatio[] = ["16:9", "9:16"];
 /** Step of the position slider and of the arrow keys. */
 const STEP_US = 100_000;
-
-/** Minutes and seconds, as 3:07. */
-export function formatTime(timeUs: number): string {
-  const seconds = Math.floor(timeUs / 1_000_000);
-  return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`;
-}
 
 /** Whether a key press belongs to a control that handles the space bar itself. */
 function typing(target: EventTarget | null): boolean {

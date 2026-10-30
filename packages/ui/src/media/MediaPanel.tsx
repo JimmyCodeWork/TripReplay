@@ -2,8 +2,9 @@ import type { Command, DispatchResult, EditorState } from "@tripreplay/app";
 import type { Locale, Translate } from "@tripreplay/i18n";
 import { useEffect, useId, useState } from "react";
 import { CommitRange } from "../controls/CommitRange.tsx";
+import { SecondsField } from "../controls/SecondsField.tsx";
 import { formatDate } from "../format-date.ts";
-import { formatTime } from "../player/RecapPlayer.tsx";
+import { formatTime } from "../player/format-time.ts";
 import styles from "./MediaPanel.module.css";
 
 type Project = EditorState["project"];
@@ -41,41 +42,6 @@ function Thumbnail({ asset, mediaUrl }: { readonly asset: Asset; readonly mediaU
     </span>
   ) : (
     <img className={styles.thumbnail} src={url} alt="" />
-  );
-}
-
-/** A time in seconds, saved as one change when the field loses focus or on Enter. */
-function SecondsField({
-  label,
-  value,
-  max,
-  onCommit,
-}: {
-  readonly label: string;
-  readonly value: number;
-  readonly max: number;
-  readonly onCommit: (us: number) => void;
-}) {
-  return (
-    <label className={styles.duration}>
-      {label}
-      <input
-        type="number"
-        min={0}
-        max={max / SECOND}
-        step={0.1}
-        key={value}
-        defaultValue={Math.round(value / 100_000) / 10}
-        onBlur={(event) => {
-          const seconds = Number(event.target.value);
-          if (Number.isFinite(seconds) && Math.round(seconds * SECOND) !== value)
-            onCommit(Math.round(seconds * SECOND));
-        }}
-        onKeyDown={(event) => {
-          if (event.key === "Enter") event.currentTarget.blur();
-        }}
-      />
-    </label>
   );
 }
 
@@ -138,12 +104,14 @@ export function MediaPanel({ project, selectedStopId, dispatch, mediaUrl, onImpo
                         {asset.kind === "video" && (
                           <span className={styles.duration}>
                             <SecondsField
+                              className={styles.duration}
                               label={t("media.trimIn")}
                               value={clip.inUs}
                               max={asset.durationUs}
                               onCommit={(inUs) => dispatch({ type: "trimVideo", id: clip.id, inUs })}
                             />
                             <SecondsField
+                              className={styles.duration}
                               label={t("media.trimOut")}
                               value={clip.outUs}
                               max={asset.durationUs}

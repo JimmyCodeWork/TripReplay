@@ -22,8 +22,20 @@ export interface Trip {
   readonly timeZone: string;
   readonly themeId: string;
   readonly aspectRatio: AspectRatio;
+  /** The user's lengths of the recap phases; a phase that is absent keeps the theme's length. */
+  readonly timing?: TripTiming;
   /** Incremented by the persistence layer on every successful save. */
   readonly revision: number;
+}
+
+/** Lengths of the recap phases that apply to the whole trip, in microseconds. */
+export interface TripTiming {
+  readonly openingUs?: Microseconds;
+  /** The camera's move to each stop. */
+  readonly travelUs?: Microseconds;
+  /** Each stop's title; longer for a stop with a journal entry, so that it can be read. */
+  readonly titleUs?: Microseconds;
+  readonly closingUs?: Microseconds;
 }
 
 export interface Stop {
