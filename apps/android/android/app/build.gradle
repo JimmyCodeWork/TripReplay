@@ -23,6 +23,8 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode Math.max(1, major * 10000 + minor * 100 + patch)
         versionName version
+        resValue 'string', 'app_name', 'TripReplay'
+        resValue 'string', 'title_activity_main', 'TripReplay'
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
              // Default: https://android.googlesource.com/platform/frameworks/base/+/282e181b58cf72b6ca770dc7ca5f91f135444502/tools/aapt/AaptAssets.cpp#61
@@ -30,6 +32,14 @@ android {
         }
     }
     signingConfigs {
+        // A fixed key for test builds, so that each CI build installs over the previous one.
+        // It is public and only for debug builds; releases are signed with the release key.
+        debug {
+            storeFile file('debug.keystore')
+            storePassword 'android'
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+        }
         if (keystoreProperties.containsKey('storeFile')) {
             release {
                 storeFile file(keystoreProperties['storeFile'])
@@ -40,6 +50,13 @@ android {
         }
     }
     buildTypes {
+        // Test builds install next to the released application, under their own name.
+        debug {
+            signingConfig signingConfigs.debug
+            applicationIdSuffix '.debug'
+            resValue 'string', 'app_name', 'TripReplay Debug'
+            resValue 'string', 'title_activity_main', 'TripReplay Debug'
+        }
         release {
             if (keystoreProperties.containsKey('storeFile')) {
                 signingConfig signingConfigs.release

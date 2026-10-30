@@ -73,3 +73,5 @@ Android installs an update only when it is signed with the same key as the insta
 3. Keep `tripreplay-release.jks` and its passwords in a password manager or another safe place, and delete other copies. Never commit them; `.gitignore` excludes key files and `keystore.properties`.
 
 The release workflow fails without these secrets, and checks the signature of the APK with `apksigner` before publishing it.
+
+Test builds from CI are signed instead with a fixed debug key that is public, `apps/android/android/app/debug.keystore`, so that each one installs over the previous one. They are installed as "TripReplay Debug", next to the released application and with their own data. Never sign a release with this key.
