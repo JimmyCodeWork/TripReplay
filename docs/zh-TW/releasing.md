@@ -75,3 +75,5 @@ Android 只會安裝與已安裝應用程式使用相同金鑰簽署的更新。
 3. 將 `tripreplay-release.jks` 及其密碼保存在密碼管理工具或其他安全的地方，並刪除其他副本。切勿提交至版本庫；`.gitignore` 已排除金鑰檔與 `keystore.properties`。
 
 缺少這些 Secrets 時發行流程會失敗；發布前也會以 `apksigner` 檢查 APK 的簽章。
+
+CI 的測試版本則以公開的固定除錯金鑰 `apps/android/android/app/debug.keystore` 簽署，讓每個版本都能覆蓋安裝前一個版本。測試版本會以「TripReplay Debug」的名稱安裝，與正式發行的應用程式並存，資料也各自獨立。切勿以此金鑰簽署發行版本。

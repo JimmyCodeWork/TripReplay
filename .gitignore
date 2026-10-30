@@ -34,3 +34,5 @@ apps/web/dist-native/
 keystore.properties
 *.jks
 *.keystore
+# The public key of Android test builds (docs/releasing.md §4)
+!apps/android/android/app/debug.keystore
