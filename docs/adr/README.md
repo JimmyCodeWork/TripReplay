@@ -9,10 +9,11 @@ This directory records significant architecture and policy decisions. Each recor
 | [0001](0001-dependency-license-scope.md) | Dependency license scope | Accepted |
 | [0002](0002-public-domain-and-data-licenses.md) | Permit SQLite and CDLA-Permissive-2.0 | Accepted |
 | [0003](0003-language-and-toolchain.md) | Primary language and toolchain | Accepted |
-| [0004](0004-web-first-release.md) | Web-first, screen-first 1.0 with self-hosted OpenStreetMap tiles | Accepted; map hosting superseded by 0006 |
+| [0004](0004-web-first-release.md) | Web-first, screen-first 1.0 with self-hosted OpenStreetMap tiles | Accepted; map hosting superseded by 0006, platform amended by 0008 |
 | [0005](0005-modular-architecture.md) | Modular, layered application architecture | Accepted |
 | [0006](0006-local-only-operation.md) | Local-only operation: downloaded maps and on-device place search | Accepted |
 | [0007](0007-architecture-gate.md) | Architecture gate: renderer, map pipeline and supported browsers | Accepted |
+| [0008](0008-android-in-1-0.md) | An Android application in 1.0, built with Capacitor | Accepted |
 
 ## Writing a Record
 

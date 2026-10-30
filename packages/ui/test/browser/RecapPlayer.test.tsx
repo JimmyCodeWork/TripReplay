@@ -145,6 +145,32 @@ describe("RecapPlayer", () => {
   });
 });
 
+describe("RecapPlayer full screen in a WebView", () => {
+  it("fills the page instead, until the button or Escape ends it", async () => {
+    const { playback, timeline } = setup();
+    const view = await render(
+      <RecapPlayer
+        timeline={timeline}
+        playback={playback}
+        createSurface={async () => ({ resize: () => {}, draw: () => {}, destroy: () => {} })}
+        onAspectRatio={() => {}}
+        fullScreen="page"
+        t={createTranslator("zh-TW")}
+      />,
+    );
+    const player = view.firstElementChild as HTMLElement;
+    expect(button(view, "全螢幕").getAttribute("aria-pressed")).toBe("false");
+    await click(view, "全螢幕");
+    expect(player.className).toMatch(/filling/);
+    expect(getComputedStyle(player).position).toBe("fixed");
+    await act(async () => window.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape" })));
+    expect(player.className).not.toMatch(/filling/);
+    await click(view, "全螢幕");
+    await click(view, "全螢幕");
+    expect(button(view, "全螢幕").getAttribute("aria-pressed")).toBe("false");
+  });
+});
+
 describe("recapTexts", () => {
   it("formats the dates, days and summary in the user's language", () => {
     const texts = recapTexts("zh-TW", createTranslator("zh-TW"));

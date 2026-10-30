@@ -81,6 +81,7 @@ flowchart TD
 | `storage` | IndexedDB 與 OPFS 持久化、專案包備份與還原；實作 `ProjectRepository` 與 `AssetStore` | `domain`、`app` |
 | `ui` | 畫面與元件（旅行列表、工作區、對話框、播放器） | `app`、`i18n`、`themes` |
 | `apps/web` | 組合根與 PWA 外殼 | 全部 |
+| `apps/android` | Android 外殼（Capacitor）：封裝 `apps/web` 的建置結果，並透過其 `SaveFile` 外掛儲存備份（[ADR 0008](adr/0008-android-in-1-0.md)） | — |
 
 後續版本在不修改上述套件的前提下新增套件：`export`（將 `renderer` 的影格編碼）、`map` 內的離線實作，以及 `apps/` 下的各平台外殼。
 

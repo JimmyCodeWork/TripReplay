@@ -239,6 +239,31 @@ body {
   font-size: 0.85rem;
 }
 
-.app-footer a {
+.app-footer a,
+.link-button {
   color: inherit;
+}
+
+.link-button {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.notices {
+  width: min(100% - 32px, 760px);
+  max-height: calc(100vh - 64px);
+  border: 1px solid var(--color-line);
+  border-radius: 8px;
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+.notices pre {
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+  font-size: 0.8rem;
 }

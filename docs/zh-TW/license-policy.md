@@ -75,7 +75,7 @@ TripReplay 以 [MIT 授權](../../LICENSE)釋出。本政策規範哪些第三�
 
 ### 3.6 執行機制
 
-[`licenses/policy.json`](../../licenses/policy.json) 為 §3 的機器可讀版本，須與本文件於同一個 Pull Request 中修訂。[`licenses/inventory.json`](../../licenses/inventory.json) 記錄所有已審查且隨發行成品散布的元件，以及所有已核准的直接開發相依。CI 會拒絕任何未經審查、宣告授權已變更，或其授權不符所屬類別的已安裝元件。詳見[開發指南](development.md#授權檢查)。
+[`licenses/policy.json`](../../licenses/policy.json) 為 §3 的機器可讀版本，須與本文件於同一個 Pull Request 中修訂。[`licenses/inventory.json`](../../licenses/inventory.json) 記錄所有已審查且隨發行成品散布的元件，以及所有已核准的直接開發相依。CI 會拒絕任何未經審查、宣告授權已變更，或其授權不符所屬類別的已安裝元件。Android 應用程式的 Maven 函式庫於其 `maven` 區段審查；Gradle 解析出的函式庫若未在其中審查，Android 建置即失敗。詳見[開發指南](development.md#授權檢查)。
 
 ## 4. 候選項目審查
 
@@ -88,7 +88,8 @@ TripReplay 以 [MIT 授權](../../LICENSE)釋出。本政策規範哪些第三�
 | FFmpeg（含 WASM 版本） | 依建置設定為 LGPL 或 GPL | 禁止。 |
 | mediabunny | MPL-2.0 | 禁止。 |
 | mp4-muxer | MIT | 可准入。待審查；維護狀態待確認。 |
-| Tauri | Apache-2.0 OR MIT（遞移含 Apache-2.0、ISC、Unicode-3.0、CDLA-Permissive-2.0） | 可准入。待審查鎖定版本與遞移相依。 |
+| Tauri | Apache-2.0 OR MIT（遞移含 Apache-2.0、ISC、Unicode-3.0、CDLA-Permissive-2.0、MPL-2.0） | 不可准入。每個 Tauri 應用程式都會連結無法關閉的 MPL-2.0 套件（`cssparser`、`selectors`、`dtoa-short`、`option-ext`）（[ADR 0008](adr/0008-android-in-1-0.md)）。 |
+| Capacitor（Android） | MIT；Android Jetpack 函式庫為 Apache-2.0 | 可准入。用於 Android 應用程式；Maven 函式庫於清冊的 `maven` 區段審查。 |
 | React | MIT | 可准入。待審查。 |
 | TypeScript | Apache-2.0 | 開發工具，豁免。 |
 | SQLite | blessing（公共領域） | 可准入。待審查所採用的綁定（例如 `sql.js` 或 `rusqlite`）。 |

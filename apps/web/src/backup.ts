@@ -7,6 +7,7 @@ import {
   restoreProjectPackage,
   writeProjectPackage,
 } from "@tripreplay/storage";
+import { NATIVE } from "./platform.ts";
 import type { Services } from "./services.ts";
 
 /** The File System Access API where the browser offers it (Chromium); not yet in the DOM types. */
@@ -28,9 +29,10 @@ export function backupFileName(title: string, date = new Date()): string {
 }
 
 /**
- * Backs up a trip with all its media as a project package (docs/project-package.md). Where the
- * browser can, the package streams straight into the chosen file; otherwise it is assembled and
- * downloaded. Resolves false when the user cancels the save dialog.
+ * Backs up a trip with all its media as a project package (docs/project-package.md). In the
+ * installed application and where the browser can, the package streams straight into the chosen
+ * file; otherwise it is assembled and downloaded. Resolves false when the user cancels the save
+ * dialog.
  */
 export async function backupTrip(services: Services, tripId: string, description: string): Promise<boolean> {
   const project = await services.projects.load(tripId);
@@ -44,6 +46,10 @@ export async function backupTrip(services: Services, tripId: string, description
     new Date(),
   );
   const name = backupFileName(project.trip.title);
+  if (NATIVE) {
+    const { saveFile } = await import("./native-save.ts");
+    return saveFile(name, "application/zip", chunks);
+  }
   const picker = (window as unknown as Partial<SavePicker>).showSaveFilePicker;
   if (picker) {
     let handle: Awaited<ReturnType<SavePicker["showSaveFilePicker"]>>;

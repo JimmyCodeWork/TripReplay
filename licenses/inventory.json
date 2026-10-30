@@ -1,5 +1,14 @@
 {
   "release": {
+    "@capacitor/android@8.5.3": {
+      "declared": "MIT",
+      "category": "code",
+      "note": "Capacitor runtime of the Android application: Java library and page bridge."
+    },
+    "@capacitor/core@8.5.3": {
+      "declared": "MIT",
+      "category": "code"
+    },
     "@mapbox/jsonlint-lines-primitives@2.0.3": {
       "declared": "MIT",
       "category": "code"
@@ -119,10 +128,15 @@
     "tinyqueue@3.0.0": {
       "declared": "ISC",
       "category": "code"
+    },
+    "tslib@2.8.1": {
+      "declared": "0BSD",
+      "category": "code"
     }
   },
   "development": [
     "@biomejs/biome",
+    "@capacitor/cli",
     "@types/node",
     "@types/react",
     "@types/react-dom",
@@ -131,5 +145,6 @@
     "typescript",
     "vite",
     "vitest"
-  ]
+  ],
+  "maven": {}
 }

@@ -22,7 +22,7 @@ TripReplay 將規劃好的行程，以及旅途中拍攝的照片與影片，製
 
 - 建立行程、匯入照片與影片，並依景點順序產生動態回顧。
 - 將回顧匯出為影片檔。
-- 支援 Web、Windows、macOS、Linux、Android 及 iOS。1.0 版僅發行 Web 版（[ADR 0004](adr/0004-web-first-release.md)）。
+- 支援 Web、Windows、macOS、Linux、Android 及 iOS。1.0 版發行 Web 版與 Android 應用程式（[ADR 0004](adr/0004-web-first-release.md)、[ADR 0008](adr/0008-android-in-1-0.md)）。
 - 所有私人媒體與處理作業皆保留在裝置上。
 - 完全在裝置上執行：使用者預先下載所需區域的地圖，之後編輯、地點搜尋、預覽及匯出皆不需要網路連線。本專案不營運任何伺服器（[ADR 0006](adr/0006-local-only-operation.md)）。
 
@@ -109,7 +109,7 @@ TripReplay 將規劃好的行程，以及旅途中拍攝的照片與影片，製
 
 ## 5. 系統架構
 
-建議架構以 React 與 TypeScript 共用 UI、資料模型及時間軸程式碼；Web 版採漸進式網頁應用程式（PWA）；五種安裝版平台以 Tauri 2 為候選外殼，並透過 Kotlin 與 Swift 外掛整合行動裝置原生功能（[Tauri 行動外掛](https://v2.tauri.app/develop/plugins/develop-mobile/)）。上述皆為有待技術驗證與授權審查的提案，並非所有平台皆已驗證。
+建議架構以 React 與 TypeScript 共用 UI、資料模型及時間軸程式碼；Web 版採漸進式網頁應用程式（PWA）；五種安裝版平台以 Tauri 2 為候選外殼，並透過 Kotlin 與 Swift 外掛整合行動裝置原生功能（[Tauri 行動外掛](https://v2.tauri.app/develop/plugins/develop-mobile/)）。上述皆為有待技術驗證與授權審查的提案，並非所有平台皆已驗證。Tauri 未通過授權審查，1.0 的 Android 應用程式改用 Capacitor（[ADR 0008](adr/0008-android-in-1-0.md)）。
 
 ```mermaid
 flowchart TD

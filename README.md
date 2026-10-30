@@ -16,7 +16,7 @@ TripReplay turns your itinerary, photos and videos into an animated map recap of
 - Play the recap full-screen in the browser.
 - Download the map of the regions you need once; after that, everything works without a connection, including place search.
 - After 1.0: export to MP4 (1080p or 720p, 30 fps).
-- Version 1.0 runs in the browser and can be installed as a Progressive Web App; installed apps for Windows, macOS, Linux, Android and iOS will follow.
+- Version 1.0 runs in the browser and can be installed as a Progressive Web App, and comes as an Android application (APK); installed apps for Windows, macOS, Linux and iOS will follow.
 
 ## Privacy
 

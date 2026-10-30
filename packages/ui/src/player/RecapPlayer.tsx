@@ -30,6 +30,11 @@ export interface RecapPlayerProps {
    * (docs/ui-design.md §6). Without it the button is not shown.
    */
   readonly onReducedMotion?: (reducedMotion: boolean) => void;
+  /**
+   * How "Full screen" works: with the browser's Fullscreen API, or by filling the page, for a
+   * WebView that does not offer the API, such as the Android application's.
+   */
+  readonly fullScreen?: "browser" | "page";
   /** A note shown under the preview, for example that no map of the stops is downloaded. */
   readonly notice?: string;
   readonly t: Translate;
@@ -62,6 +67,7 @@ export function RecapPlayer({
   onAspectRatio,
   onEdit,
   onReducedMotion,
+  fullScreen: fullScreenMode = "browser",
   notice,
   t,
 }: RecapPlayerProps) {
@@ -127,8 +133,16 @@ export function RecapPlayer({
 
   useEffect(() => () => playback.pause(), [playback]);
 
+  const [filling, setFilling] = useState(false);
+  useEffect(() => {
+    if (!filling) return;
+    const onKey = (event: KeyboardEvent) => event.key === "Escape" && setFilling(false);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [filling]);
   const fullscreen = () => {
-    if (document.fullscreenElement) void document.exitFullscreen();
+    if (fullScreenMode === "page") setFilling((on) => !on);
+    else if (document.fullscreenElement) void document.exitFullscreen();
     else void player.current?.requestFullscreen?.();
   };
   const onSliderKey = (event: ReactKeyboardEvent<HTMLInputElement>) => {
@@ -139,7 +153,7 @@ export function RecapPlayer({
   };
 
   return (
-    <div ref={player} className={styles.player}>
+    <div ref={player} className={filling ? `${styles.player} ${styles.filling}` : styles.player}>
       <div className={styles.frame}>
         <div
           ref={stage}
@@ -193,7 +207,12 @@ export function RecapPlayer({
             {t("player.reduceMotion")}
           </button>
         )}
-        <button type="button" className={styles.option} onClick={fullscreen}>
+        <button
+          type="button"
+          className={styles.option}
+          onClick={fullscreen}
+          {...(fullScreenMode === "page" ? { "aria-pressed": filling } : {})}
+        >
           {t("player.fullscreen")}
         </button>
       </div>

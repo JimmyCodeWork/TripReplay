@@ -16,6 +16,8 @@ export interface Component {
   readonly integrity?: string | undefined;
   /** Where embedded content is used. */
   readonly usedIn?: string | undefined;
+  /** Package URL, for packages that are not from npm, such as Maven libraries of the Android application. */
+  readonly purl?: string | undefined;
 }
 
 /**
@@ -100,6 +102,7 @@ function hashOf(integrity: string | undefined): { alg: string; content: string }
 }
 
 const purl = (c: Component) => {
+  if (c.purl) return c.purl;
   const [scope, name] = c.name.startsWith("@") ? c.name.split("/") : [undefined, c.name];
   return `pkg:npm/${scope ? `${encodeURIComponent(scope as string)}/` : ""}${name}@${c.version}`;
 };

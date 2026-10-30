@@ -12,6 +12,7 @@
 | pnpm | 12.14.0 | 已於 `package.json` 中鎖定；執行 `corepack enable` 即可自動使用鎖定的版本。 |
 | Git | 任一近期版本 | |
 | Docker | 選用 | 僅 `pnpm run verify:clean` 需要。 |
+| JDK 與 Android SDK | 21；Android SDK 平台 36 | 選用。僅建置 Android 應用程式時需要；Android Studio 會一併安裝。請設定 `ANDROID_HOME`，並將 `JAVA_HOME` 設為 JDK 21。 |
 
 ## 開始使用
 
@@ -29,6 +30,8 @@ pnpm run hooks:install   # 選用；見「本機驗證」
 | `pnpm run verify:clean` | 於乾淨的 Linux 容器中執行 `verify`（需要 Docker） |
 | `pnpm run dev` | 以開發模式（Vite）啟動 Web 應用程式，網址為 `http://localhost:5173` |
 | `pnpm run build` | 將 Web 應用程式建置至 `apps/web/dist`，並產生其 SBOM、第三方授權聲明與 service worker（[發行流程](releasing.md)） |
+| `pnpm run build:native` | 將 Android 應用程式的頁面建置至 `apps/web/dist-native` |
+| `pnpm run android:build` | 將 Android 應用程式建置至 `apps/android/android/app/build/outputs/apk/`（發行版；沒有金鑰時不簽署）。若需要除錯版 APK，請在第一次建置後於 `apps/android/android` 執行 `./gradlew assembleDebug` |
 | `pnpm run hooks:install` | 啟用版本庫的 Git hooks |
 | `pnpm run lint` | 檢查格式與 lint 規則（Biome）；有任何問題即失敗 |
 | `pnpm run format` | 套用格式化及安全的 lint 修正 |
@@ -73,7 +76,8 @@ pnpm run hooks:install   # 選用；見「本機驗證」
 
 | 路徑 | 內容 |
 |---|---|
-| `apps/web/` | Web 應用程式：建立轉接器並掛載介面的組合根；各平台外殼將於日後加入 |
+| `apps/web/` | Web 應用程式：建立轉接器並掛載介面的組合根 |
+| `apps/android/` | Android 應用程式（[ADR 0008](adr/0008-android-in-1-0.md)）：Capacitor 設定與 `android/` 中的 Gradle 專案，含用於備份的 `SaveFile` 外掛 |
 | `packages/` | 產品套件：`domain`、`themes`、`i18n`、`timeline`、`app`、`renderer`、`map`、`media`、`audio`、`storage`、`ui`；其餘依[應用程式架構 §3](architecture.md#3-套件) 規劃 |
 | `packages/domain/` | 資料模型、不變條件及純函式的編輯操作 |
 | `packages/themes/` | 以資料定義的隨附回顧主題 |
@@ -89,6 +93,7 @@ pnpm run hooks:install   # 選用；見「本機驗證」
 | `tools/deps-check/` | CI 使用的套件界線檢查；允許的相依關係定義於 `boundaries.json` |
 | `tools/i18n-check/` | CI 使用的訊息目錄檢查工具 |
 | `tools/license-check/` | CI 使用的授權檢查工具 |
+| `tools/release/` | 建置的授權聲明與 SBOM（包括 Android 函式庫，見 `src/android.ts`），以及發行說明 |
 | `tools/variants/` | 由 OpenCC 字典產生地點搜尋用的異體字對照表 |
 | `tools/ci/` | `verify:clean` 使用的容器定義 |
 | `.githooks/` | 選用的 Git hooks |

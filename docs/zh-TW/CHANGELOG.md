@@ -21,4 +21,5 @@ TripReplay 的所有重要變更皆記錄於此。格式依循 [Keep a Changelog
 - 可安裝且無需連線即可啟動的 Web 應用程式，其內容安全政策僅允許連線至地圖下載來源。
 - 每次發行皆附上由實際打包的程式碼產生的 SBOM 與第三方授權聲明。
 - 預覽中的「減少動態效果」選項，預設依照系統設定；工作區分頁可使用方向鍵操作；強調色上的文字與欄位邊框之對比度，在淺色與深色配色下皆符合 WCAG 2.2 AA。
+- 以 Capacitor 從同一個頁面建置的 Android 應用程式（APK）：備份會儲存到您選擇的位置，其函式庫亦須通過專屬的授權門檻（[ADR 0008](adr/0008-android-in-1-0.md)）。
 - [使用指南](user-guide.md)、[隱私聲明](privacy.md)、[瀏覽器支援與已知問題](browser-support.md)及[無障礙審查](accessibility-review.md)。

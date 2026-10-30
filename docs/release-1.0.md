@@ -35,9 +35,9 @@ Exporting the recap as a video file follows in the release after 1.0 (§4.3).
 
 | | 1.0 |
 |---|---|
-| Distribution | Web application at a public URL, installable as a Progressive Web App |
+| Distribution | Web application at a public URL, installable as a Progressive Web App; and an Android application, a signed APK attached to each GitHub release ([ADR 0008](adr/0008-android-in-1-0.md)) |
 | Devices | Desktop and laptop computers; tablets and phones through their browsers |
-| Installed builds (Windows, macOS, Linux, Android, iOS) | Not in 1.0. Remain the long-term goal ([Specification §1.1](specification.md#11-goals)) |
+| Installed builds (Windows, macOS, Linux, iOS) and app stores | Not in 1.0. Remain the long-term goal ([Specification §1.1](specification.md#11-goals)) |
 | Browsers | Current and previous major versions of Chrome, Edge, Safari and Firefox |
 | Network | Needed only to open the application and to download maps. After that, everything works without a connection |
 
@@ -69,7 +69,7 @@ Exporting the recap as a video file follows in the release after 1.0 (§4.3).
 | Release | Features |
 |---|---|
 | Next release after 1.0 | MP4 export (H.264, 1080p and 720p, 30 fps) with original audio and background music |
-| Later | Installed applications for Windows, macOS, Linux, Android and iOS |
+| Later | Installed applications for Windows, macOS, Linux and iOS, and app store releases |
 
 The 1.0 architecture must not preclude these: preview is driven by the deterministic `renderAt(timeUs)` of [Specification §7](specification.md#7-preview-and-video-pipeline), so that export can render the same frames, and map resources are read only from downloaded map files.
 
@@ -128,7 +128,8 @@ The acceptance scenarios of [Specification §9](specification.md#9-acceptance-cr
 ### 6.5 Release engineering
 
 - Semantic versioning; `1.0.0` tagged from `main` with a changelog.
-- License release gate passes, and `THIRD-PARTY-NOTICES` is served by the application ([Dependency License Policy §6](license-policy.md#6-release-gate)).
+- License release gate passes, including the Android libraries, and `THIRD-PARTY-NOTICES` is served by the Web application and shown in the Android application ([Dependency License Policy §6](license-policy.md#6-release-gate)).
+- The Android application is signed with the project's release key.
 - The deployed site uses HTTPS and a Content Security Policy that permits network access only to the map download source.
 
 ## 7. Open Items

@@ -4,7 +4,7 @@ English | [繁體中文](../zh-TW/adr/0004-web-first-release.md)
 
 | | |
 |---|---|
-| Status | Accepted. Decision 2 (map hosting) superseded by [ADR 0006](0006-local-only-operation.md) |
+| Status | Accepted. Decision 2 (map hosting) superseded by [ADR 0006](0006-local-only-operation.md); decision 1 (platform) amended by [ADR 0008](0008-android-in-1-0.md) |
 | Date | 2026-10-19 |
 
 ## Context

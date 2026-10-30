@@ -32,6 +32,7 @@ import {
   useState,
   useSyncExternalStore,
 } from "react";
+import { NATIVE } from "./platform.ts";
 import { createPreviewMedia } from "./preview-media.ts";
 import { animationClock, createRecapSurface } from "./recap-surface.ts";
 import type { Services } from "./services.ts";
@@ -361,6 +362,7 @@ function EditorView({ editor, services, locale, t, onClose }: EditorViewProps) {
             onAspectRatio={(aspectRatio) => editor.dispatch({ type: "setAspectRatio", aspectRatio })}
             onEdit={(command) => editor.dispatch(command)}
             onReducedMotion={setReducedMotion}
+            fullScreen={NATIVE ? "page" : "browser"}
             {...(project.stops.length > 0 && !region ? { notice: t("player.noMap") } : {})}
             t={t}
           />

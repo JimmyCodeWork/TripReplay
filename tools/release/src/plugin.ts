@@ -2,7 +2,7 @@
 // and fails the build when a bundled package has not been reviewed (docs/license-policy.md §6).
 
 import { randomUUID } from "node:crypto";
-import { existsSync, readdirSync, readFileSync, realpathSync } from "node:fs";
+import { existsSync, mkdirSync, readdirSync, readFileSync, realpathSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import type { Plugin } from "vite";
 import {
@@ -54,10 +54,15 @@ export interface ReleasePluginOptions {
   readonly root: string;
   readonly product: string;
   readonly version: string;
+  /**
+   * Also writes the components, with their license texts, to this JSON file, from which the Android
+   * build adds its own libraries to the notices and the SBOM (`src/android.ts`).
+   */
+  readonly componentsFile?: string;
 }
 
 /** Collects the bundled packages of a production build and emits the notices and the SBOM. */
-export function releaseNotices({ root, product, version }: ReleasePluginOptions): Plugin {
+export function releaseNotices({ root, product, version, componentsFile }: ReleasePluginOptions): Plugin {
   return {
     name: "tripreplay-release-notices",
     apply: "build",
@@ -136,6 +141,10 @@ export function releaseNotices({ root, product, version }: ReleasePluginOptions)
         timestamp: new Date().toISOString(),
       });
       this.emitFile({ type: "asset", fileName: SBOM_FILE, source: `${JSON.stringify(sbom, null, 2)}\n` });
+      if (componentsFile) {
+        mkdirSync(dirname(componentsFile), { recursive: true });
+        writeFileSync(componentsFile, `${JSON.stringify(components)}\n`);
+      }
     },
   };
 }

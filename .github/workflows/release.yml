@@ -1,7 +1,7 @@
 name: Release
 
-# Builds the Web application for a version tag and publishes it as a GitHub release, with the
-# SBOM and third-party notices of the build (docs/releasing.md).
+# Builds the Web application and the signed Android application for a version tag and publishes
+# them as a GitHub release, with the SBOM and third-party notices of each (docs/releasing.md).
 
 on:
   push:
@@ -14,7 +14,7 @@ jobs:
   release:
     name: Build and publish the release
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 40
     permissions:
       contents: write
     steps:
@@ -53,12 +53,44 @@ jobs:
       - name: Browser tests
         run: pnpm run test:browser
 
+      - name: Build the Android application
+        # Fails when a Maven library has not passed the license review, or without the signing key.
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          if [ -z "$ANDROID_KEYSTORE_BASE64" ]; then
+            echo "::error::The Android signing key is not in the repository secrets (docs/releasing.md §4)"
+            exit 1
+          fi
+          pnpm run build:native
+          pnpm --filter @tripreplay/android exec cap sync android
+          cd apps/android/android
+          export JAVA_HOME="$JAVA_HOME_21_X64"
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/release.jks"
+          printf 'storeFile=%s\nstorePassword=%s\nkeyAlias=%s\nkeyPassword=%s\n' "$RUNNER_TEMP/release.jks" \
+            "$ANDROID_KEYSTORE_PASSWORD" "$ANDROID_KEY_ALIAS" "$ANDROID_KEY_PASSWORD" > keystore.properties
+          ./gradlew --no-daemon -q :app:dependencies --configuration releaseRuntimeClasspath > build/gradle-dependencies.txt
+          (cd ../../.. && node tools/release/src/android.ts --gradle apps/android/android/build/gradle-dependencies.txt \
+            --components apps/android/android/build/web-components.json \
+            --assets apps/android/android/app/src/main/assets/public)
+          ./gradlew --no-daemon assembleRelease
+          rm keystore.properties "$RUNNER_TEMP/release.jks"
+          apksigner="$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -1)/apksigner"
+          "$apksigner" verify --print-certs app/build/outputs/apk/release/app-release.apk
+
       - name: Package the release
         run: |
           mkdir release
           (cd apps/web/dist && zip -r -X "../../../release/tripreplay-web-$GITHUB_REF_NAME.zip" .)
-          cp apps/web/dist/sbom.cdx.json "release/tripreplay-$GITHUB_REF_NAME.sbom.cdx.json"
-          cp apps/web/dist/THIRD-PARTY-NOTICES.txt "release/THIRD-PARTY-NOTICES.txt"
+          cp apps/web/dist/sbom.cdx.json "release/tripreplay-web-$GITHUB_REF_NAME.sbom.cdx.json"
+          cp apps/web/dist/THIRD-PARTY-NOTICES.txt "release/THIRD-PARTY-NOTICES-web.txt"
+          assets=apps/android/android/app/src/main/assets/public
+          cp apps/android/android/app/build/outputs/apk/release/app-release.apk "release/tripreplay-android-$GITHUB_REF_NAME.apk"
+          cp "$assets/sbom.cdx.json" "release/tripreplay-android-$GITHUB_REF_NAME.sbom.cdx.json"
+          cp "$assets/THIRD-PARTY-NOTICES.txt" "release/THIRD-PARTY-NOTICES-android.txt"
           (cd release && sha256sum * > SHA256SUMS)
           node tools/release/src/changelog.ts "${GITHUB_REF_NAME#v}" > release/notes.md
 
@@ -70,4 +102,4 @@ jobs:
           case "$GITHUB_REF_NAME" in *-*) prerelease="--prerelease" ;; esac
           gh release create "$GITHUB_REF_NAME" --verify-tag $prerelease \
             --title "TripReplay $GITHUB_REF_NAME" --notes-file release/notes.md \
-            release/*.zip release/*.json release/THIRD-PARTY-NOTICES.txt release/SHA256SUMS
+            release/*.zip release/*.apk release/*.json release/THIRD-PARTY-NOTICES-*.txt release/SHA256SUMS
