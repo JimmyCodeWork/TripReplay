@@ -511,5 +511,41 @@
   },
   "themes.intro": {
     "message": "主題決定回顧的地圖配色、路線與標題樣式。選取後立即套用；選擇「直式」時也會切換為 9:16。"
+  },
+  "tripList.backup": {
+    "message": "備份"
+  },
+  "tripList.restore": {
+    "message": "還原備份"
+  },
+  "backup.fileType": {
+    "message": "TripReplay 備份"
+  },
+  "backup.working": {
+    "message": "正在備份…"
+  },
+  "backup.done": {
+    "message": "備份已儲存。請妥善保管此檔案：它包含這趟旅行及其所有照片與影片。"
+  },
+  "backup.failed": {
+    "message": "無法儲存備份：{message}"
+  },
+  "restore.working": {
+    "message": "正在還原…"
+  },
+  "restore.done": {
+    "message": "已還原「{title}」。"
+  },
+  "restore.failed": {
+    "message": "無法還原備份：{message}"
+  },
+  "restore.exists": {
+    "message": "「{title}」已在本裝置上。要將備份還原為副本嗎？"
+  },
+  "restore.asCopy": {
+    "message": "還原為副本"
+  },
+  "restore.copyTitle": {
+    "message": "{title}（還原）"
   }
 }

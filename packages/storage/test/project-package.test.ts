@@ -79,6 +79,16 @@ describe("project package", () => {
     await expect(restoreProjectPackage(memorySource(bytes), t)).rejects.toMatchObject({ code: "exists" });
   });
 
+  it("restores a trip that is already stored as a copy under another id and title", async () => {
+    const t = target();
+    const bytes = await packageBytes();
+    await restoreProjectPackage(memorySource(bytes), t);
+    const copy = await restoreProjectPackage(memorySource(bytes), t, { tripId: "t2", title: "京都（還原）" });
+    expect(copy.trip).toMatchObject({ id: "t2", title: "京都（還原）", revision: 1 });
+    expect([...t.repository.stored.keys()].sort()).toEqual(["t1", "t2"]);
+    expect([...(await t.assets.list())].sort()).toEqual(["p1", "v1"]);
+  });
+
   it("reuses media already stored, as in the browser the backup came from", async () => {
     const t = target();
     await t.assets.put(

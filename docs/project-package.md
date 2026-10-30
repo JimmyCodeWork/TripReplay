@@ -55,7 +55,7 @@ A package is fully checked before anything is restored. It is rejected when:
 ## 4. Restoring
 
 1. Read and validate the package (§3).
-2. If a trip with the same id is already stored, stop; the user decides how to proceed.
+2. If a trip with the same id is already stored, stop; the user decides how to proceed. The application offers to restore the package as a copy, under a new trip id and a title marked as restored; media already stored with the same id and size is shared.
 3. Store each media file with the crash-safe import protocol ([spike S6](spikes/s6-web-storage.md)). A file already stored with the same asset id and size is reused, as when a backup is restored in the browser it came from.
 4. Save the project last, as a new revision history starting at revision 1.
 
