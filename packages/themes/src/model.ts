@@ -55,6 +55,8 @@ export interface CardStyle {
 
 export interface Typography {
   readonly fontFamily: string;
+  /** Font of journal entries and notes in the recap, a serif like a printed diary. */
+  readonly journalFontFamily: string;
   readonly titleWeight: number;
   /** Sizes in fractions of the shorter frame side. */
   readonly titleSize: number;

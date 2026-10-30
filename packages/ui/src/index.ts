@@ -10,7 +10,7 @@ export { PlaceSearchBox, type PlaceSearchBoxProps } from "./places/PlaceSearchBo
 export { formatTime } from "./player/format-time.ts";
 export { RecapPlayer, type RecapPlayerProps } from "./player/RecapPlayer.tsx";
 export { type RecapTexts, recapTexts } from "./player/recap-labels.ts";
-export { TimelineStrips, type TimelineStripsProps, tickStep } from "./player/TimelineStrips.tsx";
+export { maxZoom, TimelineStrips, type TimelineStripsProps, tickStep } from "./player/TimelineStrips.tsx";
 export { type DragTarget, dragCommand, dragPreview, snapPhotoDuration } from "./player/timeline-drag.ts";
 export { ThemePanel, type ThemePanelProps } from "./themes/ThemePanel.tsx";
 export { TripList, type TripListProps } from "./trips/TripList.tsx";

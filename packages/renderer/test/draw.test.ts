@@ -71,6 +71,16 @@ function recorder() {
         if (key in target) return target[key];
         // Every character is 10 pixels wide.
         if (key === "measureText") return (text: string) => ({ width: Array.from(text).length * 10 });
+        if (key === "createLinearGradient" || key === "createRadialGradient") {
+          return (...args: unknown[]) => {
+            const gradient = {
+              gradient: args,
+              stops: [] as unknown[],
+              addColorStop: (...stop: unknown[]) => gradient.stops.push(stop),
+            };
+            return gradient;
+          };
+        }
         return (...args: unknown[]) => {
           if (key === "save") stack.push({ ...(target as typeof state) });
           if (key === "restore") Object.assign(target, stack.pop());
@@ -159,7 +169,7 @@ describe("drawFrame", () => {
     expect(settled.texts).toContain("Day 2 · 2026-04-02");
   });
 
-  it("shows a stop's journal on a card under its title, beside an accent bar", () => {
+  it("shows a stop's journal under its title, on a dark glow below a rule", () => {
     const withJournal = compile({
       ...project,
       stops: project.stops.map((s, i) => (i === 2 ? { ...s, description: "金閣寺在雪中特別漂亮。" } : s)),
@@ -169,13 +179,18 @@ describe("drawFrame", () => {
     const { calls, texts } = draw(withJournal, (title.startUs + title.endUs) / 2);
     expect(texts).toContain("金閣寺在雪中特別漂亮。");
     const note = calls.find((c) => c.name === "fillText" && c.args[0] === "金閣寺在雪中特別漂亮。");
-    expect(note?.fill).toBe(withJournal.theme.card.caption);
-    expect(calls.some((c) => c.name === "fill" && c.fill === withJournal.theme.route.color)).toBe(true);
-    // Without a journal, the title has no card.
+    expect(note?.fill).toBe(withJournal.theme.text.color);
+    expect(note?.alpha).toBe(1);
+    expect(calls.some((c) => c.name === "stroke" && c.stroke === withJournal.theme.text.color)).toBe(true);
+    const band = (list: typeof calls) => list.some((c) => c.name === "fillRect" && typeof c.fill === "object");
+    expect(band(calls)).toBe(true);
+    // The lines rise into place one after another: none is shown as the title appears.
+    const early = draw(withJournal, title.startUs + 100_000);
+    expect(early.texts).not.toContain("金閣寺在雪中特別漂亮。");
+    // Without a journal, the title has no glow.
     const plain = segment("title", 2);
     if (!plain) throw new Error("missing segment");
-    const without = draw(timeline, (plain.startUs + plain.endUs) / 2);
-    expect(without.calls.some((c) => c.name === "fill" && c.fill === timeline.theme.card.background)).toBe(false);
+    expect(band(draw(timeline, (plain.startUs + plain.endUs) / 2).calls)).toBe(false);
   });
 
   it("shows the summary at the end", () => {
@@ -259,7 +274,7 @@ describe("wrapText", () => {
 });
 
 describe("captions", () => {
-  it("draws a clip's note under its picture", () => {
+  it("draws a clip's note on its picture once the card has appeared", () => {
     const timeline = compile(project);
     const frame = renderAt(timeline, 0);
     const card = {
@@ -272,17 +287,22 @@ describe("captions", () => {
       scale: 1,
       progress: 0,
       caption: "早上的清水寺，人還不多。",
+      shownUs: 2_000_000,
       opacity: 1,
     };
-    const { ctx, texts } = recorder();
-    drawFrame(ctx, {
-      timeline,
-      frame: { ...frame, overlays: [card] },
-      width: WIDTH,
-      height: HEIGHT,
-      project: () => ({ x: 0, y: 0 }),
-      labels,
-    });
-    expect(texts()).toEqual(["早上的清水寺，人還不多。"]);
+    const drawn = (overlay: typeof card) => {
+      const { ctx, texts } = recorder();
+      drawFrame(ctx, {
+        timeline,
+        frame: { ...frame, overlays: [overlay] },
+        width: WIDTH,
+        height: HEIGHT,
+        project: () => ({ x: 0, y: 0 }),
+        labels,
+      });
+      return texts();
+    };
+    expect(drawn(card)).toEqual(["早上的清水寺，人還不多。"]);
+    expect(drawn({ ...card, shownUs: 0 })).toEqual([]);
   });
 });

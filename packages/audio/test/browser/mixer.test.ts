@@ -36,6 +36,14 @@ async function element(): Promise<HTMLAudioElement> {
 
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
+/**
+ * Gains ease to their target on the audio context's clock, which can fall behind the page's on a
+ * busy machine, so a gain is checked until it settles rather than after a fixed wait.
+ */
+const POLL = { timeout: 3000, interval: 50 };
+const settles = (gains: GainNode[], value: number) =>
+  expect.poll(() => gains[0]?.gain.value, POLL).toBeCloseTo(value, 1);
+
 let dispose: (() => void) | undefined;
 afterEach(() => dispose?.());
 
@@ -77,7 +85,7 @@ describe("createAudioMixer", () => {
     expect(music.paused).toBe(false);
     expect(music.currentTime).toBeGreaterThan(3);
     expect(music.muted).toBe(false);
-    expect(gains[0]?.gain.value).toBeCloseTo(0.6, 1);
+    await settles(gains, 0.6);
     mixer.render([musicAt(3.3, 0.6)], false);
     expect(music.paused).toBe(true);
   });
@@ -93,7 +101,7 @@ describe("createAudioMixer", () => {
     mixer.render([], true);
     await wait(250);
     expect(music.paused).toBe(true);
-    expect(gains[0]?.gain.value).toBeLessThan(0.05);
+    await expect.poll(() => gains[0]?.gain.value, POLL).toBeLessThan(0.05);
   });
 
   it("sets a clip's gain without moving the video, which the preview positions", async () => {
@@ -102,6 +110,6 @@ describe("createAudioMixer", () => {
     mixer.render([{ kind: "clip", clipId: "c1", assetId: "v1", mediaTimeUs: 8_000_000, gain: 0.8 }], false);
     await wait(250);
     expect(clip.currentTime).toBeCloseTo(2, 1);
-    expect(gains[0]?.gain.value).toBeCloseTo(0.8, 1);
+    await settles(gains, 0.8);
   });
 });

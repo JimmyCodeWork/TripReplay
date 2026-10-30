@@ -4,6 +4,13 @@ const SECOND = 1_000_000;
 
 export const FONT_STACK = 'system-ui, "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif';
 
+/**
+ * Serif faces for journal text: Ming (明體) for Chinese and Mincho for Japanese, where the device
+ * has them; the system serif otherwise. No font is bundled, so nothing is downloaded.
+ */
+export const JOURNAL_FONT_STACK =
+  '"Noto Serif TC", "Noto Serif CJK TC", "Source Han Serif TC", "Songti TC", "PMingLiU", "Hiragino Mincho ProN", "Yu Mincho", serif';
+
 export const DEFAULT_TIMING: Timing = {
   openingUs: 3 * SECOND,
   travelUs: 2 * SECOND,
@@ -14,6 +21,7 @@ export const DEFAULT_TIMING: Timing = {
 
 export const DEFAULT_TYPOGRAPHY: Typography = {
   fontFamily: FONT_STACK,
+  journalFontFamily: JOURNAL_FONT_STACK,
   titleWeight: 700,
   titleSize: 0.08,
   subtitleSize: 0.04,

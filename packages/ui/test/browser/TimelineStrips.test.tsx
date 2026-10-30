@@ -2,7 +2,7 @@ import { type Command, createTimelineCache } from "@tripreplay/app";
 import { createTranslator } from "@tripreplay/i18n";
 import { act } from "react";
 import { afterEach, describe, expect, it } from "vitest";
-import { dragCommand, TimelineStrips, tickStep } from "../../src/index.ts";
+import { dragCommand, maxZoom, TimelineStrips, tickStep } from "../../src/index.ts";
 import { cleanup, render } from "./support.tsx";
 
 afterEach(cleanup);
@@ -191,6 +191,32 @@ describe("TimelineStrips", () => {
     ]);
     await act(async () => (view.querySelector("section button") as HTMLButtonElement).click());
     expect(view.querySelector("section")).toBeNull();
+  });
+
+  it("zooms in to scroll sideways, with an overview of the part in view", async () => {
+    const { view, commands } = await setup();
+    // 22 s of recap: at most four times, which keeps 5.5 s in view.
+    expect(maxZoom(timeline.durationUs)).toBe(4);
+    expect(maxZoom(8 * S)).toBe(1);
+    const button = (name: string) => view.querySelector(`button[aria-label="${name}"]`) as HTMLButtonElement;
+    const strip = view.querySelector('[data-row="segments"]') as HTMLElement;
+    const width = strip.getBoundingClientRect().width;
+    expect(button("縮小時間軸").disabled).toBe(true);
+    expect(view.querySelector('[class*="overview"]')).toBeNull();
+    await act(async () => button("放大時間軸").click());
+    await act(async () => button("放大時間軸").click());
+    expect(button("放大時間軸").disabled).toBe(true);
+    expect(view.textContent).toContain("4×");
+    expect(strip.getBoundingClientRect().width).toBeCloseTo(width * 4, 0);
+    expect(view.querySelector('[class*="overviewWindow"]')).not.toBeNull();
+    // A finer scale, and drags measured at the new size: one pixel is now 2.5 ms.
+    expect([...view.querySelectorAll('[class*="tick"]')].map((t) => t.textContent).slice(0, 3)).toEqual([
+      "0:00",
+      "0:01",
+      "0:02",
+    ]);
+    await drag(handle(view, "拖曳以調整長度"), 400);
+    expect(commands).toEqual([{ type: "setPhotoDuration", id: "c1", durationUs: 4 * S }]);
   });
 
   it("is read-only without onEdit", async () => {

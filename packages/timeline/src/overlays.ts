@@ -33,6 +33,7 @@ function mediaCard(timeline: Timeline, index: number, timeUs: Microseconds): Med
     scale: isPhoto && !timeline.reducedMotion ? lerp(1, PHOTO_PUSH_IN, played) : 1,
     progress: played,
     caption: segment.caption,
+    shownUs: timeUs - segment.startUs,
     opacity,
   };
 }
@@ -78,6 +79,8 @@ export function overlaysAt(timeline: Timeline, index: number, timeUs: Microsecon
         date: stop.date,
         day: stop.day,
         journal: stop.journal,
+        shownUs: timeUs - segment.startUs,
+        lengthUs: segment.endUs - segment.startUs,
         opacity: envelope(timeUs, segment.startUs, segment.endUs, fadeUs),
       });
     }

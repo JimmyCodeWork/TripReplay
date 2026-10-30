@@ -26,6 +26,9 @@ export interface StopTitleOverlay {
   readonly day: number;
   /** The start of the stop's journal entry, shown under the title; empty without one. */
   readonly journal: string;
+  /** Time since the title appeared, and how long it stays, to reveal the journal line by line. */
+  readonly shownUs: Microseconds;
+  readonly lengthUs: Microseconds;
   readonly opacity: number;
 }
 
@@ -51,8 +54,10 @@ export interface MediaOverlay {
   readonly scale: number;
   /** Playback progress from 0 to 1, shown as a progress bar on videos. */
   readonly progress: number;
-  /** The clip's note, shown under the picture; empty when there is none. */
+  /** The clip's note, shown at the bottom of the picture; empty when there is none. */
   readonly caption: string;
+  /** Time since the clip's segment started, negative while its card fades in early; reveals the caption. */
+  readonly shownUs: Microseconds;
   readonly opacity: number;
 }
 
