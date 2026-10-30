@@ -391,6 +391,10 @@
     "message": "Full screen",
     "description": "Button that plays the recap in full screen; Escape exits."
   },
+  "player.reduceMotion": {
+    "message": "Reduce motion",
+    "description": "Toggle button: the recap cross-fades between stops instead of moving the camera. Starts as the system setting."
+  },
   "player.noMap": {
     "message": "No downloaded map contains these stops; the recap is shown without a base map.",
     "description": "Shown under the preview when no ready map region contains the trip's stops."

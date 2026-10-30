@@ -20,7 +20,7 @@ TripReplay 將您的行程、照片與影片，製作成以地圖呈現的動態
 
 ## 隱私
 
-您的照片、影片、中繼資料與專案絕不離開您的裝置。無需帳號、無使用分析，亦無雲端處理。僅在載入應用程式及下載您選擇的地圖時使用網路；地點搜尋在您的裝置上執行，且 TripReplay 沒有任何伺服器。詳見[產品規格 §4](docs/zh-TW/specification.md#4-離線運作與隱私)。
+您的照片、影片、中繼資料與專案絕不離開您的裝置。無需帳號、無使用分析，亦無雲端處理。僅在載入應用程式及下載您選擇的地圖時使用網路；地點搜尋在您的裝置上執行，且 TripReplay 沒有任何伺服器。應用程式發出的每一項網路請求，詳見[隱私聲明](docs/zh-TW/privacy.md)。
 
 ## 參與貢獻
 
@@ -28,6 +28,10 @@ TripReplay 將您的行程、照片與影片，製作成以地圖呈現的動態
 
 ## 文件
 
+- [使用指南](docs/zh-TW/user-guide.md)
+- [隱私聲明](docs/zh-TW/privacy.md)
+- [瀏覽器支援與已知問題](docs/zh-TW/browser-support.md)
+- [無障礙審查](docs/zh-TW/accessibility-review.md)
 - [1.0 定義](docs/zh-TW/release-1.0.md)
 - [畫面設計](docs/zh-TW/ui-design.md)
 - [應用程式架構](docs/zh-TW/architecture.md)

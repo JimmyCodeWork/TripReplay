@@ -3,7 +3,7 @@ import { createTranslator } from "@tripreplay/i18n";
 import { act } from "react";
 import { afterEach, describe, expect, it } from "vitest";
 import { formatTime, RecapPlayer, recapTexts } from "../../src/index.ts";
-import { cleanup, click, render } from "./support.tsx";
+import { button, cleanup, click, render } from "./support.tsx";
 
 afterEach(cleanup);
 
@@ -120,6 +120,28 @@ describe("RecapPlayer", () => {
     expect(view.querySelector('[aria-pressed="true"]')?.textContent).toBe("16:9");
     await click(view, "9:16");
     expect(ratios).toEqual(["9:16"]);
+  });
+
+  it("offers reduced motion as a toggle when the shell handles it", async () => {
+    const { playback, ui } = setup();
+    const choices: boolean[] = [];
+    const view = await render(ui);
+    expect(view.textContent).not.toContain("減少動態效果");
+    cleanup();
+    const reduced = compile(project, { reducedMotion: true });
+    const toggled = await render(
+      <RecapPlayer
+        timeline={reduced}
+        playback={playback}
+        createSurface={ui.props.createSurface}
+        onAspectRatio={() => {}}
+        onReducedMotion={(on) => void choices.push(on)}
+        t={createTranslator("zh-TW")}
+      />,
+    );
+    expect(button(toggled, "減少動態效果").getAttribute("aria-pressed")).toBe("true");
+    await click(toggled, "減少動態效果");
+    expect(choices).toEqual([false]);
   });
 });
 

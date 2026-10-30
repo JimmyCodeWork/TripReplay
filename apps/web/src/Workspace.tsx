@@ -23,7 +23,15 @@ import {
   recapTexts,
   ThemePanel,
 } from "@tripreplay/ui";
-import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
+import {
+  type KeyboardEvent as ReactKeyboardEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import { createPreviewMedia } from "./preview-media.ts";
 import { animationClock, createRecapSurface } from "./recap-surface.ts";
 import type { Services } from "./services.ts";
@@ -66,16 +74,41 @@ function regionFor(regions: readonly RegionEntry[], stops: readonly { location: 
   return best?.region;
 }
 
-/** Whether the user asked the system for less motion; the recap then cross-fades instead of flying. */
-function useReducedMotion(): boolean {
+const TABS = ["itinerary", "media", "journal", "music", "themes"] as const;
+type Tab = (typeof TABS)[number];
+
+const REDUCED_MOTION_KEY = "tripreplay.reducedMotion";
+
+/**
+ * Whether the recap cross-fades instead of flying: the user's choice in the player, kept in this
+ * browser, or else the system's "Reduce motion" setting.
+ */
+function useReducedMotion(): [boolean, (reducedMotion: boolean) => void] {
   const query = useMemo(() => window.matchMedia("(prefers-reduced-motion: reduce)"), []);
-  return useSyncExternalStore(
+  const system = useSyncExternalStore(
     (listener) => {
       query.addEventListener("change", listener);
       return () => query.removeEventListener("change", listener);
     },
     () => query.matches,
   );
+  const [choice, setChoice] = useState<boolean | undefined>(() => {
+    try {
+      const stored = localStorage.getItem(REDUCED_MOTION_KEY);
+      return stored === null ? undefined : stored === "true";
+    } catch {
+      return undefined;
+    }
+  });
+  const choose = useCallback((reducedMotion: boolean) => {
+    setChoice(reducedMotion);
+    try {
+      localStorage.setItem(REDUCED_MOTION_KEY, String(reducedMotion));
+    } catch {
+      // Storage can be unavailable, for example in a private window; the choice then lasts for this visit.
+    }
+  }, []);
+  return [choice ?? system, choose];
 }
 
 interface EditorViewProps {
@@ -98,7 +131,7 @@ function EditorView({ editor, services, locale, t, onClose }: EditorViewProps) {
   const playback = useMemo(() => createPlayback({ clock: animationClock }), []);
   useEffect(() => () => playback.dispose(), [playback]);
   const compileTimeline = useMemo(() => createTimelineCache(), []);
-  const reducedMotion = useReducedMotion();
+  const [reducedMotion, setReducedMotion] = useReducedMotion();
   const timeline = compileTimeline(project, { reducedMotion });
   const labels = useMemo(() => recapTexts(locale, t), [locale, t]);
   const media = useMemo(
@@ -141,7 +174,7 @@ function EditorView({ editor, services, locale, t, onClose }: EditorViewProps) {
     [services, regionId, labels, media],
   );
 
-  const [tab, setTab] = useState<"itinerary" | "media" | "journal" | "music" | "themes">("itinerary");
+  const [tab, setTab] = useState<Tab>("itinerary");
   const fileInput = useRef<HTMLInputElement>(null);
   const musicInput = useRef<HTMLInputElement>(null);
   const [musicError, setMusicError] = useState<string | undefined>();
@@ -191,6 +224,17 @@ function EditorView({ editor, services, locale, t, onClose }: EditorViewProps) {
     if (title) playback.seek(title.startUs + (title.endUs - title.startUs) / 2);
   };
 
+  /** Arrow keys, Home and End move between the tabs, as in the WAI-ARIA tabs pattern. */
+  const onTabKey = (event: ReactKeyboardEvent<HTMLElement>) => {
+    const index = TABS.indexOf(tab);
+    const next = { ArrowLeft: index - 1, ArrowRight: index + 1, Home: 0, End: TABS.length - 1 }[event.key];
+    if (next === undefined) return;
+    event.preventDefault();
+    const name = TABS[(next + TABS.length) % TABS.length] as Tab;
+    setTab(name);
+    document.getElementById(`tab-${name}`)?.focus();
+  };
+
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       if (!(event.ctrlKey || event.metaKey) || event.key.toLowerCase() !== "z") return;
@@ -222,15 +266,16 @@ function EditorView({ editor, services, locale, t, onClose }: EditorViewProps) {
       </div>
       <div className="workspace-main">
         <aside className="workspace-panel">
-          <div className="workspace-tabs" role="tablist" aria-label={t("workspace.tabs")}>
-            {(["itinerary", "media", "journal", "music", "themes"] as const).map((name) => (
+          <div className="workspace-tabs" role="tablist" aria-label={t("workspace.tabs")} onKeyDown={onTabKey}>
+            {TABS.map((name) => (
               <button
                 key={name}
                 type="button"
                 role="tab"
                 id={`tab-${name}`}
                 aria-selected={tab === name}
-                aria-controls={`panel-${name}`}
+                {...(tab === name ? { "aria-controls": `panel-${name}` } : {})}
+                tabIndex={tab === name ? 0 : -1}
                 className="workspace-tab"
                 onClick={() => setTab(name)}
               >
@@ -315,6 +360,7 @@ function EditorView({ editor, services, locale, t, onClose }: EditorViewProps) {
             createSurface={createSurface}
             onAspectRatio={(aspectRatio) => editor.dispatch({ type: "setAspectRatio", aspectRatio })}
             onEdit={(command) => editor.dispatch(command)}
+            onReducedMotion={setReducedMotion}
             {...(project.stops.length > 0 && !region ? { notice: t("player.noMap") } : {})}
             t={t}
           />

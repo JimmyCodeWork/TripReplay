@@ -125,7 +125,7 @@ Below 820 px wide, the same parts stack vertically: preview (about half the scre
 | Video | Trimmed length | A framed video with its original sound, its note as a caption, and a progress bar |
 | Closing | 3 s | The camera returns to the overview with the complete route; trip summary fades in |
 
-With "Reduce motion" enabled, camera moves and push-ins are replaced by cross-fades.
+With "Reduce motion" enabled, camera moves and push-ins are replaced by cross-fades. The **Reduce motion** button under the preview starts as the system setting and keeps the user's choice in the browser.
 
 ## 7. Themes
 

@@ -86,7 +86,7 @@
 .primary {
   border-color: var(--color-accent, #b33a46);
   background: var(--color-accent, #b33a46);
-  color: #fff;
+  color: var(--color-on-accent, #fff);
 }
 
 .button:focus-visible,

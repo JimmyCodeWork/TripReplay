@@ -27,7 +27,7 @@
 .date input,
 .rename input {
   padding: 4px 8px;
-  border: 1px solid var(--color-line, #d6ddd6);
+  border: 1px solid var(--color-field, #7a857e);
   border-radius: 6px;
   background: var(--color-surface, #fff);
   color: var(--color-text, #1d2420);
@@ -80,7 +80,7 @@
   height: 22px;
   border-radius: 50%;
   background: var(--color-accent, #b33a46);
-  color: #fff;
+  color: var(--color-on-accent, #fff);
   font-size: 0.8rem;
   font-variant-numeric: tabular-nums;
 }

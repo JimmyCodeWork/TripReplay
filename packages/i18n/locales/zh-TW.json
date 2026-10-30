@@ -293,6 +293,9 @@
   "player.fullscreen": {
     "message": "全螢幕"
   },
+  "player.reduceMotion": {
+    "message": "減少動態效果"
+  },
   "player.noMap": {
     "message": "已下載的地圖都不包含這些景點，因此預覽時不顯示底圖。"
   },

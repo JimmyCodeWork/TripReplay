@@ -28,16 +28,17 @@
 ## 2. 步驟
 
 1. 在分支上，於根目錄的 `package.json` 設定新版本。
-2. 在 `CHANGELOG.md` 及其翻譯中，將 `## [Unreleased]` 改為 `## [x.y.z] - YYYY-MM-DD`，並在其上方新增空白的 `## [Unreleased]` 段落。
-3. 開啟拉取請求，CI 通過後合併。
-4. 在 `main` 上為合併後的提交加上標籤並推送：
+2. 建置發行版本，並在 Firefox 與 Safari 中以人工方式檢查[使用指南](user-guide.md)的核心情境，因為自動化測試尚未涵蓋這兩個瀏覽器。將變動記錄於[瀏覽器支援與已知問題](browser-support.md)及其翻譯。
+3. 在 `CHANGELOG.md` 及其翻譯中，將 `## [Unreleased]` 改為 `## [x.y.z] - YYYY-MM-DD`，並在其上方新增空白的 `## [Unreleased]` 段落。
+4. 開啟拉取請求，CI 通過後合併。
+5. 在 `main` 上為合併後的提交加上標籤並推送：
 
    ```sh
    git tag vx.y.z
    git push origin vx.y.z
    ```
 
-5. 發行流程會檢查標籤是否與版本相符，執行 `verify`、建置與瀏覽器測試，並發布 GitHub 發行版本，附上：
+6. 發行流程會檢查標籤是否與版本相符，執行 `verify`、建置與瀏覽器測試，並發布 GitHub 發行版本，附上：
    - `tripreplay-web-vx.y.z.zip`：`apps/web/dist` 的內容，可直接部署；
    - `tripreplay-vx.y.z.sbom.cdx.json` 與 `THIRD-PARTY-NOTICES.txt`；
    - 上述檔案的 `SHA256SUMS`。
