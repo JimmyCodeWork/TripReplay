@@ -75,7 +75,8 @@ In the **Media** tab you can, for each stop:
 
 The **Journal** tab is a diary of the trip. For each stop, write what happened there; for each photo or video, add a short note.
 
-- Notes on photos and videos are shown as captions in the recap, in up to two lines.
+- A stop's entry is shown in the recap on a card under the stop's name, in up to three lines (about 80 characters). The stop's title stays on screen longer so that it can be read.
+- Notes on photos and videos are shown as captions under the picture, in up to two lines.
 - An entry is saved when you leave the field, or with **Ctrl+Enter** (**⌘+Enter** on a Mac).
 
 ## 6. Add Music
@@ -98,6 +99,8 @@ The preview on the right always shows the current recap.
 - **Play** and **Pause**, or press the space bar while no button or field has the focus.
 - Drag the **Playback position** slider, or use the arrow keys on it, to move through the recap.
 - The bar under the slider shows the parts of the recap: opening, travel, stop titles, photos, videos and closing. Select a part to jump to it.
+- Times are marked above the bar.
+- Select a part to edit it in the fields under the timeline, in seconds: a photo's duration, a video's start and end, a music track's start, or the length of the opening, travel, stop titles or closing. The lengths of the opening, travel, titles and closing apply to the whole trip; a stop with a journal entry keeps its title longer when the entry needs more time to read. Select **Close** to hide the fields.
 - On the timeline you can also drag the right edge of a photo to change its duration, drag the edges of a video to trim it, and drag the music to move it. The same changes can be made with the fields in the **Media** and **Music** tabs.
 - **Reduce motion** replaces camera flights and zooms with cross-fades. It starts as your system's "Reduce motion" setting, and TripReplay remembers your choice in this browser.
 - **Full screen** plays the recap on the whole screen, for example to show it to family and friends. Press **Escape** to leave full screen. In the Android application, it fills the application window; select **Full screen** again to leave it.

@@ -159,6 +159,25 @@ describe("drawFrame", () => {
     expect(settled.texts).toContain("Day 2 · 2026-04-02");
   });
 
+  it("shows a stop's journal on a card under its title, beside an accent bar", () => {
+    const withJournal = compile({
+      ...project,
+      stops: project.stops.map((s, i) => (i === 2 ? { ...s, description: "金閣寺在雪中特別漂亮。" } : s)),
+    });
+    const title = withJournal.segments.find((s) => s.kind === "title" && s.stopIndex === 2);
+    if (!title) throw new Error("missing segment");
+    const { calls, texts } = draw(withJournal, (title.startUs + title.endUs) / 2);
+    expect(texts).toContain("金閣寺在雪中特別漂亮。");
+    const note = calls.find((c) => c.name === "fillText" && c.args[0] === "金閣寺在雪中特別漂亮。");
+    expect(note?.fill).toBe(withJournal.theme.card.caption);
+    expect(calls.some((c) => c.name === "fill" && c.fill === withJournal.theme.route.color)).toBe(true);
+    // Without a journal, the title has no card.
+    const plain = segment("title", 2);
+    if (!plain) throw new Error("missing segment");
+    const without = draw(timeline, (plain.startUs + plain.endUs) / 2);
+    expect(without.calls.some((c) => c.name === "fill" && c.fill === timeline.theme.card.background)).toBe(false);
+  });
+
   it("shows the summary at the end", () => {
     expect(draw(timeline, timeline.durationUs).texts).toEqual(["Kyoto", "3 stops · 2 days", "© OpenStreetMap"]);
   });
@@ -228,6 +247,10 @@ describe("wrapText", () => {
   it("breaks Chinese text between characters and Latin text between words", () => {
     expect(wrapText("早上的清水寺人還不多", 50, measure)).toEqual(["早上的清水", "寺人還不多"]);
     expect(wrapText("the light over the bay", 100, measure)).toEqual(["the light", "over the…"]);
+  });
+
+  it("keeps closing punctuation off the start of a line", () => {
+    expect(wrapText("早上的清水，寺人還不多", 50, measure)).toEqual(["早上的清水，", "寺人還不多"]);
   });
 
   it("ends a cut caption with an ellipsis", () => {

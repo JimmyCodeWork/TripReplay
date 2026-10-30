@@ -77,6 +77,7 @@ export function overlaysAt(timeline: Timeline, index: number, timeUs: Microsecon
         name: stop.name,
         date: stop.date,
         day: stop.day,
+        journal: stop.journal,
         opacity: envelope(timeUs, segment.startUs, segment.endUs, fadeUs),
       });
     }

@@ -403,6 +403,34 @@
     "message": "Some stops are in no downloaded map and are shown without a base map. Download their regions in Maps.",
     "description": "Notice under the preview when the downloaded maps contain only some of the trip's stops."
   },
+  "player.phase.openingUs": {
+    "message": "Opening (s)",
+    "description": "Length of the opening, which shows the whole trip."
+  },
+  "player.phase.travelUs": {
+    "message": "Travel to each stop (s)",
+    "description": "Length of the camera's move to every stop."
+  },
+  "player.phase.titleUs": {
+    "message": "Each stop title (s)",
+    "description": "Length of every stop's title."
+  },
+  "player.phase.closingUs": {
+    "message": "Closing (s)",
+    "description": "Length of the closing summary."
+  },
+  "player.phase.wholeTrip": {
+    "message": "Applies to the whole trip.",
+    "description": "Note beside a phase length field."
+  },
+  "player.phase.titleNote": {
+    "message": "Applies to every stop; a stop with a journal entry stays longer, so that it can be read.",
+    "description": "Note beside the stop title length field."
+  },
+  "player.edit.range": {
+    "message": "{start}–{end} s",
+    "description": "Start and end of the selected piece on the recap, in seconds."
+  },
   "player.noMap": {
     "message": "No downloaded map contains these stops; the recap is shown without a base map.",
     "description": "Shown under the preview when no ready map region contains the trip's stops."

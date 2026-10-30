@@ -26,7 +26,16 @@ export {
   trimMusicTrack,
   updateMusicSettings,
 } from "./music.ts";
-export { createProject, type NewProject, renameTrip, setAspectRatio, setTheme, setTimeZone } from "./project.ts";
+export {
+  createProject,
+  type NewProject,
+  renameTrip,
+  setAspectRatio,
+  setTheme,
+  setTimeZone,
+  setTiming,
+  type TimingChanges,
+} from "./project.ts";
 export {
   addStop,
   moveStop,

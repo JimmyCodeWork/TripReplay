@@ -44,13 +44,23 @@ const ATTRIBUTION_SIZE = 0.6;
 const PROGRESS_HEIGHT = 0.006;
 /** Lines of a caption under a picture; longer captions end with an ellipsis. */
 const CAPTION_LINES = 2;
-const LINE_HEIGHT = 1.35;
+/** Lines of a stop's journal excerpt under its title. */
+const JOURNAL_LINES = 3;
+const LINE_HEIGHT = 1.45;
+/** Width of the accent bar beside a note, in fractions of the shorter frame side. */
+const ACCENT_WIDTH = 0.005;
+/** Width of the journal card under a stop title, in fractions of the frame width. */
+const JOURNAL_WIDTH: Readonly<Record<Timeline["aspectRatio"], number>> = { "16:9": 0.56, "9:16": 0.84 };
 
 /**
  * Breaks a caption into at most `maxLines` lines that fit `maxWidth`. Words stay whole where
- * there are spaces; Chinese and Japanese text, which has none, breaks between characters. A cut
- * last line ends with an ellipsis.
+ * there are spaces; Chinese and Japanese text, which has none, breaks between characters. Closing
+ * punctuation never starts a line: it stays at the end of the line before, slightly past the
+ * width. A cut last line ends with an ellipsis.
  */
+/** Punctuation that must not start a line in Chinese, Japanese or English text. */
+const CLOSING = /^[，。、．,.!?！？：:；;）)」』】〉》〕］}…ー～〜%％]$/u;
+
 export function wrapText(
   text: string,
   maxWidth: number,
@@ -68,7 +78,7 @@ export function wrapText(
   let line = "";
   for (const token of tokens) {
     const next = line + token;
-    if (measure(next) <= maxWidth || line.trim() === "") {
+    if (measure(next) <= maxWidth || line.trim() === "" || CLOSING.test(token)) {
       line = next;
       continue;
     }
@@ -172,6 +182,71 @@ function text(
   ctx.fillText(value, anchor.x * width, anchor.y * height + offsetY * height);
 }
 
+/** Height of a note of `lines` lines at `size`, for laying it out. */
+const noteHeight = (lines: number, size: number) => lines * size * LINE_HEIGHT;
+
+/** Width in pixels of the accent bar beside a note, and the indent of its text. */
+function accent(unit: number, size: number): { bar: number; indent: number } {
+  const bar = Math.max(2, ACCENT_WIDTH * unit);
+  return { bar, indent: bar + size * 0.7 };
+}
+
+/**
+ * A note set like a journal: left-aligned lines beside an accent bar in the route's color, which
+ * ties it to the trip. `at` is the top left corner of the bar.
+ */
+function drawNote(
+  ctx: Canvas2D,
+  lines: readonly string[],
+  at: { x: number; y: number },
+  size: number,
+  unit: number,
+  colors: { readonly text: string; readonly accent: string },
+): void {
+  const { bar, indent } = accent(unit, size);
+  ctx.shadowBlur = 0;
+  ctx.fillStyle = colors.accent;
+  ctx.beginPath();
+  ctx.roundRect(at.x, at.y, bar, noteHeight(lines.length, size), bar / 2);
+  ctx.fill();
+  ctx.fillStyle = colors.text;
+  ctx.textAlign = "left";
+  ctx.textBaseline = "middle";
+  lines.forEach((line, i) => {
+    ctx.fillText(line, at.x + indent, at.y + size * LINE_HEIGHT * (i + 0.5));
+  });
+}
+
+/**
+ * The start of a stop's journal entry under its title, on a card like the media cards, so that it
+ * reads well over any map.
+ */
+function drawJournal(ctx: Canvas2D, options: DrawOptions, journal: string): void {
+  const { width, height, timeline } = options;
+  const unit = Math.min(width, height);
+  const layout = timeline.theme.layouts[timeline.aspectRatio];
+  const { card, typography, route } = timeline.theme;
+  const size = typography.captionSize * unit * 1.1;
+  const padding = size * 0.9;
+  const cardWidth = JOURNAL_WIDTH[timeline.aspectRatio] * width;
+  const textWidth = cardWidth - padding * 2 - accent(unit, size).indent;
+  ctx.font = `400 ${Math.round(size)}px ${typography.fontFamily}`;
+  const lines = wrapText(journal, textWidth, (t) => ctx.measureText(t).width, JOURNAL_LINES);
+  if (lines.length === 0) return;
+  const cardHeight = noteHeight(lines.length, size) + padding * 2;
+  const x = layout.title.x * width - cardWidth / 2;
+  const y = (layout.title.y + layout.subtitleGap) * height + typography.subtitleSize * unit * 1.2;
+  ctx.save();
+  ctx.shadowColor = card.shadow;
+  ctx.shadowBlur = unit * 0.03;
+  ctx.fillStyle = card.background;
+  ctx.beginPath();
+  ctx.roundRect(x, y, cardWidth, cardHeight, card.radius * unit);
+  ctx.fill();
+  ctx.restore();
+  drawNote(ctx, lines, { x: x + padding, y: y + padding }, size, unit, { text: card.caption, accent: route.color });
+}
+
 function drawMedia(ctx: Canvas2D, options: DrawOptions, overlay: Extract<Overlay, { kind: "media" }>): void {
   const { width, height, timeline, media } = options;
   const unit = Math.min(width, height);
@@ -181,11 +256,14 @@ function drawMedia(ctx: Canvas2D, options: DrawOptions, overlay: Extract<Overlay
   const w = overlay.frame.width * width;
   const h = overlay.frame.height * height;
   const captionSize = timeline.theme.typography.captionSize * unit;
-  const padding = captionSize * 0.6;
+  const padding = captionSize * 0.8;
+  const { indent } = accent(unit, captionSize);
   ctx.font = `400 ${Math.round(captionSize)}px ${timeline.theme.typography.fontFamily}`;
-  const lines = overlay.caption ? wrapText(overlay.caption, w - padding * 2, (t) => ctx.measureText(t).width) : [];
+  const lines = overlay.caption
+    ? wrapText(overlay.caption, w - padding * 2 - indent, (t) => ctx.measureText(t).width)
+    : [];
   // The caption takes a band at the bottom of the card; the picture fits above it.
-  const band = lines.length > 0 ? lines.length * captionSize * LINE_HEIGHT + padding * 2 : 0;
+  const band = lines.length > 0 ? noteHeight(lines.length, captionSize) + padding * 2 : 0;
   const ih = h - band;
   ctx.save();
   ctx.shadowColor = card.shadow;
@@ -210,11 +288,9 @@ function drawMedia(ctx: Canvas2D, options: DrawOptions, overlay: Extract<Overlay
     ctx.restore();
   }
   if (lines.length > 0) {
-    ctx.fillStyle = card.caption;
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    lines.forEach((line, i) => {
-      ctx.fillText(line, x + w / 2, y + ih + padding + captionSize * LINE_HEIGHT * (i + 0.5));
+    drawNote(ctx, lines, { x: x + padding, y: y + ih + padding }, captionSize, unit, {
+      text: card.caption,
+      accent: timeline.theme.route.color,
     });
   }
   if (overlay.mediaKind === "video") {
@@ -253,6 +329,7 @@ function drawOverlay(ctx: Canvas2D, options: DrawOptions, overlay: Overlay): voi
         400,
         layout.subtitleGap,
       );
+      if (overlay.journal) drawJournal(ctx, options, overlay.journal);
       break;
     case "stopLabel":
       text(ctx, options, overlay.name, layout.stopLabel, type.labelSize, type.titleWeight);

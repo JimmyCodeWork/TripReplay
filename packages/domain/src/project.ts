@@ -1,6 +1,8 @@
 import { isValidTimeZone } from "./calendar.ts";
 import { invalid } from "./errors.ts";
-import { type AspectRatio, type Project, SCHEMA_VERSION, type Trip, type TripId } from "./model.ts";
+import { PHASE_DURATION } from "./limits.ts";
+import { type AspectRatio, type Project, SCHEMA_VERSION, type Trip, type TripId, type TripTiming } from "./model.ts";
+import { clamp } from "./time.ts";
 
 export interface NewProject {
   readonly id: TripId;
@@ -42,4 +44,29 @@ export function setTheme(project: Project, themeId: string): Project {
 
 export function setAspectRatio(project: Project, aspectRatio: AspectRatio): Project {
   return { ...project, trip: { ...project.trip, aspectRatio } };
+}
+
+const PHASES = ["openingUs", "travelUs", "titleUs", "closingUs"] as const;
+
+/**
+ * Sets the lengths of recap phases for the whole trip, rounded to the step and kept within
+ * PHASE_DURATION. A phase set to undefined goes back to the theme's length.
+ */
+export type TimingChanges = { readonly [Phase in keyof TripTiming]?: number | undefined };
+
+export function setTiming(project: Project, changes: TimingChanges): Project {
+  const timing: Record<string, number> = { ...project.trip.timing };
+  for (const phase of PHASES) {
+    if (!(phase in changes)) continue;
+    const value = changes[phase];
+    if (value === undefined) {
+      delete timing[phase];
+      continue;
+    }
+    if (!Number.isFinite(value)) throw invalid(`${phase} must be a number`);
+    const stepped = Math.round(value / PHASE_DURATION.step) * PHASE_DURATION.step;
+    timing[phase] = clamp(stepped, PHASE_DURATION.min, PHASE_DURATION.max);
+  }
+  const { timing: _, ...trip } = project.trip;
+  return { ...project, trip: Object.keys(timing).length > 0 ? { ...trip, timing } : trip };
 }

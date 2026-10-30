@@ -10,7 +10,7 @@ import type {
 } from "@tripreplay/domain";
 import type { Theme } from "@tripreplay/themes";
 
-export const TIMELINE_VERSION = 2;
+export const TIMELINE_VERSION = 3;
 
 /**
  * A map view. `zoom` is the Web Mercator zoom level for the reference frame size of the aspect
@@ -82,6 +82,8 @@ export interface TimelineStop {
   readonly date: IsoDate;
   /** Day of the trip, starting at 1 on the first stop's date. */
   readonly day: number;
+  /** The start of the stop's journal entry, shown under its title; empty without one. */
+  readonly journal: string;
   /** Location with the longitude unwrapped to follow the route (see `Timeline.route`). */
   readonly location: LonLat;
 }

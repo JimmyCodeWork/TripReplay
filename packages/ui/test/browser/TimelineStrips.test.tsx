@@ -2,7 +2,7 @@ import { type Command, createTimelineCache } from "@tripreplay/app";
 import { createTranslator } from "@tripreplay/i18n";
 import { act } from "react";
 import { afterEach, describe, expect, it } from "vitest";
-import { dragCommand, TimelineStrips } from "../../src/index.ts";
+import { dragCommand, TimelineStrips, tickStep } from "../../src/index.ts";
 import { cleanup, render } from "./support.tsx";
 
 afterEach(cleanup);
@@ -147,6 +147,50 @@ describe("TimelineStrips", () => {
     await act(async () => strip.dispatchEvent(new MouseEvent("click", { clientX: box.left + 500, bubbles: true })));
     expect(seeks[0]).toBeCloseTo(5 * S, -4);
     expect(commands).toEqual([]);
+  });
+
+  it("shows a time scale and edits the selected piece with numbers", async () => {
+    const { view, commands } = await setup();
+    // 22 s of recap: a mark every 5 s.
+    expect(tickStep(timeline.durationUs)).toBe(5);
+    expect([...view.querySelectorAll('[class*="tick"]')].map((t) => t.textContent)).toEqual([
+      "0:00",
+      "0:05",
+      "0:10",
+      "0:15",
+      "0:20",
+    ]);
+    const click = async (element: Element) => {
+      const box = element.getBoundingClientRect();
+      await act(async () =>
+        element.dispatchEvent(new MouseEvent("click", { clientX: box.left + box.width / 2, bubbles: true })),
+      );
+    };
+    const field = async (label: string, value: string) => {
+      const input = [...view.querySelectorAll("label")]
+        .find((l) => l.textContent?.startsWith(label))
+        ?.querySelector("input") as HTMLInputElement;
+      await act(async () => {
+        input.value = value;
+        input.dispatchEvent(new FocusEvent("blur", { bubbles: true }));
+        input.dispatchEvent(new FocusEvent("focusout", { bubbles: true }));
+      });
+    };
+    await click(view.querySelector('[data-clip="c1"]') as Element);
+    expect(view.querySelector("section h3")?.textContent).toContain("照片 · 清水寺");
+    await field("秒數", "6");
+    await click(view.querySelector('[data-phase="titleUs"]') as Element);
+    expect(view.querySelector("section")?.textContent).toContain("有日記的景點會自動延長");
+    await field("每個景點標題（秒）", "2.5");
+    await click(view.querySelector('[data-track="t1"]') as Element);
+    await field("開始時間（秒）", "4");
+    expect(commands).toEqual([
+      { type: "setPhotoDuration", id: "c1", durationUs: 6 * S },
+      { type: "setTiming", timing: { titleUs: 2.5 * S } },
+      { type: "moveMusicTrack", id: "t1", startUs: 4 * S },
+    ]);
+    await act(async () => (view.querySelector("section button") as HTMLButtonElement).click());
+    expect(view.querySelector("section")).toBeNull();
   });
 
   it("is read-only without onEdit", async () => {

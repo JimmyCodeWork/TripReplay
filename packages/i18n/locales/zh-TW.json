@@ -302,6 +302,27 @@
   "player.partialMap": {
     "message": "部分景點不在已下載的地圖中，將顯示為無底圖。請在「地圖」中下載其所在區域。"
   },
+  "player.phase.openingUs": {
+    "message": "開場（秒）"
+  },
+  "player.phase.travelUs": {
+    "message": "移動到每個景點（秒）"
+  },
+  "player.phase.titleUs": {
+    "message": "每個景點標題（秒）"
+  },
+  "player.phase.closingUs": {
+    "message": "結尾（秒）"
+  },
+  "player.phase.wholeTrip": {
+    "message": "套用到整趟旅行。"
+  },
+  "player.phase.titleNote": {
+    "message": "套用到所有景點；有日記的景點會自動延長，以便閱讀。"
+  },
+  "player.edit.range": {
+    "message": "{start}–{end} 秒"
+  },
   "player.noMap": {
     "message": "已下載的地圖都不包含這些景點，因此預覽時不顯示底圖。"
   },

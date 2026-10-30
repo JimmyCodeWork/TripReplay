@@ -1,6 +1,13 @@
 import { isIsoDate, isValidTimeZone } from "./calendar.ts";
 import { isValidLonLat } from "./geo.ts";
-import { MAX_JOURNAL_LENGTH, MAX_NOTE_LENGTH, MIN_MUSIC_CLIP, MIN_VIDEO_CLIP, PHOTO_DURATION } from "./limits.ts";
+import {
+  MAX_JOURNAL_LENGTH,
+  MAX_NOTE_LENGTH,
+  MIN_MUSIC_CLIP,
+  MIN_VIDEO_CLIP,
+  PHASE_DURATION,
+  PHOTO_DURATION,
+} from "./limits.ts";
 import type { Project } from "./model.ts";
 
 export interface ValidationIssue {
@@ -24,6 +31,17 @@ export function validateProject(project: Project): ValidationIssue[] {
   if (!isValidTimeZone(trip.timeZone)) add("trip.timeZone", `"${trip.timeZone}" is not a valid time zone`);
   if (trip.themeId === "") add("trip.themeId", "must not be empty");
   if (trip.aspectRatio !== "16:9" && trip.aspectRatio !== "9:16") add("trip.aspectRatio", "must be 16:9 or 9:16");
+  if (trip.timing !== undefined) {
+    if (typeof trip.timing !== "object" || trip.timing === null) add("trip.timing", "must be an object");
+    else {
+      for (const [phase, value] of Object.entries(trip.timing)) {
+        if (!["openingUs", "travelUs", "titleUs", "closingUs"].includes(phase))
+          add(`trip.timing.${phase}`, "is not a recap phase");
+        else if (typeof value !== "number" || value < PHASE_DURATION.min || value > PHASE_DURATION.max)
+          add(`trip.timing.${phase}`, `must be between ${PHASE_DURATION.min} and ${PHASE_DURATION.max} microseconds`);
+      }
+    }
+  }
 
   const ids = new Set<string>();
   const unique = (path: string, id: string) => {

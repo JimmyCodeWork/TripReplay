@@ -87,16 +87,18 @@ Below 820 px wide, the same parts stack vertically: preview (about half the scre
 
 - One row of segments in order: opening, travel (→), stop title, photos, videos, closing. Width is proportional to duration; segment colors distinguish the types.
 - A separate row shows the background music, with darker regions where it is lowered under clips with sound.
+- A scale above the segments marks the time, every 1, 2, 5, 10, 15 or 30 seconds or more, with at most eight marks.
 - Clicking or dragging on the timeline moves the playhead; space toggles playback.
-- **Durations are edited by dragging:**
+- **Durations are edited by dragging, or as numbers:**
 
 | Segment | Drag behavior |
 |---|---|
 | Photo | Drag the right edge to change its duration, snapping to 0.5 s, from 1 s to 15 s |
 | Video | Drag either edge to trim the start or end, within the clip's length |
 | Music | Drag the clip to move it; drag either end to trim |
-| Opening, travel, title, closing | Fixed by the theme in 1.0 |
+| Opening, travel, title, closing | Not dragged; edited as numbers for the whole trip, from 0.5 s to 15 s in steps of 0.5 s |
 
+- Clicking a segment also selects it: a panel under the timeline names it with its start and end, and offers its values in seconds — a photo's duration, a video's in and out points, a music track's start, or the length of the phase for the whole trip. A value is applied when the field loses focus or with Enter. **Close** hides the panel.
 - Each change is a single command and can be undone.
 - The selected stop's segments are highlighted; selecting a segment selects its stop and media in the side panel.
 
@@ -120,10 +122,12 @@ Below 820 px wide, the same parts stack vertically: preview (about half the scre
 |---|---|---|
 | Opening | 3 s | Overview of the whole trip with all stops marked; trip name and dates fade in |
 | Travel | 2 s | The camera flies to the next stop, zooming out for long distances; the route draws itself along the way |
-| Stop title | 1 s | The camera settles on the stop; its name and day appear |
-| Photo | 3 s each | A framed photo over the map with a slow push-in, and its note as a caption of up to two lines; the stop name stays in a corner |
+| Stop title | 1 s, longer with a journal entry | The camera settles on the stop; its name and day appear, and the first 80 characters of its journal entry on a card of up to three lines. The title lasts at least 1.5 s plus 0.12 s per character of the entry, up to 10 s |
+| Photo | 3 s each | A framed photo over the map with a slow push-in, and its note as a caption of up to two lines, left-aligned beside a bar in the route color; the stop name stays in a corner |
 | Video | Trimmed length | A framed video with its original sound, its note as a caption, and a progress bar |
 | Closing | 3 s | The camera returns to the overview with the complete route; trip summary fades in |
+
+The opening, travel, stop title and closing lengths come from the theme unless the trip sets its own (§3.4).
 
 With "Reduce motion" enabled, camera moves and push-ins are replaced by cross-fades. The **Reduce motion** button under the preview starts as the system setting and keeps the user's choice in the browser.
 
