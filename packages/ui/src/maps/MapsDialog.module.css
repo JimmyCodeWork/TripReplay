@@ -25,6 +25,50 @@
   color: var(--color-muted, #5b665f);
 }
 
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  align-items: end;
+}
+
+.filter {
+  display: grid;
+  flex: 1 1 220px;
+  gap: 4px;
+  color: var(--color-muted, #5b665f);
+  font-size: 0.9rem;
+}
+
+.filter select {
+  padding: 6px 8px;
+  border: 1px solid var(--color-field, #7a857e);
+  border-radius: 6px;
+  background: var(--color-surface, #fff);
+  color: var(--color-text, #1d2420);
+  font: inherit;
+  font-size: 1rem;
+}
+
+/* Marks a region as a favorite; filled when it is one. */
+.star {
+  flex: none;
+  width: 2.25em;
+  height: 2.25em;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--color-accent, #b33a46);
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.star:hover {
+  background: var(--color-line, #d6ddd6);
+}
+
 .list {
   display: grid;
   gap: 8px;

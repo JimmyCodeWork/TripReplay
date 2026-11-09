@@ -69,6 +69,18 @@ export function overlaysAt(timeline: Timeline, index: number, timeUs: Microsecon
       lastDate: timeline.stops.at(-1)?.date ?? null,
       opacity: envelope(timeUs, segment.startUs, segment.endUs, fadeUs),
     });
+  } else if (segment.kind === "travel") {
+    const stop = timeline.stops[segment.stopIndex];
+    const before = timeline.stops[segment.stopIndex - 1];
+    if (stop && before && stop.day > before.day) {
+      overlays.push({
+        kind: "dayChange",
+        day: stop.day,
+        date: stop.date,
+        night: Math.sin(Math.PI * progress(timeUs, segment.startUs, segment.endUs)),
+        opacity: envelope(timeUs, segment.startUs, segment.endUs, fadeUs),
+      });
+    }
   } else if (segment.kind === "title") {
     const stop = timeline.stops[segment.stopIndex];
     if (stop) {

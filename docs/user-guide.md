@@ -24,7 +24,7 @@ This guide follows the core scenario: download a map, plan the trip, add your ph
 The map shows your route and lets you search for places. Download each region your trip passes through once.
 
 1. Select **Maps** at the top.
-2. Find the region, for example **Japan – Kansai**, and select **Download**.
+2. Find the region, for example **Japan – Kansai**, and select **Download**. The list shows the popular countries; choose another country, **Favorites** or **Downloaded** in **Country or area**. **Use current location** lists the regions where you are; your location is used only on this device, and the Android application asks for permission first. Select ☆ beside a region to add it to your favorites.
 3. TripReplay shows the size and the free space on your device. Select **Download** again to confirm.
 4. Wait until the region shows **Ready**. You can **Pause** and **Resume** a download, and keep working on your trips meanwhile. If the connection drops, the download resumes where it stopped.
 
@@ -44,7 +44,12 @@ Map data © OpenStreetMap contributors, Overture Maps Foundation.
    - Instead of a name, you can paste coordinates, such as `34.9949, 135.785`, or a link copied from Google Maps, Apple Maps, OpenStreetMap or Bing Maps. Short links, such as `maps.app.goo.gl`, cannot be read without a connection; open them and copy the full link instead.
 4. Repeat for every stop. Stops are grouped by day.
 
-For each stop you can **Move up**, **Move down**, **Rename stop** and **Remove stop**. Selecting a stop moves the preview to it.
+For each stop you can **Move up**, **Move down**, **Copy**, **Rename stop** and **Remove stop**. Selecting a stop moves the preview to it.
+
+A place you visit more than once, such as the hotel of several nights or a station you pass again, does not need to be searched again:
+
+- Set **Date of new stops** to the day of the next visit and select **Copy** (⧉) beside the stop. The copy has no journal entry of its own; on the stop's own day it is added right after the stop.
+- Or type its name in the search box: places already in the trip are listed first, marked **In this trip**.
 
 Changes are saved automatically; the workspace shows **Saved** once they are stored. **Ctrl+Z** undoes the last change and **Ctrl+Shift+Z** redoes it (**⌘** instead of **Ctrl** on a Mac).
 

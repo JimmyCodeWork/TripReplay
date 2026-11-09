@@ -105,6 +105,24 @@ describe("compile", () => {
   });
 });
 
+describe("day changes", () => {
+  it("marks the travel to the first stop of a new day, deepest in its middle", () => {
+    const timeline = compile(kyoto());
+    const middle = (index: number) => {
+      const travel = timeline.segments.filter((s) => s.kind === "travel")[index];
+      if (!travel) throw new Error("missing segment");
+      return { start: travel.startUs, middle: (travel.startUs + travel.endUs) / 2 };
+    };
+    const at = (us: number) => renderAt(timeline, us).overlays.find((o) => o.kind === "dayChange");
+    // a and b are on the first day; c is two days later.
+    expect(at(middle(1).middle)).toBeUndefined();
+    expect(at(middle(2).middle)).toMatchObject({ day: 3, date: "2026-04-03", night: 1, opacity: 1 });
+    expect(at(middle(2).start)?.opacity).toBe(0);
+    // The first travel starts from the overview, not from a day before.
+    expect(at(middle(0).middle)).toBeUndefined();
+  });
+});
+
 describe("captions", () => {
   it("carries a clip's note to its media overlay, and an empty caption otherwise", () => {
     const timeline = compile(setClipNote(kyoto(), "c1", "朝の清水寺"));

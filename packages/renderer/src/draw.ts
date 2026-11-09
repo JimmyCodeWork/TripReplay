@@ -11,6 +11,9 @@ export interface RecapLabels {
   tripDates(firstDate: IsoDate | null, lastDate: IsoDate | null): string;
   /** Day and date under a stop title, for example "Day 2 · Apr 2, 2026". */
   stopSubtitle(date: IsoDate, day: number): string;
+  /** A new day of the trip, for example "Day 2", and a date, for example "Apr 2, 2026". */
+  day(day: number): string;
+  date(date: IsoDate): string;
   /** Counts under the trip title at the end, for example "5 stops · 3 days". */
   summary(stopCount: number, dayCount: number): string;
   /** The map data attribution, shown in every frame. */
@@ -59,6 +62,8 @@ const SHADE = "rgba(8, 12, 10, 0.5)";
 const SHADE_SOFT = "rgba(8, 12, 10, 0.28)";
 const SHADE_CLEAR = "rgba(8, 12, 10, 0)";
 const CAPTION_SHADE = "rgba(8, 12, 10, 0.62)";
+/** The tint of a night passing between two days of the trip, at its deepest. */
+const NIGHT = { red: 14, green: 22, blue: 52, alpha: 0.5 } as const;
 /** Text on a picture, which is shaded dark under it whatever the theme. */
 const ON_PICTURE = "#ffffff";
 
@@ -487,6 +492,18 @@ function drawOverlay(ctx: Canvas2D, options: DrawOptions, overlay: Overlay): voi
     case "media":
       drawMedia(ctx, options, overlay);
       break;
+    case "dayChange": {
+      // The night covers the map but not the overlays above it, so it is drawn at full strength.
+      ctx.save();
+      ctx.globalAlpha = 1;
+      ctx.shadowBlur = 0;
+      ctx.fillStyle = `rgba(${NIGHT.red}, ${NIGHT.green}, ${NIGHT.blue}, ${(NIGHT.alpha * overlay.night).toFixed(3)})`;
+      ctx.fillRect(0, 0, options.width, options.height);
+      ctx.restore();
+      text(ctx, options, labels.day(overlay.day), layout.title, type.titleSize, type.titleWeight);
+      text(ctx, options, labels.date(overlay.date), layout.title, type.subtitleSize, 400, layout.subtitleGap);
+      break;
+    }
     case "attribution":
       text(ctx, options, labels.attribution, layout.attribution, type.captionSize * ATTRIBUTION_SIZE, 400);
       break;

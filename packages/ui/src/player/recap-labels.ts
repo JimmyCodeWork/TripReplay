@@ -5,6 +5,8 @@ import { formatDate } from "../format-date.ts";
 export interface RecapTexts {
   tripDates(firstDate: string | null, lastDate: string | null): string;
   stopSubtitle(date: string, day: number): string;
+  day(day: number): string;
+  date(date: string): string;
   summary(stopCount: number, dayCount: number): string;
   readonly attribution: string;
 }
@@ -17,6 +19,8 @@ export function recapTexts(locale: Locale, t: Translate): RecapTexts {
       return first === last ? date(first) : t("tripList.dates", { first: date(first), last: date(last) });
     },
     stopSubtitle: (iso, day) => t("itinerary.day", { number: day, date: date(iso) }),
+    day: (number) => t("recap.day", { number }),
+    date,
     summary: (stops, days) => t("recap.summary", { stops, days }),
     attribution: t("maps.attribution"),
   };

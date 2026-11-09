@@ -38,7 +38,10 @@ Editing and preview share **one workspace**, so every change is visible immediat
 
 Maps are downloaded once and then used on the device ([ADR 0006](adr/0006-local-only-operation.md)).
 
-- A list of regions (for example countries), each with its size and state: not downloaded, downloading with progress, ready with the space used, or update available.
+- A list of regions (countries, or parts of large countries), each with its size and state: not downloaded, downloading with progress, ready with the space used, or update available.
+- A "Country or area" drop-down chooses which regions are listed: **Popular countries** (the default), **Favorites**, **Downloaded**, **Current location**, then each country, the popular ones first and the others under "More countries" in the language's sort order.
+- A star beside each region marks it as a favorite; favorites are remembered in the browser.
+- "Use current location" reads the device's position once, coarsely, and lists the regions that contain it; the position is used only on the device. It is offered where the browser has geolocation. When permission is refused or the position cannot be found, the list says so.
 - One button per region: "Download", "Pause" or "Resume", "Update", "Delete". The size and the free space are shown before a download starts.
 - "Open map files" adds a map already on the device: the PMTiles files of the Overture Maps themes base, transportation and divisions, opened together, and places for points of interest. The files are copied into storage; the region is listed by the name of its base file and can only be deleted, not updated.
 - On first use, and whenever a stop lies outside the downloaded regions, the application opens this dialog with the matching region preselected.
@@ -77,7 +80,7 @@ Below 820 px wide, the same parts stack vertically: preview (about half the scre
 
 | Tab | Content |
 |---|---|
-| Itinerary | Stops grouped by day, each with a number, name and media count. Drag the handle to reorder, including across days. Selecting a stop moves the preview to that stop. Stops are added by searching place names in the downloaded maps, by "Drop a pin", or by pasting coordinates or a map link (for example from Google Maps). |
+| Itinerary | Stops grouped by day, each with a number, name and media count. Drag the handle to reorder, including across days. Selecting a stop moves the preview to that stop. Stops are added by searching place names in the downloaded maps, by "Drop a pin", or by pasting coordinates or a map link (for example from Google Maps). Places already in the trip whose name matches are offered first in the search, marked "In this trip". A stop's copy button adds the same place, without its journal, on the date chosen for new stops: right after the stop on its own day, otherwise at the end of that day, for a hotel of several nights or a station passed again. |
 | Media | "Import media" button; thumbnails of the selected stop's media in order. Selecting a photo shows its duration; selecting a video shows trim handles and volume. |
 | Journal | The trip as a diary, day by day: each stop with its journal entry, and each photo or video with a short note (at most 500 characters) that becomes its caption. An entry is saved as one undoable change when the field loses focus, or with Ctrl+Enter or Cmd+Enter. Selecting a stop's name moves the preview to that stop. |
 | Music | Imported tracks; fade-in, fade-out, and "Lower music during clips with sound"; volume. |
@@ -122,7 +125,7 @@ Below 820 px wide, the same parts stack vertically: preview (about half the scre
 | Phase | Default duration | What the viewer sees |
 |---|---|---|
 | Opening | 3 s | Overview of the whole trip with all stops marked; trip name and dates fade in |
-| Travel | 2 s | The camera flies to the next stop, zooming out for long distances; the route draws itself along the way |
+| Travel | 2 s | The camera flies to the next stop, zooming out for long distances; the route draws itself along the way. Before the first stop of a new day, the scene darkens like nightfall and brightens again, and the day ("Day 2") and its date are shown in the middle |
 | Stop title | 1 s, longer with a journal entry | The camera settles on the stop; its name and day appear, and the first 80 characters of its journal entry in up to three centered lines in the theme's journal serif, on a soft dark glow. A fine rule parts around the stop's marker (or shows a diamond in the route color) between the date and the entry, and the lines rise into place one after another, all within the first half of the title. The title lasts at least 1.5 s plus 0.12 s per character of the entry, up to 10 s |
 | Photo | 3 s each | A framed photo over the map with a slow push-in, and its note in up to two centered lines of the journal serif over the bottom of the picture, on a shade that deepens downwards, appearing shortly after the photo; the stop name stays in a corner |
 | Video | Trimmed length | A framed video with its original sound, its note over the picture like a photo's, and a progress bar |

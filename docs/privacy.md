@@ -21,6 +21,7 @@ The application makes the following requests, and no others. The built page carr
 In particular:
 
 - **No trip data leaves the device.** Trips, stops, journal entries, photos, videos, music, their metadata (such as GPS positions and capture times) and backups are never sent anywhere.
+- **Your location stays on the device.** "Use current location" in **Maps** reads the device's position once, only when you select it, to find the regions you are in. It is not stored or sent anywhere.
 - **Place search runs on the device**, in the downloaded maps. Searches, pasted coordinates and pasted map links are not sent anywhere; a short map link that only its service can resolve is not opened.
 - **No other services are contacted**: no fonts, map styles, telemetry, crash reports or update checks of other parties.
 - Once the application is installed or cached, it starts from the copy on your device. The browser still checks the website for a new version of `sw.js` when a connection is available.
@@ -36,7 +37,7 @@ Everything TripReplay stores is kept by your browser for the website you opened 
 | IndexedDB | Trips (itinerary, journal, settings) and the records of downloaded maps |
 | Origin private file system | Map files, and copies of the photos, videos and music you added |
 | Cache storage | The application's own files, so that it starts without a connection |
-| Local storage | Your "Reduce motion" choice in the preview |
+| Local storage | Your "Reduce motion" choice in the preview, and your favorite map regions |
 
 The browser may clear this data, for example when the device is short of space ([Browser Support §3](browser-support.md#3-known-issues)). Back up trips you want to keep ([User Guide §9](user-guide.md#9-back-up-and-restore)).
 
@@ -45,7 +46,7 @@ The browser may clear this data, for example when the device is short of space (
 The Android application ([ADR 0008](adr/0008-android-in-1-0.md)) contains the same application and makes the same map requests. It differs in these points:
 
 - Its files are in the package, so it makes no request to a website, not even to check for a new version. New versions come with a new APK.
-- It asks Android only for network access, which the map downloads need.
+- It asks Android for network access, which the map downloads need, and for location, which only "Use current location" uses and asks for when you first select it. Approximate location is enough.
 - It stores its data in the application's own storage on the device, separate from any browser. Uninstalling the application deletes that data.
 - Android's automatic backup is turned off for the application, so trips and media are not copied to a Google account. Use TripReplay's own backup (§2) instead.
 

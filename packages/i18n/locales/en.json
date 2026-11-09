@@ -71,6 +71,66 @@
     "message": "Map data © OpenStreetMap contributors, Overture Maps Foundation",
     "description": "Attribution required by the map data licenses. Keep the names unchanged."
   },
+  "maps.filter.label": {
+    "message": "Country or area",
+    "description": "Label of the drop-down list that chooses which regions the maps dialog lists."
+  },
+  "maps.filter.popular": {
+    "message": "Popular countries",
+    "description": "Filter option: regions of the popular countries; the default."
+  },
+  "maps.filter.favorites": {
+    "message": "{count, plural, =0 {Favorites} other {Favorites (#)}}",
+    "description": "Filter option: the regions marked as favorites."
+  },
+  "maps.filter.downloaded": {
+    "message": "Downloaded",
+    "description": "Filter option: regions whose map is on the device or being downloaded."
+  },
+  "maps.filter.nearby": {
+    "message": "Current location",
+    "description": "Filter option: regions at the device's position."
+  },
+  "maps.filter.popularGroup": {
+    "message": "Popular",
+    "description": "Group of popular countries in the filter."
+  },
+  "maps.filter.moreGroup": {
+    "message": "More countries",
+    "description": "Group of the other countries in the filter."
+  },
+  "maps.favorite": {
+    "message": "Favorite: {name}",
+    "description": "Button that marks or unmarks a region as a favorite; pressed when it is one."
+  },
+  "maps.locate": {
+    "message": "Use current location",
+    "description": "Button that finds the regions at the device's position."
+  },
+  "maps.locating": {
+    "message": "Finding your location…",
+    "description": "Shown while the device's position is determined."
+  },
+  "maps.locateFailed": {
+    "message": "{reason, select, denied {Permission to use your location was not given.} other {Your location could not be determined.}}",
+    "description": "Shown when the device's position cannot be used."
+  },
+  "maps.nearbyNote": {
+    "message": "Regions at your location. Your location is used only on this device.",
+    "description": "Shown above the regions at the device's position."
+  },
+  "maps.empty.favorites": {
+    "message": "No favorites yet. Select ☆ beside a region to add it.",
+    "description": "Shown when no region is a favorite."
+  },
+  "maps.empty.downloaded": {
+    "message": "No maps downloaded yet.",
+    "description": "Shown when no region has been downloaded."
+  },
+  "maps.empty.nearby": {
+    "message": "Your location is not in any region offered for download.",
+    "description": "Shown when no catalog region contains the device's position."
+  },
   "maps.status.notDownloaded": {
     "message": "Not downloaded",
     "description": "State of a region whose map is not on the device."
@@ -211,6 +271,346 @@
     "message": "Singapore",
     "description": "Map region name."
   },
+  "region.thailandCentral": {
+    "message": "Thailand – Central (Bangkok, Pattaya)",
+    "description": "Map region name."
+  },
+  "region.thailandNorth": {
+    "message": "Thailand – North (Chiang Mai, Chiang Rai)",
+    "description": "Map region name."
+  },
+  "region.thailandNortheast": {
+    "message": "Thailand – Northeast",
+    "description": "Map region name."
+  },
+  "region.thailandSouth": {
+    "message": "Thailand – South (Phuket, Krabi, Ko Samui)",
+    "description": "Map region name."
+  },
+  "region.vietnamNorth": {
+    "message": "Vietnam – North (Hanoi, Ha Long)",
+    "description": "Map region name."
+  },
+  "region.vietnamCentral": {
+    "message": "Vietnam – Central (Da Nang, Hoi An, Hue)",
+    "description": "Map region name."
+  },
+  "region.vietnamSouth": {
+    "message": "Vietnam – South (Ho Chi Minh City)",
+    "description": "Map region name."
+  },
+  "region.malaysiaPeninsular": {
+    "message": "Malaysia – Peninsula (Kuala Lumpur, Penang)",
+    "description": "Map region name."
+  },
+  "region.malaysiaBorneo": {
+    "message": "Malaysia – Borneo (Sabah, Sarawak)",
+    "description": "Map region name."
+  },
+  "region.philippinesLuzon": {
+    "message": "Philippines – Luzon (Manila)",
+    "description": "Map region name."
+  },
+  "region.philippinesVisayas": {
+    "message": "Philippines – Visayas (Cebu, Boracay, Bohol)",
+    "description": "Map region name."
+  },
+  "region.philippinesPalawan": {
+    "message": "Philippines – Palawan",
+    "description": "Map region name."
+  },
+  "region.indonesiaBali": {
+    "message": "Indonesia – Bali and Lombok",
+    "description": "Map region name."
+  },
+  "region.indonesiaJavaWest": {
+    "message": "Indonesia – West Java (Jakarta, Bandung)",
+    "description": "Map region name."
+  },
+  "region.indonesiaJavaEast": {
+    "message": "Indonesia – Central and East Java (Yogyakarta)",
+    "description": "Map region name."
+  },
+  "region.cambodia": {
+    "message": "Cambodia",
+    "description": "Map region name."
+  },
+  "region.chinaNorth": {
+    "message": "China – North (Beijing, Tianjin)",
+    "description": "Map region name."
+  },
+  "region.chinaEast": {
+    "message": "China – East (Shanghai, Hangzhou, Suzhou, Nanjing)",
+    "description": "Map region name."
+  },
+  "region.chinaSouth": {
+    "message": "China – South (Guangzhou, Shenzhen, Guilin, Xiamen)",
+    "description": "Map region name."
+  },
+  "region.chinaSichuan": {
+    "message": "China – Sichuan and Chongqing",
+    "description": "Map region name."
+  },
+  "region.chinaYunnan": {
+    "message": "China – Yunnan (Kunming, Dali, Lijiang)",
+    "description": "Map region name."
+  },
+  "region.chinaShaanxi": {
+    "message": "China – Shaanxi (Xi'an)",
+    "description": "Map region name."
+  },
+  "region.chinaHainan": {
+    "message": "China – Hainan",
+    "description": "Map region name."
+  },
+  "region.unitedKingdomSouth": {
+    "message": "United Kingdom – South (London, Oxford, Bath)",
+    "description": "Map region name."
+  },
+  "region.unitedKingdomNorth": {
+    "message": "United Kingdom – North and Scotland",
+    "description": "Map region name."
+  },
+  "region.ireland": {
+    "message": "Ireland",
+    "description": "Map region name."
+  },
+  "region.franceNorth": {
+    "message": "France – North (Paris)",
+    "description": "Map region name."
+  },
+  "region.franceSouth": {
+    "message": "France – South (Provence, Riviera)",
+    "description": "Map region name."
+  },
+  "region.germanyNorth": {
+    "message": "Germany – North (Berlin, Hamburg)",
+    "description": "Map region name."
+  },
+  "region.germanySouth": {
+    "message": "Germany – South (Munich, Frankfurt)",
+    "description": "Map region name."
+  },
+  "region.italyNorth": {
+    "message": "Italy – North (Milan, Venice, Florence)",
+    "description": "Map region name."
+  },
+  "region.italySouth": {
+    "message": "Italy – Central and South (Rome, Naples, Sicily)",
+    "description": "Map region name."
+  },
+  "region.spainNorth": {
+    "message": "Spain – North (Madrid, Barcelona)",
+    "description": "Map region name."
+  },
+  "region.spainSouth": {
+    "message": "Spain – South (Seville, Granada)",
+    "description": "Map region name."
+  },
+  "region.portugal": {
+    "message": "Portugal",
+    "description": "Map region name."
+  },
+  "region.switzerland": {
+    "message": "Switzerland",
+    "description": "Map region name."
+  },
+  "region.austria": {
+    "message": "Austria",
+    "description": "Map region name."
+  },
+  "region.netherlands": {
+    "message": "Netherlands",
+    "description": "Map region name."
+  },
+  "region.belgium": {
+    "message": "Belgium",
+    "description": "Map region name."
+  },
+  "region.czechia": {
+    "message": "Czechia",
+    "description": "Map region name."
+  },
+  "region.greece": {
+    "message": "Greece",
+    "description": "Map region name."
+  },
+  "region.usCaliforniaSouth": {
+    "message": "United States – Southern California (Los Angeles, San Diego)",
+    "description": "Map region name."
+  },
+  "region.usCaliforniaNorth": {
+    "message": "United States – Northern California (San Francisco)",
+    "description": "Map region name."
+  },
+  "region.usSouthwest": {
+    "message": "United States – Southwest (Las Vegas, Grand Canyon)",
+    "description": "Map region name."
+  },
+  "region.usNorthwest": {
+    "message": "United States – Pacific Northwest (Seattle, Portland)",
+    "description": "Map region name."
+  },
+  "region.usNortheast": {
+    "message": "United States – Northeast (New York, Boston, Washington)",
+    "description": "Map region name."
+  },
+  "region.usFlorida": {
+    "message": "United States – Florida",
+    "description": "Map region name."
+  },
+  "region.usHawaii": {
+    "message": "United States – Hawaii",
+    "description": "Map region name."
+  },
+  "region.canadaWest": {
+    "message": "Canada – British Columbia and the Rockies (Vancouver, Banff)",
+    "description": "Map region name."
+  },
+  "region.canadaEast": {
+    "message": "Canada – Ontario and Quebec (Toronto, Montreal)",
+    "description": "Map region name."
+  },
+  "region.australiaNewSouthWales": {
+    "message": "Australia – New South Wales (Sydney)",
+    "description": "Map region name."
+  },
+  "region.australiaVictoria": {
+    "message": "Australia – Victoria (Melbourne)",
+    "description": "Map region name."
+  },
+  "region.australiaQueensland": {
+    "message": "Australia – Queensland Coast (Brisbane, Gold Coast, Cairns)",
+    "description": "Map region name."
+  },
+  "region.australiaPerth": {
+    "message": "Australia – Perth",
+    "description": "Map region name."
+  },
+  "region.newZealandNorth": {
+    "message": "New Zealand – North Island (Auckland)",
+    "description": "Map region name."
+  },
+  "region.newZealandSouth": {
+    "message": "New Zealand – South Island (Queenstown, Christchurch)",
+    "description": "Map region name."
+  },
+  "country.taiwan": {
+    "message": "Taiwan",
+    "description": "Country or area name in the maps dialog's filter."
+  },
+  "country.japan": {
+    "message": "Japan",
+    "description": "Country or area name in the maps dialog's filter."
+  },
+  "country.southKorea": {
+    "message": "South Korea",
+    "description": "Country or area name in the maps dialog's filter."
+  },
+  "country.hongKongMacau": {
+    "message": "Hong Kong and Macau",
+    "description": "Country or area name in the maps dialog's filter."
+  },
+  "country.singapore": {
+    "message": "Singapore",
+    "description": "Country or area name in the maps dialog's filter."
+  },
+  "country.thailand": {
+    "message": "Thailand",
+    "description": "Country or area name in the maps dialog's filter."
+  },
+  "country.vietnam": {
+    "message": "Vietnam",
+    "description": "Country or area name in the maps dialog's filter."
+  },
+  "country.malaysia": {
+    "message": "Malaysia",
+    "description": "Country or area name in the maps dialog's filter."
+  },
+  "country.philippines": {
+    "message": "Philippines",
+    "description": "Country or area name in the maps dialog's filter."
+  },
+  "country.indonesia": {
+    "message": "Indonesia",
+    "description": "Country or area name in the maps dialog's filter."
+  },
+  "country.cambodia": {
+    "message": "Cambodia",
+    "description": "Country or area name in the maps dialog's filter."
+  },
+  "country.china": {
+    "message": "China",
+    "description": "Country or area name in the maps dialog's filter."
+  },
+  "country.unitedKingdom": {
+    "message": "United Kingdom",
+    "description": "Country or area name in the maps dialog's filter."
+  },
+  "country.ireland": {
+    "message": "Ireland",
+    "description": "Country or area name in the maps dialog's filter."
+  },
+  "country.france": {
+    "message": "France",
+    "description": "Country or area name in the maps dialog's filter."
+  },
+  "country.germany": {
+    "message": "Germany",
+    "description": "Country or area name in the maps dialog's filter."
+  },
+  "country.italy": {
+    "message": "Italy",
+    "description": "Country or area name in the maps dialog's filter."
+  },
+  "country.spain": {
+    "message": "Spain",
+    "description": "Country or area name in the maps dialog's filter."
+  },
+  "country.portugal": {
+    "message": "Portugal",
+    "description": "Country or area name in the maps dialog's filter."
+  },
+  "country.switzerland": {
+    "message": "Switzerland",
+    "description": "Country or area name in the maps dialog's filter."
+  },
+  "country.austria": {
+    "message": "Austria",
+    "description": "Country or area name in the maps dialog's filter."
+  },
+  "country.netherlands": {
+    "message": "Netherlands",
+    "description": "Country or area name in the maps dialog's filter."
+  },
+  "country.belgium": {
+    "message": "Belgium",
+    "description": "Country or area name in the maps dialog's filter."
+  },
+  "country.czechia": {
+    "message": "Czechia",
+    "description": "Country or area name in the maps dialog's filter."
+  },
+  "country.greece": {
+    "message": "Greece",
+    "description": "Country or area name in the maps dialog's filter."
+  },
+  "country.unitedStates": {
+    "message": "United States",
+    "description": "Country or area name in the maps dialog's filter."
+  },
+  "country.canada": {
+    "message": "Canada",
+    "description": "Country or area name in the maps dialog's filter."
+  },
+  "country.australia": {
+    "message": "Australia",
+    "description": "Country or area name in the maps dialog's filter."
+  },
+  "country.newZealand": {
+    "message": "New Zealand",
+    "description": "Country or area name in the maps dialog's filter."
+  },
   "app.loading": {
     "message": "Opening…",
     "description": "Shown while the application opens its storage at start-up."
@@ -347,6 +747,14 @@
     "message": "Remove stop",
     "description": "Button that removes a stop."
   },
+  "itinerary.copy": {
+    "message": "Copy {name} to {date}",
+    "description": "Button that adds the stop again, without its journal, on the date chosen above the list."
+  },
+  "search.inTrip": {
+    "message": "In this trip",
+    "description": "Marks a search result that is already a stop of the trip."
+  },
   "itinerary.unnamed": {
     "message": "Stop {number}",
     "description": "Name of a stop added from bare coordinates; the user can rename it."
@@ -470,6 +878,10 @@
   "player.segment.closing": {
     "message": "Closing",
     "description": "Segment of the recap timeline: overview with the trip summary."
+  },
+  "recap.day": {
+    "message": "Day {number}",
+    "description": "Shown in the recap when the trip moves on to a new day."
   },
   "recap.summary": {
     "message": "{stops, plural, one {# stop} other {# stops}} · {days, plural, one {# day} other {# days}}",

@@ -109,6 +109,34 @@ describe("ItineraryPanel", () => {
     expect(names(view)).toEqual(["景點 2", "清水寺", "景點 3"]);
   });
 
+  it("copies a stop to the chosen date, and offers the trip's places in search", async () => {
+    const { editor, ui, selected } = await setup();
+    const view = await render(ui());
+    await addStop(view, "2026-04-01", "清水");
+    await addStop(view, "2026-04-01", "35.0394, 135.7292");
+    await editor.dispatch({ type: "updateStop", id: "s1", changes: { description: "很多人。" } });
+    await rerender(ui());
+    // On another day, the copy goes to the end of that day, without the journal.
+    await type(view.querySelector('input[type="date"]') as HTMLInputElement, "2026-04-03");
+    const first = view.querySelector("ol li") as HTMLElement;
+    await click(first, "將「清水寺」複製到 2026年4月3日");
+    expect(editor.getState().project.stops.map((s) => [s.name, s.date, s.description])).toEqual([
+      ["清水寺", "2026-04-01", "很多人。"],
+      ["景點 2", "2026-04-01", ""],
+      ["清水寺", "2026-04-03", ""],
+    ]);
+    expect(selected()).toBe("s3");
+    // On its own day, right after it.
+    await type(view.querySelector('input[type="date"]') as HTMLInputElement, "2026-04-01");
+    await click(view.querySelector("ol li") as HTMLElement, "將「清水寺」複製到 2026年4月1日");
+    expect(names(view)).toEqual(["清水寺", "清水寺", "景點 2", "清水寺"]);
+    // Searching offers a place of the trip once, above the map's results.
+    await type(view.querySelector('input[type="search"]') as HTMLInputElement, "清水");
+    await act(async () => {});
+    const results = [...view.querySelectorAll("ul li")].map((li) => li.textContent);
+    expect(results).toEqual(["清水寺本行程", "清水寺"]);
+  });
+
   it("renames a stop", async () => {
     const { editor, ui } = await setup();
     const view = await render(ui());

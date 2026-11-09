@@ -1,7 +1,7 @@
-import { REGION_CATALOG } from "@tripreplay/app";
+import { CATALOG_COUNTRIES, REGION_CATALOG } from "@tripreplay/app";
 import type { Locale, Translate } from "@tripreplay/i18n";
 import { MapsDialog, PlaceSearchBox, TripList } from "@tripreplay/ui";
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { backupTrip, inspectBackup, restoreBackup } from "./backup.ts";
 import { MapPreview } from "./MapPreview.tsx";
 import { NATIVE } from "./platform.ts";
@@ -14,6 +14,48 @@ export interface AppProps {
   readonly t: Translate;
 }
 
+const FAVORITE_REGIONS_KEY = "tripreplay.favoriteRegions";
+
+/** The regions marked as favorites in the maps dialog, remembered in this browser. */
+function useFavoriteRegions(): [readonly string[], (id: string) => void] {
+  const [favorites, setFavorites] = useState<readonly string[]>(() => {
+    try {
+      const stored: unknown = JSON.parse(localStorage.getItem(FAVORITE_REGIONS_KEY) ?? "[]");
+      return Array.isArray(stored) ? stored.filter((id): id is string => typeof id === "string") : [];
+    } catch {
+      return [];
+    }
+  });
+  const toggle = useCallback((id: string) => {
+    setFavorites((current) => {
+      const next = current.includes(id) ? current.filter((f) => f !== id) : [...current, id];
+      try {
+        localStorage.setItem(FAVORITE_REGIONS_KEY, JSON.stringify(next));
+      } catch {
+        // Storage can be unavailable, for example in a private window; favorites then last for this visit.
+      }
+      return next;
+    });
+  }, []);
+  return [favorites, toggle];
+}
+
+/**
+ * The device's position for "Use current location" in the maps dialog. It is read once, coarsely,
+ * and never leaves the device; it is undefined where the browser has no geolocation.
+ */
+const locate =
+  typeof navigator !== "undefined" && "geolocation" in navigator
+    ? () =>
+        new Promise<{ lon: number; lat: number }>((resolve, reject) =>
+          navigator.geolocation.getCurrentPosition(
+            ({ coords }) => resolve({ lon: coords.longitude, lat: coords.latitude }),
+            reject,
+            { enableHighAccuracy: false, timeout: 20_000, maximumAge: 10 * 60_000 },
+          ),
+        )
+    : undefined;
+
 type Screen = { readonly kind: "trips" } | { readonly kind: "trip"; readonly id: string } | { readonly kind: "maps" };
 
 function MapsScreen({ services, locale, t }: AppProps) {
@@ -23,6 +65,7 @@ function MapsScreen({ services, locale, t }: AppProps) {
   const [focus, setFocus] = useState<{ readonly lon: number; readonly lat: number } | undefined>();
   const [shownId, setShownId] = useState<string | undefined>();
   const shown = ready.find((entry) => entry.id === shownId) ?? ready[0];
+  const [favorites, toggleFavorite] = useFavoriteRegions();
   return (
     <div className="maps-screen">
       <section className="app-preview">
@@ -41,7 +84,16 @@ function MapsScreen({ services, locale, t }: AppProps) {
         />
         <MapPreview maps={maps} region={shown} focus={focus} t={t} />
       </section>
-      <MapsDialog manager={regions} catalog={REGION_CATALOG} locale={locale} t={t} />
+      <MapsDialog
+        manager={regions}
+        catalog={REGION_CATALOG}
+        countries={CATALOG_COUNTRIES}
+        favorites={favorites}
+        onToggleFavorite={toggleFavorite}
+        locate={locate}
+        locale={locale}
+        t={t}
+      />
     </div>
   );
 }
