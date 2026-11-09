@@ -45,6 +45,8 @@ const project: Project = {
 const labels: RecapLabels = {
   tripDates: (first, last) => `${first} – ${last}`,
   stopSubtitle: (date, day) => `Day ${day} · ${date}`,
+  day: (day) => `Day ${day}`,
+  date: (date) => date,
   summary: (stops, days) => `${stops} stops · ${days} days`,
   attribution: "© OpenStreetMap",
 };
@@ -191,6 +193,31 @@ describe("drawFrame", () => {
     const plain = segment("title", 2);
     if (!plain) throw new Error("missing segment");
     expect(band(draw(timeline, (plain.startUs + plain.endUs) / 2).calls)).toBe(false);
+  });
+
+  it("marks a new day while travelling to its first stop, under a passing night", () => {
+    const night = (list: ReturnType<typeof draw>["calls"]) =>
+      list.find((c) => c.name === "fillRect" && typeof c.fill === "string" && c.fill.startsWith("rgba(14, 22, 52"));
+    const toNextDay = segment("travel", 2);
+    if (!toNextDay) throw new Error("missing segment");
+    const middle = draw(timeline, (toNextDay.startUs + toNextDay.endUs) / 2);
+    expect(middle.texts).toContain("Day 2");
+    expect(middle.texts).toContain("2026-04-02");
+    expect(night(middle.calls)?.fill).toBe("rgba(14, 22, 52, 0.500)");
+    // Within a day, travel shows neither.
+    const sameDay = segment("travel", 1);
+    if (!sameDay) throw new Error("missing segment");
+    const within = draw(timeline, (sameDay.startUs + sameDay.endUs) / 2);
+    expect(within.texts).not.toContain("Day 1");
+    expect(night(within.calls)).toBeUndefined();
+  });
+
+  it("shows a day's line under its date once the day has appeared", () => {
+    const withLine = compile({ ...project, trip: { ...project.trip, dayNotes: { "2026-04-02": "Snow overnight" } } });
+    const travel = withLine.segments.find((s) => s.kind === "travel" && s.stopIndex === 2);
+    if (!travel) throw new Error("missing segment");
+    expect(draw(withLine, travel.startUs + 300_000).texts).not.toContain("Snow overnight");
+    expect(draw(withLine, (travel.startUs + travel.endUs) / 2).texts).toContain("Snow overnight");
   });
 
   it("shows the summary at the end", () => {

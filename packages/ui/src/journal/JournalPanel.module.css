@@ -69,7 +69,8 @@
 }
 
 .entry,
-.note {
+.note,
+.dayNote {
   width: 100%;
   box-sizing: border-box;
   padding: 6px 8px;
@@ -111,9 +112,16 @@
   font-size: 0.9rem;
 }
 
+/* The day's line reads like a subtitle of the day. */
+.dayNote {
+  font-family: var(--font-journal, "Noto Serif TC", "Noto Serif CJK TC", "Source Han Serif TC", "Songti TC", serif);
+  font-size: 0.95rem;
+}
+
 .stopName:focus-visible,
 .entry:focus-visible,
-.note:focus-visible {
+.note:focus-visible,
+.dayNote:focus-visible {
   outline: 2px solid var(--color-accent, #b33a46);
   outline-offset: 1px;
 }

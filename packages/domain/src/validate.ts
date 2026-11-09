@@ -1,6 +1,7 @@
 import { isIsoDate, isValidTimeZone } from "./calendar.ts";
 import { isValidLonLat } from "./geo.ts";
 import {
+  MAX_DAY_NOTE_LENGTH,
   MAX_JOURNAL_LENGTH,
   MAX_NOTE_LENGTH,
   MIN_MUSIC_CLIP,
@@ -39,6 +40,17 @@ export function validateProject(project: Project): ValidationIssue[] {
           add(`trip.timing.${phase}`, "is not a recap phase");
         else if (typeof value !== "number" || value < PHASE_DURATION.min || value > PHASE_DURATION.max)
           add(`trip.timing.${phase}`, `must be between ${PHASE_DURATION.min} and ${PHASE_DURATION.max} microseconds`);
+      }
+    }
+  }
+
+  if (trip.dayNotes !== undefined) {
+    if (typeof trip.dayNotes !== "object" || trip.dayNotes === null) add("trip.dayNotes", "must be an object");
+    else {
+      for (const [date, note] of Object.entries(trip.dayNotes)) {
+        if (!isIsoDate(date)) add(`trip.dayNotes.${date}`, "is not a valid date");
+        else if (typeof note !== "string" || note.trim() === "" || note.length > MAX_DAY_NOTE_LENGTH)
+          add(`trip.dayNotes.${date}`, `must be text of 1 to ${MAX_DAY_NOTE_LENGTH} characters`);
       }
     }
   }

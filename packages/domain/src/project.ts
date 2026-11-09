@@ -1,6 +1,6 @@
-import { isValidTimeZone } from "./calendar.ts";
+import { type IsoDate, isIsoDate, isValidTimeZone } from "./calendar.ts";
 import { invalid } from "./errors.ts";
-import { PHASE_DURATION } from "./limits.ts";
+import { MAX_DAY_NOTE_LENGTH, PHASE_DURATION } from "./limits.ts";
 import { type AspectRatio, type Project, SCHEMA_VERSION, type Trip, type TripId, type TripTiming } from "./model.ts";
 import { clamp } from "./time.ts";
 
@@ -69,4 +69,19 @@ export function setTiming(project: Project, changes: TimingChanges): Project {
   }
   const { timing: _, ...trip } = project.trip;
   return { ...project, trip: Object.keys(timing).length > 0 ? { ...trip, timing } : trip };
+}
+
+/**
+ * Sets the line shown in the recap as a day of the trip begins, such as "Off to Kyoto by the
+ * first train". An empty note removes it; the key goes when no day has one.
+ */
+export function setDayNote(project: Project, date: IsoDate, note: string): Project {
+  if (!isIsoDate(date)) throw invalid(`"${date}" is not a valid date`);
+  const text = note.trim();
+  if (text.length > MAX_DAY_NOTE_LENGTH)
+    throw invalid(`A day's note must not exceed ${MAX_DAY_NOTE_LENGTH} characters`);
+  const { [date]: _, ...others } = project.trip.dayNotes ?? {};
+  const dayNotes = text === "" ? others : { ...others, [date]: text };
+  const { dayNotes: __, ...trip } = project.trip;
+  return { ...project, trip: Object.keys(dayNotes).length > 0 ? { ...trip, dayNotes } : trip };
 }

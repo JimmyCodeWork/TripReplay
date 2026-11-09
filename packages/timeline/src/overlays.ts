@@ -69,6 +69,21 @@ export function overlaysAt(timeline: Timeline, index: number, timeUs: Microsecon
       lastDate: timeline.stops.at(-1)?.date ?? null,
       opacity: envelope(timeUs, segment.startUs, segment.endUs, fadeUs),
     });
+  } else if (segment.kind === "travel") {
+    const stop = timeline.stops[segment.stopIndex];
+    const before = timeline.stops[segment.stopIndex - 1];
+    // A new day, or the first day when it has a line of its own.
+    if (stop && ((before && stop.day > before.day) || stop.dayNote !== "")) {
+      overlays.push({
+        kind: "dayChange",
+        day: stop.day,
+        date: stop.date,
+        note: stop.dayNote,
+        shownUs: timeUs - segment.startUs,
+        night: Math.sin(Math.PI * progress(timeUs, segment.startUs, segment.endUs)),
+        opacity: envelope(timeUs, segment.startUs, segment.endUs, fadeUs),
+      });
+    }
   } else if (segment.kind === "title") {
     const stop = timeline.stops[segment.stopIndex];
     if (stop) {

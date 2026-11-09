@@ -31,6 +31,7 @@ export {
   type NewProject,
   renameTrip,
   setAspectRatio,
+  setDayNote,
   setTheme,
   setTimeZone,
   setTiming,

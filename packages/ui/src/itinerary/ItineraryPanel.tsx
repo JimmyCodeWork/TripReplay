@@ -36,7 +36,8 @@ function days(stops: readonly Stop[]): Day[] {
 
 /**
  * The itinerary tab (docs/ui-design.md §3.3): stops grouped by day, in order. Stops are added from
- * place search, pasted coordinates or map links; each change is one undoable command.
+ * place search, pasted coordinates or map links, or copied from a stop of the trip to the chosen
+ * date; each change is one undoable command.
  */
 export function ItineraryPanel({
   project,
@@ -66,6 +67,18 @@ export function ItineraryPanel({
         date,
         location,
       },
+    });
+    if (result.ok) onSelect(id);
+  };
+
+  // Another visit to the same place, such as the hotel of several nights or a station passed again:
+  // a copy without the journal, on the date chosen above, right after the stop when on its own day.
+  const copy = (stop: Stop, index: number) => {
+    const id = newId();
+    const result = dispatch({
+      type: "addStop",
+      stop: { id, name: stop.name, description: "", date, location: stop.location },
+      ...(date === stop.date ? { position: index + 1 } : {}),
     });
     if (result.ok) onSelect(id);
   };
@@ -100,7 +113,7 @@ export function ItineraryPanel({
             onChange={(event) => event.target.value && setDate(event.target.value)}
           />
         </label>
-        <PlaceSearchBox search={search} t={t} onSelect={add} />
+        <PlaceSearchBox search={search} t={t} onSelect={add} known={project.stops} />
       </div>
       {project.stops.length === 0 && <p className={styles.empty}>{t("itinerary.empty")}</p>}
       {grouped.map((day, dayIndex) => (
@@ -169,6 +182,14 @@ export function ItineraryPanel({
                       onClick={() => move(dayIndex, index, 1)}
                     >
                       ↓
+                    </button>
+                    <button
+                      type="button"
+                      aria-label={t("itinerary.copy", { name: stop.name, date: formatDate(locale, date) })}
+                      title={t("itinerary.copy", { name: stop.name, date: formatDate(locale, date) })}
+                      onClick={() => copy(stop, index)}
+                    >
+                      ⧉
                     </button>
                     <button
                       type="button"

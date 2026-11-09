@@ -15,8 +15,18 @@ import { MapsDialog } from "../../src/index.ts";
 
 (globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
 
-const TAIWAN = { id: "taiwan", bounds: [119.3, 21.8, 122.1, 25.4] as const };
-const CATALOG = [TAIWAN, { id: "singapore", bounds: [103.6, 1.15, 104.1, 1.48] as const }];
+const TAIWAN = { id: "taiwan", country: "taiwan", bounds: [119.3, 21.8, 122.1, 25.4] as const };
+const CATALOG = [
+  TAIWAN,
+  { id: "singapore", country: "singapore", bounds: [103.6, 1.15, 104.1, 1.48] as const },
+  { id: "japanKanto", country: "japan", bounds: [138.4, 34.8, 140.9, 37.2] as const },
+  { id: "japanKansai", country: "japan", bounds: [134.2, 33.4, 136.9, 35.8] as const },
+];
+const COUNTRIES = [
+  { id: "taiwan", popular: true },
+  { id: "singapore", popular: true },
+  { id: "japan", popular: false },
+];
 
 /** A RegionManager whose list is set by the test and whose calls are recorded. */
 class FakeManager implements RegionManager<File> {
@@ -67,14 +77,44 @@ afterEach(() => {
   container?.remove();
 });
 
-async function render(manager: FakeManager, locale: Locale = "en") {
+interface Options {
+  readonly favorites?: readonly string[];
+  readonly locate?: () => Promise<{ lon: number; lat: number }>;
+}
+
+async function render(manager: FakeManager, locale: Locale = "en", options: Options = {}) {
   container = document.createElement("div");
   document.body.append(container);
   root = createRoot(container);
-  await act(async () => {
-    root?.render(<MapsDialog manager={manager} catalog={CATALOG} locale={locale} t={createTranslator(locale)} />);
-  });
+  let favorites = options.favorites ?? [];
+  const draw = () =>
+    root?.render(
+      <MapsDialog
+        manager={manager}
+        catalog={CATALOG}
+        countries={COUNTRIES}
+        favorites={favorites}
+        onToggleFavorite={(id) => {
+          favorites = favorites.includes(id) ? favorites.filter((f) => f !== id) : [...favorites, id];
+          draw();
+        }}
+        locate={options.locate}
+        locale={locale}
+        t={createTranslator(locale)}
+      />,
+    );
+  await act(async () => draw());
   return container;
+}
+
+const names = (view: HTMLElement) => [...view.querySelectorAll("li h3")].map((h) => h.textContent);
+
+async function choose(view: HTMLElement, value: string) {
+  const select = view.querySelector("select") as HTMLSelectElement;
+  await act(async () => {
+    select.value = value;
+    select.dispatchEvent(new Event("change", { bubbles: true }));
+  });
 }
 
 function row(view: HTMLElement, name: string): HTMLElement {
@@ -84,7 +124,9 @@ function row(view: HTMLElement, name: string): HTMLElement {
 }
 
 const status = (element: HTMLElement) => element.querySelector('[role="status"]')?.textContent;
-const buttons = (element: HTMLElement) => [...element.querySelectorAll("button")].map((b) => b.textContent);
+/** The action buttons of an element, without the favorite stars. */
+const buttons = (element: HTMLElement) =>
+  [...element.querySelectorAll("button")].filter((b) => !b.hasAttribute("aria-pressed")).map((b) => b.textContent);
 
 async function click(element: HTMLElement, label: string) {
   const button = [...element.querySelectorAll("button")].find((b) => b.textContent === label);
@@ -99,6 +141,64 @@ describe("MapsDialog", () => {
     expect(status(row(view, "臺灣"))).toBe("尚未下載");
     expect(buttons(row(view, "新加坡"))).toEqual(["下載"]);
     expect(view.textContent).toContain("下載來源只能得知您下載了哪些區域");
+  });
+
+  it("lists the popular countries first and filters by country", async () => {
+    const view = await render(new FakeManager(), "zh-TW");
+    expect(names(view)).toEqual(["臺灣", "新加坡"]);
+    const groups = [...view.querySelectorAll("optgroup")].map((g) => [
+      g.label,
+      [...g.querySelectorAll("option")].map((o) => o.textContent),
+    ]);
+    expect(groups).toEqual([
+      ["熱門", ["臺灣", "新加坡"]],
+      ["更多國家", ["日本"]],
+    ]);
+    await choose(view, "country:japan");
+    expect(names(view)).toEqual(["日本・關東", "日本・關西"]);
+  });
+
+  it("keeps favorites and lists downloaded regions", async () => {
+    const manager = new FakeManager();
+    const view = await render(manager, "zh-TW");
+    await choose(view, "favorites");
+    expect(names(view)).toEqual([]);
+    expect(view.textContent).toContain("尚無收藏");
+    await choose(view, "country:japan");
+    const star = row(view, "日本・關西").querySelector("[aria-pressed]") as HTMLButtonElement;
+    expect(star.getAttribute("aria-label")).toBe("收藏：日本・關西");
+    await act(async () => star.click());
+    expect(star.getAttribute("aria-pressed")).toBe("true");
+    await choose(view, "favorites");
+    expect(names(view)).toEqual(["日本・關西"]);
+    expect(view.querySelector('option[value="favorites"]')?.textContent).toBe("收藏（1）");
+    await act(async () => manager.set([entry({ kind: "ready" }, { id: "japanKanto" })]));
+    await choose(view, "downloaded");
+    expect(names(view)).toEqual(["日本・關東"]);
+  });
+
+  it("finds the regions at the device's location", async () => {
+    const at = { lon: 139.77, lat: 35.68 };
+    const view = await render(new FakeManager(), "zh-TW", { locate: async () => at });
+    await click(view, "使用目前位置");
+    expect((view.querySelector("select") as HTMLSelectElement).value).toBe("nearby");
+    expect(names(view)).toEqual(["日本・關東"]);
+    expect(view.textContent).toContain("位置資訊只在本裝置上使用");
+    at.lon = 0;
+    await click(view, "使用目前位置");
+    expect(names(view)).toEqual([]);
+    expect(view.textContent).toContain("目前位置不在任何可下載的區域內");
+  });
+
+  it("explains a location that cannot be used, and offers none without geolocation", async () => {
+    const denied = Object.assign(new Error("denied"), { code: 1 });
+    const view = await render(new FakeManager(), "zh-TW", { locate: () => Promise.reject(denied) });
+    await click(view, "使用目前位置");
+    expect(view.textContent).toContain("未取得使用位置資訊的權限");
+    act(() => root?.unmount());
+    const without = await render(new FakeManager(), "zh-TW");
+    expect(buttons(without)).not.toContain("使用目前位置");
+    expect(without.querySelector('option[value="nearby"]')).toBeNull();
   });
 
   it("shows the size and the free storage before downloading", async () => {

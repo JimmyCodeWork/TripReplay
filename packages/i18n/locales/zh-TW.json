@@ -53,6 +53,51 @@
   "maps.attribution": {
     "message": "地圖資料 © OpenStreetMap 貢獻者、Overture Maps Foundation"
   },
+  "maps.filter.label": {
+    "message": "國家或地區"
+  },
+  "maps.filter.popular": {
+    "message": "熱門國家"
+  },
+  "maps.filter.favorites": {
+    "message": "{count, plural, =0 {收藏} other {收藏（#）}}"
+  },
+  "maps.filter.downloaded": {
+    "message": "已下載"
+  },
+  "maps.filter.nearby": {
+    "message": "目前位置"
+  },
+  "maps.filter.popularGroup": {
+    "message": "熱門"
+  },
+  "maps.filter.moreGroup": {
+    "message": "更多國家"
+  },
+  "maps.favorite": {
+    "message": "收藏：{name}"
+  },
+  "maps.locate": {
+    "message": "使用目前位置"
+  },
+  "maps.locating": {
+    "message": "正在取得目前位置…"
+  },
+  "maps.locateFailed": {
+    "message": "{reason, select, denied {未取得使用位置資訊的權限。} other {無法取得目前位置。}}"
+  },
+  "maps.nearbyNote": {
+    "message": "目前位置所在的區域。位置資訊只在本裝置上使用。"
+  },
+  "maps.empty.favorites": {
+    "message": "尚無收藏。選取區域旁的 ☆ 即可加入收藏。"
+  },
+  "maps.empty.downloaded": {
+    "message": "尚未下載任何地圖。"
+  },
+  "maps.empty.nearby": {
+    "message": "目前位置不在任何可下載的區域內。"
+  },
   "maps.status.notDownloaded": {
     "message": "尚未下載"
   },
@@ -158,6 +203,261 @@
   "region.singapore": {
     "message": "新加坡"
   },
+  "region.thailandCentral": {
+    "message": "泰國・中部（曼谷、芭達雅）"
+  },
+  "region.thailandNorth": {
+    "message": "泰國・北部（清邁、清萊）"
+  },
+  "region.thailandNortheast": {
+    "message": "泰國・東北部"
+  },
+  "region.thailandSouth": {
+    "message": "泰國・南部（普吉、喀比、蘇美島）"
+  },
+  "region.vietnamNorth": {
+    "message": "越南・北部（河內、下龍灣）"
+  },
+  "region.vietnamCentral": {
+    "message": "越南・中部（峴港、會安、順化）"
+  },
+  "region.vietnamSouth": {
+    "message": "越南・南部（胡志明市）"
+  },
+  "region.malaysiaPeninsular": {
+    "message": "馬來西亞・半島（吉隆坡、檳城）"
+  },
+  "region.malaysiaBorneo": {
+    "message": "馬來西亞・婆羅洲（沙巴、砂拉越）"
+  },
+  "region.philippinesLuzon": {
+    "message": "菲律賓・呂宋（馬尼拉）"
+  },
+  "region.philippinesVisayas": {
+    "message": "菲律賓・米沙鄢（宿霧、長灘島、薄荷島）"
+  },
+  "region.philippinesPalawan": {
+    "message": "菲律賓・巴拉望"
+  },
+  "region.indonesiaBali": {
+    "message": "印尼・峇里島與龍目島"
+  },
+  "region.indonesiaJavaWest": {
+    "message": "印尼・西爪哇（雅加達、萬隆）"
+  },
+  "region.indonesiaJavaEast": {
+    "message": "印尼・中爪哇與東爪哇（日惹）"
+  },
+  "region.cambodia": {
+    "message": "柬埔寨"
+  },
+  "region.chinaNorth": {
+    "message": "中國・華北（北京、天津）"
+  },
+  "region.chinaEast": {
+    "message": "中國・華東（上海、杭州、蘇州、南京）"
+  },
+  "region.chinaSouth": {
+    "message": "中國・華南（廣州、深圳、桂林、廈門）"
+  },
+  "region.chinaSichuan": {
+    "message": "中國・四川與重慶"
+  },
+  "region.chinaYunnan": {
+    "message": "中國・雲南（昆明、大理、麗江）"
+  },
+  "region.chinaShaanxi": {
+    "message": "中國・陝西（西安）"
+  },
+  "region.chinaHainan": {
+    "message": "中國・海南"
+  },
+  "region.unitedKingdomSouth": {
+    "message": "英國・南部（倫敦、牛津、巴斯）"
+  },
+  "region.unitedKingdomNorth": {
+    "message": "英國・北部與蘇格蘭"
+  },
+  "region.ireland": {
+    "message": "愛爾蘭"
+  },
+  "region.franceNorth": {
+    "message": "法國・北部（巴黎）"
+  },
+  "region.franceSouth": {
+    "message": "法國・南部（普羅旺斯、蔚藍海岸）"
+  },
+  "region.germanyNorth": {
+    "message": "德國・北部（柏林、漢堡）"
+  },
+  "region.germanySouth": {
+    "message": "德國・南部（慕尼黑、法蘭克福）"
+  },
+  "region.italyNorth": {
+    "message": "義大利・北部（米蘭、威尼斯、佛羅倫斯）"
+  },
+  "region.italySouth": {
+    "message": "義大利・中南部（羅馬、拿坡里、西西里）"
+  },
+  "region.spainNorth": {
+    "message": "西班牙・北部（馬德里、巴塞隆納）"
+  },
+  "region.spainSouth": {
+    "message": "西班牙・南部（塞維亞、格拉納達）"
+  },
+  "region.portugal": {
+    "message": "葡萄牙"
+  },
+  "region.switzerland": {
+    "message": "瑞士"
+  },
+  "region.austria": {
+    "message": "奧地利"
+  },
+  "region.netherlands": {
+    "message": "荷蘭"
+  },
+  "region.belgium": {
+    "message": "比利時"
+  },
+  "region.czechia": {
+    "message": "捷克"
+  },
+  "region.greece": {
+    "message": "希臘"
+  },
+  "region.usCaliforniaSouth": {
+    "message": "美國・南加州（洛杉磯、聖地牙哥）"
+  },
+  "region.usCaliforniaNorth": {
+    "message": "美國・北加州（舊金山）"
+  },
+  "region.usSouthwest": {
+    "message": "美國・西南部（拉斯維加斯、大峽谷）"
+  },
+  "region.usNorthwest": {
+    "message": "美國・西北部（西雅圖、波特蘭）"
+  },
+  "region.usNortheast": {
+    "message": "美國・東北部（紐約、波士頓、華盛頓）"
+  },
+  "region.usFlorida": {
+    "message": "美國・佛羅里達"
+  },
+  "region.usHawaii": {
+    "message": "美國・夏威夷"
+  },
+  "region.canadaWest": {
+    "message": "加拿大・卑詩省與洛磯山脈（溫哥華、班夫）"
+  },
+  "region.canadaEast": {
+    "message": "加拿大・安大略與魁北克（多倫多、蒙特婁）"
+  },
+  "region.australiaNewSouthWales": {
+    "message": "澳洲・新南威爾斯（雪梨）"
+  },
+  "region.australiaVictoria": {
+    "message": "澳洲・維多利亞（墨爾本）"
+  },
+  "region.australiaQueensland": {
+    "message": "澳洲・昆士蘭沿岸（布里斯本、黃金海岸、凱恩斯）"
+  },
+  "region.australiaPerth": {
+    "message": "澳洲・伯斯"
+  },
+  "region.newZealandNorth": {
+    "message": "紐西蘭・北島（奧克蘭）"
+  },
+  "region.newZealandSouth": {
+    "message": "紐西蘭・南島（皇后鎮、基督城）"
+  },
+  "country.taiwan": {
+    "message": "臺灣"
+  },
+  "country.japan": {
+    "message": "日本"
+  },
+  "country.southKorea": {
+    "message": "韓國"
+  },
+  "country.hongKongMacau": {
+    "message": "香港與澳門"
+  },
+  "country.singapore": {
+    "message": "新加坡"
+  },
+  "country.thailand": {
+    "message": "泰國"
+  },
+  "country.vietnam": {
+    "message": "越南"
+  },
+  "country.malaysia": {
+    "message": "馬來西亞"
+  },
+  "country.philippines": {
+    "message": "菲律賓"
+  },
+  "country.indonesia": {
+    "message": "印尼"
+  },
+  "country.cambodia": {
+    "message": "柬埔寨"
+  },
+  "country.china": {
+    "message": "中國"
+  },
+  "country.unitedKingdom": {
+    "message": "英國"
+  },
+  "country.ireland": {
+    "message": "愛爾蘭"
+  },
+  "country.france": {
+    "message": "法國"
+  },
+  "country.germany": {
+    "message": "德國"
+  },
+  "country.italy": {
+    "message": "義大利"
+  },
+  "country.spain": {
+    "message": "西班牙"
+  },
+  "country.portugal": {
+    "message": "葡萄牙"
+  },
+  "country.switzerland": {
+    "message": "瑞士"
+  },
+  "country.austria": {
+    "message": "奧地利"
+  },
+  "country.netherlands": {
+    "message": "荷蘭"
+  },
+  "country.belgium": {
+    "message": "比利時"
+  },
+  "country.czechia": {
+    "message": "捷克"
+  },
+  "country.greece": {
+    "message": "希臘"
+  },
+  "country.unitedStates": {
+    "message": "美國"
+  },
+  "country.canada": {
+    "message": "加拿大"
+  },
+  "country.australia": {
+    "message": "澳洲"
+  },
+  "country.newZealand": {
+    "message": "紐西蘭"
+  },
   "app.loading": {
     "message": "開啟中…"
   },
@@ -260,6 +560,12 @@
   "itinerary.remove": {
     "message": "移除景點"
   },
+  "itinerary.copy": {
+    "message": "將「{name}」複製到 {date}"
+  },
+  "search.inTrip": {
+    "message": "本行程"
+  },
   "itinerary.unnamed": {
     "message": "景點 {number}"
   },
@@ -352,6 +658,9 @@
   },
   "player.segment.closing": {
     "message": "結尾"
+  },
+  "recap.day": {
+    "message": "第 {number} 天"
   },
   "recap.summary": {
     "message": "{stops, plural, other {# 個景點}} · {days, plural, other {# 天}}"
@@ -463,6 +772,12 @@
   },
   "journal.empty": {
     "message": "在行程中加入景點後，就可以開始寫日記。"
+  },
+  "journal.dayNoteFor": {
+    "message": "{date} 的開場文字"
+  },
+  "journal.dayNotePlaceholder": {
+    "message": "這天開始時在回顧中顯示的一句話"
   },
   "journal.entryFor": {
     "message": "{name} 的日記"

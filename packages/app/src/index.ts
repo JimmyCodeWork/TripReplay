@@ -58,7 +58,13 @@ export type {
   StoredRegion,
   TripSummary,
 } from "./ports.ts";
-export { type CatalogRegion, REGION_CATALOG } from "./region-catalog.ts";
+export {
+  CATALOG_COUNTRIES,
+  type CatalogCountry,
+  type CatalogRegion,
+  REGION_CATALOG,
+  regionsAt,
+} from "./region-catalog.ts";
 export {
   createRegionManager,
   FILE_RELEASE,

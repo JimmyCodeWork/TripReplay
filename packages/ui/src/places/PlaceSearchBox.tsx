@@ -8,6 +8,27 @@ export interface PlaceSearchBoxProps {
   readonly t: Translate;
   /** Called with the chosen place; `name` is empty for bare coordinates. */
   readonly onSelect: (place: { readonly location: LonLat; readonly name: string }) => void;
+  /** Places already in the trip, offered first when their name matches, to add a place again. */
+  readonly known?: readonly { readonly name: string; readonly location: LonLat }[] | undefined;
+}
+
+/** Places of the trip shown above the map's results. */
+const KNOWN_RESULTS = 3;
+
+/** The trip's places whose name contains the query, each place once. */
+function knownMatches(known: PlaceSearchBoxProps["known"], query: string) {
+  const text = query.trim().toLocaleLowerCase();
+  if (!known || text === "") return [];
+  const seen = new Set<string>();
+  const out: { readonly name: string; readonly location: LonLat }[] = [];
+  for (const place of known) {
+    const key = `${place.name}|${place.location.lon.toFixed(5)}|${place.location.lat.toFixed(5)}`;
+    if (seen.has(key) || !place.name.toLocaleLowerCase().includes(text)) continue;
+    seen.add(key);
+    out.push(place);
+    if (out.length === KNOWN_RESULTS) break;
+  }
+  return out;
 }
 
 type Results =
@@ -25,7 +46,7 @@ const coordinate = (value: number) => String(Math.round(value * 1e5) / 1e5);
  * Finds a place in the downloaded maps, or reads pasted coordinates and map links
  * (ADR 0006, decision 4). Nothing leaves the device.
  */
-export function PlaceSearchBox({ search, t, onSelect }: PlaceSearchBoxProps) {
+export function PlaceSearchBox({ search, t, onSelect, known }: PlaceSearchBoxProps) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<Results>({ kind: "none" });
   const listId = useId();
@@ -53,6 +74,8 @@ export function PlaceSearchBox({ search, t, onSelect }: PlaceSearchBoxProps) {
       current = false;
     };
   }, [query, search]);
+
+  const fromTrip = results.kind === "places" ? knownMatches(known, query) : [];
 
   const choose = (location: LonLat, name: string) => {
     onSelect({ location, name });
@@ -85,7 +108,15 @@ export function PlaceSearchBox({ search, t, onSelect }: PlaceSearchBoxProps) {
             </button>
           </li>
         )}
-        {results.kind === "places" && results.places.length === 0 && (
+        {fromTrip.map((place) => (
+          <li key={`trip|${place.name}|${place.location.lon}|${place.location.lat}`}>
+            <button type="button" className={styles.result} onClick={() => choose(place.location, place.name)}>
+              <span className={styles.label}>{place.name}</span>
+              <span className={styles.secondary}>{t("search.inTrip")}</span>
+            </button>
+          </li>
+        ))}
+        {results.kind === "places" && results.places.length === 0 && fromTrip.length === 0 && (
           <li className={styles.note}>{t("search.noResults")}</li>
         )}
         {results.kind === "places" &&

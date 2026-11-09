@@ -11,6 +11,7 @@ type Asset = Project["assets"][number];
 /** Longest journal entry of a stop and note of a photo or video, as in the domain's limits. */
 const MAX_JOURNAL = 10_000;
 const MAX_NOTE = 500;
+const MAX_DAY_NOTE = 200;
 
 export interface JournalPanelProps {
   readonly project: Project;
@@ -101,8 +102,9 @@ function days(stops: readonly Stop[]): { date: string; stops: Stop[] }[] {
 }
 
 /**
- * The journal tab: the trip as a diary, day by day. Each stop has a journal entry, and each photo
- * or video a short note, which the recap shows as its caption.
+ * The journal tab: the trip as a diary, day by day. Each day has a line that the recap shows as
+ * the day begins, each stop a journal entry, and each photo or video a short note, which the recap
+ * shows as its caption.
  */
 export function JournalPanel({ project, dispatch, selectedStopId, onSelect, mediaUrl, locale, t }: JournalPanelProps) {
   const titleId = useId();
@@ -121,6 +123,15 @@ export function JournalPanel({ project, dispatch, selectedStopId, onSelect, medi
           <h3 className={styles.dayTitle}>
             {t("itinerary.day", { number: dayIndex + 1, date: formatDate(locale, day.date) })}
           </h3>
+          <DraftText
+            className={styles.dayNote}
+            value={project.trip.dayNotes?.[day.date] ?? ""}
+            rows={1}
+            maxLength={MAX_DAY_NOTE}
+            label={t("journal.dayNoteFor", { date: formatDate(locale, day.date) })}
+            placeholder={t("journal.dayNotePlaceholder")}
+            onCommit={(note) => dispatch({ type: "setDayNote", date: day.date, note })}
+          />
           {day.stops.map((stop) => {
             number += 1;
             const clips = project.clips.filter((clip) => clip.stopId === stop.id);

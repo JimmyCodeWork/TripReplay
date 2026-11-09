@@ -24,6 +24,8 @@ export function compile(project: Project, settings: CompileSettings = {}): Timel
     date: stop.date,
     day: first === undefined ? 1 : dayOfTrip(first, stop.date),
     journal: journalExcerpt(stop.description),
+    // Only the first stop of a day carries the day's line.
+    dayNote: project.stops[index - 1]?.date === stop.date ? "" : (project.trip.dayNotes?.[stop.date] ?? ""),
     location: route[index] ?? stop.location,
   }));
   const overview = overviewCamera(route, aspectRatio);

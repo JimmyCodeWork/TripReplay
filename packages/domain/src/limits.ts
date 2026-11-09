@@ -19,3 +19,5 @@ export const DEFAULT_MUSIC_FADE = seconds(2);
 export const MAX_JOURNAL_LENGTH = 10_000;
 /** Longest note of a photo or video; it is shown as the caption in the recap. */
 export const MAX_NOTE_LENGTH = 500;
+/** Longest line of a day, shown in the recap as the day begins. */
+export const MAX_DAY_NOTE_LENGTH = 200;
