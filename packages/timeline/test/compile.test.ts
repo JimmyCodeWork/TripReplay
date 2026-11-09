@@ -1,4 +1,4 @@
-import { addStop, seconds, setClipNote, setTheme, setTiming, updateStop } from "@tripreplay/domain";
+import { addStop, seconds, setClipNote, setDayNote, setTheme, setTiming, updateStop } from "@tripreplay/domain";
 import { describe, expect, it } from "vitest";
 import {
   compile,
@@ -120,6 +120,25 @@ describe("day changes", () => {
     expect(at(middle(2).start)?.opacity).toBe(0);
     // The first travel starts from the overview, not from a day before.
     expect(at(middle(0).middle)).toBeUndefined();
+  });
+});
+
+describe("day lines", () => {
+  it("carries a day's line to the travel to its first stop, long enough to read", () => {
+    // c begins the third day; day 1 has a line too, shown on the way from the overview.
+    let project = setDayNote(kyoto(), "2026-04-03", "搭首班車前往嵐山，十二個字");
+    project = setDayNote(project, "2026-04-01", "出發");
+    const timeline = compile(project);
+    expect(timeline.stops.map((s) => s.dayNote)).toEqual(["出發", "", "搭首班車前往嵐山，十二個字"]);
+    const travel = timeline.segments.filter((s) => s.kind === "travel");
+    const length = (i: number) => (travel[i]?.endUs ?? 0) - (travel[i]?.startUs ?? 0);
+    // Two seconds for the day, then about eight characters a second.
+    expect(length(2)).toBe(seconds(2) + 13 * seconds(0.12));
+    expect(length(1)).toBe(timeline.theme.timing.travelUs);
+    const middle = (i: number) => ((travel[i]?.startUs ?? 0) + (travel[i]?.endUs ?? 0)) / 2;
+    const at = (us: number) => renderAt(timeline, us).overlays.find((o) => o.kind === "dayChange");
+    expect(at(middle(2))).toMatchObject({ day: 3, note: "搭首班車前往嵐山，十二個字" });
+    expect(at(middle(0))).toMatchObject({ day: 1, note: "出發" });
   });
 });
 

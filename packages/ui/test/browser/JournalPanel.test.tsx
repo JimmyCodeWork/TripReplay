@@ -109,6 +109,12 @@ describe("JournalPanel", () => {
     });
     expect(commands.at(-1)).toEqual({ type: "setClipNote", id: "c1", note: "人還不多" });
 
+    const day = view.querySelector('[aria-label="2026年4月2日 的開場文字"]') as HTMLTextAreaElement;
+    expect(day.placeholder).toBe("這天開始時在回顧中顯示的一句話");
+    await write(day, "搭首班新幹線前往京都");
+    await act(async () => day.blur());
+    expect(commands.at(-1)).toEqual({ type: "setDayNote", date: "2026-04-02", note: "搭首班新幹線前往京都" });
+
     await click(view, "2清水寺");
     expect(selected).toEqual(["b"]);
   });

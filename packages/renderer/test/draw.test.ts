@@ -212,6 +212,14 @@ describe("drawFrame", () => {
     expect(night(within.calls)).toBeUndefined();
   });
 
+  it("shows a day's line under its date once the day has appeared", () => {
+    const withLine = compile({ ...project, trip: { ...project.trip, dayNotes: { "2026-04-02": "Snow overnight" } } });
+    const travel = withLine.segments.find((s) => s.kind === "travel" && s.stopIndex === 2);
+    if (!travel) throw new Error("missing segment");
+    expect(draw(withLine, travel.startUs + 300_000).texts).not.toContain("Snow overnight");
+    expect(draw(withLine, (travel.startUs + travel.endUs) / 2).texts).toContain("Snow overnight");
+  });
+
   it("shows the summary at the end", () => {
     expect(draw(timeline, timeline.durationUs).texts).toEqual(["Kyoto", "3 stops · 2 days", "© OpenStreetMap"]);
   });

@@ -18,7 +18,7 @@ All notable changes to TripReplay are recorded here. The format follows [Keep a 
 - Zooming the timeline, with an overview bar to scroll it, for long recaps.
 - Map regions for 29 countries and areas, filtered by country in the maps dialog, with popular countries first, favorites, downloaded regions, and the regions at the device's current location (used only on the device).
 - Copying a stop to another day, for the hotel of several nights or a station passed again; places already in the trip are offered first in place search.
-- A passing night and "Day N" with its date in the recap, while travelling to the first stop of each new day.
+- A passing night and "Day N" with its date in the recap, while travelling to the first stop of each new day, with a line of your own for the day written in the journal.
 - A stop's journal entry shown under its title in the recap, line by line in a serif face on a soft glow, which stays on screen long enough to read it; photo and video notes over the bottom of the picture in the same face.
 - Themes: Classic, Night and Portrait.
 - An installable Web application that starts without a connection, with a Content Security Policy that allows network access only to the map download source.

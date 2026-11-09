@@ -24,6 +24,16 @@ export function titleLength(titleUs: Microseconds, journal: string): Microsecond
 }
 
 /**
+ * How long the travel to a day's first stop lasts so that the day's line can be read, like a
+ * stop's title: about eight characters a second after a moment for the day, at most eight seconds.
+ */
+export function travelLength(travelUs: Microseconds, dayNote: string): Microseconds {
+  if (dayNote === "") return travelUs;
+  const reading = Math.min(seconds(8), seconds(2) + Math.round(Array.from(dayNote).length * seconds(0.12)));
+  return Math.max(travelUs, reading);
+}
+
+/**
  * Lays out the recap: opening, then for each stop a travel move, its title and its clips, then the
  * closing. A stop without clips still gets its travel and title, so the map is never left empty.
  */
@@ -45,7 +55,13 @@ export function buildSegments(
   let camera = overview;
   stops.forEach((stop, stopIndex) => {
     const here = stopCamera(stop.location);
-    segments.push({ kind: "travel", stopIndex, ...next(timing.travelUs), from: camera, to: here });
+    segments.push({
+      kind: "travel",
+      stopIndex,
+      ...next(travelLength(timing.travelUs, stop.dayNote)),
+      from: camera,
+      to: here,
+    });
     segments.push({
       kind: "title",
       stopIndex,

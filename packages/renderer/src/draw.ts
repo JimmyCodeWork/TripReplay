@@ -72,6 +72,8 @@ const ON_PICTURE = "#ffffff";
  * fading in over a while. A short title fits them all into its first half.
  */
 const REVEAL = { delayUs: 300_000, staggerUs: 450_000, fadeUs: 700_000 } as const;
+/** When a day's line appears, after the day and its date. */
+const DAY_NOTE_DELAY_US = 600_000;
 /** When a picture's caption appears, after its card. */
 const CAPTION_REVEAL = { delayUs: 400_000, fadeUs: 800_000 } as const;
 
@@ -395,6 +397,32 @@ function drawCaption(
   ctx.globalAlpha = base;
 }
 
+/**
+ * The user's line for a new day, under its date, in the journal's serif; it rises into place once
+ * the day has appeared.
+ */
+function drawDayNote(ctx: Canvas2D, options: DrawOptions, overlay: Extract<Overlay, { kind: "dayChange" }>): void {
+  const { width, height, timeline } = options;
+  const unit = Math.min(width, height);
+  const layout = timeline.theme.layouts[timeline.aspectRatio];
+  const { typography, text: style } = timeline.theme;
+  const size = typography.captionSize * unit * 1.2;
+  journalText(ctx, size, typography.journalFontFamily);
+  const lines = wrapText(overlay.note, JOURNAL_WIDTH[timeline.aspectRatio] * width, (t) => ctx.measureText(t).width);
+  const shown = reveal(overlay.shownUs, DAY_NOTE_DELAY_US, REVEAL.fadeUs, timeline.reducedMotion, size);
+  if (lines.length === 0 || shown.alpha <= 0) return;
+  const top = (layout.title.y + layout.subtitleGap) * height + typography.subtitleSize * unit + size * 1.2;
+  ctx.globalAlpha *= shown.alpha;
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillStyle = style.color;
+  ctx.shadowColor = style.shadow;
+  ctx.shadowBlur = size * 0.5;
+  lines.forEach((line, i) => {
+    ctx.fillText(line, layout.title.x * width, top + size * LINE_HEIGHT * (i + 0.5) + shown.rise);
+  });
+}
+
 function drawMedia(ctx: Canvas2D, options: DrawOptions, overlay: Extract<Overlay, { kind: "media" }>): void {
   const { width, height, timeline, media } = options;
   const unit = Math.min(width, height);
@@ -502,6 +530,7 @@ function drawOverlay(ctx: Canvas2D, options: DrawOptions, overlay: Overlay): voi
       ctx.restore();
       text(ctx, options, labels.day(overlay.day), layout.title, type.titleSize, type.titleWeight);
       text(ctx, options, labels.date(overlay.date), layout.title, type.subtitleSize, 400, layout.subtitleGap);
+      if (overlay.note) drawDayNote(ctx, options, overlay);
       break;
     }
     case "attribution":

@@ -5,6 +5,7 @@ import {
   renameTrip,
   seconds,
   setAspectRatio,
+  setDayNote,
   setTheme,
   setTimeZone,
   setTiming,
@@ -59,6 +60,22 @@ describe("trip settings", () => {
     p = setTiming(p, { titleUs: undefined, travelUs: undefined, openingUs: undefined });
     expect(p.trip.timing).toBeUndefined();
     expect(() => setTiming(p, { closingUs: Number.NaN })).toThrow(DomainError);
+  });
+
+  it("sets, trims and removes a day's line", () => {
+    let p = setDayNote(sampleProject(), "2026-04-02", "  搭首班新幹線前往京都 ");
+    expect(p.trip.dayNotes).toEqual({ "2026-04-02": "搭首班新幹線前往京都" });
+    expect(validateProject(p)).toEqual([]);
+    p = setDayNote(p, "2026-04-02", " ");
+    expect(p.trip.dayNotes).toBeUndefined();
+    expect(() => setDayNote(p, "2026-04-02", "x".repeat(201))).toThrow(DomainError);
+    expect(() => setDayNote(p, "04/02", "x")).toThrow(DomainError);
+  });
+
+  it("reports stored day lines that are not valid", () => {
+    const p = sampleProject();
+    const issues = validateProject({ ...p, trip: { ...p.trip, dayNotes: { "2026-4-2": "x", "2026-04-03": "" } } });
+    expect(issues.map((i) => i.path)).toEqual(["trip.dayNotes.2026-4-2", "trip.dayNotes.2026-04-03"]);
   });
 
   it("reports stored phase lengths outside the limits", () => {

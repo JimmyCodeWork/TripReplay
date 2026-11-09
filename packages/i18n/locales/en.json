@@ -1031,6 +1031,14 @@
     "message": "Add stops to the itinerary to start the journal.",
     "description": "Shown in the journal tab while the trip has no stops."
   },
+  "journal.dayNoteFor": {
+    "message": "Line for {date}",
+    "description": "Label of the field for a day's line; date is a formatted date."
+  },
+  "journal.dayNotePlaceholder": {
+    "message": "A line shown as this day begins",
+    "description": "Placeholder of the field for a day's line."
+  },
   "journal.entryFor": {
     "message": "Journal entry for {name}",
     "description": "Accessible name of a stop's journal entry; name is the stop name."

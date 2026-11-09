@@ -773,6 +773,12 @@
   "journal.empty": {
     "message": "在行程中加入景點後，就可以開始寫日記。"
   },
+  "journal.dayNoteFor": {
+    "message": "{date} 的開場文字"
+  },
+  "journal.dayNotePlaceholder": {
+    "message": "這天開始時在回顧中顯示的一句話"
+  },
   "journal.entryFor": {
     "message": "{name} 的日記"
   },

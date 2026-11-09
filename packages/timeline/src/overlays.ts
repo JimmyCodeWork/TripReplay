@@ -72,11 +72,14 @@ export function overlaysAt(timeline: Timeline, index: number, timeUs: Microsecon
   } else if (segment.kind === "travel") {
     const stop = timeline.stops[segment.stopIndex];
     const before = timeline.stops[segment.stopIndex - 1];
-    if (stop && before && stop.day > before.day) {
+    // A new day, or the first day when it has a line of its own.
+    if (stop && ((before && stop.day > before.day) || stop.dayNote !== "")) {
       overlays.push({
         kind: "dayChange",
         day: stop.day,
         date: stop.date,
+        note: stop.dayNote,
+        shownUs: timeUs - segment.startUs,
         night: Math.sin(Math.PI * progress(timeUs, segment.startUs, segment.endUs)),
         opacity: envelope(timeUs, segment.startUs, segment.endUs, fadeUs),
       });

@@ -78,7 +78,9 @@ In the **Media** tab you can, for each stop:
 
 ## 5. Write the Journal
 
-The **Journal** tab is a diary of the trip. For each stop, write what happened there; for each photo or video, add a short note.
+The **Journal** tab is a diary of the trip. For each day, you can write a line that the recap shows as the day begins, such as "Off to Kyoto on the first train"; for each stop, write what happened there; for each photo or video, add a short note.
+
+- A day's line appears under "Day 2" and the date while the recap travels to the day's first stop; that move lasts long enough to read it. The first day's line appears on the way to the first stop.
 
 - A stop's entry is shown in the recap under the stop's name, in up to three lines (about 80 characters), appearing line by line in a serif face like a printed diary. The stop's title stays on screen longer so that it can be read.
 - Notes on photos and videos are shown over the bottom of the picture, in up to two lines, shortly after it appears.

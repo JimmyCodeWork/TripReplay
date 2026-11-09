@@ -24,6 +24,8 @@ export interface Trip {
   readonly aspectRatio: AspectRatio;
   /** The user's lengths of the recap phases; a phase that is absent keeps the theme's length. */
   readonly timing?: TripTiming;
+  /** A line for each day that has one, keyed by date, shown in the recap as the day begins. */
+  readonly dayNotes?: Readonly<Record<IsoDate, string>>;
   /** Incremented by the persistence layer on every successful save. */
   readonly revision: number;
 }

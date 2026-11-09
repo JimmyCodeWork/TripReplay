@@ -78,6 +78,10 @@ export interface DayChangeOverlay {
   readonly kind: "dayChange";
   readonly day: number;
   readonly date: IsoDate;
+  /** The user's line for the day, under its date; empty without one. */
+  readonly note: string;
+  /** Time since the travel began, to reveal the line after the day. */
+  readonly shownUs: Microseconds;
   readonly night: number;
   readonly opacity: number;
 }
