@@ -219,11 +219,20 @@ describe("TimelineStrips", () => {
     expect(commands).toEqual([{ type: "setPhotoDuration", id: "c1", durationUs: 4 * S }]);
   });
 
+  it("resets the timing as one command", async () => {
+    const { view, commands } = await setup();
+    const reset = [...view.querySelectorAll("button")].find((b) => b.textContent === "重設時間間隔") as HTMLElement;
+    expect(reset.title).toContain("可用「復原」還原");
+    await act(async () => reset.click());
+    expect(commands).toEqual([{ type: "resetTiming" }]);
+  });
+
   it("is read-only without onEdit", async () => {
     const view = await render(
       <TimelineStrips timeline={timeline} timeUs={0} onSeek={() => {}} t={createTranslator("zh-TW")} />,
     );
     expect(view.querySelector('[title="拖曳以調整長度"]')).toBeNull();
+    expect(view.textContent).not.toContain("重設時間間隔");
   });
 });
 

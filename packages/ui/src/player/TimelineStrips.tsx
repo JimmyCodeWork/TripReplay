@@ -210,29 +210,43 @@ export function TimelineStrips({ timeline, timeUs, onSeek, onEdit, t }: Timeline
 
   return (
     <>
-      {largest > 1 && (
+      {(onEdit || largest > 1) && (
         <div className={styles.zoom}>
-          <button
-            type="button"
-            className={styles.zoomButton}
-            aria-label={t("player.zoomOut")}
-            title={t("player.zoomOut")}
-            disabled={zoom <= 1}
-            onClick={() => changeZoom(zoom / 2)}
-          >
-            −
-          </button>
-          <span className={styles.zoomLevel}>{t("player.zoomLevel", { zoom })}</span>
-          <button
-            type="button"
-            className={styles.zoomButton}
-            aria-label={t("player.zoomIn")}
-            title={t("player.zoomIn")}
-            disabled={zoom >= largest}
-            onClick={() => changeZoom(zoom * 2)}
-          >
-            +
-          </button>
+          {onEdit && (
+            <button
+              type="button"
+              className={styles.reset}
+              title={t("player.resetTimingHint")}
+              onClick={() => onEdit({ type: "resetTiming" })}
+            >
+              {t("player.resetTiming")}
+            </button>
+          )}
+          {largest > 1 && (
+            <>
+              <button
+                type="button"
+                className={styles.zoomButton}
+                aria-label={t("player.zoomOut")}
+                title={t("player.zoomOut")}
+                disabled={zoom <= 1}
+                onClick={() => changeZoom(zoom / 2)}
+              >
+                −
+              </button>
+              <span className={styles.zoomLevel}>{t("player.zoomLevel", { zoom })}</span>
+              <button
+                type="button"
+                className={styles.zoomButton}
+                aria-label={t("player.zoomIn")}
+                title={t("player.zoomIn")}
+                disabled={zoom >= largest}
+                onClick={() => changeZoom(zoom * 2)}
+              >
+                +
+              </button>
+            </>
+          )}
         </div>
       )}
       {/* The position slider and the editor below are the accessible controls; the strips are a pointer shortcut. */}

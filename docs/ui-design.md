@@ -103,7 +103,8 @@ Below 820 px wide, the same parts stack vertically: preview (about half the scre
 | Opening, travel, title, closing | Not dragged; edited as numbers for the whole trip, from 0.5 s to 15 s in steps of 0.5 s |
 
 - Clicking a segment also selects it: a panel under the timeline names it with its start and end, and offers its values in seconds — a photo's duration, a video's in and out points, a music track's start, or the length of the phase for the whole trip. A value is applied when the field loses focus or with Enter. **Close** hides the panel.
-- Each change is a single command and can be undone.
+- **Reset timing**, at the start of the row above the timeline, returns the opening, travel, stop title and closing lengths to the theme's and every photo to 3 s, as one command; video trims, music and day lines are kept.
+- Each change is a single command and can be undone with the **Undo** and **Redo** buttons in the workspace bar, beside the save status, or with Ctrl+Z and Ctrl+Shift+Z. The buttons are disabled when there is nothing to undo or redo.
 - The selected stop's segments are highlighted; selecting a segment selects its stop and media in the side panel.
 
 ## 4. Import and Matching Dialog

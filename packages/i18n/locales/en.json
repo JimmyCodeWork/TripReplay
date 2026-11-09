@@ -851,6 +851,22 @@
     "message": "{zoom}×",
     "description": "How many times the timeline is enlarged."
   },
+  "player.resetTiming": {
+    "message": "Reset timing",
+    "description": "Button that returns the recap's intervals to their defaults."
+  },
+  "player.resetTimingHint": {
+    "message": "Opening, travel, stop titles, closing and every photo go back to their default lengths. Video trims and music stay. Undo brings them back.",
+    "description": "Tooltip of the reset timing button."
+  },
+  "workspace.undo": {
+    "message": "Undo",
+    "description": "Button that undoes the last change; Ctrl+Z does the same."
+  },
+  "workspace.redo": {
+    "message": "Redo",
+    "description": "Button that redoes the change last undone; Ctrl+Shift+Z does the same."
+  },
   "player.noMap": {
     "message": "No downloaded map contains these stops; the recap is shown without a base map.",
     "description": "Shown under the preview when no ready map region contains the trip's stops."

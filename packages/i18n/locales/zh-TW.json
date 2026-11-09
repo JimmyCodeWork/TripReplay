@@ -638,6 +638,18 @@
   "player.zoomLevel": {
     "message": "{zoom}×"
   },
+  "player.resetTiming": {
+    "message": "重設時間間隔"
+  },
+  "player.resetTimingHint": {
+    "message": "開場、移動、景點標題、結尾及每張照片恢復為預設長度；影片剪輯與音樂不變。可用「復原」還原。"
+  },
+  "workspace.undo": {
+    "message": "復原"
+  },
+  "workspace.redo": {
+    "message": "重做"
+  },
   "player.noMap": {
     "message": "已下載的地圖都不包含這些景點，因此預覽時不顯示底圖。"
   },

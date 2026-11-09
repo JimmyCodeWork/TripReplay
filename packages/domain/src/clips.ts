@@ -93,6 +93,20 @@ export function setPhotoDuration(project: Project, id: ClipId, durationUs: Micro
 }
 
 /**
+ * Returns the recap's intervals to their defaults: the trip's phase lengths go back to the theme's,
+ * and every photo to the default duration. Video trims, music and day lines are kept.
+ */
+export function resetTiming(project: Project): Project {
+  const { timing: _, ...trip } = project.trip;
+  const clips = project.clips.map((clip) =>
+    clip.kind === "photo" && clip.durationUs !== PHOTO_DURATION.default
+      ? { ...clip, durationUs: PHOTO_DURATION.default }
+      : clip,
+  );
+  return { ...project, trip, clips };
+}
+
+/**
  * Trims a video clip. Values are clamped to the asset's length, and the clip never becomes
  * shorter than the minimum; the edge being dragged yields when the two would cross.
  */
