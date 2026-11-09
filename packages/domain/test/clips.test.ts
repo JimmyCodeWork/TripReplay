@@ -10,11 +10,14 @@ import {
   PHOTO_DURATION,
   type Project,
   removeClip,
+  resetTiming,
   seconds,
   setClipFit,
   setClipNote,
   setClipVolume,
+  setDayNote,
   setPhotoDuration,
+  setTiming,
   trimVideo,
 } from "../src/index.ts";
 import { audio, sampleProject } from "./fixtures.ts";
@@ -109,5 +112,24 @@ describe("setClipNote", () => {
   it("rejects notes that are too long", () => {
     expect(() => setClipNote(withClips(), "c1", "x".repeat(MAX_NOTE_LENGTH + 1))).toThrow(DomainError);
     expect(setClipNote(withClips(), "c1", "x".repeat(MAX_NOTE_LENGTH)).clips[0]).toHaveProperty("note");
+  });
+});
+
+describe("resetTiming", () => {
+  it("returns phase lengths and photo durations to their defaults, and keeps the rest", () => {
+    let p = setPhotoDuration(withClips(), "c1", seconds(8));
+    p = trimVideo(p, "c2", { inUs: seconds(1) });
+    p = setTiming(p, { titleUs: seconds(4) });
+    p = setDayNote(p, "2026-04-02", "雪");
+    const reset = resetTiming(p);
+    expect(reset.trip.timing).toBeUndefined();
+    expect(reset.trip.dayNotes).toEqual({ "2026-04-02": "雪" });
+    const video = p.clips.find((c) => c.id === "c2");
+    if (!video) throw new Error("missing clip");
+    expect(reset.clips.map(clipDuration)).toEqual([
+      PHOTO_DURATION.default,
+      clipDuration(video),
+      PHOTO_DURATION.default,
+    ]);
   });
 });

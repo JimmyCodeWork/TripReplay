@@ -279,6 +279,26 @@ function EditorView({ editor, services, locale, t, onClose }: EditorViewProps) {
           ← {t("common.back")}
         </button>
         <h2 className="workspace-title">{project.trip.title}</h2>
+        <span className="workspace-history">
+          <button
+            type="button"
+            className="header-button"
+            disabled={!state.canUndo}
+            title={`${t("workspace.undo")} (Ctrl+Z)`}
+            onClick={() => editor.undo()}
+          >
+            ↶ {t("workspace.undo")}
+          </button>
+          <button
+            type="button"
+            className="header-button"
+            disabled={!state.canRedo}
+            title={`${t("workspace.redo")} (Ctrl+Shift+Z)`}
+            onClick={() => editor.redo()}
+          >
+            ↷ {t("workspace.redo")}
+          </button>
+        </span>
         <span className="workspace-save" role="status">
           {saveText(state.save, t)}
         </span>

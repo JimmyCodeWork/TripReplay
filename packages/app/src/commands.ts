@@ -23,6 +23,7 @@ import {
   removeStop,
   removeUnreferencedAssets,
   renameTrip,
+  resetTiming,
   type Stop,
   type StopChanges,
   type StopId,
@@ -53,6 +54,8 @@ export type Command =
   | { readonly type: "setAspectRatio"; readonly aspectRatio: AspectRatio }
   /** Lengths of recap phases for the whole trip; undefined returns a phase to the theme's length. */
   | { readonly type: "setTiming"; readonly timing: TimingChanges }
+  /** The recap's phase lengths and photo durations back to their defaults, as one step to undo. */
+  | { readonly type: "resetTiming" }
   /** The line shown as a day of the trip begins; empty removes it. */
   | { readonly type: "setDayNote"; readonly date: IsoDate; readonly note: string }
   /** A theme chosen in the themes tab, with the aspect ratio it switches to, as one step to undo. */
@@ -129,6 +132,8 @@ export function applyCommand(project: Project, command: Command): Project {
       return setAspectRatio(project, command.aspectRatio);
     case "setTiming":
       return setTiming(project, command.timing);
+    case "resetTiming":
+      return resetTiming(project);
     case "setDayNote":
       return setDayNote(project, command.date, command.note);
     case "chooseTheme": {

@@ -139,6 +139,19 @@
   cursor: pointer;
 }
 
+/* Sits at the start of the row, apart from the zoom buttons at its end. */
+.reset {
+  margin-right: auto;
+  padding: 6px 12px;
+  border: 1px solid var(--color-line, #d6ddd6);
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
 .zoomButton:disabled {
   opacity: 0.4;
   cursor: default;

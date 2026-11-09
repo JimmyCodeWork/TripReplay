@@ -15,6 +15,7 @@ All notable changes to TripReplay are recorded here. The format follows [Keep a 
 - Media import with stop suggestions from GPS position and capture time, to confirm before anything is added.
 - Recap preview: animated route, camera moves, titles, photos and videos with captions, clip sound and background music, 16:9 and 9:16, full screen.
 - Editing on the timeline: photo durations, video trimming, moving and trimming music, by dragging or as numbers in seconds for a selected segment; the lengths of the opening, travel, stop titles and closing for the whole trip; a time scale above the timeline.
+- **Undo** and **Redo** buttons in the workspace, and **Reset timing** for the timeline.
 - Zooming the timeline, with an overview bar to scroll it, for long recaps.
 - Map regions for 29 countries and areas, filtered by country in the maps dialog, with popular countries first, favorites, downloaded regions, and the regions at the device's current location (used only on the device).
 - Copying a stop to another day, for the hotel of several nights or a station passed again; places already in the trip are offered first in place search.

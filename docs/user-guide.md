@@ -51,7 +51,7 @@ A place you visit more than once, such as the hotel of several nights or a stati
 - Set **Date of new stops** to the day of the next visit and select **Copy** (⧉) beside the stop. The copy has no journal entry of its own; on the stop's own day it is added right after the stop.
 - Or type its name in the search box: places already in the trip are listed first, marked **In this trip**.
 
-Changes are saved automatically; the workspace shows **Saved** once they are stored. **Ctrl+Z** undoes the last change and **Ctrl+Shift+Z** redoes it (**⌘** instead of **Ctrl** on a Mac).
+Changes are saved automatically; the workspace shows **Saved** once they are stored. **Undo** and **Redo** at the top of the workspace take back the last change and do it again; **Ctrl+Z** and **Ctrl+Shift+Z** do the same (**⌘** instead of **Ctrl** on a Mac).
 
 In the trip list, each trip can be opened, renamed, duplicated, backed up and deleted.
 
@@ -107,6 +107,7 @@ The preview on the right always shows the current recap.
 - Drag the **Playback position** slider, or use the arrow keys on it, to move through the recap.
 - The bar under the slider shows the parts of the recap: opening, travel, stop titles, photos, videos and closing. Select a part to jump to it.
 - Times are marked above the bar.
+- **Reset timing** returns the opening, travel, stop titles, closing and every photo to their default lengths. Video trims and music stay as they are, and **Undo** brings your lengths back.
 - When the recap is long and its parts are thin, select **+** above the bar to enlarge it, up to the point where about five seconds fill the width, and **−** to see more of it again. An enlarged bar scrolls sideways: swipe it, or drag the window in the overview bar below it. While the recap plays, the bar follows the playback position.
 - Select a part to edit it in the fields under the timeline, in seconds: a photo's duration, a video's start and end, a music track's start, or the length of the opening, travel, stop titles or closing. The lengths of the opening, travel, titles and closing apply to the whole trip; a stop with a journal entry keeps its title longer when the entry needs more time to read. Select **Close** to hide the fields.
 - On the timeline you can also drag the right edge of a photo to change its duration, drag the edges of a video to trim it, and drag the music to move it. The same changes can be made with the fields in the **Media** and **Music** tabs.

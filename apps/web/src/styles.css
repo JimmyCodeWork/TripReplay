@@ -155,6 +155,16 @@ body {
   font-size: 1.2rem;
 }
 
+.workspace-history {
+  display: flex;
+  gap: 6px;
+}
+
+.header-button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
 .workspace-save {
   color: var(--color-muted);
   font-size: 0.9rem;
