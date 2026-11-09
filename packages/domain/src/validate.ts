@@ -70,6 +70,14 @@ export function validateProject(project: Project): ValidationIssue[] {
     if (!isValidLonLat(stop.location)) add(`stops[${i}].location`, "is outside the valid range");
     if (typeof stop.description !== "string" || stop.description.length > MAX_JOURNAL_LENGTH)
       add(`stops[${i}].description`, `must be text of at most ${MAX_JOURNAL_LENGTH} characters`);
+    for (const key of ["travelUs", "titleUs"] as const) {
+      const value = stop[key];
+      if (
+        value !== undefined &&
+        (typeof value !== "number" || value < PHASE_DURATION.min || value > PHASE_DURATION.max)
+      )
+        add(`stops[${i}].${key}`, `must be between ${PHASE_DURATION.min} and ${PHASE_DURATION.max} microseconds`);
+    }
   });
 
   const stopIds = new Set(project.stops.map((s) => s.id));

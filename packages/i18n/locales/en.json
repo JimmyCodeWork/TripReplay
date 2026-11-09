@@ -867,6 +867,22 @@
     "message": "Redo",
     "description": "Button that redoes the change last undone; Ctrl+Shift+Z does the same."
   },
+  "player.stop.titleUs": {
+    "message": "This stop's title (s)",
+    "description": "Field for the title length of the selected stop only."
+  },
+  "player.stop.travelUs": {
+    "message": "Move to this stop (s)",
+    "description": "Field for the length of the move to the selected stop only, which also shows a new day and its line."
+  },
+  "player.stop.automatic": {
+    "message": "Follows the trip, lengthened for text to read.",
+    "description": "Hint when the selected stop has no length of its own."
+  },
+  "player.stop.useTrip": {
+    "message": "Use the trip's length",
+    "description": "Button that removes the selected stop's own length."
+  },
   "player.noMap": {
     "message": "No downloaded map contains these stops; the recap is shown without a base map.",
     "description": "Shown under the preview when no ready map region contains the trip's stops."

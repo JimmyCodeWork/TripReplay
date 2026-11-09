@@ -104,10 +104,16 @@ class FakeMedia implements MediaPort<{ name: string; info?: MediaInfo }> {
   }
 }
 
-function setup(files: { name: string; info?: MediaInfo }[], project = kyoto()) {
+function setup(files: { name: string; info?: MediaInfo }[], project = kyoto(), selectedStopId?: string) {
   const media = new FakeMedia();
   let next = 0;
-  const session = createMediaImport({ files, media, project: () => project, newId: () => `id${++next}` });
+  const session = createMediaImport({
+    files,
+    media,
+    project: () => project,
+    newId: () => `id${++next}`,
+    selectedStopId,
+  });
   return { media, session, project };
 }
 
@@ -147,6 +153,25 @@ describe("media import", () => {
     const next = applyCommand(project, command);
     expect(next.assets).toHaveLength(3);
     expect(next.clips.filter((c) => c.stopId === "kiyomizu").map((c) => c.assetId)).toEqual(["id2", "id1"]);
+  });
+
+  it("puts items without a suggestion at the stop selected when the import began", async () => {
+    const { session } = setup(
+      [{ name: "a", info: photo("a", { captureTime: "2026-04-01T15:00:00", gps: KIYOMIZU }) }, { name: "b" }],
+      kyoto(),
+      "nara",
+    );
+    await session.run();
+    expect(session.getState().items.map((i) => [i.suggestion?.stopId, i.stopId, i.accepted])).toEqual([
+      ["kiyomizu", "kiyomizu", false],
+      [undefined, "nara", true],
+    ]);
+    session.refresh();
+    expect(session.getState().items[1]).toMatchObject({ stopId: "nara", accepted: true });
+    // A stop that no longer exists is not chosen.
+    const gone = setup([{ name: "c" }], kyoto(), "removed").session;
+    await gone.run();
+    expect(gone.getState().items[0]?.stopId).toBeUndefined();
   });
 
   it("accepts every suggestion at once and keeps manual choices on refresh", async () => {

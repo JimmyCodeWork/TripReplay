@@ -63,7 +63,7 @@ Add stops first; every photo and video belongs to a stop.
 2. TripReplay reads each file's capture time and GPS position and suggests a stop:
    - **by location** — the nearest stop of that day, from the file's GPS position;
    - **by date** — the first stop of the day it was taken, when the file has no position.
-3. Check the suggestions. Choose another stop where needed, then select **Accept**, or **Accept all**.
+3. Check the suggestions. Choose another stop where needed, then select **Accept**, or **Accept all**. Files without a capture time or position go to the stop you had selected before importing, if any; you can still change it.
 4. Times are shown in the trip's time zone. If your camera's clock was set to another zone, select **Change** and choose the right one; the suggestions update.
 5. Select **Add … files** to finish.
 
@@ -109,7 +109,7 @@ The preview on the right always shows the current recap.
 - Times are marked above the bar.
 - **Reset timing** returns the opening, travel, stop titles, closing and every photo to their default lengths. Video trims and music stay as they are, and **Undo** brings your lengths back.
 - When the recap is long and its parts are thin, select **+** above the bar to enlarge it, up to the point where about five seconds fill the width, and **−** to see more of it again. An enlarged bar scrolls sideways: swipe it, or drag the window in the overview bar below it. While the recap plays, the bar follows the playback position.
-- Select a part to edit it in the fields under the timeline, in seconds: a photo's duration, a video's start and end, a music track's start, or the length of the opening, travel, stop titles or closing. The lengths of the opening, travel, titles and closing apply to the whole trip; a stop with a journal entry keeps its title longer when the entry needs more time to read. Select **Close** to hide the fields.
+- Select a part to edit it in the fields under the timeline, in seconds: a photo's duration, a video's start and end, a music track's start, or the length of the opening, travel, stop titles or closing. The lengths of the opening, travel, titles and closing apply to the whole trip; a stop with a journal entry keeps its title longer when the entry needs more time to read. For a stop's title or the move to it, **This stop's title (s)** and **Move to this stop (s)** set the length of that one stop instead, without automatic lengthening; **Use the trip's length** brings it back. Select **Close** to hide the fields.
 - On the timeline you can also drag the right edge of a photo to change its duration, drag the edges of a video to trim it, and drag the music to move it. The same changes can be made with the fields in the **Media** and **Music** tabs.
 - **Reduce motion** replaces camera flights and zooms with cross-fades. It starts as your system's "Reduce motion" setting, and TripReplay remembers your choice in this browser.
 - **Full screen** plays the recap on the whole screen, for example to show it to family and friends. Press **Escape** to leave full screen. In the Android application, it fills the application window; select **Full screen** again to leave it.

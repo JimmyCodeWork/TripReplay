@@ -29,7 +29,8 @@ export interface SegmentEditorProps {
 /**
  * Numbers for the piece selected on the timeline (docs/ui-design.md §3.4): a photo's duration, a
  * video's trim, a music track's start, or the length of the opening, travel, stop titles or
- * closing for the whole trip. Each field is saved as one undoable change.
+ * closing for the whole trip, and of one stop's title or the move to it on its own. Each field is
+ * saved as one undoable change.
  */
 export function SegmentEditor({ timeline, selection, name, onEdit, onClose, t }: SegmentEditorProps) {
   const headingId = useId();
@@ -85,9 +86,38 @@ export function SegmentEditor({ timeline, selection, name, onEdit, onClose, t }:
     );
   } else {
     const { phase } = selection;
-    range = timeline.segments.find((s) => s.startUs === selection.startUs);
+    const segment = timeline.segments.find((s) => s.startUs === selection.startUs);
+    range = segment;
+    // A stop's title and the move to it can also have a length of their own.
+    const stop = segment && "stopIndex" in segment ? timeline.stops[segment.stopIndex] : undefined;
+    const own = phase === "titleUs" ? stop?.ownTitleUs : phase === "travelUs" ? stop?.ownTravelUs : undefined;
+    const key = phase === "titleUs" || phase === "travelUs" ? phase : undefined;
     fields = (
       <>
+        {stop && key && segment && (
+          <>
+            <SecondsField
+              className={styles.field}
+              label={t(key === "titleUs" ? "player.stop.titleUs" : "player.stop.travelUs")}
+              value={segment.endUs - segment.startUs}
+              min={PHASE_DURATION.min}
+              max={PHASE_DURATION.max}
+              step={PHASE_DURATION.step / 1_000_000}
+              onCommit={(us) => onEdit({ type: "setStopTiming", id: stop.id, timing: { [key]: us } })}
+            />
+            {own === undefined ? (
+              <span className={styles.hint}>{t("player.stop.automatic")}</span>
+            ) : (
+              <button
+                type="button"
+                className={styles.option}
+                onClick={() => onEdit({ type: "setStopTiming", id: stop.id, timing: { [key]: undefined } })}
+              >
+                {t("player.stop.useTrip")}
+              </button>
+            )}
+          </>
+        )}
         <SecondsField
           className={styles.field}
           label={t(`player.phase.${phase}`)}

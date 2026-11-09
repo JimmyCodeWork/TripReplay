@@ -27,6 +27,8 @@ export function compile(project: Project, settings: CompileSettings = {}): Timel
     // Only the first stop of a day carries the day's line.
     dayNote: project.stops[index - 1]?.date === stop.date ? "" : (project.trip.dayNotes?.[stop.date] ?? ""),
     location: route[index] ?? stop.location,
+    ...(stop.travelUs === undefined ? {} : { ownTravelUs: stop.travelUs }),
+    ...(stop.titleUs === undefined ? {} : { ownTitleUs: stop.titleUs }),
   }));
   const overview = overviewCamera(route, aspectRatio);
   const segments = buildSegments(project, stops, overview, theme.timing);

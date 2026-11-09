@@ -45,6 +45,8 @@ export {
   removeStop,
   type StopChanges,
   type StopDay,
+  type StopTimingChanges,
+  setStopTiming,
   stopsByDate,
   updateStop,
 } from "./stops.ts";

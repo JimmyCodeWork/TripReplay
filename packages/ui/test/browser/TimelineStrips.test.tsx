@@ -182,11 +182,15 @@ describe("TimelineStrips", () => {
     await click(view.querySelector('[data-phase="titleUs"]') as Element);
     expect(view.querySelector("section")?.textContent).toContain("有日記的景點會自動延長");
     await field("每個景點標題（秒）", "2.5");
+    // The selected stop's own title length, and back to the trip's.
+    await field("此景點標題（秒）", "4");
+    expect(view.querySelector("section")?.textContent).toContain("目前依整趟設定");
     await click(view.querySelector('[data-track="t1"]') as Element);
     await field("開始時間（秒）", "4");
     expect(commands).toEqual([
       { type: "setPhotoDuration", id: "c1", durationUs: 6 * S },
       { type: "setTiming", timing: { titleUs: 2.5 * S } },
+      { type: "setStopTiming", id: "a", timing: { titleUs: 4 * S } },
       { type: "moveMusicTrack", id: "t1", startUs: 4 * S },
     ]);
     await act(async () => (view.querySelector("section button") as HTMLButtonElement).click());

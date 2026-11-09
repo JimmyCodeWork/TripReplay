@@ -650,6 +650,18 @@
   "workspace.redo": {
     "message": "重做"
   },
+  "player.stop.titleUs": {
+    "message": "此景點標題（秒）"
+  },
+  "player.stop.travelUs": {
+    "message": "移動到此景點（秒）"
+  },
+  "player.stop.automatic": {
+    "message": "目前依整趟設定，並依文字長度自動延長。"
+  },
+  "player.stop.useTrip": {
+    "message": "改回整趟設定"
+  },
   "player.noMap": {
     "message": "已下載的地圖都不包含這些景點，因此預覽時不顯示底圖。"
   },
