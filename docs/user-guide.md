@@ -69,13 +69,11 @@ Add stops first; every photo and video belongs to a stop.
 
 Files already in the trip are recognized and not added twice. Photos and videos are copied into the browser's storage, so the originals can be moved or deleted afterwards; keep them, or a backup (§9), in case the browser's storage is cleared.
 
-In the **Media** tab, choose the **Stop** whose photos and videos you want to see; the list is grouped by day. For each photo or video you can:
+In the **Media** tab, choose the **Stop** whose photos and videos you want to see; the list is grouped by day. Drag a photo or video by its handle (⠿) to change the order. For each one you can also:
 
-- change the order with **Move up** and **Move down**;
+- select **Edit** to move it with **Move up** and **Move down**, or to another stop with **Move to…**, for example after an import put it at the wrong stop, or to **Remove from stop**;
 - set how many **Seconds** a photo is shown;
-- trim a video with **From (s)** and **To (s)**, and set its **Volume**;
-- move it to another stop with **Move to…**, for example after an import put it at the wrong stop;
-- **Remove from stop**.
+- trim a video with **From (s)** and **To (s)**, and set its **Volume**.
 
 ## 5. Write the Journal
 

@@ -1015,6 +1015,14 @@
     "message": "Move to…",
     "description": "First entry of the list that moves a photo or video to another stop."
   },
+  "media.edit": {
+    "message": "Edit",
+    "description": "Button that shows a photo or video's actions: move to another stop, move up or down, remove."
+  },
+  "media.editFor": {
+    "message": "Edit {file}",
+    "description": "Accessible name of the Edit button of a photo or video."
+  },
   "media.moveUp": {
     "message": "Move up",
     "description": "Button that plays a photo or video earlier."

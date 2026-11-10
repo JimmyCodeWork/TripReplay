@@ -2,6 +2,7 @@ import type { Command, DispatchResult, EditorState } from "@tripreplay/app";
 import type { Locale, Translate } from "@tripreplay/i18n";
 import { useEffect, useId, useState } from "react";
 import { CommitRange } from "../controls/CommitRange.tsx";
+import { useDragReorder } from "../controls/drag-reorder.ts";
 import { SecondsField } from "../controls/SecondsField.tsx";
 import { formatDate } from "../format-date.ts";
 import { formatTime } from "../player/format-time.ts";
@@ -100,6 +101,11 @@ export function MediaPanel({
   const stop = project.stops.find((s) => s.id === selectedStopId) ?? project.stops[0];
   const clips = stop ? project.clips.filter((clip) => clip.stopId === stop.id) : [];
   const assetOf = (clip: Clip) => project.assets.find((asset) => asset.id === clip.assetId);
+  const [editing, setEditing] = useState<string | undefined>();
+  const drag = useDragReorder(
+    clips.map((clip) => clip.id),
+    (id, position) => stop && dispatch({ type: "moveClip", id, stopId: stop.id, position }),
+  );
 
   return (
     <section className={styles.panel} aria-labelledby={titleId}>
@@ -132,7 +138,25 @@ export function MediaPanel({
               const asset = assetOf(clip);
               if (!asset) return null;
               return (
-                <li key={clip.id} className={styles.clip}>
+                <li
+                  key={clip.id}
+                  data-drag-item={clip.id}
+                  className={`${styles.clip} ${drag.dragging === clip.id ? styles.dragging : ""} ${
+                    drag.markOf(clip.id) === "before"
+                      ? styles.dropBefore
+                      : drag.markOf(clip.id) === "after"
+                        ? styles.dropAfter
+                        : ""
+                  }`}
+                >
+                  <span
+                    className={styles.handle}
+                    title={t("itinerary.drag")}
+                    aria-hidden="true"
+                    {...drag.handle(clip.id)}
+                  >
+                    ⠿
+                  </span>
                   <Thumbnail asset={asset} mediaUrl={mediaUrl} />
                   <div className={styles.text}>
                     <span className={styles.name}>{asset.fileName}</span>
@@ -196,51 +220,62 @@ export function MediaPanel({
                     )}
                   </div>
                   <div className={styles.tools}>
-                    {project.stops.length > 1 && (
-                      <select
-                        className={styles.moveTo}
-                        value=""
-                        aria-label={t("media.moveTo", { file: asset.fileName })}
-                        title={t("media.moveTo", { file: asset.fileName })}
-                        onChange={(event) => {
-                          const target = event.target.value;
-                          if (!target) return;
-                          // To the end of the other stop's media.
-                          const count = project.clips.filter((c) => c.stopId === target).length;
-                          dispatch({ type: "moveClip", id: clip.id, stopId: target, position: count });
-                        }}
-                      >
-                        <option value="">{t("media.moveToPlaceholder")}</option>
-                        <StopOptions stops={project.stops} except={stop.id} locale={locale} t={t} />
-                      </select>
-                    )}
                     <button
                       type="button"
-                      onClick={() => dispatch({ type: "moveClip", id: clip.id, stopId: stop.id, position: index - 1 })}
-                      disabled={index === 0}
-                      aria-label={t("media.moveUp")}
-                      title={t("media.moveUp")}
+                      aria-expanded={editing === clip.id}
+                      aria-label={t("media.editFor", { file: asset.fileName })}
+                      onClick={() => setEditing(editing === clip.id ? undefined : clip.id)}
                     >
-                      ↑
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => dispatch({ type: "moveClip", id: clip.id, stopId: stop.id, position: index + 1 })}
-                      disabled={index === clips.length - 1}
-                      aria-label={t("media.moveDown")}
-                      title={t("media.moveDown")}
-                    >
-                      ↓
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => dispatch({ type: "removeClip", id: clip.id })}
-                      aria-label={t("media.remove")}
-                      title={t("media.remove")}
-                    >
-                      ×
+                      {t("media.edit")}
                     </button>
                   </div>
+                  {editing === clip.id && (
+                    <div className={styles.edit}>
+                      {project.stops.length > 1 && (
+                        <select
+                          className={styles.moveTo}
+                          value=""
+                          aria-label={t("media.moveTo", { file: asset.fileName })}
+                          onChange={(event) => {
+                            const target = event.target.value;
+                            if (!target) return;
+                            // To the end of the other stop's media.
+                            const count = project.clips.filter((c) => c.stopId === target).length;
+                            dispatch({ type: "moveClip", id: clip.id, stopId: target, position: count });
+                            setEditing(undefined);
+                          }}
+                        >
+                          <option value="">{t("media.moveToPlaceholder")}</option>
+                          <StopOptions stops={project.stops} except={stop.id} locale={locale} t={t} />
+                        </select>
+                      )}
+                      <button
+                        type="button"
+                        onClick={() =>
+                          dispatch({ type: "moveClip", id: clip.id, stopId: stop.id, position: index - 1 })
+                        }
+                        disabled={index === 0}
+                        aria-label={t("media.moveUp")}
+                        title={t("media.moveUp")}
+                      >
+                        ↑
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          dispatch({ type: "moveClip", id: clip.id, stopId: stop.id, position: index + 1 })
+                        }
+                        disabled={index === clips.length - 1}
+                        aria-label={t("media.moveDown")}
+                        title={t("media.moveDown")}
+                      >
+                        ↓
+                      </button>
+                      <button type="button" onClick={() => dispatch({ type: "removeClip", id: clip.id })}>
+                        {t("media.remove")}
+                      </button>
+                    </div>
+                  )}
                 </li>
               );
             })}

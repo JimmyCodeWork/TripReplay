@@ -761,6 +761,12 @@
   "media.moveToPlaceholder": {
     "message": "移到…"
   },
+  "media.edit": {
+    "message": "編輯"
+  },
+  "media.editFor": {
+    "message": "編輯 {file}"
+  },
   "media.moveUp": {
     "message": "上移"
   },
