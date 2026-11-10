@@ -1,6 +1,6 @@
 import type { Command, DispatchResult, EditorState } from "@tripreplay/app";
 import type { Locale, Translate } from "@tripreplay/i18n";
-import { useEffect, useId, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { formatDate } from "../format-date.ts";
 import styles from "./JournalPanel.module.css";
 
@@ -109,6 +109,11 @@ function days(stops: readonly Stop[]): { date: string; stops: Stop[] }[] {
 export function JournalPanel({ project, dispatch, selectedStopId, onSelect, mediaUrl, locale, t }: JournalPanelProps) {
   const titleId = useId();
   const assets = new Map(project.assets.map((asset) => [asset.id, asset]));
+  const selectedRef = useRef<HTMLElement>(null);
+  // Opening the journal at a stop, for example from the itinerary, shows that stop's entry.
+  useEffect(() => {
+    if (selectedStopId) selectedRef.current?.scrollIntoView({ block: "start" });
+  }, [selectedStopId]);
   let number = 0;
 
   return (
@@ -136,7 +141,11 @@ export function JournalPanel({ project, dispatch, selectedStopId, onSelect, medi
             number += 1;
             const clips = project.clips.filter((clip) => clip.stopId === stop.id);
             return (
-              <article key={stop.id} className={stop.id === selectedStopId ? styles.selected : styles.stop}>
+              <article
+                key={stop.id}
+                ref={stop.id === selectedStopId ? selectedRef : undefined}
+                className={stop.id === selectedStopId ? styles.selected : styles.stop}
+              >
                 <button type="button" className={styles.stopName} onClick={() => onSelect(stop.id)}>
                   <span className={styles.number}>{number}</span>
                   {stop.name}

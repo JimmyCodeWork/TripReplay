@@ -44,11 +44,11 @@ Map data © OpenStreetMap contributors, Overture Maps Foundation.
    - Instead of a name, you can paste coordinates, such as `34.9949, 135.785`, or a link copied from Google Maps, Apple Maps, OpenStreetMap or Bing Maps. Short links, such as `maps.app.goo.gl`, cannot be read without a connection; open them and copy the full link instead.
 4. Repeat for every stop. Stops are grouped by day.
 
-For each stop you can **Move up**, **Move down**, **Copy**, **Rename stop** and **Remove stop**. Selecting a stop moves the preview to it.
+Select a stop to move the preview to it and show its actions: **Media** and **Journal** open those tabs at the stop, and **Copy**, **Rename stop**, **Remove stop**, **Move up** and **Move down** change it. Drag a stop by its handle (⠿) to put it elsewhere, also on another day. When the trip has several days, **Day 1**, **Day 2** and so on show one day at a time; **All days** shows them together, and choosing a day also sets **Date of new stops** to it.
 
 A place you visit more than once, such as the hotel of several nights or a station you pass again, does not need to be searched again:
 
-- Set **Date of new stops** to the day of the next visit and select **Copy** (⧉) beside the stop. The copy has no journal entry of its own; on the stop's own day it is added right after the stop.
+- Select the stop, then **Copy**. Choose the **Date** of the next visit and where to **Place** it: at the start of that day, or after one of its stops. It starts right after the stop itself on its own day, and after the last stop on another day. The copy has no journal entry of its own.
 - Or type its name in the search box: places already in the trip are listed first, marked **In this trip**.
 
 Changes are saved automatically; the workspace shows **Saved** once they are stored. **Undo** and **Redo** at the top of the workspace take back the last change and do it again; **Ctrl+Z** and **Ctrl+Shift+Z** do the same (**⌘** instead of **Ctrl** on a Mac).

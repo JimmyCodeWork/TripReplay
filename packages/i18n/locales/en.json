@@ -747,9 +747,53 @@
     "message": "Remove stop",
     "description": "Button that removes a stop."
   },
+  "itinerary.copyTitle": {
+    "message": "Copy {name}",
+    "description": "Name of the form that places a copy of a stop."
+  },
+  "itinerary.copyDate": {
+    "message": "Date",
+    "description": "Label of the date of a stop's copy."
+  },
+  "itinerary.copyPlace": {
+    "message": "Place",
+    "description": "Label of the list choosing where on that date the copy goes."
+  },
+  "itinerary.copyAtStart": {
+    "message": "At the start of the day",
+    "description": "Choice that puts a copy before every stop of the date."
+  },
+  "itinerary.copyAfter": {
+    "message": "After {number}. {name}",
+    "description": "Choice that puts a copy after a stop; number is the stop's number in the trip."
+  },
+  "itinerary.openMedia": {
+    "message": "{count, plural, =0 {Media} other {Media (#)}}",
+    "description": "Button that opens the Media tab at the selected stop; count is its photos and videos."
+  },
+  "itinerary.openJournal": {
+    "message": "Journal",
+    "description": "Button that opens the Journal tab at the selected stop."
+  },
+  "itinerary.drag": {
+    "message": "Drag to reorder",
+    "description": "Tooltip of a stop's drag handle."
+  },
+  "itinerary.days": {
+    "message": "Days",
+    "description": "Name of the buttons that show one day of the itinerary."
+  },
+  "itinerary.allDays": {
+    "message": "All days",
+    "description": "Button that shows every day of the itinerary."
+  },
+  "itinerary.dayTab": {
+    "message": "Day {number}",
+    "description": "Button that shows one day of the itinerary."
+  },
   "itinerary.copy": {
-    "message": "Copy {name} to {date}",
-    "description": "Button that adds the stop again, without its journal, on the date chosen above the list."
+    "message": "Copy",
+    "description": "Button that adds the selected stop again, without its journal, at a chosen place; also confirms the copy."
   },
   "search.inTrip": {
     "message": "In this trip",
