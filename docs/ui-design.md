@@ -111,7 +111,7 @@ Below 820 px wide, the same parts stack vertically: preview (about half the scre
 
 1. The user selects files; a progress bar shows metadata being read.
 2. **Suggested matches** list each item with its capture time and the suggested stop in a drop-down. Each suggestion must be accepted individually or with "Accept all"; nothing is applied silently.
-3. **Cannot determine** lists items without GPS data or capture time, each with a stop selector for manual assignment. When a stop was selected before the import began, these items start at that stop, already chosen; items with a suggestion keep it.
+3. **Cannot determine** lists items without GPS data or capture time, each with a stop selector for manual assignment. When the import starts from a stop selected in the Media tab, every item starts at that stop, already chosen; an item whose suggestion differs offers "Use the suggestion" to move it there.
 4. The trip's **time zone** is shown with a "Change" action, so that a wrong camera clock can be corrected for all items at once.
 5. "Finish import" adds the accepted and manually assigned items; "Cancel" adds nothing.
 
