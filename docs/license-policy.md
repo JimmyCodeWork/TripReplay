@@ -85,7 +85,7 @@ Adding a license to §3 requires a pull request that amends this policy, states 
 | PMTiles tooling | BSD-3-Clause | Admissible. Pending review. |
 | FFmpeg (including WASM builds) | LGPL or GPL depending on build configuration | Prohibited. |
 | mediabunny | MPL-2.0 | Prohibited. |
-| mp4-muxer | MIT | Admissible. Pending review; maintenance status to be confirmed. |
+| mp4-muxer | MIT | Admissible; used by export. Deprecated in favor of Mediabunny, which is MPL-2.0 and not admissible; pinned at 5.2.2 ([ADR 0009](adr/0009-export-in-1-0.md)). |
 | Tauri | Apache-2.0 OR MIT (transitive Apache-2.0, ISC, Unicode-3.0, CDLA-Permissive-2.0, MPL-2.0) | Not admissible. Every Tauri application links MPL-2.0 crates (`cssparser`, `selectors`, `dtoa-short`, `option-ext`) that cannot be turned off ([ADR 0008](adr/0008-android-in-1-0.md)). |
 | Capacitor (Android) | MIT; Android Jetpack libraries Apache-2.0 | Admissible. Used for the Android application; the Maven libraries are reviewed in the `maven` section of the inventory. |
 | React | MIT | Admissible. Pending review. |

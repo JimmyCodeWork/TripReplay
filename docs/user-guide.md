@@ -115,6 +115,16 @@ The preview on the right always shows the current recap.
 
 If no downloaded map contains your stops, the preview says so and draws the recap on the theme's background; download the region in **Maps** (§2) to see the map.
 
+### Export a video
+
+To keep or share the recap, select **Export video** under the preview.
+
+1. Choose **1080p (sharper)** or **720p (faster, smaller file)**. The dialog says which format your device will produce.
+2. Select **Start export** and keep TripReplay open and in front until it finishes; the export stops if the app goes to the background. Each frame waits for the map to be drawn, so a recap of a few minutes can take several minutes.
+3. Select **Save video** and choose where to keep it. In the Android application, the system's save screen opens.
+
+The video is made entirely on your device; nothing is uploaded.
+
 ## 9. Back Up and Restore
 
 The browser can clear stored data, for example when the device runs out of space or, in Safari, after a website has not been used for some time ([Browser Support](browser-support.md)). Back up the trips you care about.

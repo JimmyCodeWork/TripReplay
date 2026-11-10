@@ -927,6 +927,78 @@
     "message": "Use the trip's length",
     "description": "Button that removes the selected stop's own length."
   },
+  "export.button": {
+    "message": "Export video",
+    "description": "Button under the preview that opens the video export."
+  },
+  "export.title": {
+    "message": "Export video",
+    "description": "Title of the export dialog."
+  },
+  "export.quality": {
+    "message": "Quality",
+    "description": "Label of the choice of video size."
+  },
+  "export.q1080": {
+    "message": "1080p (sharper)",
+    "description": "Choice of a 1920 \u00d7 1080 video, or 1080 \u00d7 1920 in portrait."
+  },
+  "export.q720": {
+    "message": "720p (faster, smaller file)",
+    "description": "Choice of a 1280 \u00d7 720 video, or 720 \u00d7 1280 in portrait."
+  },
+  "export.checking": {
+    "message": "Checking which formats this device can encode…",
+    "description": "Shown while the encoders are probed."
+  },
+  "export.format": {
+    "message": "The video is encoded as {video} with {audio} sound.",
+    "description": "The encodings an export will use; video and audio are codec names such as H.264 and AAC."
+  },
+  "export.silent": {
+    "message": "The video is encoded as {video}. This device cannot encode sound, so the video will be silent.",
+    "description": "Shown when only a video encoder is available."
+  },
+  "export.keepOpen": {
+    "message": "Keep TripReplay open and in front while exporting; it stops if the app goes to the background.",
+    "description": "Advice shown before and during an export."
+  },
+  "export.start": {
+    "message": "Start export",
+    "description": "Button that starts the export."
+  },
+  "export.phase.audio": {
+    "message": "Mixing the sound…",
+    "description": "Progress while the sound is mixed."
+  },
+  "export.phase.video": {
+    "message": "Drawing frame {completed} of {total}",
+    "description": "Progress while frames are drawn and encoded."
+  },
+  "export.phase.finishing": {
+    "message": "Finishing the file…",
+    "description": "Progress while the video file is completed."
+  },
+  "export.done": {
+    "message": "The video is ready ({size}). Save it to keep it.",
+    "description": "Shown when the export finished; size is the file size."
+  },
+  "export.saved": {
+    "message": "The video is saved.",
+    "description": "Shown after the video was saved."
+  },
+  "export.save": {
+    "message": "Save video",
+    "description": "Button that saves the exported video."
+  },
+  "export.failed": {
+    "message": "{reason, select, unsupported {This browser or device cannot encode video. Use a current Chrome or Edge, or the Android application.} storage {There is not enough free space for the video. Free some space and try again.} background {The export stopped because TripReplay went to the background. Keep it in front and export again.} other {The export failed: {message}}}",
+    "description": "Why an export failed."
+  },
+  "export.fileType": {
+    "message": "MP4 video",
+    "description": "Kind of file in the save dialog."
+  },
   "player.noMap": {
     "message": "No downloaded map contains these stops; the recap is shown without a base map.",
     "description": "Shown under the preview when no ready map region contains the trip's stops."

@@ -45,9 +45,19 @@
       "declared": "MIT",
       "category": "code"
     },
+    "@types/dom-webcodecs@0.1.19": {
+      "declared": "MIT",
+      "category": "code",
+      "note": "Type declarations listed as a dependency of mp4-muxer; nothing of it is in the bundle's code."
+    },
     "@types/geojson@7946.0.16": {
       "declared": "MIT",
       "category": "code"
+    },
+    "@types/wicg-file-system-access@2020.9.8": {
+      "declared": "MIT",
+      "category": "code",
+      "note": "Type declarations listed as a dependency of mp4-muxer; nothing of it is in the bundle's code."
     },
     "bidi-js@1.1.0": {
       "declared": "MIT",
@@ -80,6 +90,11 @@
     "minimist@1.2.8": {
       "declared": "MIT",
       "category": "code"
+    },
+    "mp4-muxer@5.2.2": {
+      "declared": "MIT",
+      "category": "code",
+      "note": "MP4 writer of the video export. Superseded by Mediabunny, which is MPL-2.0 and not admissible (docs/adr/0009-export-in-1-0.md)."
     },
     "murmurhash-js@1.0.0": {
       "declared": "MIT",

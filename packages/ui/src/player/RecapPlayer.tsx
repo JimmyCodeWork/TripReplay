@@ -38,6 +38,8 @@ export interface RecapPlayerProps {
   readonly fullScreen?: "browser" | "page";
   /** A note shown under the preview, for example that no map of the stops is downloaded. */
   readonly notice?: string;
+  /** Opens the export of the recap as a video; without it the button is not shown. */
+  readonly onExport?: (() => void) | undefined;
   readonly t: Translate;
 }
 
@@ -64,6 +66,7 @@ export function RecapPlayer({
   onReducedMotion,
   fullScreen: fullScreenMode = "browser",
   notice,
+  onExport,
   t,
 }: RecapPlayerProps) {
   const state = useSyncExternalStore(playback.subscribe, playback.getState);
@@ -210,6 +213,11 @@ export function RecapPlayer({
         >
           {t("player.fullscreen")}
         </button>
+        {onExport && (
+          <button type="button" className={styles.option} onClick={onExport}>
+            {t("export.button")}
+          </button>
+        )}
       </div>
       <TimelineStrips
         timeline={timeline}

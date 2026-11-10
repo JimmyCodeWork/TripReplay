@@ -32,6 +32,8 @@ if (missingFeatures().length > 0) {
   createServices().then(
     (services) => {
       requestPersistence(services.regions);
+      // Temporary files of exports cut short, for example when the page was closed.
+      void import("./export-video.ts").then(({ clearExports }) => clearExports());
       root.render(
         <StrictMode>
           <App services={services} locale={locale} t={t} />

@@ -10,6 +10,7 @@ import {
   type RegionEntry,
   type SaveStatus,
   type Scheduler,
+  type Timeline,
 } from "@tripreplay/app";
 import { createAudioMixer } from "@tripreplay/audio";
 import type { Locale, Translate } from "@tripreplay/i18n";
@@ -32,6 +33,7 @@ import {
   useState,
   useSyncExternalStore,
 } from "react";
+import { ExportVideo } from "./ExportVideo.tsx";
 import { NATIVE } from "./platform.ts";
 import { createPreviewMedia } from "./preview-media.ts";
 import { animationClock, createRecapSurface } from "./recap-surface.ts";
@@ -175,23 +177,20 @@ function EditorView({ editor, services, locale, t, onClose }: EditorViewProps) {
       for (const audio of music.values()) audio.removeAttribute("src");
     };
   }, [playback, media]);
+  const mapFiles = useCallback(async () => {
+    const files = await Promise.all(
+      regionIds
+        .split("\n")
+        .filter(Boolean)
+        .map((id) => services.maps.regionFiles(id)),
+    );
+    return files.filter((f) => f !== undefined);
+  }, [services, regionIds]);
   const createSurface = useCallback(
-    async (container: HTMLElement) => {
-      const files = await Promise.all(
-        regionIds
-          .split("\n")
-          .filter(Boolean)
-          .map((id) => services.maps.regionFiles(id)),
-      );
-      return createRecapSurface(
-        container,
-        files.filter((f) => f !== undefined),
-        labels,
-        media,
-      );
-    },
-    [services, regionIds, labels, media],
+    async (container: HTMLElement) => createRecapSurface(container, await mapFiles(), labels, media),
+    [mapFiles, labels, media],
   );
+  const [exporting, setExporting] = useState<Timeline | undefined>();
 
   const [tab, setTab] = useState<Tab>("itinerary");
   const fileInput = useRef<HTMLInputElement>(null);
@@ -407,6 +406,11 @@ function EditorView({ editor, services, locale, t, onClose }: EditorViewProps) {
             onEdit={(command) => editor.dispatch(command)}
             onReducedMotion={setReducedMotion}
             fullScreen={NATIVE ? "page" : "browser"}
+            onExport={() => {
+              playback.pause();
+              // The export keeps the recap as it is now, whatever is edited meanwhile.
+              setExporting(timeline);
+            }}
             {...(covering.uncovered === 0
               ? {}
               : { notice: t(covering.ids.length === 0 ? "player.noMap" : "player.partialMap") })}
@@ -414,6 +418,19 @@ function EditorView({ editor, services, locale, t, onClose }: EditorViewProps) {
           />
         </div>
       </div>
+      {exporting && (
+        <ExportVideo
+          services={services}
+          timeline={exporting}
+          title={project.trip.title}
+          assets={project.assets}
+          labels={labels}
+          files={mapFiles}
+          onClose={() => setExporting(undefined)}
+          locale={locale}
+          t={t}
+        />
+      )}
       {importing && (
         <ImportDialog
           session={importing}

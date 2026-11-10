@@ -18,5 +18,12 @@
     "resolveJsonModule": true
   },
   "include": ["tools/**/*.ts", "packages/**/*.ts"],
-  "exclude": ["packages/audio/**", "packages/storage/**", "packages/map/**", "packages/media/**", "packages/ui/**"]
+  "exclude": [
+    "packages/audio/**",
+    "packages/export/**",
+    "packages/storage/**",
+    "packages/map/**",
+    "packages/media/**",
+    "packages/ui/**"
+  ]
 }

@@ -14,7 +14,7 @@
 
 - **可替換的元件。** 任何模組——地圖渲染器、儲存、UI 框架或主題——皆可重寫或替換，而不影響無關的程式碼。
 - **可測試的核心。** 所有決定畫面上*呈現什麼*的邏輯，皆為不需瀏覽器即可執行的純 TypeScript。
-- **為後續版本做好準備。** MP4 匯出及安裝版（[1.0 定義 §4.3](release-1.0.md#43-10-之後)）以新增模組的方式加入，而非重新設計既有模組。
+- **為後續版本做好準備。** 安裝版（[1.0 定義 §4.3](release-1.0.md#43-10-之後)）以新增模組的方式加入，而非重新設計既有模組，MP4 匯出即是如此加入（[ADR 0009](adr/0009-export-in-1-0.md)）。
 
 ## 2. 分層
 
@@ -78,12 +78,13 @@ flowchart TD
 | `map` | 以選定的地圖引擎實作 `MapLayer`，從裝置讀取已下載的地圖檔；區域下載；於已下載的地圖中搜尋地名；實作 `PlaceSearch`（[ADR 0006](adr/0006-local-only-operation.md)） | `renderer`、`app` |
 | `media` | 檔案匯入、中繼資料（拍攝時間、GPS）、縮圖與代理檔、景點配對建議；實作 `MediaPort` | `domain`、`app` |
 | `audio` | 以 Web Audio 進行預覽混音：音樂、淡入淡出、自動降低音量；實作 `AudioPort` | `timeline`、`app` |
+| `export` | 以 WebCodecs 與 mp4-muxer 匯出 MP4：探測編碼器、離線混音，並編碼 `FrameSource` 所繪製的畫面（[ADR 0009](adr/0009-export-in-1-0.md)） | `timeline` |
 | `storage` | IndexedDB 與 OPFS 持久化、專案包備份與還原；實作 `ProjectRepository` 與 `AssetStore` | `domain`、`app` |
 | `ui` | 畫面與元件（旅行列表、工作區、對話框、播放器） | `app`、`i18n`、`themes` |
 | `apps/web` | 組合根與 PWA 外殼 | 全部 |
 | `apps/android` | Android 外殼（Capacitor）：封裝 `apps/web` 的建置結果，並透過其 `SaveFile` 外掛儲存備份（[ADR 0008](adr/0008-android-in-1-0.md)） | — |
 
-後續版本在不修改上述套件的前提下新增套件：`export`（將 `renderer` 的影格編碼）、`map` 內的離線實作，以及 `apps/` 下的各平台外殼。
+後續版本在不修改上述套件的前提下新增套件：`map` 內的離線實作，以及 `apps/` 下的各平台外殼。
 
 ## 4. 關鍵契約
 

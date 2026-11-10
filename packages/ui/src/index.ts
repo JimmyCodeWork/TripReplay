@@ -7,6 +7,13 @@ export { formatCaptureTime, ImportDialog, type ImportDialogProps } from "./media
 export { MediaPanel, type MediaPanelProps } from "./media/MediaPanel.tsx";
 export { MusicPanel, type MusicPanelProps } from "./music/MusicPanel.tsx";
 export { PlaceSearchBox, type PlaceSearchBoxProps } from "./places/PlaceSearchBox.tsx";
+export {
+  ExportDialog,
+  type ExportDialogProps,
+  type ExportFormatNames,
+  type ExportQuality,
+  type ExportState,
+} from "./player/ExportDialog.tsx";
 export { formatTime } from "./player/format-time.ts";
 export { RecapPlayer, type RecapPlayerProps } from "./player/RecapPlayer.tsx";
 export { type RecapTexts, recapTexts } from "./player/recap-labels.ts";
