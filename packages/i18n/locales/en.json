@@ -1023,6 +1023,10 @@
     "message": "{count, plural, one {# file could not be matched} other {# files could not be matched}}",
     "description": "Heading of the files without GPS data or capture time, to assign by hand."
   },
+  "import.useSuggestion": {
+    "message": "Use the suggestion: {stop}",
+    "description": "Button that puts an imported file at its suggested stop instead of the stop selected before the import."
+  },
   "import.chooseStop": {
     "message": "Choose a stop",
     "description": "Empty choice of the stop selector."

@@ -155,7 +155,7 @@ describe("media import", () => {
     expect(next.clips.filter((c) => c.stopId === "kiyomizu").map((c) => c.assetId)).toEqual(["id2", "id1"]);
   });
 
-  it("puts items without a suggestion at the stop selected when the import began", async () => {
+  it("puts every item at the stop selected when the import began, keeping its suggestion", async () => {
     const { session } = setup(
       [{ name: "a", info: photo("a", { captureTime: "2026-04-01T15:00:00", gps: KIYOMIZU }) }, { name: "b" }],
       kyoto(),
@@ -163,9 +163,12 @@ describe("media import", () => {
     );
     await session.run();
     expect(session.getState().items.map((i) => [i.suggestion?.stopId, i.stopId, i.accepted])).toEqual([
-      ["kiyomizu", "kiyomizu", false],
+      ["kiyomizu", "nara", true],
       [undefined, "nara", true],
     ]);
+    // The suggestion can still be chosen instead.
+    session.choose(0, "kiyomizu");
+    expect(session.getState().items[0]).toMatchObject({ stopId: "kiyomizu", accepted: true });
     session.refresh();
     expect(session.getState().items[1]).toMatchObject({ stopId: "nara", accepted: true });
     // A stop that no longer exists is not chosen.

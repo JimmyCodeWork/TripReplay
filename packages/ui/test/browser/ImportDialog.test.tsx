@@ -118,6 +118,37 @@ describe("ImportDialog", () => {
     expect(command.clips.map((c) => c.stopId).sort()).toEqual(["kiyomizu", "station"]);
   });
 
+  it("puts every file at the stop selected before the import, with its suggestion one tap away", async () => {
+    let next = 0;
+    const session = createMediaImport({
+      files: ["IMG_1.JPG", "IMG_2.JPG"],
+      media,
+      project: () => project,
+      newId: () => `id${++next}`,
+      selectedStopId: "station",
+    });
+    const view = await render(
+      <ImportDialog
+        session={session}
+        project={project}
+        onTimeZone={() => {}}
+        onFinish={() => {}}
+        onCancel={() => {}}
+        locale="zh-TW"
+        t={createTranslator("zh-TW")}
+      />,
+    );
+    await act(() => session.run());
+    expect([...view.querySelectorAll("select")].map((s) => (s as HTMLSelectElement).value)).toEqual([
+      "station",
+      "station",
+    ]);
+    expect(view.textContent).toContain("加入 2 個檔案");
+    await click(view, "改用建議：2. 清水寺 · 2026年4月1日");
+    expect((view.querySelector("select") as HTMLSelectElement).value).toBe("kiyomizu");
+    expect(view.textContent).not.toContain("改用建議");
+  });
+
   it("formats capture times in the trip's time zone", () => {
     expect(formatCaptureTime("en", "2026-04-01T01:00:00Z", "Asia/Tokyo")).toBe("Apr 1, 2026, 10:00 AM");
     expect(formatCaptureTime("en", "2026-04-01T10:00:00", "Europe/London")).toBe("Apr 1, 2026, 10:00 AM");

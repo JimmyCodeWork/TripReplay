@@ -159,6 +159,16 @@ export function ImportDialog({ session, project, onTimeZone, onFinish, onCancel,
                         {details(item)} ·{" "}
                         {t(item.suggestion?.reason === "location" ? "import.byLocation" : "import.byDate")}
                       </span>
+                      {/* The selected stop was chosen over the suggestion; the suggestion stays one tap away. */}
+                      {item.suggestion && item.stopId !== item.suggestion.stopId && (
+                        <button
+                          type="button"
+                          className={styles.link}
+                          onClick={() => session.choose(item.index, item.suggestion?.stopId)}
+                        >
+                          {t("import.useSuggestion", { stop: stopName(item.suggestion.stopId) })}
+                        </button>
+                      )}
                     </div>
                     {stopSelect(item, false)}
                     {item.accepted ? (

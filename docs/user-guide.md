@@ -63,7 +63,7 @@ Add stops first; every photo and video belongs to a stop.
 2. TripReplay reads each file's capture time and GPS position and suggests a stop:
    - **by location** — the nearest stop of that day, from the file's GPS position;
    - **by date** — the first stop of the day it was taken, when the file has no position.
-3. Check the suggestions. Choose another stop where needed, then select **Accept**, or **Accept all**. Files without a capture time or position go to the stop you had selected before importing, if any; you can still change it.
+3. Check the suggestions. Choose another stop where needed, then select **Accept**, or **Accept all**. Files go to the stop selected in the **Media** tab; where a file's time or position suggests another stop, **Use the suggestion** moves it there.
 4. Times are shown in the trip's time zone. If your camera's clock was set to another zone, select **Change** and choose the right one; the suggestions update.
 5. Select **Add … files** to finish.
 

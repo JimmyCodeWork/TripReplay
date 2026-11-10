@@ -767,6 +767,9 @@
   "import.undetermined": {
     "message": "{count, plural, other {無法判斷 # 項}}"
   },
+  "import.useSuggestion": {
+    "message": "改用建議：{stop}"
+  },
   "import.chooseStop": {
     "message": "選擇景點"
   },
