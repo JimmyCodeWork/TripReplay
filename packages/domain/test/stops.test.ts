@@ -1,5 +1,16 @@
 import { describe, expect, it } from "vitest";
-import { addClip, addStop, DomainError, moveStop, removeStop, stopsByDate, updateStop } from "../src/index.ts";
+import {
+  addClip,
+  addStop,
+  DomainError,
+  moveStop,
+  removeStop,
+  seconds,
+  setStopTiming,
+  stopsByDate,
+  updateStop,
+  validateProject,
+} from "../src/index.ts";
 import { sampleProject, stop } from "./fixtures.ts";
 
 const order = (p: { stops: readonly { id: string }[] }) => p.stops.map((s) => s.id).join("");
@@ -86,5 +97,19 @@ describe("stopsByDate", () => {
       ["2026-04-01", 2],
       ["2026-04-02", 1],
     ]);
+  });
+});
+
+describe("setStopTiming", () => {
+  it("sets a stop's own lengths within the limits, and removes them", () => {
+    let p = setStopTiming(sampleProject(), "a", { titleUs: seconds(6.2), travelUs: seconds(40) });
+    const own = p.stops.find((s) => s.id === "a");
+    expect([own?.titleUs, own?.travelUs]).toEqual([seconds(6), seconds(15)]);
+    expect(validateProject(p)).toEqual([]);
+    p = setStopTiming(p, "a", { titleUs: undefined });
+    expect(p.stops.find((s) => s.id === "a")).not.toHaveProperty("titleUs");
+    expect(() => setStopTiming(p, "a", { travelUs: Number.NaN })).toThrow(DomainError);
+    const stored = { ...p, stops: p.stops.map((s) => (s.id === "a" ? { ...s, titleUs: 1 } : s)) };
+    expect(validateProject(stored).map((i) => i.path)).toEqual(["stops[0].titleUs"]);
   });
 });

@@ -27,12 +27,14 @@ import {
   type Stop,
   type StopChanges,
   type StopId,
+  type StopTimingChanges,
   setAspectRatio,
   setClipFit,
   setClipNote,
   setClipVolume,
   setDayNote,
   setPhotoDuration,
+  setStopTiming,
   setTheme,
   setTimeZone,
   setTiming,
@@ -63,6 +65,8 @@ export type Command =
   | { readonly type: "addStop"; readonly stop: Stop; readonly position?: number }
   | { readonly type: "updateStop"; readonly id: StopId; readonly changes: StopChanges }
   | { readonly type: "moveStop"; readonly id: StopId; readonly date: IsoDate; readonly position: number }
+  /** A stop's own travel and title lengths; undefined returns a length to the trip's. */
+  | { readonly type: "setStopTiming"; readonly id: StopId; readonly timing: StopTimingChanges }
   | { readonly type: "removeStop"; readonly id: StopId; readonly options?: RemoveStopOptions }
   | { readonly type: "addAssets"; readonly assets: readonly Asset[] }
   /** The result of an import: its assets and their clips, as one step to undo. */
@@ -146,6 +150,8 @@ export function applyCommand(project: Project, command: Command): Project {
       return updateStop(project, command.id, command.changes);
     case "moveStop":
       return moveStop(project, command.id, command.date, command.position);
+    case "setStopTiming":
+      return setStopTiming(project, command.id, command.timing);
     case "removeStop":
       return removeStop(project, command.id, command.options);
     case "addAssets":

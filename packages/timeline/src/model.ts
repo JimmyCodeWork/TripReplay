@@ -86,6 +86,9 @@ export interface TimelineStop {
   readonly journal: string;
   /** The line of the day this stop begins, shown while travelling to it; empty otherwise. */
   readonly dayNote: string;
+  /** The stop's own travel and title lengths, which replace the trip's and any lengthening. */
+  readonly ownTravelUs?: Microseconds;
+  readonly ownTitleUs?: Microseconds;
   /** Location with the longitude unwrapped to follow the route (see `Timeline.route`). */
   readonly location: LonLat;
 }

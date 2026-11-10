@@ -100,9 +100,9 @@ Below 820 px wide, the same parts stack vertically: preview (about half the scre
 | Photo | Drag the right edge to change its duration, snapping to 0.5 s, from 1 s to 15 s |
 | Video | Drag either edge to trim the start or end, within the clip's length |
 | Music | Drag the clip to move it; drag either end to trim |
-| Opening, travel, title, closing | Not dragged; edited as numbers for the whole trip, from 0.5 s to 15 s in steps of 0.5 s |
+| Opening, travel, title, closing | Not dragged; edited as numbers for the whole trip, from 0.5 s to 15 s in steps of 0.5 s. A stop's title and the move to it can also have a length of their own |
 
-- Clicking a segment also selects it: a panel under the timeline names it with its start and end, and offers its values in seconds — a photo's duration, a video's in and out points, a music track's start, or the length of the phase for the whole trip. A value is applied when the field loses focus or with Enter. **Close** hides the panel.
+- Clicking a segment also selects it: a panel under the timeline names it with its start and end, and offers its values in seconds — a photo's duration, a video's in and out points, a music track's start, or the length of the phase for the whole trip. For a stop title or a move, a field above sets the length for that stop alone ("This stop's title", "Move to this stop"); it replaces the trip's length and the lengthening for its journal entry or its day's line, and "Use the trip's length" removes it. A value is applied when the field loses focus or with Enter. **Close** hides the panel.
 - **Reset timing**, at the start of the row above the timeline, returns the opening, travel, stop title and closing lengths to the theme's and every photo to 3 s, as one command; video trims, music and day lines are kept.
 - Each change is a single command and can be undone with the **Undo** and **Redo** buttons in the workspace bar, beside the save status, or with Ctrl+Z and Ctrl+Shift+Z. The buttons are disabled when there is nothing to undo or redo.
 - The selected stop's segments are highlighted; selecting a segment selects its stop and media in the side panel.
@@ -111,7 +111,7 @@ Below 820 px wide, the same parts stack vertically: preview (about half the scre
 
 1. The user selects files; a progress bar shows metadata being read.
 2. **Suggested matches** list each item with its capture time and the suggested stop in a drop-down. Each suggestion must be accepted individually or with "Accept all"; nothing is applied silently.
-3. **Cannot determine** lists items without GPS data or capture time, each with a stop selector for manual assignment.
+3. **Cannot determine** lists items without GPS data or capture time, each with a stop selector for manual assignment. When a stop was selected before the import began, these items start at that stop, already chosen; items with a suggestion keep it.
 4. The trip's **time zone** is shown with a "Change" action, so that a wrong camera clock can be corrected for all items at once.
 5. "Finish import" adds the accepted and manually assigned items; "Cancel" adds nothing.
 

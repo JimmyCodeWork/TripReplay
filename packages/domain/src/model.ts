@@ -46,6 +46,10 @@ export interface Stop {
   readonly description: string;
   readonly date: IsoDate;
   readonly location: LonLat;
+  /** This stop's own length of the move to it, over the trip's and any lengthening for a day's line. */
+  readonly travelUs?: Microseconds;
+  /** This stop's own title length, over the trip's and any lengthening for its journal. */
+  readonly titleUs?: Microseconds;
 }
 
 interface AssetBase {

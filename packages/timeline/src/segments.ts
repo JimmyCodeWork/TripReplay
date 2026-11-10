@@ -58,14 +58,14 @@ export function buildSegments(
     segments.push({
       kind: "travel",
       stopIndex,
-      ...next(travelLength(timing.travelUs, stop.dayNote)),
+      ...next(stop.ownTravelUs ?? travelLength(timing.travelUs, stop.dayNote)),
       from: camera,
       to: here,
     });
     segments.push({
       kind: "title",
       stopIndex,
-      ...next(titleLength(timing.titleUs, stop.journal)),
+      ...next(stop.ownTitleUs ?? titleLength(timing.titleUs, stop.journal)),
       from: here,
       to: here,
     });

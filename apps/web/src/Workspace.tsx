@@ -218,6 +218,7 @@ function EditorView({ editor, services, locale, t, onClose }: EditorViewProps) {
       media: services.media,
       project: () => editor.getState().project,
       newId: services.newId,
+      selectedStopId: selectedId,
     });
     playback.pause();
     setImporting(session);

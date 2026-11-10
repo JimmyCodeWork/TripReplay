@@ -1,4 +1,13 @@
-import { addStop, seconds, setClipNote, setDayNote, setTheme, setTiming, updateStop } from "@tripreplay/domain";
+import {
+  addStop,
+  seconds,
+  setClipNote,
+  setDayNote,
+  setStopTiming,
+  setTheme,
+  setTiming,
+  updateStop,
+} from "@tripreplay/domain";
 import { describe, expect, it } from "vitest";
 import {
   compile,
@@ -139,6 +148,24 @@ describe("day lines", () => {
     const at = (us: number) => renderAt(timeline, us).overlays.find((o) => o.kind === "dayChange");
     expect(at(middle(2))).toMatchObject({ day: 3, note: "搭首班車前往嵐山，十二個字" });
     expect(at(middle(0))).toMatchObject({ day: 1, note: "出發" });
+  });
+});
+
+describe("a stop's own lengths", () => {
+  it("replaces the trip's lengths and the lengthening for text", () => {
+    let project = updateStop(kyoto(), "a", { description: "很長的一段日記，".repeat(10) });
+    project = setDayNote(project, "2026-04-03", "搭首班車前往嵐山");
+    project = setStopTiming(project, "a", { titleUs: seconds(2) });
+    project = setStopTiming(project, "c", { travelUs: seconds(1) });
+    const timeline = compile(project);
+    const length = (kind: string, stopIndex: number) => {
+      const s = timeline.segments.find((x) => x.kind === kind && "stopIndex" in x && x.stopIndex === stopIndex);
+      return (s?.endUs ?? 0) - (s?.startUs ?? 0);
+    };
+    expect(length("title", 0)).toBe(seconds(2));
+    expect(length("travel", 2)).toBe(seconds(1));
+    expect(timeline.stops[0]?.ownTitleUs).toBe(seconds(2));
+    expect(timeline.stops[1]?.ownTitleUs).toBeUndefined();
   });
 });
 

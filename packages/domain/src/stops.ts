@@ -1,9 +1,10 @@
 import { type IsoDate, isIsoDate } from "./calendar.ts";
 import { invalid, notFound } from "./errors.ts";
 import { isValidLonLat, type LonLat } from "./geo.ts";
-import { MAX_JOURNAL_LENGTH } from "./limits.ts";
+import { MAX_JOURNAL_LENGTH, PHASE_DURATION } from "./limits.ts";
 import { findStop, replaceById } from "./lookup.ts";
 import type { Project, Stop, StopId } from "./model.ts";
+import { clamp } from "./time.ts";
 
 export interface StopDay {
   readonly date: IsoDate;
@@ -91,4 +92,28 @@ export function stopsByDate(project: Project): StopDay[] {
     else days.push({ date: stop.date, stops: [stop] });
   }
   return days;
+}
+
+/** A stop's own lengths; undefined returns a length to the trip's, with its automatic lengthening. */
+export interface StopTimingChanges {
+  readonly travelUs?: number | undefined;
+  readonly titleUs?: number | undefined;
+}
+
+/** Sets a stop's own travel and title lengths, rounded to the step and kept within PHASE_DURATION. */
+export function setStopTiming(project: Project, id: StopId, changes: StopTimingChanges): Project {
+  let stop: Stop = findStop(project, id);
+  for (const key of ["travelUs", "titleUs"] as const) {
+    if (!(key in changes)) continue;
+    const value = changes[key];
+    const { [key]: _, ...rest } = stop;
+    if (value === undefined) {
+      stop = rest;
+      continue;
+    }
+    if (!Number.isFinite(value)) throw invalid(`${key} must be a number`);
+    const stepped = Math.round(value / PHASE_DURATION.step) * PHASE_DURATION.step;
+    stop = { ...rest, [key]: clamp(stepped, PHASE_DURATION.min, PHASE_DURATION.max) };
+  }
+  return { ...project, stops: replaceById(project.stops, stop) };
 }

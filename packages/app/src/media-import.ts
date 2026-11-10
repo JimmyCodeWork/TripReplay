@@ -90,9 +90,20 @@ export interface MediaImportOptions<File> {
   /** The project as it is now, read for duplicates and stops. */
   readonly project: () => Project;
   readonly newId: () => string;
+  /**
+   * The stop selected when the import began. Items without a suggestion go to it, as chosen by the
+   * user; items with one keep their suggestion.
+   */
+  readonly selectedStopId?: StopId | undefined;
 }
 
-export function createMediaImport<File>({ files, media, project, newId }: MediaImportOptions<File>): MediaImport {
+export function createMediaImport<File>({
+  files,
+  media,
+  project,
+  newId,
+  selectedStopId,
+}: MediaImportOptions<File>): MediaImport {
   const store = createStore<MediaImportState>({
     phase: "reading",
     completed: 0,
@@ -109,8 +120,12 @@ export function createMediaImport<File>({ files, media, project, newId }: MediaI
     }));
 
   const suggested = (asset: Asset) => {
-    const suggestion = suggestStop(project(), asset);
-    return suggestion ? { suggestion, stopId: suggestion.stopId } : {};
+    const current = project();
+    const suggestion = suggestStop(current, asset);
+    if (suggestion) return { suggestion, stopId: suggestion.stopId };
+    return selectedStopId && current.stops.some((stop) => stop.id === selectedStopId)
+      ? { stopId: selectedStopId, accepted: true }
+      : {};
   };
 
   const discard = async (ids: readonly string[]) => {
