@@ -752,6 +752,15 @@
   "media.videoLength": {
     "message": "影片 · {length}"
   },
+  "media.stop": {
+    "message": "景點"
+  },
+  "media.moveTo": {
+    "message": "將 {file} 移到其他景點"
+  },
+  "media.moveToPlaceholder": {
+    "message": "移到…"
+  },
   "media.moveUp": {
     "message": "上移"
   },

@@ -227,4 +227,39 @@ describe("MediaPanel", () => {
     ]);
     expect(imports).toBe(1);
   });
+
+  it("chooses the stop by day and moves media to another stop", async () => {
+    const commands: Command[] = [];
+    const selected: string[] = [];
+    const view = await render(
+      <MediaPanel
+        project={withMedia}
+        selectedStopId="kiyomizu"
+        onSelect={(id) => void selected.push(id)}
+        dispatch={(command) => {
+          commands.push(command);
+          return { ok: true, project: withMedia } as never;
+        }}
+        mediaUrl={async () => undefined}
+        onImport={() => {}}
+        locale="zh-TW"
+        t={createTranslator("zh-TW")}
+      />,
+    );
+    const picker = view.querySelector("select[id]") as HTMLSelectElement;
+    expect(picker.value).toBe("kiyomizu");
+    expect([...picker.querySelectorAll("optgroup")].map((g) => g.label)).toEqual(["第 1 天 · 2026年4月1日"]);
+    await act(async () => {
+      picker.value = "station";
+      picker.dispatchEvent(new Event("change", { bubbles: true }));
+    });
+    expect(selected).toEqual(["station"]);
+    const move = view.querySelector('select[aria-label="將 a.jpg 移到其他景點"]') as HTMLSelectElement;
+    expect([...move.options].map((o) => o.textContent)).toEqual(["移到…", "1. 京都車站"]);
+    await act(async () => {
+      move.value = "station";
+      move.dispatchEvent(new Event("change", { bubbles: true }));
+    });
+    expect(commands).toEqual([{ type: "moveClip", id: "c1", stopId: "station", position: 0 }]);
+  });
 });

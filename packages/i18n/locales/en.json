@@ -1003,6 +1003,18 @@
     "message": "Video · {length}",
     "description": "Length of a video clip, as minutes:seconds."
   },
+  "media.stop": {
+    "message": "Stop",
+    "description": "Label of the list that chooses whose media the tab shows, grouped by day."
+  },
+  "media.moveTo": {
+    "message": "Move {file} to another stop",
+    "description": "Label of the list that moves a photo or video to another stop."
+  },
+  "media.moveToPlaceholder": {
+    "message": "Move to…",
+    "description": "First entry of the list that moves a photo or video to another stop."
+  },
   "media.moveUp": {
     "message": "Move up",
     "description": "Button that plays a photo or video earlier."

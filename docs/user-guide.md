@@ -69,16 +69,17 @@ Add stops first; every photo and video belongs to a stop.
 
 Files already in the trip are recognized and not added twice. Photos and videos are copied into the browser's storage, so the originals can be moved or deleted afterwards; keep them, or a backup (§9), in case the browser's storage is cleared.
 
-In the **Media** tab you can, for each stop:
+In the **Media** tab, choose the **Stop** whose photos and videos you want to see; the list is grouped by day. For each photo or video you can:
 
 - change the order with **Move up** and **Move down**;
 - set how many **Seconds** a photo is shown;
 - trim a video with **From (s)** and **To (s)**, and set its **Volume**;
+- move it to another stop with **Move to…**, for example after an import put it at the wrong stop;
 - **Remove from stop**.
 
 ## 5. Write the Journal
 
-The **Journal** tab is a diary of the trip. For each day, you can write a line that the recap shows as the day begins, such as "Off to Kyoto on the first train"; for each stop, write what happened there; for each photo or video, add a short note.
+The **Journal** tab is a diary of the trip. For each day, you can write a line that the recap shows as the day begins, such as "Off to Kyoto on the first train"; for each stop, write what happened there; for each photo or video, add a short note. On a long trip, **Day 1**, **Day 2** and so on show one day at a time.
 
 - A day's line appears under "Day 2" and the date while the recap travels to the day's first stop; that move lasts long enough to read it. The first day's line appears on the way to the first stop.
 

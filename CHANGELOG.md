@@ -18,6 +18,7 @@ All notable changes to TripReplay are recorded here. The format follows [Keep a 
 - **Undo** and **Redo** buttons in the workspace, and **Reset timing** for the timeline.
 - A stop's own title length and length of the move to it, over the trip's and the lengthening for text.
 - Imported files go to the stop selected in the Media tab, with the suggested stop one tap away.
+- The journal shows one day at a time too, and the Media tab chooses the stop from a list grouped by day and moves a photo or video to another stop.
 - The itinerary shows one day at a time, reorders stops by dragging, and expands the selected stop's actions, which open its media and journal and copy it to a chosen place.
 - Zooming the timeline, with an overview bar to scroll it, for long recaps.
 - Map regions for 29 countries and areas, filtered by country in the maps dialog, with popular countries first, favorites, downloaded regions, and the regions at the device's current location (used only on the device).

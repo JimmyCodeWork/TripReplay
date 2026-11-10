@@ -14,6 +14,8 @@ type Asset = Project["assets"][number];
 export interface MediaPanelProps {
   readonly project: Project;
   readonly selectedStopId: string | undefined;
+  /** Shows another stop's media. */
+  readonly onSelect?: ((stopId: string) => void) | undefined;
   readonly dispatch: (command: Command) => DispatchResult;
   /** A URL of a stored media file for thumbnails, from the shell; undefined while unavailable. */
   readonly mediaUrl: (assetId: string) => Promise<string | undefined>;
@@ -24,6 +26,39 @@ export interface MediaPanelProps {
 }
 
 const SECOND = 1_000_000;
+
+type Stop = Project["stops"][number];
+
+/** The trip's stops for a drop-down list, in a group for each day. */
+function StopOptions({
+  stops,
+  except,
+  locale,
+  t,
+}: {
+  readonly stops: readonly Stop[];
+  /** A stop left out, such as the one the media is at. */
+  readonly except?: string;
+  readonly locale: Locale;
+  readonly t: Translate;
+}) {
+  const dates = [...new Set(stops.map((stop) => stop.date))];
+  return (
+    <>
+      {dates.map((date, dayIndex) => (
+        <optgroup key={date} label={t("itinerary.day", { number: dayIndex + 1, date: formatDate(locale, date) })}>
+          {stops.map((stop, index) =>
+            stop.date === date && stop.id !== except ? (
+              <option key={stop.id} value={stop.id}>
+                {`${index + 1}. ${stop.name}`}
+              </option>
+            ) : null,
+          )}
+        </optgroup>
+      ))}
+    </>
+  );
+}
 
 function Thumbnail({ asset, mediaUrl }: { readonly asset: Asset; readonly mediaUrl: MediaPanelProps["mediaUrl"] }) {
   const [url, setUrl] = useState<string | undefined>();
@@ -47,9 +82,20 @@ function Thumbnail({ asset, mediaUrl }: { readonly asset: Asset; readonly mediaU
 
 /**
  * The media tab (docs/ui-design.md §3.3): the selected stop's photos and videos in playing order,
- * with their duration; "Import media" starts the import and matching dialog.
+ * with their duration, chosen from the trip's stops by day; each can move to another stop.
+ * "Import media" starts the import and matching dialog.
  */
-export function MediaPanel({ project, selectedStopId, dispatch, mediaUrl, onImport, locale, t }: MediaPanelProps) {
+export function MediaPanel({
+  project,
+  selectedStopId,
+  onSelect,
+  dispatch,
+  mediaUrl,
+  onImport,
+  locale,
+  t,
+}: MediaPanelProps) {
+  const stopId = useId();
   const titleId = useId();
   const stop = project.stops.find((s) => s.id === selectedStopId) ?? project.stops[0];
   const clips = stop ? project.clips.filter((clip) => clip.stopId === stop.id) : [];
@@ -68,7 +114,18 @@ export function MediaPanel({ project, selectedStopId, dispatch, mediaUrl, onImpo
       {!stop && <p className={styles.empty}>{t("media.noStops")}</p>}
       {stop && (
         <>
-          <p className={styles.stop}>{t("media.forStop", { name: stop.name, date: formatDate(locale, stop.date) })}</p>
+          {onSelect ? (
+            <label className={styles.stop} htmlFor={stopId}>
+              <span>{t("media.stop")}</span>
+              <select id={stopId} value={stop.id} onChange={(event) => onSelect(event.target.value)}>
+                <StopOptions stops={project.stops} locale={locale} t={t} />
+              </select>
+            </label>
+          ) : (
+            <p className={styles.stop}>
+              {t("media.forStop", { name: stop.name, date: formatDate(locale, stop.date) })}
+            </p>
+          )}
           {clips.length === 0 && <p className={styles.empty}>{t("media.empty")}</p>}
           <ol className={styles.clips}>
             {clips.map((clip, index) => {
@@ -139,6 +196,24 @@ export function MediaPanel({ project, selectedStopId, dispatch, mediaUrl, onImpo
                     )}
                   </div>
                   <div className={styles.tools}>
+                    {project.stops.length > 1 && (
+                      <select
+                        className={styles.moveTo}
+                        value=""
+                        aria-label={t("media.moveTo", { file: asset.fileName })}
+                        title={t("media.moveTo", { file: asset.fileName })}
+                        onChange={(event) => {
+                          const target = event.target.value;
+                          if (!target) return;
+                          // To the end of the other stop's media.
+                          const count = project.clips.filter((c) => c.stopId === target).length;
+                          dispatch({ type: "moveClip", id: clip.id, stopId: target, position: count });
+                        }}
+                      >
+                        <option value="">{t("media.moveToPlaceholder")}</option>
+                        <StopOptions stops={project.stops} except={stop.id} locale={locale} t={t} />
+                      </select>
+                    )}
                     <button
                       type="button"
                       onClick={() => dispatch({ type: "moveClip", id: clip.id, stopId: stop.id, position: index - 1 })}

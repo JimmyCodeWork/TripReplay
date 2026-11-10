@@ -24,6 +24,32 @@
   color: var(--color-muted, #5b665f);
 }
 
+label.stop {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.stop select,
+.moveTo {
+  min-width: 0;
+  max-width: 100%;
+  padding: 4px 6px;
+  border: 1px solid var(--color-field, #7a857e);
+  border-radius: 6px;
+  background: var(--color-surface, #fff);
+  color: var(--color-text, #1d2420);
+  font: inherit;
+}
+
+/* Moves a photo or video to another stop. */
+.moveTo {
+  max-width: 9em;
+  padding: 2px 4px;
+  font-size: 0.85rem;
+}
+
 .clips {
   display: grid;
   gap: 6px;
@@ -32,9 +58,11 @@
   list-style: none;
 }
 
+/* On a narrow panel the tools move to a line of their own under the file. */
 .clip {
   display: flex;
-  gap: 8px;
+  flex-wrap: wrap;
+  gap: 6px 8px;
   align-items: center;
 }
 
@@ -49,7 +77,7 @@
 
 .text {
   display: grid;
-  flex: 1 1 auto;
+  flex: 1 1 160px;
   min-width: 0;
 }
 
@@ -65,6 +93,7 @@
   align-items: center;
   color: var(--color-muted, #5b665f);
   font-size: 0.9rem;
+  white-space: nowrap;
 }
 
 .duration input {
@@ -81,6 +110,7 @@
   display: flex;
   flex: none;
   gap: 2px;
+  margin-left: auto;
 }
 
 .tools button {
