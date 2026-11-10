@@ -365,6 +365,7 @@ function EditorView({ editor, services, locale, t, onClose }: EditorViewProps) {
               <MediaPanel
                 project={project}
                 selectedStopId={selected?.id}
+                onSelect={select}
                 dispatch={editor.dispatch}
                 mediaUrl={media.url}
                 onImport={() => fileInput.current?.click()}

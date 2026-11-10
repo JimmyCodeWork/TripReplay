@@ -191,6 +191,9 @@ describe("ItineraryPanel", () => {
     await addStop(view, "2026-04-01", "清水");
     await addStop(view, "2026-04-01", "35.0394, 135.7292");
     await addStop(view, "2026-04-02", "35.0270, 135.7982");
+    // Handles appear only while sorting is on, so that a stray touch does not reorder.
+    expect(view.querySelector('[title="拖曳以排序"]')).toBeNull();
+    await click(view, "排序");
     const drag = async (name: string, to: Element, side: "top" | "bottom") => {
       const handle = row(view, name).querySelector('[aria-hidden="true"]') as HTMLElement;
       const from = handle.getBoundingClientRect();

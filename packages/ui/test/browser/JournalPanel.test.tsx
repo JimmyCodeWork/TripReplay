@@ -76,6 +76,15 @@ function setup() {
 }
 
 describe("JournalPanel", () => {
+  it("shows one day at a time", async () => {
+    const { ui } = setup();
+    const view = await render(ui(project));
+    await click(view, "第 2 天");
+    expect([...view.querySelectorAll("h3")].map((h) => h.textContent)).toEqual(["第 2 天 · 2026年4月2日"]);
+    await click(view, "全部");
+    expect(view.querySelectorAll("h3")).toHaveLength(2);
+  });
+
   it("shows the trip day by day with each stop's entry and each photo's note", async () => {
     const { ui } = setup();
     const view = await render(ui(project));

@@ -44,7 +44,7 @@ Map data © OpenStreetMap contributors, Overture Maps Foundation.
    - Instead of a name, you can paste coordinates, such as `34.9949, 135.785`, or a link copied from Google Maps, Apple Maps, OpenStreetMap or Bing Maps. Short links, such as `maps.app.goo.gl`, cannot be read without a connection; open them and copy the full link instead.
 4. Repeat for every stop. Stops are grouped by day.
 
-Select a stop to move the preview to it and show its actions: **Media** and **Journal** open those tabs at the stop, and **Copy**, **Rename stop**, **Remove stop**, **Move up** and **Move down** change it. Drag a stop by its handle (⠿) to put it elsewhere, also on another day. When the trip has several days, **Day 1**, **Day 2** and so on show one day at a time; **All days** shows them together, and choosing a day also sets **Date of new stops** to it.
+Select a stop to move the preview to it and show its actions: **Media** and **Journal** open those tabs at the stop, and **Copy**, **Rename stop**, **Remove stop**, **Move up** and **Move down** change it. To reorder, select **Reorder** beside the title, drag a stop by its handle (⠿) to put it elsewhere, also on another day, and select **Done**; the handles are hidden otherwise, so that a stray touch never moves a stop. When the trip has several days, **Day 1**, **Day 2** and so on show one day at a time; **All days** shows them together, and choosing a day also sets **Date of new stops** to it.
 
 A place you visit more than once, such as the hotel of several nights or a station you pass again, does not need to be searched again:
 
@@ -69,16 +69,15 @@ Add stops first; every photo and video belongs to a stop.
 
 Files already in the trip are recognized and not added twice. Photos and videos are copied into the browser's storage, so the originals can be moved or deleted afterwards; keep them, or a backup (§9), in case the browser's storage is cleared.
 
-In the **Media** tab you can, for each stop:
+In the **Media** tab, choose the **Stop** whose photos and videos you want to see; the list is grouped by day. To change the order, select **Reorder**, drag a photo or video by its handle (⠿), then select **Done**. For each one you can also:
 
-- change the order with **Move up** and **Move down**;
+- select **Edit** to move it with **Move up** and **Move down**, or to another stop with **Move to…**, for example after an import put it at the wrong stop, or to **Remove from stop**;
 - set how many **Seconds** a photo is shown;
-- trim a video with **From (s)** and **To (s)**, and set its **Volume**;
-- **Remove from stop**.
+- trim a video with **From (s)** and **To (s)**, and set its **Volume**.
 
 ## 5. Write the Journal
 
-The **Journal** tab is a diary of the trip. For each day, you can write a line that the recap shows as the day begins, such as "Off to Kyoto on the first train"; for each stop, write what happened there; for each photo or video, add a short note.
+The **Journal** tab is a diary of the trip. For each day, you can write a line that the recap shows as the day begins, such as "Off to Kyoto on the first train"; for each stop, write what happened there; for each photo or video, add a short note. On a long trip, **Day 1**, **Day 2** and so on show one day at a time.
 
 - A day's line appears under "Day 2" and the date while the recap travels to the day's first stop; that move lasts long enough to read it. The first day's line appears on the way to the first stop.
 

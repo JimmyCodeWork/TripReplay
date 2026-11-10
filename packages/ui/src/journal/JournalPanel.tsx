@@ -1,6 +1,7 @@
 import type { Command, DispatchResult, EditorState } from "@tripreplay/app";
 import type { Locale, Translate } from "@tripreplay/i18n";
 import { useEffect, useId, useRef, useState } from "react";
+import { DayChips } from "../controls/DayChips.tsx";
 import { formatDate } from "../format-date.ts";
 import styles from "./JournalPanel.module.css";
 
@@ -110,11 +111,18 @@ export function JournalPanel({ project, dispatch, selectedStopId, onSelect, medi
   const titleId = useId();
   const assets = new Map(project.assets.map((asset) => [asset.id, asset]));
   const selectedRef = useRef<HTMLElement>(null);
+  const [shownDay, setShownDay] = useState<string | undefined>();
+  const grouped = days(project.stops);
+  // A stop opened from elsewhere is shown, even when another day was chosen here.
+  const selectedDate = project.stops.find((stop) => stop.id === selectedStopId)?.date;
+  useEffect(() => {
+    setShownDay((day) => (day === undefined || day === selectedDate ? day : selectedDate));
+  }, [selectedDate]);
   // Opening the journal at a stop, for example from the itinerary, shows that stop's entry.
   useEffect(() => {
     if (selectedStopId) selectedRef.current?.scrollIntoView({ block: "start" });
   }, [selectedStopId]);
-  let number = 0;
+  const numbers = new Map(project.stops.map((stop, index) => [stop.id, index + 1]));
 
   return (
     <section className={styles.panel} aria-labelledby={titleId}>
@@ -123,69 +131,71 @@ export function JournalPanel({ project, dispatch, selectedStopId, onSelect, medi
       </h2>
       <p className={styles.intro}>{t("journal.intro")}</p>
       {project.stops.length === 0 && <p className={styles.intro}>{t("journal.empty")}</p>}
-      {days(project.stops).map((day, dayIndex) => (
-        <section key={day.date} className={styles.day}>
-          <h3 className={styles.dayTitle}>
-            {t("itinerary.day", { number: dayIndex + 1, date: formatDate(locale, day.date) })}
-          </h3>
-          <DraftText
-            className={styles.dayNote}
-            value={project.trip.dayNotes?.[day.date] ?? ""}
-            rows={1}
-            maxLength={MAX_DAY_NOTE}
-            label={t("journal.dayNoteFor", { date: formatDate(locale, day.date) })}
-            placeholder={t("journal.dayNotePlaceholder")}
-            onCommit={(note) => dispatch({ type: "setDayNote", date: day.date, note })}
-          />
-          {day.stops.map((stop) => {
-            number += 1;
-            const clips = project.clips.filter((clip) => clip.stopId === stop.id);
-            return (
-              <article
-                key={stop.id}
-                ref={stop.id === selectedStopId ? selectedRef : undefined}
-                className={stop.id === selectedStopId ? styles.selected : styles.stop}
-              >
-                <button type="button" className={styles.stopName} onClick={() => onSelect(stop.id)}>
-                  <span className={styles.number}>{number}</span>
-                  {stop.name}
-                </button>
-                <DraftText
-                  className={styles.entry}
-                  value={stop.description}
-                  rows={4}
-                  maxLength={MAX_JOURNAL}
-                  label={t("journal.entryFor", { name: stop.name })}
-                  placeholder={t("journal.entryPlaceholder")}
-                  onCommit={(description) => dispatch({ type: "updateStop", id: stop.id, changes: { description } })}
-                />
-                {clips.length > 0 && (
-                  <ul className={styles.media}>
-                    {clips.map((clip) => {
-                      const asset = assets.get(clip.assetId);
-                      if (!asset) return null;
-                      return (
-                        <li key={clip.id} className={styles.item}>
-                          <Thumbnail asset={asset} mediaUrl={mediaUrl} />
-                          <DraftText
-                            className={styles.note}
-                            value={clip.note ?? ""}
-                            rows={2}
-                            maxLength={MAX_NOTE}
-                            label={t("journal.noteFor", { file: asset.fileName })}
-                            placeholder={t("journal.notePlaceholder")}
-                            onCommit={(note) => dispatch({ type: "setClipNote", id: clip.id, note })}
-                          />
-                        </li>
-                      );
-                    })}
-                  </ul>
-                )}
-              </article>
-            );
-          })}
-        </section>
-      ))}
+      <DayChips dates={grouped.map((day) => day.date)} shown={shownDay} onShow={setShownDay} locale={locale} t={t} />
+      {grouped.map((day, dayIndex) =>
+        shownDay !== undefined && day.date !== shownDay ? null : (
+          <section key={day.date} className={styles.day}>
+            <h3 className={styles.dayTitle}>
+              {t("itinerary.day", { number: dayIndex + 1, date: formatDate(locale, day.date) })}
+            </h3>
+            <DraftText
+              className={styles.dayNote}
+              value={project.trip.dayNotes?.[day.date] ?? ""}
+              rows={1}
+              maxLength={MAX_DAY_NOTE}
+              label={t("journal.dayNoteFor", { date: formatDate(locale, day.date) })}
+              placeholder={t("journal.dayNotePlaceholder")}
+              onCommit={(note) => dispatch({ type: "setDayNote", date: day.date, note })}
+            />
+            {day.stops.map((stop) => {
+              const clips = project.clips.filter((clip) => clip.stopId === stop.id);
+              return (
+                <article
+                  key={stop.id}
+                  ref={stop.id === selectedStopId ? selectedRef : undefined}
+                  className={stop.id === selectedStopId ? styles.selected : styles.stop}
+                >
+                  <button type="button" className={styles.stopName} onClick={() => onSelect(stop.id)}>
+                    <span className={styles.number}>{numbers.get(stop.id)}</span>
+                    {stop.name}
+                  </button>
+                  <DraftText
+                    className={styles.entry}
+                    value={stop.description}
+                    rows={4}
+                    maxLength={MAX_JOURNAL}
+                    label={t("journal.entryFor", { name: stop.name })}
+                    placeholder={t("journal.entryPlaceholder")}
+                    onCommit={(description) => dispatch({ type: "updateStop", id: stop.id, changes: { description } })}
+                  />
+                  {clips.length > 0 && (
+                    <ul className={styles.media}>
+                      {clips.map((clip) => {
+                        const asset = assets.get(clip.assetId);
+                        if (!asset) return null;
+                        return (
+                          <li key={clip.id} className={styles.item}>
+                            <Thumbnail asset={asset} mediaUrl={mediaUrl} />
+                            <DraftText
+                              className={styles.note}
+                              value={clip.note ?? ""}
+                              rows={2}
+                              maxLength={MAX_NOTE}
+                              label={t("journal.noteFor", { file: asset.fileName })}
+                              placeholder={t("journal.notePlaceholder")}
+                              onCommit={(note) => dispatch({ type: "setClipNote", id: clip.id, note })}
+                            />
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  )}
+                </article>
+              );
+            })}
+          </section>
+        ),
+      )}
     </section>
   );
 }

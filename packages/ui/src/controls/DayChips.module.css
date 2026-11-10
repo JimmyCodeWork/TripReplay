@@ -1,0 +1,41 @@
+/* Design tokens come from the application shell as custom properties. */
+
+/* One day at a time, or all of them. */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+.chips button {
+  padding: 4px 12px;
+  border: 1px solid var(--color-line, #d6ddd6);
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.chips button[aria-pressed="true"] {
+  border-color: var(--color-accent, #b33a46);
+  background: var(--color-accent, #b33a46);
+  color: var(--color-on-accent, #fff);
+}
+
+.chips button:focus-visible {
+  outline: 2px solid var(--color-accent, #b33a46);
+  outline-offset: 1px;
+}

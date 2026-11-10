@@ -217,7 +217,11 @@ describe("MediaPanel", () => {
       Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")?.set?.call(seconds, "4.5");
       seconds.dispatchEvent(new Event("input", { bubbles: true }));
     });
+    // Moving and removing are behind each item's Edit button.
+    expect(view.textContent).not.toContain("從景點移除");
+    await click(view.querySelectorAll("li")[1] as HTMLElement, "編輯 clip.mp4");
     await click(view.querySelectorAll("li")[1] as HTMLElement, "上移");
+    await click(view.querySelectorAll("li")[0] as HTMLElement, "編輯 a.jpg");
     await click(view.querySelectorAll("li")[0] as HTMLElement, "從景點移除");
     await click(view, "匯入媒體");
     expect(commands).toEqual([
@@ -226,5 +230,72 @@ describe("MediaPanel", () => {
       { type: "removeClip", id: "c1" },
     ]);
     expect(imports).toBe(1);
+  });
+
+  it("chooses the stop by day and moves media to another stop", async () => {
+    const commands: Command[] = [];
+    const selected: string[] = [];
+    const view = await render(
+      <MediaPanel
+        project={withMedia}
+        selectedStopId="kiyomizu"
+        onSelect={(id) => void selected.push(id)}
+        dispatch={(command) => {
+          commands.push(command);
+          return { ok: true, project: withMedia } as never;
+        }}
+        mediaUrl={async () => undefined}
+        onImport={() => {}}
+        locale="zh-TW"
+        t={createTranslator("zh-TW")}
+      />,
+    );
+    const picker = view.querySelector("select[id]") as HTMLSelectElement;
+    expect(picker.value).toBe("kiyomizu");
+    expect([...picker.querySelectorAll("optgroup")].map((g) => g.label)).toEqual(["第 1 天 · 2026年4月1日"]);
+    await act(async () => {
+      picker.value = "station";
+      picker.dispatchEvent(new Event("change", { bubbles: true }));
+    });
+    expect(selected).toEqual(["station"]);
+    await click(view, "編輯 a.jpg");
+    const move = view.querySelector('select[aria-label="將 a.jpg 移到其他景點"]') as HTMLSelectElement;
+    expect([...move.options].map((o) => o.textContent)).toEqual(["移到…", "1. 京都車站"]);
+    await act(async () => {
+      move.value = "station";
+      move.dispatchEvent(new Event("change", { bubbles: true }));
+    });
+    expect(commands).toEqual([{ type: "moveClip", id: "c1", stopId: "station", position: 0 }]);
+  });
+
+  it("reorders media by dragging their handle", async () => {
+    const commands: Command[] = [];
+    const view = await render(
+      <MediaPanel
+        project={withMedia}
+        selectedStopId="kiyomizu"
+        dispatch={(command) => {
+          commands.push(command);
+          return { ok: true, project: withMedia } as never;
+        }}
+        mediaUrl={async () => undefined}
+        onImport={() => {}}
+        locale="zh-TW"
+        t={createTranslator("zh-TW")}
+      />,
+    );
+    // Handles appear only while sorting is on, so that a stray touch does not reorder.
+    expect(view.querySelector('[title="拖曳以排序"]')).toBeNull();
+    await click(view, "排序");
+    const [first, second] = [...view.querySelectorAll("li")] as HTMLElement[];
+    const handle = first?.querySelector('[aria-hidden="true"][title]') as HTMLElement;
+    const from = handle.getBoundingClientRect();
+    const to = (second as HTMLElement).getBoundingClientRect();
+    const pointer = (type: string, x: number, y: number) =>
+      handle.dispatchEvent(new PointerEvent(type, { clientX: x, clientY: y, button: 0, pointerId: 1, bubbles: true }));
+    await act(async () => pointer("pointerdown", from.left + 2, from.top + 2));
+    await act(async () => pointer("pointermove", to.left + 80, to.bottom - 2));
+    await act(async () => pointer("pointerup", to.left + 80, to.bottom - 2));
+    expect(commands).toEqual([{ type: "moveClip", id: "c1", stopId: "kiyomizu", position: 1 }]);
   });
 });

@@ -1,6 +1,8 @@
 import type { Command, DispatchResult, EditorState, PlaceSearch } from "@tripreplay/app";
 import type { Locale, Translate } from "@tripreplay/i18n";
 import { type ReactNode, type PointerEvent as ReactPointerEvent, useId, useState } from "react";
+import { DayChips } from "../controls/DayChips.tsx";
+import { SortToggle } from "../controls/SortToggle.tsx";
 import { formatDate, today } from "../format-date.ts";
 import { PlaceSearchBox } from "../places/PlaceSearchBox.tsx";
 import styles from "./ItineraryPanel.module.css";
@@ -74,6 +76,7 @@ export function ItineraryPanel({
   const [renaming, setRenaming] = useState<{ readonly id: string; readonly name: string } | undefined>();
   const [copying, setCopying] = useState<Copying | undefined>();
   const [shownDay, setShownDay] = useState<string | undefined>();
+  const [sorting, setSorting] = useState(false);
   const [dragging, setDragging] = useState<{ readonly id: string; readonly target?: DropTarget } | undefined>();
   const titleId = useId();
   const dateId = useId();
@@ -303,9 +306,12 @@ export function ItineraryPanel({
 
   return (
     <section className={styles.panel} aria-labelledby={titleId}>
-      <h2 id={titleId} className={styles.title}>
-        {t("itinerary.title")}
-      </h2>
+      <div className={styles.header}>
+        <h2 id={titleId} className={styles.title}>
+          {t("itinerary.title")}
+        </h2>
+        {project.stops.length > 1 && <SortToggle sorting={sorting} onChange={setSorting} t={t} />}
+      </div>
       <div className={styles.add}>
         <label className={styles.date} htmlFor={dateId}>
           <span>{t("itinerary.dateLabel")}</span>
@@ -320,28 +326,16 @@ export function ItineraryPanel({
         <PlaceSearchBox search={search} t={t} onSelect={add} known={project.stops} />
       </div>
       {project.stops.length === 0 && <p className={styles.empty}>{t("itinerary.empty")}</p>}
-      {grouped.length > 1 && (
-        <fieldset className={styles.dayTabs}>
-          <legend className={styles.hidden}>{t("itinerary.days")}</legend>
-          <button type="button" aria-pressed={shownDay === undefined} onClick={() => setShownDay(undefined)}>
-            {t("itinerary.allDays")}
-          </button>
-          {grouped.map((day, dayIndex) => (
-            <button
-              key={day.date}
-              type="button"
-              aria-pressed={shownDay === day.date}
-              title={formatDate(locale, day.date)}
-              onClick={() => {
-                setShownDay(day.date);
-                setDate(day.date);
-              }}
-            >
-              {t("itinerary.dayTab", { number: dayIndex + 1 })}
-            </button>
-          ))}
-        </fieldset>
-      )}
+      <DayChips
+        dates={grouped.map((day) => day.date)}
+        shown={shownDay}
+        onShow={(day) => {
+          setShownDay(day);
+          if (day) setDate(day);
+        }}
+        locale={locale}
+        t={t}
+      />
       {shown.map((day) => {
         const dayIndex = grouped.indexOf(day);
         const mark = dragging?.target?.mark;
@@ -364,7 +358,7 @@ export function ItineraryPanel({
                     data-stop={stop.id}
                     className={`${selected ? styles.selected : styles.stop} ${dragging?.id === stop.id ? styles.dragging : ""} ${markOf(stop)}`}
                   >
-                    {handle(stop)}
+                    {sorting && handle(stop)}
                     <span className={styles.number} aria-hidden="true">
                       {numbers.get(stop.id)}
                     </span>

@@ -14,6 +14,7 @@
 }
 
 .title {
+  flex: 1 1 auto;
   margin: 0;
   font-size: 1.1rem;
 }
@@ -24,6 +25,32 @@
   color: var(--color-muted, #5b665f);
 }
 
+label.stop {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.stop select,
+.moveTo {
+  min-width: 0;
+  max-width: 100%;
+  padding: 4px 6px;
+  border: 1px solid var(--color-field, #7a857e);
+  border-radius: 6px;
+  background: var(--color-surface, #fff);
+  color: var(--color-text, #1d2420);
+  font: inherit;
+}
+
+/* Moves a photo or video to another stop. */
+.moveTo {
+  max-width: 9em;
+  padding: 2px 4px;
+  font-size: 0.85rem;
+}
+
 .clips {
   display: grid;
   gap: 6px;
@@ -32,9 +59,11 @@
   list-style: none;
 }
 
+/* On a narrow panel the tools move to a line of their own under the file. */
 .clip {
   display: flex;
-  gap: 8px;
+  flex-wrap: wrap;
+  gap: 6px 8px;
   align-items: center;
 }
 
@@ -49,7 +78,7 @@
 
 .text {
   display: grid;
-  flex: 1 1 auto;
+  flex: 1 1 160px;
   min-width: 0;
 }
 
@@ -65,6 +94,7 @@
   align-items: center;
   color: var(--color-muted, #5b665f);
   font-size: 0.9rem;
+  white-space: nowrap;
 }
 
 .duration input {
@@ -81,9 +111,45 @@
   display: flex;
   flex: none;
   gap: 2px;
+  margin-left: auto;
 }
 
-.tools button {
+/* A photo or video's less frequent actions, under it while "Edit" is open. */
+.edit {
+  display: flex;
+  flex-basis: 100%;
+  flex-wrap: wrap;
+  gap: 4px;
+  justify-content: flex-end;
+}
+
+.handle {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 24px;
+  height: 32px;
+  color: var(--color-muted, #5b665f);
+  font-size: 1.15rem;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+.dragging {
+  opacity: 0.5;
+}
+
+.dropBefore {
+  box-shadow: inset 0 2px 0 var(--color-accent, #b33a46);
+}
+
+.dropAfter {
+  box-shadow: inset 0 -2px 0 var(--color-accent, #b33a46);
+}
+
+.tools button,
+.edit button {
   min-width: 28px;
   padding: 2px 6px;
   border: 1px solid var(--color-line, #d6ddd6);
@@ -94,7 +160,7 @@
   cursor: pointer;
 }
 
-.tools button:disabled {
+.edit button:disabled {
   opacity: 0.35;
   cursor: default;
 }

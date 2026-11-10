@@ -1003,6 +1003,34 @@
     "message": "Video · {length}",
     "description": "Length of a video clip, as minutes:seconds."
   },
+  "media.stop": {
+    "message": "Stop",
+    "description": "Label of the list that chooses whose media the tab shows, grouped by day."
+  },
+  "media.moveTo": {
+    "message": "Move {file} to another stop",
+    "description": "Label of the list that moves a photo or video to another stop."
+  },
+  "media.moveToPlaceholder": {
+    "message": "Move to…",
+    "description": "First entry of the list that moves a photo or video to another stop."
+  },
+  "media.edit": {
+    "message": "Edit",
+    "description": "Button that shows a photo or video's actions: move to another stop, move up or down, remove."
+  },
+  "media.editFor": {
+    "message": "Edit {file}",
+    "description": "Accessible name of the Edit button of a photo or video."
+  },
+  "sort.start": {
+    "message": "Reorder",
+    "description": "Button that shows drag handles to reorder a list, so that it is not reordered by accident."
+  },
+  "sort.done": {
+    "message": "Done",
+    "description": "Button that ends reordering and hides the drag handles."
+  },
   "media.moveUp": {
     "message": "Move up",
     "description": "Button that plays a photo or video earlier."
