@@ -1023,6 +1023,14 @@
     "message": "Edit {file}",
     "description": "Accessible name of the Edit button of a photo or video."
   },
+  "sort.start": {
+    "message": "Reorder",
+    "description": "Button that shows drag handles to reorder a list, so that it is not reordered by accident."
+  },
+  "sort.done": {
+    "message": "Done",
+    "description": "Button that ends reordering and hides the drag handles."
+  },
   "media.moveUp": {
     "message": "Move up",
     "description": "Button that plays a photo or video earlier."

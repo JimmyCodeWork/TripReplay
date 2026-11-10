@@ -767,6 +767,12 @@
   "media.editFor": {
     "message": "編輯 {file}"
   },
+  "sort.start": {
+    "message": "排序"
+  },
+  "sort.done": {
+    "message": "完成"
+  },
   "media.moveUp": {
     "message": "上移"
   },

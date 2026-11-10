@@ -284,6 +284,9 @@ describe("MediaPanel", () => {
         t={createTranslator("zh-TW")}
       />,
     );
+    // Handles appear only while sorting is on, so that a stray touch does not reorder.
+    expect(view.querySelector('[title="拖曳以排序"]')).toBeNull();
+    await click(view, "排序");
     const [first, second] = [...view.querySelectorAll("li")] as HTMLElement[];
     const handle = first?.querySelector('[aria-hidden="true"][title]') as HTMLElement;
     const from = handle.getBoundingClientRect();

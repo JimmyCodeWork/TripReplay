@@ -4,6 +4,7 @@ import { useEffect, useId, useState } from "react";
 import { CommitRange } from "../controls/CommitRange.tsx";
 import { useDragReorder } from "../controls/drag-reorder.ts";
 import { SecondsField } from "../controls/SecondsField.tsx";
+import { SortToggle } from "../controls/SortToggle.tsx";
 import { formatDate } from "../format-date.ts";
 import { formatTime } from "../player/format-time.ts";
 import styles from "./MediaPanel.module.css";
@@ -102,6 +103,7 @@ export function MediaPanel({
   const clips = stop ? project.clips.filter((clip) => clip.stopId === stop.id) : [];
   const assetOf = (clip: Clip) => project.assets.find((asset) => asset.id === clip.assetId);
   const [editing, setEditing] = useState<string | undefined>();
+  const [sorting, setSorting] = useState(false);
   const drag = useDragReorder(
     clips.map((clip) => clip.id),
     (id, position) => stop && dispatch({ type: "moveClip", id, stopId: stop.id, position }),
@@ -113,6 +115,7 @@ export function MediaPanel({
         <h2 id={titleId} className={styles.title}>
           {t("media.title")}
         </h2>
+        {clips.length > 1 && <SortToggle sorting={sorting} onChange={setSorting} t={t} />}
         <button type="button" className={styles.primary} onClick={onImport} disabled={project.stops.length === 0}>
           {t("media.import")}
         </button>
@@ -149,14 +152,16 @@ export function MediaPanel({
                         : ""
                   }`}
                 >
-                  <span
-                    className={styles.handle}
-                    title={t("itinerary.drag")}
-                    aria-hidden="true"
-                    {...drag.handle(clip.id)}
-                  >
-                    ⠿
-                  </span>
+                  {sorting && (
+                    <span
+                      className={styles.handle}
+                      title={t("itinerary.drag")}
+                      aria-hidden="true"
+                      {...drag.handle(clip.id)}
+                    >
+                      ⠿
+                    </span>
+                  )}
                   <Thumbnail asset={asset} mediaUrl={mediaUrl} />
                   <div className={styles.text}>
                     <span className={styles.name}>{asset.fileName}</span>

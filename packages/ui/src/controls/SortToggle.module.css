@@ -1,0 +1,23 @@
+/* Design tokens come from the application shell as custom properties. */
+
+.toggle {
+  padding: 4px 12px;
+  border: 1px solid var(--color-line, #d6ddd6);
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.toggle[aria-pressed="true"] {
+  border-color: var(--color-accent, #b33a46);
+  background: var(--color-accent, #b33a46);
+  color: var(--color-on-accent, #fff);
+}
+
+.toggle:focus-visible {
+  outline: 2px solid var(--color-accent, #b33a46);
+  outline-offset: 1px;
+}

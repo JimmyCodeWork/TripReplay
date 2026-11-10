@@ -44,7 +44,7 @@ Map data © OpenStreetMap contributors, Overture Maps Foundation.
    - Instead of a name, you can paste coordinates, such as `34.9949, 135.785`, or a link copied from Google Maps, Apple Maps, OpenStreetMap or Bing Maps. Short links, such as `maps.app.goo.gl`, cannot be read without a connection; open them and copy the full link instead.
 4. Repeat for every stop. Stops are grouped by day.
 
-Select a stop to move the preview to it and show its actions: **Media** and **Journal** open those tabs at the stop, and **Copy**, **Rename stop**, **Remove stop**, **Move up** and **Move down** change it. Drag a stop by its handle (⠿) to put it elsewhere, also on another day. When the trip has several days, **Day 1**, **Day 2** and so on show one day at a time; **All days** shows them together, and choosing a day also sets **Date of new stops** to it.
+Select a stop to move the preview to it and show its actions: **Media** and **Journal** open those tabs at the stop, and **Copy**, **Rename stop**, **Remove stop**, **Move up** and **Move down** change it. To reorder, select **Reorder** beside the title, drag a stop by its handle (⠿) to put it elsewhere, also on another day, and select **Done**; the handles are hidden otherwise, so that a stray touch never moves a stop. When the trip has several days, **Day 1**, **Day 2** and so on show one day at a time; **All days** shows them together, and choosing a day also sets **Date of new stops** to it.
 
 A place you visit more than once, such as the hotel of several nights or a station you pass again, does not need to be searched again:
 
@@ -69,7 +69,7 @@ Add stops first; every photo and video belongs to a stop.
 
 Files already in the trip are recognized and not added twice. Photos and videos are copied into the browser's storage, so the originals can be moved or deleted afterwards; keep them, or a backup (§9), in case the browser's storage is cleared.
 
-In the **Media** tab, choose the **Stop** whose photos and videos you want to see; the list is grouped by day. Drag a photo or video by its handle (⠿) to change the order. For each one you can also:
+In the **Media** tab, choose the **Stop** whose photos and videos you want to see; the list is grouped by day. To change the order, select **Reorder**, drag a photo or video by its handle (⠿), then select **Done**. For each one you can also:
 
 - select **Edit** to move it with **Move up** and **Move down**, or to another stop with **Move to…**, for example after an import put it at the wrong stop, or to **Remove from stop**;
 - set how many **Seconds** a photo is shown;
