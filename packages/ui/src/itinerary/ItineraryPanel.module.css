@@ -62,10 +62,104 @@
 .stop,
 .selected {
   display: flex;
-  gap: 8px;
+  flex-wrap: wrap;
+  gap: 4px 8px;
   align-items: center;
   padding: 4px 6px;
   border-radius: 6px;
+}
+
+/* Grabbed to reorder a stop; large enough for a finger. */
+.handle {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 24px;
+  height: 28px;
+  color: var(--color-muted, #5b665f);
+  font-size: 1.15rem;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+.dragging {
+  opacity: 0.5;
+}
+
+/* Where a dragged stop will go: a line above or below a row, or above a day's first stop. */
+.dropBefore {
+  box-shadow: inset 0 2px 0 var(--color-accent, #b33a46);
+}
+
+.dropAfter {
+  box-shadow: inset 0 -2px 0 var(--color-accent, #b33a46);
+}
+
+/* One day at a time, or all of them. */
+.dayTabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+.dayTabs button {
+  padding: 4px 12px;
+  border: 1px solid var(--color-line, #d6ddd6);
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.dayTabs button[aria-pressed="true"] {
+  border-color: var(--color-accent, #b33a46);
+  background: var(--color-accent, #b33a46);
+  color: var(--color-on-accent, #fff);
+}
+
+/* The selected stop's actions, on a line of their own under its name. */
+.actions,
+.copy {
+  display: flex;
+  flex-basis: 100%;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding-left: 32px;
+}
+
+.copy {
+  align-items: end;
+}
+
+.copy label {
+  display: grid;
+  gap: 2px;
+  color: var(--color-muted, #5b665f);
+  font-size: 0.85rem;
+}
+
+.copy input,
+.copy select {
+  padding: 4px 6px;
+  border: 1px solid var(--color-field, #7a857e);
+  border-radius: 6px;
+  background: var(--color-surface, #fff);
+  color: var(--color-text, #1d2420);
+  font: inherit;
 }
 
 .selected {
@@ -112,13 +206,8 @@
   min-width: 0;
 }
 
-.tools {
-  display: flex;
-  flex: none;
-  gap: 2px;
-}
-
-.tools button,
+.actions button,
+.copy button,
 .rename button {
   min-width: 28px;
   padding: 2px 6px;
@@ -130,13 +219,15 @@
   cursor: pointer;
 }
 
-.tools button:disabled {
+.actions button:disabled {
   opacity: 0.35;
   cursor: default;
 }
 
 .name:focus-visible,
-.tools button:focus-visible,
+.actions button:focus-visible,
+.copy button:focus-visible,
+.dayTabs button:focus-visible,
 .rename button:focus-visible {
   outline: 2px solid var(--color-accent, #b33a46);
   outline-offset: 1px;

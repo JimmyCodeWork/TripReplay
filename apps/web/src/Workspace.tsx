@@ -353,6 +353,10 @@ function EditorView({ editor, services, locale, t, onClose }: EditorViewProps) {
                 newId={services.newId}
                 selectedStopId={selected?.id}
                 onSelect={select}
+                onOpen={(to, id) => {
+                  select(id);
+                  setTab(to);
+                }}
                 locale={locale}
                 t={t}
               />

@@ -560,8 +560,41 @@
   "itinerary.remove": {
     "message": "移除景點"
   },
+  "itinerary.copyTitle": {
+    "message": "複製「{name}」"
+  },
+  "itinerary.copyDate": {
+    "message": "日期"
+  },
+  "itinerary.copyPlace": {
+    "message": "放在"
+  },
+  "itinerary.copyAtStart": {
+    "message": "這天最前面"
+  },
+  "itinerary.copyAfter": {
+    "message": "{number}. {name} 之後"
+  },
+  "itinerary.openMedia": {
+    "message": "{count, plural, =0 {媒體} other {媒體（#）}}"
+  },
+  "itinerary.openJournal": {
+    "message": "日記"
+  },
+  "itinerary.drag": {
+    "message": "拖曳以排序"
+  },
+  "itinerary.days": {
+    "message": "天數"
+  },
+  "itinerary.allDays": {
+    "message": "全部"
+  },
+  "itinerary.dayTab": {
+    "message": "第 {number} 天"
+  },
   "itinerary.copy": {
-    "message": "將「{name}」複製到 {date}"
+    "message": "複製"
   },
   "search.inTrip": {
     "message": "本行程"
