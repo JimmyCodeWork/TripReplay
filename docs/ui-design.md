@@ -121,6 +121,16 @@ Below 820 px wide, the same parts stack vertically: preview (about half the scre
 - Controls (play or pause, progress, time, exit) fade out after 2.5 seconds without pointer movement and return on movement.
 - Escape exits. The map attribution remains visible throughout.
 
+### 5.1 Export dialog
+
+"Export video", under the preview, opens a dialog ([ADR 0009](adr/0009-export-in-1-0.md)):
+
+1. **Quality**: 1080p (sharper) or 720p (faster, smaller file), in the trip's aspect ratio. The dialog probes the encoders and states the format that will be produced, such as "H.264 video with AAC sound", that the video will be silent where no audio encoder exists, or that this browser cannot export.
+2. "Start export" shows the progress: mixing the sound, then "Drawing frame n of N" with a progress bar. "Cancel" stops it and removes the partial file. A note asks to keep the application in front; going to the background stops the export with an explanation.
+3. When done, the dialog shows the file size and "Save video", which opens the save dialog, the downloads folder, or the system save screen in the Android application. Closing the dialog removes the temporary file, saved or not.
+
+The export uses the recap as it was when the dialog opened; edits made meanwhile do not change it.
+
 ## 6. The Recap
 
 | Phase | Default duration | What the viewer sees |

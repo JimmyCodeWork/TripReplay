@@ -14,6 +14,7 @@
     "@tripreplay/app": "workspace:*",
     "@tripreplay/audio": "workspace:*",
     "@tripreplay/domain": "workspace:*",
+    "@tripreplay/export": "workspace:*",
     "@tripreplay/i18n": "workspace:*",
     "@tripreplay/map": "workspace:*",
     "@tripreplay/media": "workspace:*",

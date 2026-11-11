@@ -18,7 +18,7 @@ TripReplay 1.0 delivers the complete on-screen experience. A traveler can open a
 
 Everything runs on the device. Before first use, the user downloads the map of the regions they need with one button; from then on, editing, place search and preview work without a network connection. The project operates no server.
 
-Exporting the recap as a video file follows in the release after 1.0 (§4.3).
+The recap can also be exported as an MP4 video, made on the device ([ADR 0009](adr/0009-export-in-1-0.md)).
 
 ## 2. Target Users and Core Scenario
 
@@ -63,12 +63,12 @@ Exporting the recap as a video file follows in the release after 1.0 (§4.3).
 | Automatic media matching | Suggest a stop for each imported item from its GPS coordinates and capture time, with time-zone correction. Suggestions are always shown for confirmation and never applied silently. Items without metadata are left for manual assignment. |
 | Background music | Import one or more audio files from the device; place them on the timeline; play them in the preview mixed with original audio, with fade-in, fade-out and automatic lowering of music during clips with sound. The user is responsible for holding the rights to the music. No music is bundled. |
 | Themes | Choose from bundled themes that set the map style, route color, title and caption style. *Proposed:* three themes at launch, including one suitable for 9:16. |
+| Video export | Export the recap as an MP4 file at 1080p or 720p, 30 fps, with original audio and background music mixed as in the preview and the map attribution in every frame. Encoded on the device with WebCodecs: H.264 and AAC where available, otherwise VP9 or AV1 and Opus; browsers without a video encoder are told so ([ADR 0009](adr/0009-export-in-1-0.md)). |
 
 ### 4.3 After 1.0
 
 | Release | Features |
 |---|---|
-| Next release after 1.0 | MP4 export (H.264, 1080p and 720p, 30 fps) with original audio and background music |
 | Later | Installed applications for Windows, macOS, Linux and iOS, and app store releases |
 
 The 1.0 architecture must not preclude these: preview is driven by the deterministic `renderAt(timeUs)` of [Specification §7](specification.md#7-preview-and-video-pipeline), so that export can render the same frames, and map resources are read only from downloaded map files.

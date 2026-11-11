@@ -87,7 +87,7 @@ TripReplay 以 [MIT 授權](../../LICENSE)釋出。本政策規範哪些第三�
 | PMTiles 工具 | BSD-3-Clause | 可准入。待審查。 |
 | FFmpeg（含 WASM 版本） | 依建置設定為 LGPL 或 GPL | 禁止。 |
 | mediabunny | MPL-2.0 | 禁止。 |
-| mp4-muxer | MIT | 可准入。待審查；維護狀態待確認。 |
+| mp4-muxer | MIT | 可准入；用於匯出。作者已改以 Mediabunny 取代，但其採 MPL-2.0 而不得採用；版本固定於 5.2.2（[ADR 0009](adr/0009-export-in-1-0.md)）。 |
 | Tauri | Apache-2.0 OR MIT（遞移含 Apache-2.0、ISC、Unicode-3.0、CDLA-Permissive-2.0、MPL-2.0） | 不可准入。每個 Tauri 應用程式都會連結無法關閉的 MPL-2.0 套件（`cssparser`、`selectors`、`dtoa-short`、`option-ext`）（[ADR 0008](adr/0008-android-in-1-0.md)）。 |
 | Capacitor（Android） | MIT；Android Jetpack 函式庫為 Apache-2.0 | 可准入。用於 Android 應用程式；Maven 函式庫於清冊的 `maven` 區段審查。 |
 | React | MIT | 可准入。待審查。 |

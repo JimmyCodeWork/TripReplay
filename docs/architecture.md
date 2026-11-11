@@ -12,7 +12,7 @@ English | [繁體中文](zh-TW/architecture.md)
 
 - **Replaceable parts.** Any module — the map renderer, storage, the UI framework, a theme — can be rewritten or swapped without touching unrelated code.
 - **Testable core.** Everything that decides *what* appears on screen is pure TypeScript that runs without a browser.
-- **Ready for later releases.** MP4 export and installed builds ([1.0 Definition §4.3](release-1.0.md#43-after-10)) are added as new modules, not by redesigning existing ones.
+- **Ready for later releases.** Installed builds ([1.0 Definition §4.3](release-1.0.md#43-after-10)) are added as new modules, not by redesigning existing ones, as MP4 export was ([ADR 0009](adr/0009-export-in-1-0.md)).
 
 ## 2. Layers
 
@@ -76,12 +76,13 @@ flowchart TD
 | `map` | `MapLayer` implementation on the chosen map engine, reading downloaded map files from the device; region downloads; place-name search in the downloaded maps; implements `PlaceSearch` ([ADR 0006](adr/0006-local-only-operation.md)) | `renderer`, `app` |
 | `media` | File import, metadata (capture time, GPS), thumbnails and proxies, stop-matching suggestions; implements `MediaPort` | `domain`, `app` |
 | `audio` | Preview mixing with Web Audio: music, fades, ducking; implements `AudioPort` | `timeline`, `app` |
+| `export` | MP4 export with WebCodecs and mp4-muxer: encoder probing, the offline sound mix, and encoding the frames a `FrameSource` draws ([ADR 0009](adr/0009-export-in-1-0.md)) | `timeline` |
 | `storage` | IndexedDB and OPFS persistence, project package backup and restore; implements `ProjectRepository` and `AssetStore` | `domain`, `app` |
 | `ui` | Screens and components (trip list, workspace, dialogs, player) | `app`, `i18n`, `themes` |
 | `apps/web` | Composition root and PWA shell | all |
 | `apps/android` | Android shell (Capacitor): packages the build of `apps/web` and saves backups through its `SaveFile` plugin ([ADR 0008](adr/0008-android-in-1-0.md)) | — |
 
-Later releases add packages without changing these: `export` (encodes frames from `renderer`), an offline implementation inside `map`, and platform shells under `apps/`.
+Later releases add packages without changing these: an offline implementation inside `map`, and platform shells under `apps/`.
 
 ## 4. Key Contracts
 

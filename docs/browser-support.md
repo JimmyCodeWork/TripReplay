@@ -32,6 +32,7 @@ The Android application ([ADR 0008](adr/0008-android-in-1-0.md)) runs on Android
 |---|---|---|---|
 | Install as an app | Install button in the address bar, or the browser menu | Not offered on desktop. On Android, use the browser's install option, if available | macOS: **File → Add to Dock**. iPhone and iPad: **Share → Add to Home Screen** |
 | Saving a backup | Asks where to save the file and writes it directly | Saved to the downloads folder | Saved to the downloads folder |
+| Video export | H.264 video with AAC sound (Chrome on Linux: VP9 with Opus) | VP9 or AV1 video with Opus sound; plays in most players, but not in some older built-in ones | H.264 video with AAC sound |
 | Full-screen playback | Yes | Yes | Mac and iPad: yes. iPhone: browsers do not allow pages to go full screen; turn the phone sideways and use the preview |
 | HEIC photos (the iPhone's default format) | Not shown; see §3 | Not shown; see §3 | Shown |
 | HEVC (H.265) videos | Where the device can decode HEVC | Depends on the system and version | Yes |
@@ -49,4 +50,4 @@ The Android application ([ADR 0008](adr/0008-android-in-1-0.md)) runs on Android
 | **Short map links**, such as `maps.app.goo.gl`, cannot be read without asking their service | Open the link and copy the full link, or paste the coordinates |
 | **Installing the Android application asks for permission.** Android warns about applications from outside an app store | Download the APK only from the project's [releases](https://github.com/JimmyCodeWork/TripReplay/releases), and allow the browser or file manager to install it when Android asks |
 | **"Full screen" in the Android application keeps the system bars.** It fills the application window, but the status and navigation bars stay visible | Turn the device sideways for a larger picture |
-| **No video export in 1.0.** The recap plays in the application only | MP4 export is planned after 1.0 ([Roadmap](roadmap.md#after-10)). Meanwhile, use full-screen playback or the system's screen recording |
+| **Exporting a video takes a while and needs the application in front.** Each frame waits for the map to be drawn, and the export stops when the application goes to the background | Keep TripReplay open until the export finishes; choose 720p on slower devices |

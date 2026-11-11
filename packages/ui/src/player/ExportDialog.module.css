@@ -1,0 +1,91 @@
+.dialog {
+  width: min(480px, calc(100vw - 32px));
+  padding: 20px;
+  border: 1px solid var(--color-line, #d6ddd6);
+  border-radius: 10px;
+  background: var(--color-surface, #fff);
+  color: var(--color-text, #1d2420);
+  font: 15px / 1.5 var(--font-body, system-ui, sans-serif);
+}
+
+.dialog::backdrop {
+  background: rgb(0 0 0 / 40%);
+}
+
+.title {
+  margin: 0 0 12px;
+  font-size: 1.2rem;
+}
+
+.quality {
+  display: grid;
+  gap: 6px;
+  margin: 0 0 12px;
+  padding: 0;
+  border: 0;
+}
+
+.quality legend {
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+.quality label {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.note {
+  margin: 0 0 8px;
+  color: var(--color-muted, #5b665f);
+}
+
+.error {
+  margin: 0 0 8px;
+  color: var(--color-error, #a3262f);
+}
+
+.progress {
+  display: grid;
+  gap: 6px;
+}
+
+.progress progress {
+  width: 100%;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 16px;
+}
+
+.button,
+.primary {
+  padding: 6px 14px;
+  border: 1px solid var(--color-line, #d6ddd6);
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.primary {
+  border-color: var(--color-accent, #b33a46);
+  background: var(--color-accent, #b33a46);
+  color: var(--color-on-accent, #fff);
+}
+
+.primary:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.button:focus-visible,
+.primary:focus-visible {
+  outline: 2px solid var(--color-accent, #b33a46);
+  outline-offset: 2px;
+}

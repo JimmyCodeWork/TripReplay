@@ -14,6 +14,7 @@ This directory records significant architecture and policy decisions. Each recor
 | [0006](0006-local-only-operation.md) | Local-only operation: downloaded maps and on-device place search | Accepted |
 | [0007](0007-architecture-gate.md) | Architecture gate: renderer, map pipeline and supported browsers | Accepted |
 | [0008](0008-android-in-1-0.md) | An Android application in 1.0, built with Capacitor | Accepted |
+| [0009](0009-export-in-1-0.md) | MP4 export in 1.0, with WebCodecs and mp4-muxer | Accepted |
 
 ## Writing a Record
 

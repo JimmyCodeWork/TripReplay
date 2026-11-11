@@ -139,6 +139,8 @@ Still to do for 1.0, in this order:
 
 ### M5 — Export (Phase D)
 
+**Moved into 1.0** by [ADR 0009](adr/0009-export-in-1-0.md): MP4 export with WebCodecs and mp4-muxer. Spike S3's measurements on every system, and the exit criteria below, are completed for 1.0.
+
 Starts with spike S3: can WebCodecs plus an admissible MP4 muxer produce a 30-second 1080p H.264 file with audio on Chrome, Edge, Safari and Firefox? Exit criteria for the spike: the file plays in the default players of all five desktop and mobile OS families, audio-video offset ≤ 100 ms, and export support is recorded per browser.
 
 | Exit criteria |

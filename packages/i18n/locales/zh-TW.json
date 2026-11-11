@@ -695,6 +695,60 @@
   "player.stop.useTrip": {
     "message": "改回整趟設定"
   },
+  "export.button": {
+    "message": "匯出影片"
+  },
+  "export.title": {
+    "message": "匯出影片"
+  },
+  "export.quality": {
+    "message": "畫質"
+  },
+  "export.q1080": {
+    "message": "1080p（較清晰）"
+  },
+  "export.q720": {
+    "message": "720p（較快、檔案較小）"
+  },
+  "export.checking": {
+    "message": "正在確認此裝置可用的編碼格式…"
+  },
+  "export.format": {
+    "message": "影片將以 {video} 影像與 {audio} 聲音編碼。"
+  },
+  "export.silent": {
+    "message": "影片將以 {video} 編碼。此裝置無法編碼聲音，影片將沒有聲音。"
+  },
+  "export.keepOpen": {
+    "message": "匯出期間請讓 TripReplay 保持開啟並在前景；切到背景時匯出會停止。"
+  },
+  "export.start": {
+    "message": "開始匯出"
+  },
+  "export.phase.audio": {
+    "message": "正在混音…"
+  },
+  "export.phase.video": {
+    "message": "正在繪製畫面 {completed}／{total}"
+  },
+  "export.phase.finishing": {
+    "message": "正在完成檔案…"
+  },
+  "export.done": {
+    "message": "影片已完成（{size}）。請儲存以保留檔案。"
+  },
+  "export.saved": {
+    "message": "影片已儲存。"
+  },
+  "export.save": {
+    "message": "儲存影片"
+  },
+  "export.failed": {
+    "message": "{reason, select, unsupported {此瀏覽器或裝置無法編碼影片。請改用最新版 Chrome、Edge 或 Android 應用程式。} storage {可用空間不足，請先釋出空間再試一次。} background {TripReplay 切到背景，匯出已停止。請保持在前景後重新匯出。} other {匯出失敗：{message}}}"
+  },
+  "export.fileType": {
+    "message": "MP4 影片"
+  },
   "player.noMap": {
     "message": "已下載的地圖都不包含這些景點，因此預覽時不顯示底圖。"
   },

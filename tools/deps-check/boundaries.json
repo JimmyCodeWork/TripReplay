@@ -10,6 +10,7 @@
     "map": ["renderer", "app"],
     "media": ["domain", "app"],
     "audio": ["timeline", "app"],
+    "export": ["timeline"],
     "storage": ["domain", "app"],
     "ui": ["app", "i18n", "themes"],
     "web": "*",
