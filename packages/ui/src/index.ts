@@ -1,3 +1,4 @@
+export { keepInPlace } from "./controls/keep-in-place.ts";
 export { formatBytes } from "./format-bytes.ts";
 export { formatDate, today } from "./format-date.ts";
 export { ItineraryPanel, type ItineraryPanelProps } from "./itinerary/ItineraryPanel.tsx";
