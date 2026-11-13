@@ -7,6 +7,7 @@ export {
   normalizePhotoDuration,
   removeClip,
   resetTiming,
+  setClipEnRoute,
   setClipFit,
   setClipNote,
   setClipVolume,

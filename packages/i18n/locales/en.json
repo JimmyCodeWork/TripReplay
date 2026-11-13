@@ -1083,6 +1083,14 @@
     "message": "No photos or videos at this stop yet.",
     "description": "Shown when the selected stop has no media."
   },
+  "media.enRoute": {
+    "message": "On the way",
+    "description": "Checkbox of a photo: it was taken on the way to its stop, and is shown while the line is drawn to the stop instead of after the stop's title."
+  },
+  "media.enRouteHint": {
+    "message": "Taken on the way here: shown on a small card while the line is drawn to this stop. With a location, the line passes where it was taken.",
+    "description": "Tooltip of the On the way checkbox of a photo."
+  },
   "media.duration": {
     "message": "Seconds",
     "description": "Label of the display duration of a photo, from 1 to 15 seconds."

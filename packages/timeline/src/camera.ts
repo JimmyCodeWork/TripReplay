@@ -50,14 +50,25 @@ export function overviewCamera(points: readonly LonLat[], aspectRatio: AspectRat
 /**
  * Camera part way through a move, with `t` from 0 to 1. Longitudes are interpolated as given, so the
  * caller places both cameras on a continuous route (see `unwrapPath`). When both ends are too far
- * apart to see together, the camera pulls back mid-way so that the viewer sees where it is going.
+ * apart to see together, the camera pulls back mid-way so that the viewer sees where it is going,
+ * and the points on the way (`via`) as well.
  */
-export function interpolateCamera(from: Camera, to: Camera, t: number, aspectRatio: AspectRatio): Camera {
+export function interpolateCamera(
+  from: Camera,
+  to: Camera,
+  t: number,
+  aspectRatio: AspectRatio,
+  via: readonly LonLat[] = [],
+): Camera {
   const eased = easeInOutCubic(t);
   const start = toWorld(from.center);
   const end = toWorld(to.center);
   const center = fromWorld({ x: lerp(start.x, end.x, eased), y: lerp(start.y, end.y, eased) });
-  const pulledBack = fitZoom(Math.abs(end.x - start.x), Math.abs(end.y - start.y), aspectRatio) - TRAVEL_PULL_BACK;
+  // A line that bends through points on the way is framed whole.
+  const all = [start, end, ...via.map(toWorld)];
+  const spanX = Math.max(...all.map((p) => p.x)) - Math.min(...all.map((p) => p.x));
+  const spanY = Math.max(...all.map((p) => p.y)) - Math.min(...all.map((p) => p.y));
+  const pulledBack = fitZoom(spanX, spanY, aspectRatio) - TRAVEL_PULL_BACK;
   const middle = Math.max(MIN_ZOOM, pulledBack);
   let zoom: number;
   if (middle >= Math.min(from.zoom, to.zoom)) zoom = lerp(from.zoom, to.zoom, eased);

@@ -12,6 +12,7 @@ import {
   removeClip,
   resetTiming,
   seconds,
+  setClipEnRoute,
   setClipFit,
   setClipNote,
   setClipVolume,
@@ -19,6 +20,7 @@ import {
   setPhotoDuration,
   setTiming,
   trimVideo,
+  validateProject,
 } from "../src/index.ts";
 import { audio, sampleProject } from "./fixtures.ts";
 
@@ -112,6 +114,20 @@ describe("setClipNote", () => {
   it("rejects notes that are too long", () => {
     expect(() => setClipNote(withClips(), "c1", "x".repeat(MAX_NOTE_LENGTH + 1))).toThrow(DomainError);
     expect(setClipNote(withClips(), "c1", "x".repeat(MAX_NOTE_LENGTH)).clips[0]).toHaveProperty("note");
+  });
+});
+
+describe("setClipEnRoute", () => {
+  it("marks a photo as taken on the way and back at the stop", () => {
+    let p = setClipEnRoute(withClips(), "c1", true);
+    expect(p.clips[0]).toMatchObject({ enRoute: true });
+    expect(validateProject(p)).toEqual([]);
+    p = setClipEnRoute(p, "c1", false);
+    expect(p.clips[0]).not.toHaveProperty("enRoute");
+  });
+
+  it("rejects videos", () => {
+    expect(() => setClipEnRoute(withClips(), "c2", true)).toThrow(DomainError);
   });
 });
 

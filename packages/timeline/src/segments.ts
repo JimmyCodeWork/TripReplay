@@ -1,7 +1,16 @@
-import { clipDuration, clipsOfStop, type Microseconds, type Project, seconds } from "@tripreplay/domain";
+import {
+  type AssetId,
+  type ClipId,
+  clipDuration,
+  clipsOfStop,
+  type Microseconds,
+  type Project,
+  seconds,
+} from "@tripreplay/domain";
 import type { Timing } from "@tripreplay/themes";
 import { stopCamera } from "./camera.ts";
-import type { Camera, Segment, TimelineStop } from "./model.ts";
+import { EN_ROUTE_GAP } from "./constants.ts";
+import type { Camera, EnRoutePhoto, Segment, TimelineStop } from "./model.ts";
 
 /** Characters of a stop's journal entry shown in the recap; the rest stays in the journal. */
 export const JOURNAL_EXCERPT = 80;
@@ -33,13 +42,45 @@ export function travelLength(travelUs: Microseconds, dayNote: string): Microseco
   return Math.max(travelUs, reading);
 }
 
+/** A photo taken on the way to a stop, before it is placed in time. */
+export interface EnRouteInput {
+  readonly clipId: ClipId;
+  readonly assetId: AssetId;
+  readonly durationUs: Microseconds;
+  readonly caption: string;
+  readonly at?: number;
+}
+
 /**
- * Lays out the recap: opening, then for each stop a travel move, its title and its clips, then the
- * closing. A stop without clips still gets its travel and title, so the map is never left empty.
+ * Places the photos taken on the way in a move of `lengthUs` from `startUs`, spread evenly with
+ * the line alone before, between and after them. The move is lengthened when they need more.
+ */
+export function placeEnRoute(
+  startUs: Microseconds,
+  lengthUs: Microseconds,
+  inputs: readonly EnRouteInput[],
+): { lengthUs: Microseconds; photos: EnRoutePhoto[] } {
+  if (inputs.length === 0) return { lengthUs, photos: [] };
+  const shown = inputs.reduce((sum, p) => sum + p.durationUs, 0);
+  const length = Math.max(lengthUs, shown + (inputs.length + 1) * EN_ROUTE_GAP);
+  const gap = Math.floor((length - shown) / (inputs.length + 1));
+  let cursor = startUs + gap;
+  const photos = inputs.map(({ durationUs, ...photo }): EnRoutePhoto => {
+    const placed = { ...photo, startUs: cursor, endUs: cursor + durationUs };
+    cursor = placed.endUs + gap;
+    return placed;
+  });
+  return { lengthUs: length, photos };
+}
+
+/**
+ * Lays out the recap: opening, then for each stop a travel move with the photos taken on the way,
+ * its title and its other clips, then the closing. A stop without clips still gets its travel and title, so the map is never left empty.
  */
 export function buildSegments(
   project: Project,
   stops: readonly TimelineStop[],
+  enRoute: readonly (readonly EnRouteInput[])[],
   overview: Camera,
   timing: Timing,
 ): Segment[] {
@@ -55,13 +96,9 @@ export function buildSegments(
   let camera = overview;
   stops.forEach((stop, stopIndex) => {
     const here = stopCamera(stop.location);
-    segments.push({
-      kind: "travel",
-      stopIndex,
-      ...next(stop.ownTravelUs ?? travelLength(timing.travelUs, stop.dayNote)),
-      from: camera,
-      to: here,
-    });
+    const chosen = stop.ownTravelUs ?? travelLength(timing.travelUs, stop.dayNote);
+    const { lengthUs, photos } = placeEnRoute(cursor, chosen, enRoute[stopIndex] ?? []);
+    segments.push({ kind: "travel", stopIndex, ...next(lengthUs), from: camera, to: here, photos });
     segments.push({
       kind: "title",
       stopIndex,
@@ -70,6 +107,7 @@ export function buildSegments(
       to: here,
     });
     for (const clip of clipsOfStop(project, stop.id)) {
+      if (clip.kind === "photo" && clip.enRoute) continue;
       const length = clipDuration(clip);
       if (length <= 0) continue;
       const asset = project.assets.find((a) => a.id === clip.assetId);

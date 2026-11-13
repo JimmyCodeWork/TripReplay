@@ -98,7 +98,9 @@ export function validateProject(project: Project): ValidationIssue[] {
     if (clip.kind === "photo") {
       if (clip.durationUs < PHOTO_DURATION.min || clip.durationUs > PHOTO_DURATION.max)
         add(`${path}.durationUs`, "is outside the allowed range");
+      if (clip.enRoute !== undefined && clip.enRoute !== true) add(`${path}.enRoute`, "must be true when present");
     } else {
+      if ("enRoute" in clip) add(`${path}.enRoute`, "only a photo can be on the way");
       const length = asset?.kind === "video" ? asset.durationUs : Number.POSITIVE_INFINITY;
       if (clip.inUs < 0 || clip.outUs > length) add(`${path}`, "trim is outside the video");
       if (clip.outUs - clip.inUs < Math.min(MIN_VIDEO_CLIP, length)) add(`${path}`, "is shorter than the minimum");

@@ -812,6 +812,12 @@
   "media.empty": {
     "message": "這個景點還沒有照片或影片。"
   },
+  "media.enRoute": {
+    "message": "途中"
+  },
+  "media.enRouteHint": {
+    "message": "前往此景點途中拍攝：在畫線前往此景點時以小卡片顯示。照片有位置資訊時，線會經過拍攝地點。"
+  },
   "media.duration": {
     "message": "秒數"
   },

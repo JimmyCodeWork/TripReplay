@@ -29,6 +29,7 @@ import {
   type StopId,
   type StopTimingChanges,
   setAspectRatio,
+  setClipEnRoute,
   setClipFit,
   setClipNote,
   setClipVolume,
@@ -86,6 +87,7 @@ export type Command =
   | { readonly type: "trimVideo"; readonly id: ClipId; readonly inUs?: Microseconds; readonly outUs?: Microseconds }
   | { readonly type: "setClipVolume"; readonly id: ClipId; readonly volume: number }
   | { readonly type: "setClipFit"; readonly id: ClipId; readonly fit: Fit }
+  | { readonly type: "setClipEnRoute"; readonly id: ClipId; readonly enRoute: boolean }
   | { readonly type: "setClipNote"; readonly id: ClipId; readonly note: string }
   /** An imported music file, if new, and its track, as one step to undo. */
   | {
@@ -174,6 +176,8 @@ export function applyCommand(project: Project, command: Command): Project {
       return trimVideo(project, command.id, trim(command));
     case "setClipVolume":
       return setClipVolume(project, command.id, command.volume);
+    case "setClipEnRoute":
+      return setClipEnRoute(project, command.id, command.enRoute);
     case "setClipFit":
       return setClipFit(project, command.id, command.fit);
     case "setClipNote":
