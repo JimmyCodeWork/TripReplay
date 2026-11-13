@@ -208,8 +208,58 @@ export function TimelineStrips({ timeline, timeUs, onSeek, onEdit, t }: Timeline
   };
   const overview = useRef<number | undefined>(undefined);
 
+  // Stepping through the recap with buttons instead of aiming at a thin segment: by part, or by
+  // day, where a day starts with the move to its first stop (the recap's opening for the first).
+  const segments = timeline.segments;
+  const current = (() => {
+    const selected = selection ? segments.findIndex((s) => isSelected(selection, s)) : -1;
+    if (selected >= 0) return selected;
+    const at = segments.findIndex((s) => timeUs >= s.startUs && timeUs < s.endUs);
+    return at >= 0 ? at : segments.length - 1;
+  })();
+  const dayStarts = [
+    0,
+    ...segments.flatMap((segment, index) => {
+      if (segment.kind !== "travel" || segment.stopIndex === 0) return [];
+      const stop = timeline.stops[segment.stopIndex];
+      const before = timeline.stops[segment.stopIndex - 1];
+      return stop && before && stop.day > before.day ? [index] : [];
+    }),
+  ];
+  const previousDay = dayStarts.filter((index) => index < current).at(-1);
+  const nextDay = dayStarts.find((index) => index > current);
+  const go = (index: number | undefined) => {
+    const segment = index === undefined ? undefined : segments[index];
+    if (!segment) return;
+    // A moment in, so that the frame shows the part rather than its fade from the one before.
+    onSeek(Math.min(segment.startUs + 500_000, (segment.startUs + segment.endUs) / 2));
+    if (!onEdit) return;
+    const phase = PHASES[segment.kind];
+    if ("clipId" in segment) setSelection({ kind: "clip", clipId: segment.clipId });
+    else if (phase) setSelection({ kind: "phase", phase, startUs: segment.startUs });
+  };
+  const stepButton = (label: MessageKey, text: string, index: number | undefined) => (
+    <button
+      type="button"
+      className={styles.stepButton}
+      title={t(label)}
+      disabled={index === undefined || index < 0 || index >= segments.length}
+      onClick={() => go(index)}
+    >
+      {text}
+    </button>
+  );
+
   return (
     <>
+      {segments.length > 1 && (
+        <div className={styles.steps}>
+          {stepButton("player.previousDay", `« ${t("player.previousDay")}`, previousDay)}
+          {stepButton("player.previousPart", `‹ ${t("player.previousPart")}`, current - 1)}
+          {stepButton("player.nextPart", `${t("player.nextPart")} ›`, current + 1)}
+          {stepButton("player.nextDay", `${t("player.nextDay")} »`, nextDay)}
+        </div>
+      )}
       {(onEdit || largest > 1) && (
         <div className={styles.zoom}>
           {onEdit && (

@@ -93,6 +93,7 @@ Below 820 px wide, the same parts stack vertically: preview (about half the scre
 - A scale above the segments marks the time, every 1, 2, 5, 10, 15 or 30 seconds or more, with at most eight marks in view.
 - **Zoom:** − and + buttons above the timeline halve or double its width, from the whole recap up to the zoom at which 5 seconds fill the width; they appear only for a recap long enough to zoom. A zoomed timeline scrolls sideways by swiping, and an overview bar under it shows the whole recap with the part in view as a window that can be dragged, or moved by clicking beside it. Zooming keeps the playhead where it was in view; during playback the timeline scrolls to keep the playhead in view.
 - Clicking or dragging on the timeline moves the playhead; space toggles playback.
+- **Stepping:** above the timeline, "« Previous day", "‹ Previous part", "Next part ›" and "Next day »" move the playhead a moment into that part and select it, so its numbers show below, without aiming at a thin segment. A day starts with the move to its first stop; the first day starts with the opening. The parts are counted from the selected one, or from the one at the playhead.
 - **Durations are edited by dragging, or as numbers:**
 
 | Segment | Drag behavior |

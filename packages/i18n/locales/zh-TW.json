@@ -749,6 +749,18 @@
   "export.fileType": {
     "message": "MP4 影片"
   },
+  "player.previousDay": {
+    "message": "上一天"
+  },
+  "player.previousPart": {
+    "message": "上一段"
+  },
+  "player.nextPart": {
+    "message": "下一段"
+  },
+  "player.nextDay": {
+    "message": "下一天"
+  },
   "player.noMap": {
     "message": "已下載的地圖都不包含這些景點，因此預覽時不顯示底圖。"
   },
