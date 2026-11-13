@@ -10,7 +10,7 @@ import type {
 } from "@tripreplay/domain";
 import type { Theme } from "@tripreplay/themes";
 
-export const TIMELINE_VERSION = 4;
+export const TIMELINE_VERSION = 5;
 
 /**
  * A map view. `zoom` is the Web Mercator zoom level for the reference frame size of the aspect
@@ -45,10 +45,27 @@ export interface OpeningSegment extends SegmentBase {
   readonly kind: "opening";
 }
 
+/** A photo taken on the way to a stop, shown on a small card while the line is drawn to it. */
+export interface EnRoutePhoto {
+  readonly clipId: ClipId;
+  readonly assetId: AssetId;
+  readonly startUs: Microseconds;
+  readonly endUs: Microseconds;
+  /** The clip's note, shown under the picture; empty when there is none. */
+  readonly caption: string;
+  /**
+   * Where along the leg the photo was taken, from 0 at the stop before to 1 at this one, by its
+   * location; the line reaches that point while the photo is shown. Absent without a location.
+   */
+  readonly at?: number;
+}
+
 export interface TravelSegment extends SegmentBase {
   readonly kind: "travel";
   /** Index of the stop travelled to; the first travel segment starts from the overview. */
   readonly stopIndex: number;
+  /** Photos taken on the way, in order; empty for most moves. */
+  readonly photos: readonly EnRoutePhoto[];
 }
 
 export interface TitleSegment extends SegmentBase {
@@ -91,6 +108,11 @@ export interface TimelineStop {
   readonly ownTitleUs?: Microseconds;
   /** Location with the longitude unwrapped to follow the route (see `Timeline.route`). */
   readonly location: LonLat;
+  /**
+   * Where the photos taken on the way to this stop were taken, in order, unwrapped like
+   * `location`: the line to the stop passes through them. Empty for the first stop.
+   */
+  readonly via: readonly LonLat[];
 }
 
 export interface MusicInterval {

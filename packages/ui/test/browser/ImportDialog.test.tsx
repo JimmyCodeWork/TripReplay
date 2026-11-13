@@ -217,6 +217,11 @@ describe("MediaPanel", () => {
       Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")?.set?.call(seconds, "4.5");
       seconds.dispatchEvent(new Event("input", { bubbles: true }));
     });
+    // Only photos can be taken on the way.
+    const onTheWay = view.querySelectorAll('input[type="checkbox"]');
+    expect(onTheWay).toHaveLength(1);
+    expect(onTheWay[0]?.closest("label")?.textContent).toBe("途中");
+    await act(async () => (onTheWay[0] as HTMLInputElement).click());
     // Moving and removing are behind each item's Edit button.
     expect(view.textContent).not.toContain("從景點移除");
     await click(view.querySelectorAll("li")[1] as HTMLElement, "編輯 clip.mp4");
@@ -226,6 +231,7 @@ describe("MediaPanel", () => {
     await click(view, "匯入媒體");
     expect(commands).toEqual([
       { type: "setPhotoDuration", id: "c1", durationUs: 4_500_000 },
+      { type: "setClipEnRoute", id: "c1", enRoute: true },
       { type: "moveClip", id: "c2", stopId: "kiyomizu", position: 0 },
       { type: "removeClip", id: "c1" },
     ]);

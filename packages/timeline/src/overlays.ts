@@ -1,8 +1,8 @@
 import type { Microseconds } from "@tripreplay/domain";
-import { PHOTO_PUSH_IN } from "./constants.ts";
+import { EN_ROUTE_FRAME, PHOTO_PUSH_IN } from "./constants.ts";
 import type { MediaOverlay, Overlay } from "./frame.ts";
 import { envelope, lerp, progress } from "./math.ts";
-import type { MediaSegment, Segment, Timeline } from "./model.ts";
+import type { MediaSegment, Segment, Timeline, TravelSegment } from "./model.ts";
 
 function isMedia(segment: Segment | undefined): segment is MediaSegment {
   return segment?.kind === "photo" || segment?.kind === "video";
@@ -36,6 +36,34 @@ function mediaCard(timeline: Timeline, index: number, timeUs: Microseconds): Med
     shownUs: timeUs - segment.startUs,
     opacity,
   };
+}
+
+/**
+ * Cards of the photos taken on the way during a move, beside the line. Each fades in and out in its
+ * own time, which leaves the line alone for a moment between them.
+ */
+function enRouteCards(timeline: Timeline, segment: TravelSegment, timeUs: Microseconds): MediaOverlay[] {
+  return segment.photos.flatMap((photo): MediaOverlay[] => {
+    const length = photo.endUs - photo.startUs;
+    const opacity = envelope(timeUs, photo.startUs, photo.endUs, Math.min(timeline.theme.timing.fadeUs, length / 3));
+    if (opacity <= 0) return [];
+    const played = progress(timeUs, photo.startUs, photo.endUs);
+    return [
+      {
+        kind: "media",
+        mediaKind: "photo",
+        clipId: photo.clipId,
+        assetId: photo.assetId,
+        mediaTimeUs: 0,
+        frame: EN_ROUTE_FRAME[timeline.aspectRatio],
+        scale: timeline.reducedMotion ? 1 : lerp(1, PHOTO_PUSH_IN, played),
+        progress: played,
+        caption: photo.caption,
+        shownUs: timeUs - photo.startUs,
+        opacity,
+      },
+    ];
+  });
 }
 
 /** Bounds of the run of media segments around `index` that belong to the same stop. */
@@ -84,6 +112,8 @@ export function overlaysAt(timeline: Timeline, index: number, timeUs: Microsecon
         opacity: envelope(timeUs, segment.startUs, segment.endUs, fadeUs),
       });
     }
+    // Above the night of a new day, which would otherwise darken them.
+    overlays.push(...enRouteCards(timeline, segment, timeUs));
   } else if (segment.kind === "title") {
     const stop = timeline.stops[segment.stopIndex];
     if (stop) {

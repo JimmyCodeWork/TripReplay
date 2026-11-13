@@ -92,7 +92,7 @@ export interface AttributionOverlay {
   readonly opacity: number;
 }
 
-/** Overlays in drawing order: media, text, then attribution on top. */
+/** Overlays in drawing order: media, text, the cards of photos taken on the way, then attribution on top. */
 export type Overlay =
   | TripTitleOverlay
   | StopTitleOverlay

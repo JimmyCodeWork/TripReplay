@@ -1,6 +1,8 @@
 import {
   addStop,
+  moveClip,
   seconds,
+  setClipEnRoute,
   setClipNote,
   setDayNote,
   setStopTiming,
@@ -19,6 +21,8 @@ import {
   titleLength,
 } from "../src/index.ts";
 import { kyoto, stop, withStops } from "./fixtures.ts";
+
+const travels = (t: ReturnType<typeof compile>) => t.segments.filter((s) => s.kind === "travel");
 
 describe("compile", () => {
   it("lays out opening, travel, title, clips per stop and closing", () => {
@@ -177,5 +181,77 @@ describe("captions", () => {
     const first = media[0] as MediaSegment;
     const overlay = renderAt(timeline, (first.startUs + first.endUs) / 2).overlays.find((o) => o.kind === "media");
     expect(overlay).toMatchObject({ clipId: "c1", caption: "朝の清水寺" });
+  });
+});
+
+describe("photos taken on the way", () => {
+  /** Photo c2 of stop a moved to stop b and taken on the way there, at p2's location if given. */
+  const onTheWay = (gps?: { lon: number; lat: number }) => {
+    let p = moveClip(kyoto(), "c2", "b", 0);
+    p = setClipEnRoute(p, "c2", true);
+    if (gps) p = { ...p, assets: p.assets.map((a) => (a.id === "p2" ? { ...a, gps } : a)) };
+    return p;
+  };
+
+  it("shows them on cards during the move instead of after the stop's title", () => {
+    const timeline = compile(onTheWay());
+    expect(timeline.segments.filter((s) => s.kind === "photo").map((s) => (s as MediaSegment).clipId)).toEqual(["c1"]);
+    const travel = travels(timeline)[1];
+    if (travel?.kind !== "travel") throw new Error("missing travel");
+    const [photo] = travel.photos;
+    expect(photo).toMatchObject({ clipId: "c2", assetId: "p2" });
+    expect(photo?.at).toBeUndefined();
+    if (!photo) throw new Error("missing photo");
+    const card = renderAt(timeline, (photo.startUs + photo.endUs) / 2).overlays.find((o) => o.kind === "media");
+    expect(card).toMatchObject({ clipId: "c2", mediaKind: "photo" });
+    expect(card?.kind === "media" && card.frame.width).toBeLessThan(0.5);
+    // The line alone before and after the photo.
+    expect(renderAt(timeline, travel.startUs + 100_000).overlays.some((o) => o.kind === "media")).toBe(false);
+    expect(renderAt(timeline, travel.endUs - 100_000).overlays.some((o) => o.kind === "media")).toBe(false);
+  });
+
+  it("lengthens a move that is too short for its photos", () => {
+    const short = setTiming(onTheWay(), { travelUs: seconds(1) });
+    const travel = travels(compile(short))[1];
+    if (travel?.kind !== "travel") throw new Error("missing travel");
+    expect(travel.endUs - travel.startUs).toBe(seconds(3) + 2 * seconds(0.5));
+    expect(travel.photos[0]?.startUs).toBe(travel.startUs + seconds(0.5));
+  });
+
+  it("draws the line through where they were taken, reaching it while they are shown", () => {
+    const timeline = compile(onTheWay({ lon: 135.75, lat: 35.1 }));
+    expect(timeline.stops[1]?.via).toEqual([{ lon: 135.75, lat: 35.1 }]);
+    const travel = travels(timeline)[1];
+    if (travel?.kind !== "travel") throw new Error("missing travel");
+    const photo = travel.photos[0];
+    if (!photo?.at) throw new Error("missing location");
+    expect(photo.at).toBeGreaterThan(0);
+    expect(photo.at).toBeLessThan(1);
+    const middle = renderAt(timeline, (photo.startUs + photo.endUs) / 2).route.progress;
+    expect(middle).toBeCloseTo(photo.at);
+    expect(renderAt(timeline, travel.endUs - 1).route.progress).toBeCloseTo(1, 3);
+  });
+
+  it("reaches each located photo in turn, never going back", () => {
+    let p = moveClip(kyoto(), "c1", "b", 0);
+    p = moveClip(p, "c2", "b", 1);
+    p = setClipEnRoute(setClipEnRoute(p, "c1", true), "c2", true);
+    const gps = { p1: { lon: 135.76, lat: 35.03 }, p2: { lon: 135.74, lat: 35.05 } } as const;
+    p = { ...p, assets: p.assets.map((a) => (a.id in gps ? { ...a, gps: gps[a.id as keyof typeof gps] } : a)) };
+    const timeline = compile(p);
+    const travel = travels(timeline)[1];
+    if (travel?.kind !== "travel") throw new Error("missing travel");
+    const [first, second] = travel.photos;
+    if (!first?.at || !second?.at) throw new Error("missing locations");
+    expect(first.at).toBeLessThan(second.at);
+    for (const photo of [first, second]) {
+      expect(renderAt(timeline, (photo.startUs + photo.endUs) / 2).route.progress).toBeCloseTo(photo.at);
+    }
+    let last = 0;
+    for (let t = travel.startUs; t < travel.endUs; t += 50_000) {
+      const progress = renderAt(timeline, t).route.progress;
+      expect(progress).toBeGreaterThanOrEqual(last - 1e-9);
+      last = progress;
+    }
   });
 });

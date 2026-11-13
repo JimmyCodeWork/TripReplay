@@ -125,24 +125,61 @@ function lerpPoint(a: ScreenPoint, b: ScreenPoint, t: number): ScreenPoint {
   return { x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t };
 }
 
-/** The route up to `progress` stops, cut inside the leg being travelled. Straight on the map. */
+/** The first `share` of a line's length, from 0 to 1. */
+function cutLine(points: readonly ScreenPoint[], share: number): ScreenPoint[] {
+  const lengths = [0];
+  for (let i = 1; i < points.length; i++) {
+    const a = points[i - 1] as ScreenPoint;
+    const b = points[i] as ScreenPoint;
+    lengths.push((lengths[i - 1] ?? 0) + Math.hypot(b.x - a.x, b.y - a.y));
+  }
+  const target = (lengths.at(-1) ?? 0) * share;
+  const kept: ScreenPoint[] = [];
+  for (let i = 0; i < points.length; i++) {
+    const point = points[i] as ScreenPoint;
+    const at = lengths[i] ?? 0;
+    if (at <= target) {
+      kept.push(point);
+      continue;
+    }
+    const before = lengths[i - 1] ?? 0;
+    const last = kept.at(-1);
+    if (last && at > before) kept.push(lerpPoint(last, point, (target - before) / (at - before)));
+    break;
+  }
+  return kept;
+}
+
+/**
+ * The route up to `progress` stops, cut inside the leg being travelled. Straight on the map, but a
+ * leg bends through the points in `via` (`via[i]` on the leg to stop `i`), and the share of a leg
+ * travelled is a share of its length.
+ */
 export function routePoints(
   route: readonly LonLat[],
   progress: number,
   project: (point: LonLat) => ScreenPoint,
+  via: readonly (readonly LonLat[])[] = [],
 ): ScreenPoint[] {
   if (route.length < 2) return [];
   const reached = Math.min(route.length - 1, Math.max(0, progress));
   const whole = Math.floor(reached);
-  const points = route.slice(0, whole + 1).map(project);
-  const next = route[whole + 1];
+  const leg = (i: number) => [...(via[i] ?? []), route[i] as LonLat].map(project);
+  const points = [project(route[0] as LonLat)];
+  for (let i = 1; i <= whole; i++) points.push(...leg(i));
   const last = points.at(-1);
-  if (next && last && reached > whole) points.push(lerpPoint(last, project(next), reached - whole));
+  if (last && reached > whole && whole + 1 < route.length)
+    points.push(...cutLine([last, ...leg(whole + 1)], reached - whole).slice(1));
   return points.length > 1 ? points : [];
 }
 
 function drawRoute(ctx: Canvas2D, { timeline, frame, width, height, project }: DrawOptions): void {
-  const points = routePoints(timeline.route, frame.route.progress, project);
+  const points = routePoints(
+    timeline.route,
+    frame.route.progress,
+    project,
+    timeline.stops.map((s) => s.via),
+  );
   if (points.length === 0) return;
   const unit = Math.min(width, height);
   const { color, width: lineWidth, glow } = timeline.theme.route;

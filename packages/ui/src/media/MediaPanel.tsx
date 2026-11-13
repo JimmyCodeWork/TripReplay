@@ -166,22 +166,34 @@ export function MediaPanel({
                   <div className={styles.text}>
                     <span className={styles.name}>{asset.fileName}</span>
                     {clip.kind === "photo" ? (
-                      <label className={styles.duration}>
-                        {t("media.duration")}
-                        <input
-                          type="number"
-                          min={1}
-                          max={15}
-                          step={0.5}
-                          value={clip.durationUs / SECOND}
-                          onChange={(event) => {
-                            const seconds = Number(event.target.value);
-                            if (Number.isFinite(seconds) && seconds > 0) {
-                              dispatch({ type: "setPhotoDuration", id: clip.id, durationUs: seconds * SECOND });
+                      <>
+                        <label className={styles.duration}>
+                          {t("media.duration")}
+                          <input
+                            type="number"
+                            min={1}
+                            max={15}
+                            step={0.5}
+                            value={clip.durationUs / SECOND}
+                            onChange={(event) => {
+                              const seconds = Number(event.target.value);
+                              if (Number.isFinite(seconds) && seconds > 0) {
+                                dispatch({ type: "setPhotoDuration", id: clip.id, durationUs: seconds * SECOND });
+                              }
+                            }}
+                          />
+                        </label>
+                        <label className={styles.duration} title={t("media.enRouteHint")}>
+                          <input
+                            type="checkbox"
+                            checked={clip.enRoute === true}
+                            onChange={(event) =>
+                              dispatch({ type: "setClipEnRoute", id: clip.id, enRoute: event.target.checked })
                             }
-                          }}
-                        />
-                      </label>
+                          />
+                          {t("media.enRoute")}
+                        </label>
+                      </>
                     ) : (
                       <>
                         <span className={styles.duration}>

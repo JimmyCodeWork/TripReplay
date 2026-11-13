@@ -2,8 +2,8 @@ import type { Microseconds } from "@tripreplay/domain";
 import { audioAt } from "./audio.ts";
 import { interpolateCamera } from "./camera.ts";
 import type { FrameDescription, MarkerState } from "./frame.ts";
-import { easeInOutCubic, progress } from "./math.ts";
-import type { Camera, Segment, Timeline } from "./model.ts";
+import { easeInOutCubic, lerp, progress } from "./math.ts";
+import type { Camera, Segment, Timeline, TravelSegment } from "./model.ts";
 import { closingMoveUs, overlaysAt } from "./overlays.ts";
 
 /** Index of the segment containing `timeUs`; the end of the recap belongs to the last segment. */
@@ -30,10 +30,34 @@ function moveProgress(timeline: Timeline, segment: Segment, timeUs: Microseconds
 function cameraAt(timeline: Timeline, segment: Segment, move: number | undefined): Camera {
   if (move === undefined) return segment.from;
   if (timeline.reducedMotion) return move < 0.5 ? segment.from : segment.to;
-  return interpolateCamera(segment.from, segment.to, move, timeline.aspectRatio);
+  const via = segment.kind === "travel" && segment.stopIndex > 0 ? timeline.stops[segment.stopIndex]?.via : undefined;
+  return interpolateCamera(segment.from, segment.to, move, timeline.aspectRatio, via);
 }
 
-function routeProgress(timeline: Timeline, segment: Segment, move: number | undefined): number {
+/**
+ * How far along its leg the line is during a move, from 0 to 1. It eases from one point to the
+ * next: through where each photo taken on the way was taken, reached half way through the photo.
+ */
+export function legProgress(segment: TravelSegment, timeUs: Microseconds): number {
+  const length = segment.endUs - segment.startUs;
+  const u = progress(timeUs, segment.startUs, segment.endUs);
+  const keys = [{ u: 0, at: 0 }];
+  for (const photo of segment.photos) {
+    if (photo.at === undefined || length <= 0) continue;
+    const last = keys.at(-1) ?? { u: 0, at: 0 };
+    keys.push({
+      u: Math.max(last.u, ((photo.startUs + photo.endUs) / 2 - segment.startUs) / length),
+      at: Math.max(last.at, photo.at),
+    });
+  }
+  keys.push({ u: 1, at: 1 });
+  const end = keys.findIndex((key, i) => i > 0 && u <= key.u);
+  const to = keys[end] ?? { u: 1, at: 1 };
+  const from = keys[end - 1] ?? { u: 0, at: 0 };
+  return lerp(from.at, to.at, easeInOutCubic(progress(u, from.u, to.u)));
+}
+
+function routeProgress(timeline: Timeline, segment: Segment, move: number | undefined, timeUs: Microseconds): number {
   switch (segment.kind) {
     case "opening":
       return 0;
@@ -41,7 +65,7 @@ function routeProgress(timeline: Timeline, segment: Segment, move: number | unde
       return Math.max(0, timeline.stops.length - 1);
     case "travel": {
       if (segment.stopIndex === 0) return 0;
-      const step = timeline.reducedMotion ? ((move ?? 0) < 0.5 ? 0 : 1) : easeInOutCubic(move ?? 0);
+      const step = timeline.reducedMotion ? ((move ?? 0) < 0.5 ? 0 : 1) : legProgress(segment, timeUs);
       return segment.stopIndex - 1 + step;
     }
     default:
@@ -78,7 +102,7 @@ export function renderAt(timeline: Timeline, timeUs: Microseconds): FrameDescrip
     segmentIndex,
     segmentKind: segment.kind,
     camera: cameraAt(timeline, segment, move),
-    route: { progress: routeProgress(timeline, segment, move) },
+    route: { progress: routeProgress(timeline, segment, move, timeUs) },
     markers: markersAt(timeline, segment),
     overlays: overlaysAt(timeline, segmentIndex, time),
     audio: audioAt(timeline, segment, time),

@@ -148,6 +148,19 @@ export function setClipNote(project: Project, id: ClipId, note: string): Project
   return { ...project, clips: replaceById(project.clips, text === "" ? clip : { ...clip, note: text }) };
 }
 
+/**
+ * Marks a photo as taken on the way to its stop, or back at the stop. A photo on the way is shown
+ * while the line is drawn to the stop; only photos can be.
+ */
+export function setClipEnRoute(project: Project, id: ClipId, enRoute: boolean): Project {
+  return updateClip(
+    project,
+    id,
+    "photo",
+    ({ enRoute: _, ...clip }): PhotoClip => (enRoute ? { ...clip, enRoute } : clip),
+  );
+}
+
 /** Length of a clip on the recap timeline. */
 export function clipDuration(clip: Clip): Microseconds {
   return clip.kind === "photo" ? clip.durationUs : clip.outUs - clip.inUs;

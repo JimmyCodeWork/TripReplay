@@ -26,6 +26,17 @@ export const TRAVEL_PULL_BACK = 0.5;
 /** Scale reached by the slow push-in at the end of a photo. */
 export const PHOTO_PUSH_IN = 1.05;
 
+/** The card of a photo taken on the way, beside the line, as fractions of the frame. */
+export const EN_ROUTE_FRAME: Readonly<
+  Record<AspectRatio, { readonly x: number; readonly y: number; readonly width: number; readonly height: number }>
+> = {
+  "16:9": { x: 0.68, y: 0.5, width: 0.29, height: 0.4 },
+  "9:16": { x: 0.1, y: 0.56, width: 0.8, height: 0.34 },
+};
+
+/** The least time before, between and after photos taken on the way, while only the line moves. */
+export const EN_ROUTE_GAP = seconds(0.5);
+
 /** Music gain multiplier while clips with sound play, and the length of the change. */
 export const DUCK_GAIN = 0.25;
 export const DUCK_RAMP = seconds(0.3);

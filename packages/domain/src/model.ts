@@ -95,6 +95,11 @@ export interface PhotoClip {
   readonly fit: Fit;
   /** The user's note about the photo, shown as its caption; absent when empty. */
   readonly note?: string;
+  /**
+   * Taken on the way to its stop: shown on a small card while the line is drawn to the stop,
+   * instead of after its title. Absent for a photo at the stop.
+   */
+  readonly enRoute?: true;
 }
 
 export interface VideoClip {

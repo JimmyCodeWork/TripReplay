@@ -148,6 +148,21 @@ describe("routePoints", () => {
       { x: 15, y: 0 },
     ]);
   });
+
+  it("bends a leg through the points on the way and cuts it by length", () => {
+    const via = [[], [], [{ lon: 10, lat: 10 }]];
+    expect(routePoints(route, 2, project, via)).toEqual([
+      { x: 0, y: 0 },
+      { x: 10, y: 0 },
+      { x: 10, y: 10 },
+      { x: 20, y: 0 },
+    ]);
+    // The second leg is 10 + 14.1 long; a quarter of it ends on the way up.
+    const part = routePoints(route, 1.25, project, via);
+    expect(part).toHaveLength(3);
+    expect(part[2]?.x).toBe(10);
+    expect(part[2]?.y).toBeCloseTo((10 + Math.hypot(10, 10)) / 4);
+  });
 });
 
 describe("drawFrame", () => {
