@@ -245,7 +245,7 @@ describe("photos taken on the way", () => {
     if (!first?.at || !second?.at) throw new Error("missing locations");
     expect(first.at).toBeLessThan(second.at);
     for (const photo of [first, second]) {
-      expect(renderAt(timeline, (photo.startUs + photo.endUs) / 2).route.progress).toBeCloseTo(photo.at);
+      expect(renderAt(timeline, (photo.startUs + photo.endUs) / 2).route.progress).toBeCloseTo(photo.at ?? -1);
     }
     let last = 0;
     for (let t = travel.startUs; t < travel.endUs; t += 50_000) {
