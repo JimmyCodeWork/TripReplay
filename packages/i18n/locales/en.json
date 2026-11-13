@@ -999,6 +999,22 @@
     "message": "MP4 video",
     "description": "Kind of file in the save dialog."
   },
+  "player.previousDay": {
+    "message": "Previous day",
+    "description": "Button that moves to the start of the previous day of the recap."
+  },
+  "player.previousPart": {
+    "message": "Previous part",
+    "description": "Button that moves to and selects the previous part of the timeline."
+  },
+  "player.nextPart": {
+    "message": "Next part",
+    "description": "Button that moves to and selects the next part of the timeline."
+  },
+  "player.nextDay": {
+    "message": "Next day",
+    "description": "Button that moves to the start of the next day of the recap."
+  },
   "player.noMap": {
     "message": "No downloaded map contains these stops; the recap is shown without a base map.",
     "description": "Shown under the preview when no ready map region contains the trip's stops."

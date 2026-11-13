@@ -15,6 +15,7 @@ All notable changes to TripReplay are recorded here. The format follows [Keep a 
 - Media import with stop suggestions from GPS position and capture time, to confirm before anything is added.
 - Recap preview: animated route, camera moves, titles, photos and videos with captions, clip sound and background music, 16:9 and 9:16, full screen.
 - Editing on the timeline: photo durations, video trimming, moving and trimming music, by dragging or as numbers in seconds for a selected segment; the lengths of the opening, travel, stop titles and closing for the whole trip; a time scale above the timeline.
+- Previous and next day and part buttons above the timeline, which select the part.
 - Video export: the recap as an MP4 file at 1080p or 720p with its sound, made on the device with WebCodecs and saved where you choose ([ADR 0009](docs/adr/0009-export-in-1-0.md)).
 - **Undo** and **Redo** buttons in the workspace, and **Reset timing** for the timeline.
 - A stop's own title length and length of the move to it, over the trip's and the lengthening for text.

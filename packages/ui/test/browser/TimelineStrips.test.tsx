@@ -3,7 +3,7 @@ import { createTranslator } from "@tripreplay/i18n";
 import { act } from "react";
 import { afterEach, describe, expect, it } from "vitest";
 import { dragCommand, maxZoom, TimelineStrips, tickStep } from "../../src/index.ts";
-import { cleanup, render } from "./support.tsx";
+import { cleanup, render, rerender } from "./support.tsx";
 
 afterEach(cleanup);
 
@@ -229,6 +229,56 @@ describe("TimelineStrips", () => {
     expect(reset.title).toContain("可用「復原」還原");
     await act(async () => reset.click());
     expect(commands).toEqual([{ type: "resetTiming" }]);
+  });
+
+  it("steps to the previous and next part and day with buttons, selecting the part", async () => {
+    const twoDays = compile({
+      ...project,
+      stops: [
+        ...project.stops,
+        { id: "b", name: "金閣寺", description: "", date: "2026-04-02", location: { lon: 135.7292, lat: 35.0394 } },
+      ],
+    });
+    const seeks: number[] = [];
+    let at = 0;
+    const ui = () => (
+      <div style={{ width: "1000px" }}>
+        <TimelineStrips
+          timeline={twoDays}
+          timeUs={at}
+          onSeek={(us) => {
+            seeks.push(us);
+            at = us;
+          }}
+          onEdit={() => {}}
+          t={createTranslator("zh-TW")}
+        />
+      </div>
+    );
+    const view = await render(ui());
+    const button = (label: string) =>
+      [...view.querySelectorAll("button")].find((b) => b.textContent?.includes(label)) as HTMLButtonElement;
+    expect(button("上一段").disabled).toBe(true);
+    expect(button("上一天").disabled).toBe(true);
+    const press = async (label: string) => {
+      await act(async () => button(label).click());
+      await rerender(ui());
+    };
+    await press("下一段");
+    const travel = twoDays.segments[1];
+    expect(seeks.at(-1)).toBe(
+      Math.min((travel?.startUs ?? 0) + 500_000, ((travel?.startUs ?? 0) + (travel?.endUs ?? 0)) / 2),
+    );
+    expect(view.querySelector("section h3")?.textContent).toContain("移動 · 清水寺");
+    // The second day starts with the move to its first stop.
+    await press("下一天");
+    expect(view.querySelector("section h3")?.textContent).toContain("移動 · 金閣寺");
+    expect(button("下一天").disabled).toBe(true);
+    await press("上一段");
+    expect(view.querySelector("section h3")?.textContent).toContain("影片 · 清水寺");
+    await press("上一天");
+    expect(seeks.at(-1)).toBe(500_000);
+    expect(view.querySelector("section h3")?.textContent).toContain("開場");
   });
 
   it("is read-only without onEdit", async () => {
