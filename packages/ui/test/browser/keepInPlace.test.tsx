@@ -44,7 +44,10 @@ describe("keepInPlace", () => {
   });
 
   it("keeps room at the end when the page becomes too short, and gives it back on scrolling up", async () => {
-    const { below, button } = build(innerHeight, innerHeight * 2);
+    const { above, below, button } = build(innerHeight, innerHeight * 2);
+    // Left out as anchors, so that the browser would keep the block below in place.
+    above.style.overflowAnchor = "none";
+    button.style.overflowAnchor = "none";
     button.addEventListener("click", () => {
       below.style.height = "10px";
     });
@@ -59,6 +62,25 @@ describe("keepInPlace", () => {
     await frame();
     await frame();
     expect(document.body.style.paddingBottom).toBe("");
+  });
+
+  it("turns off the browser's scroll anchoring, which moves other elements into place", async () => {
+    expect(getComputedStyle(document.documentElement).overflowAnchor).toBe("none");
+    expect(getComputedStyle(document.body).overflowAnchor).toBe("none");
+    const { below, button } = build(innerHeight, innerHeight * 2);
+    button.addEventListener("click", () =>
+      below.before(Object.assign(document.createElement("div"), { style: "height: 200px" })),
+    );
+    window.scrollTo({ top: innerHeight - 40, behavior: "instant" });
+    const before = button.getBoundingClientRect().top;
+    button.click();
+    await frame();
+    await frame();
+    expect(button.getBoundingClientRect().top).toBeCloseTo(before, 0);
+    stop?.();
+    stop = undefined;
+    expect(document.documentElement.style.overflowAnchor).toBe("");
+    expect(document.body.style.overflowAnchor).toBe("");
   });
 
   it("leaves a page that scrolled on purpose", async () => {

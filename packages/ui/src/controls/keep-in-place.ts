@@ -15,6 +15,9 @@ interface Held {
  *
  * Only the page's own scrolling is kept: dialogs and other areas that scroll on their own are left
  * alone, and so is a page that scrolled on purpose, for example to bring something into view.
+ * The browser's own scroll anchoring is turned off for the page: it keeps some other element in
+ * place, often one below what was chosen, and so moved the chosen element away when rows opened
+ * above that element, such as the fields under the timeline.
  * Returns a function that stops keeping things in place.
  */
 export function keepInPlace(win: Window = window): () => void {
@@ -79,6 +82,10 @@ export function keepInPlace(win: Window = window): () => void {
     });
   };
 
+  // Chromium reads the page's scroll anchoring from the body, other browsers from the root.
+  const anchoring = [root.style.overflowAnchor, doc.body.style.overflowAnchor] as const;
+  root.style.overflowAnchor = "none";
+  doc.body.style.overflowAnchor = "none";
   const options = { capture: true } as const;
   doc.addEventListener("click", before, options);
   doc.addEventListener("change", before, options);
@@ -96,5 +103,6 @@ export function keepInPlace(win: Window = window): () => void {
     win.cancelAnimationFrame(frame);
     win.cancelAnimationFrame(settling);
     reserve(0);
+    [root.style.overflowAnchor, doc.body.style.overflowAnchor] = anchoring;
   };
 }

@@ -76,7 +76,7 @@ Maps are downloaded once and then used on the device ([ADR 0006](adr/0006-local-
 
 Below 820 px wide, the same parts stack vertically: preview (about half the screen height, more for 9:16), timeline, then the tabbed panel. Nothing is hidden; only the arrangement changes.
 
-On every layout, what the user chooses stays under the finger: when a click or a choice opens or closes something above it (a stop's actions) or shortens the page below it (one day of the itinerary, the fields under the timeline), the page scrolls by as much as the chosen element moved. Room kept at the end of a page that became too short is given back as the user scrolls up. Dialogs and areas that scroll on their own, and moves that bring something into view on purpose, are left as they are.
+On every layout, what the user chooses stays under the finger: when a click or a choice opens or closes something above it (a stop's actions) or shortens the page below it (one day of the itinerary, the fields under the timeline), the page scrolls by as much as the chosen element moved. Room kept at the end of a page that became too short is given back as the user scrolls up. Dialogs and areas that scroll on their own, and moves that bring something into view on purpose, are left as they are. The browser's own scroll anchoring is turned off for the page, as it keeps another element in place instead, often one below the chosen element.
 
 ### 3.3 Side panel tabs
 
