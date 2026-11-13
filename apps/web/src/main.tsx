@@ -1,5 +1,6 @@
 import { createTranslator, resolveLocale } from "@tripreplay/i18n";
 import { setMapWorkerUrl } from "@tripreplay/map";
+import { keepInPlace } from "@tripreplay/ui";
 import mapWorkerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?url";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
@@ -21,6 +22,9 @@ const locale = resolveLocale(navigator.languages);
 const t = createTranslator(locale);
 document.documentElement.lang = locale;
 document.title = t("app.name");
+
+// Choosing something keeps it under the finger when rows open or close around it.
+keepInPlace(window);
 
 const root = createRoot(document.getElementById("root") as HTMLElement);
 const message = (text: string) => root.render(<p className="app-message">{text}</p>);
