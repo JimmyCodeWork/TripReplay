@@ -19,6 +19,9 @@ export default defineConfig(({ mode }) => {
     base: "./",
     // MapLibre loads its worker relative to its own module, which pre-bundling would break.
     optimizeDeps: { exclude: ["maplibre-gl"] },
+    // Always the same address, as the browser keeps trips for each address (origin) separately:
+    // started on another port, TripReplay would open without the trips saved before.
+    preview: { host: "localhost", port: 4173, strictPort: true },
     build: { target: "es2022", outDir: native ? "dist-native" : "dist" },
     plugins: [
       contentSecurityPolicy(),

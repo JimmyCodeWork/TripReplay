@@ -4,7 +4,12 @@
 
 TripReplay 將您的行程、照片與影片，製作成以地圖呈現的動態旅行回顧。所有處理皆在您的裝置上完成。
 
-> **狀態：** 設計階段，目前尚無可用版本。
+> **狀態：** 開發中，目標為 1.0。可在 [https://jimmycodework.github.io/TripReplay/](https://jimmycodework.github.io/TripReplay/) 試用最新版本。
+
+## 試用
+
+- **在瀏覽器中：** 以 Chrome 或 Edge 開啟 [https://jimmycodework.github.io/TripReplay/](https://jimmycodework.github.io/TripReplay/)，按網址列的安裝按鈕，即可在桌面建立圖示，一鍵開啟 TripReplay。
+- **在自己的電腦上：** 安裝 Node.js 24 以上版本後，按兩下 `launch/TripReplay.cmd`（Windows）或 `launch/TripReplay.command`（macOS），或執行 `launch/start.sh`（Linux），即可在 `http://localhost:4173` 提供 TripReplay。詳見[使用指南 §1](docs/zh-TW/user-guide.md#1-開始之前)。
 
 ## 規劃功能
 
@@ -15,7 +20,7 @@ TripReplay 將您的行程、照片與影片，製作成以地圖呈現的動態
 - 以可拖曳的時間軸預覽，支援 16:9 與 9:16 畫面比例。
 - 在瀏覽器中以全螢幕播放回顧。
 - 只需下載一次所需區域的地圖，之後所有功能皆可離線使用，包含地點搜尋。
-- 1.0 之後：匯出為 MP4（1080p 或 720p，30 fps）。
+- 將回顧匯出為 MP4 影片（1080p 或 720p，30 fps）。
 - 1.0 版於瀏覽器中執行，可安裝為漸進式網頁應用程式，並提供 Android 應用程式（APK）；Windows、macOS、Linux 及 iOS 安裝版將於之後推出。
 
 ## 隱私

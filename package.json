@@ -12,6 +12,7 @@
     "verify": "pnpm run lint && pnpm run typecheck && pnpm test && pnpm run deps:check && pnpm run i18n:check && pnpm run license:check",
     "verify:clean": "docker build --file tools/ci/Dockerfile --progress plain --output type=cacheonly .",
     "dev": "pnpm --filter @tripreplay/web dev",
+    "start": "pnpm run build && pnpm --filter @tripreplay/web exec vite preview --open",
     "build": "pnpm --filter @tripreplay/web build",
     "build:native": "pnpm --filter @tripreplay/web exec vite build --mode native",
     "android:build": "pnpm run build:native && pnpm --filter @tripreplay/android exec cap sync android && cd apps/android/android && ./gradlew assembleRelease",

@@ -52,6 +52,10 @@
 
 發行壓縮檔是使用相對路徑的靜態網站，可部署於任何 HTTPS 位置，包括子路徑。伺服器必須以 `application/manifest+json` 傳送 `.webmanifest` 檔案，且不可長時間快取 `sw.js`，瀏覽器才能找到新版本。
 
+專案自己的網站以 GitHub Pages 發布於 [https://jimmycodework.github.io/TripReplay/](https://jimmycodework.github.io/TripReplay/)。「Deploy to GitHub Pages」工作流程（`.github/workflows/pages.yml`）會在每次推送到 `main` 時執行 `verify`、建置 Web 應用程式並部署 `apps/web/dist`，也可以手動執行。GitHub Pages 會以正確的類型傳送 `.webmanifest` 檔案，並將檔案快取十分鐘。首次部署前，請在 repository 的「**Settings → Pages → Build and deployment → Source**」選擇「**GitHub Actions**」。
+
+若要在電腦上不經任何網站使用 TripReplay，`pnpm start`（或執行它的 `launch/` 啟動程式）會建置應用程式，並在 `http://localhost:4173` 提供服務（[使用指南 §1](user-guide.md#1-開始之前)）。連接埠固定不變，因為瀏覽器會依來源分別保存旅行。
+
 ## 4. Android 簽署金鑰
 
 Android 只會安裝與已安裝應用程式使用相同金鑰簽署的更新。金鑰只需建立一次，保存在儲存庫的 Secrets 中供發行流程使用，並在 GitHub 以外另行備份。**若金鑰遺失，使用者必須解除安裝應用程式（連同其中的旅行）才能安裝新版本。**

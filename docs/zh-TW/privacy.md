@@ -17,7 +17,7 @@ TripReplay 只在您的裝置上處理您的旅行、照片、影片、日記與
 
 | 時機 | 目的地 | 傳送的內容 | 目的地可得知的資訊 |
 |---|---|---|---|
-| 開啟 TripReplay 時，以及瀏覽器檢查新版本時 | 您開啟 TripReplay 的網站 | 一般的應用程式檔案請求（HTML、指令碼、樣式、圖示、`sw.js`） | 有人開啟了應用程式，以及一般的請求資訊：IP 位址、時間與瀏覽器（使用者代理） |
+| 開啟 TripReplay 時，以及瀏覽器檢查新版本時 | 您開啟 TripReplay 的網站：專案網站為 GitHub Pages（`jimmycodework.github.io`，由 GitHub 營運）；在自己的電腦上以 `localhost` 執行時則沒有 | 一般的應用程式檔案請求（HTML、指令碼、樣式、圖示、`sw.js`） | 有人開啟了應用程式，以及一般的請求資訊：IP 位址、時間與瀏覽器（使用者代理） |
 | 在「**地圖**」中選取「**下載**」、「**更新**」或「**檢查更新**」時 | Overture Maps 的公開儲存空間 `overturemaps-extras-us-west-2.s3.us-west-2.amazonaws.com`（架設於 Amazon Web Services） | 可用地圖版本的清單請求，以及涵蓋所選區域的地圖封存檔片段之 HTTP 範圍請求 | 您的 IP 位址、時間與瀏覽器，以及下載了哪些區域（因為所請求的片段對應這些區域） |
 
 具體而言：

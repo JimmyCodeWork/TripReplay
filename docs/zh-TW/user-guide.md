@@ -15,9 +15,10 @@ TripReplay 會把行程、照片與影片製作成旅行的動態地圖回顧。
 
 ## 1. 開始之前
 
-- **瀏覽器。** 請使用最新版本的 Chrome、Edge、Safari 或 Firefox。各瀏覽器之間的差異請見[瀏覽器支援](browser-support.md)。
+- **瀏覽器。** 請使用最新版本的 Chrome、Edge、Safari 或 Firefox 開啟 [https://jimmycodework.github.io/TripReplay/](https://jimmycodework.github.io/TripReplay/)，該網址一律提供最新版本。各瀏覽器之間的差異請見[瀏覽器支援](browser-support.md)。
 - **Android 應用程式。** 在 Android 手機或平板（Android 7.0 以上）上，也可以改為安裝 TripReplay 應用程式：從專案的[發行版本](https://github.com/JimmyCodeWork/TripReplay/releases)下載 `tripreplay-android-….apk`，開啟後允許瀏覽器或檔案管理員安裝。請透過 Google Play 將 Android System WebView 保持在最新版本。應用程式的使用方式與網站相同，差異列於下文；它有自己的旅行資料，若要在兩者之間移動旅行，請使用備份（§9）。
-- **安裝（選用）。** 瀏覽器可以將 TripReplay 安裝為應用程式，例如使用 Chrome 或 Edge 網址列中的安裝按鈕，或在 iPhone 與 iPad 的 Safari 中選擇「**分享 → 加入主畫面**」。安裝後的應用程式會在自己的視窗中開啟，沒有網路連線也能啟動。
+- **安裝（選用）。** 瀏覽器可以將 TripReplay 安裝為應用程式，例如使用 Chrome 或 Edge 網址列中的安裝按鈕，或在 iPhone 與 iPad 的 Safari 中選擇「**分享 → 加入主畫面**」。安裝後的應用程式會在桌面或主畫面上建立圖示，按一下即可在自己的視窗中開啟，沒有網路連線也能啟動。
+- **在自己的電腦上執行，不經網站（選用）。** 安裝 [Node.js](https://nodejs.org/) 24 以上版本並取得一份[原始碼](https://github.com/JimmyCodeWork/TripReplay)後，在 Windows 上按兩下 `launch/TripReplay.cmd`，在 macOS 上按兩下 `launch/TripReplay.command`，或在 Linux 上執行 `launch/start.sh`。它會建置 TripReplay（首次啟動時也會安裝所需套件），在 `http://localhost:4173` 提供服務並以瀏覽器開啟；使用 TripReplay 期間請保持該視窗開啟。您也可以從該處將它安裝為應用程式，安裝後即使關閉該視窗也能啟動；再次執行啟動程式即可更新。瀏覽器會依網址分別保存旅行，因此在 `localhost` 建立的旅行不會出現在網站上，反之亦然；請用備份（§9）移動旅行。
 - **儲存空間。** 地圖與媒體由瀏覽器儲存在本裝置上。一個區域的地圖約需數百 MB，照片與影片則佔用與原檔相同的空間。每次下載與匯入前，TripReplay 都會先確認可用空間。
 - **離線使用。** 只有第一次開啟 TripReplay 與下載地圖時需要網路連線。之後所有功能都能離線使用，包括地點搜尋。
 

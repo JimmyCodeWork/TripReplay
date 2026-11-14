@@ -29,6 +29,7 @@ pnpm run hooks:install   # 選用；見「本機驗證」
 | `pnpm run verify` | 依相同順序執行 CI 的所有檢查 |
 | `pnpm run verify:clean` | 於乾淨的 Linux 容器中執行 `verify`（需要 Docker） |
 | `pnpm run dev` | 以開發模式（Vite）啟動 Web 應用程式，網址為 `http://localhost:5173` |
+| `pnpm start` | 建置 Web 應用程式並在 `http://localhost:4173` 提供服務，同時開啟瀏覽器；即 `launch/` 中啟動程式所執行的指令（[使用指南 §1](user-guide.md#1-開始之前)） |
 | `pnpm run build` | 將 Web 應用程式建置至 `apps/web/dist`，並產生其 SBOM、第三方授權聲明與 service worker（[發行流程](releasing.md)） |
 | `pnpm run build:native` | 將 Android 應用程式的頁面建置至 `apps/web/dist-native` |
 | `pnpm run android:build` | 將 Android 應用程式建置至 `apps/android/android/app/build/outputs/apk/`（發行版；沒有金鑰時不簽署）。若需要除錯版 APK，請在第一次建置後於 `apps/android/android` 執行 `./gradlew assembleDebug` |

@@ -22,6 +22,7 @@ All notable changes to TripReplay are recorded here. The format follows [Keep a 
 - A stop's own title length and length of the move to it, over the trip's and the lengthening for text.
 - Imported files go to the stop selected in the Media tab, with the suggested stop one tap away.
 - The journal shows one day at a time too, and the Media tab chooses the stop from a list grouped by day, reorders media by dragging, and moves a photo or video to another stop from its Edit button.
+- The Web application is published with GitHub Pages from `main`, and launchers in `launch/` (`pnpm start`) serve it on the computer at `http://localhost:4173`.
 - Tools for the browser's AI agent through WebMCP, off until turned on with **AI agent** in a trip: the agent reads the open trip's text and adds and changes stops, the journal, day lines, notes and timing, each change one step to undo.
 - What is chosen stays under the finger when rows open or close around it, instead of the page jumping.
 - The itinerary shows one day at a time, reorders stops by dragging, and expands the selected stop's actions, which open its media and journal and copy it to a chosen place.

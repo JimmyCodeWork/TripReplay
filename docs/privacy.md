@@ -15,7 +15,7 @@ The application makes the following requests, and no others. The built page carr
 
 | When | Destination | What is sent | What the destination can learn |
 |---|---|---|---|
-| You open TripReplay, and when the browser checks for a new version | The website you opened TripReplay from | Ordinary requests for the application's files (HTML, scripts, styles, icons, `sw.js`) | That someone opened the application, with the usual request information: IP address, time and browser (user agent) |
+| You open TripReplay, and when the browser checks for a new version | The website you opened TripReplay from: for the project's site, GitHub Pages (`jimmycodework.github.io`, operated by GitHub); none when you run TripReplay on your own computer at `localhost` | Ordinary requests for the application's files (HTML, scripts, styles, icons, `sw.js`) | That someone opened the application, with the usual request information: IP address, time and browser (user agent) |
 | You select **Download**, **Update** or **Check for updates** in **Maps** | Overture Maps' public storage, `overturemaps-extras-us-west-2.s3.us-west-2.amazonaws.com` (operated on Amazon Web Services) | A listing of the available map releases, and HTTP range requests for the parts of the map archives that cover the chosen region | Your IP address, the time and browser, and which areas were downloaded, since the requested parts correspond to those areas |
 
 In particular:
