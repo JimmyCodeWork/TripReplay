@@ -4,7 +4,7 @@ English | [繁體中文](../zh-TW/adr/0006-local-only-operation.md)
 
 | | |
 |---|---|
-| Status | Accepted. Supersedes the map hosting in decision 2 of [ADR 0004](0004-web-first-release.md) |
+| Status | Accepted. Supersedes the map hosting in decision 2 of [ADR 0004](0004-web-first-release.md). Decision 3 amended by [ADR 0012](0012-mcp-server.md): with MCP turned on, the Web application connects to a server on the same computer |
 | Date | 2026-10-24 |
 
 ## Context

@@ -37,7 +37,7 @@ Everything TripReplay stores is kept by your browser for the website you opened 
 | IndexedDB | Trips (itinerary, journal, settings) and the records of downloaded maps |
 | Origin private file system | Map files, and copies of the photos, videos and music you added |
 | Cache storage | The application's own files, so that it starts without a connection |
-| Local storage | Your "Reduce motion" choice in the preview, your favorite map regions, whether imports make photos and videos smaller, and whether the browser's AI agent may use the open trip |
+| Local storage | Your "Reduce motion" choice in the preview, your favorite map regions, whether imports make photos and videos smaller, and whether the browser's AI agent may use the open trip, and whether MCP is on, with its pairing code |
 
 The browser may clear this data, for example when the device is short of space ([Browser Support §3](browser-support.md#3-known-issues)). Back up trips you want to keep ([User Guide §9](user-guide.md#9-back-up-and-restore)).
 
@@ -53,6 +53,8 @@ While it is on and a trip is open, the agent can:
 The agent cannot read photos, videos or music, remove anything, import files or open other trips.
 
 TripReplay sends nothing itself, but what the agent reads goes to the agent, and usually to the service behind it, under that service's privacy policy. Turn **AI agent** on only for trips whose text you are willing to share with it, and off when you are done.
+
+The **MCP** button of the Web application works the same way for agents such as Claude Desktop, through the TripReplay MCP server that the agent runs on your computer ([ADR 0012](adr/0012-mcp-server.md)). It is off until you turn it on. While it is on, TripReplay connects to `127.0.0.1:4174`, on your own computer only, with the pairing code you entered; the code is kept in the browser's local storage. The server passes the agent's requests to TripReplay and its answers back, and sends nothing anywhere else.
 
 ## 4. The Android Application
 

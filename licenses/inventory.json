@@ -101,6 +101,11 @@
       "category": "code",
       "note": "MP4 and QuickTime reader for making smaller copies of videos (docs/adr/0011-smaller-media.md). No dependencies; the bundled code carries no other licenses."
     },
+    "ws@8.23.0": {
+      "declared": "MIT",
+      "category": "code",
+      "note": "WebSocket server of the TripReplay MCP server (apps/mcp, docs/adr/0012-mcp-server.md), which runs on the user's computer; not part of the Web or Android build. Its optional native peers are not installed."
+    },
     "murmurhash-js@1.0.0": {
       "declared": "MIT",
       "category": "code"
@@ -160,6 +165,7 @@
     "@types/node",
     "@types/react",
     "@types/react-dom",
+    "@types/ws",
     "@vitest/browser-playwright",
     "playwright",
     "typescript",

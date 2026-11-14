@@ -76,6 +76,7 @@ To bypass a hook once, add `--no-verify` to `git commit` or `git push`. To disab
 | Path | Contents |
 |---|---|
 | `apps/web/` | Web application: the composition root that creates the adapters and mounts the UI |
+| `apps/mcp/` | The TripReplay MCP server ([ADR 0012](adr/0012-mcp-server.md)): MCP over standard input and output for agents, and a WebSocket on `127.0.0.1:4174` for TripReplay; `pnpm --filter @tripreplay/mcp start` runs it, `test/` holds its Node tests |
 | `apps/android/` | Android application ([ADR 0008](adr/0008-android-in-1-0.md)): Capacitor configuration and the Gradle project in `android/`, with the `SaveFile` plugin for backups |
 | `packages/` | Product packages: `domain`, `themes`, `i18n`, `timeline`, `app`, `renderer`, `map`, `media`, `audio`, `storage`, `ui`; others planned as defined in the [Application Architecture §3](architecture.md#3-packages) |
 | `packages/domain/` | Data model, invariants and pure editing operations |

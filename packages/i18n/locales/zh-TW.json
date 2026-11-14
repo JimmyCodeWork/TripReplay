@@ -680,6 +680,33 @@
   "workspace.undo": {
     "message": "復原"
   },
+  "mcp.button": {
+    "message": "MCP"
+  },
+  "mcp.hint": {
+    "message": "將這趟旅行連線到本電腦上的 TripReplay MCP server，讓 Claude Desktop 等 AI 代理讀取旅行，並編輯其景點、日記、備註與時間設定。它讀取的內容會傳送到該代理的服務。所有變更都可以復原。"
+  },
+  "mcp.askCode": {
+    "message": "AI 代理提供的配對碼："
+  },
+  "mcp.pair": {
+    "message": "連線"
+  },
+  "mcp.waiting": {
+    "message": "正在等待 TripReplay MCP server。請在您的 AI 代理中啟動它，例如請它使用 TripReplay。"
+  },
+  "mcp.connected": {
+    "message": "已連線：AI 代理可以處理這趟旅行。"
+  },
+  "mcp.wrongCode": {
+    "message": "配對碼未被接受。請輸入 AI 代理顯示的配對碼："
+  },
+  "mcp.replaced": {
+    "message": "另一個 TripReplay 視窗已接手連線。按兩次 MCP 即可重新連線。"
+  },
+  "mcp.forget": {
+    "message": "變更配對碼"
+  },
   "workspace.agentTools": {
     "message": "AI 代理"
   },

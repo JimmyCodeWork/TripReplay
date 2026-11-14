@@ -99,6 +99,29 @@ TripReplay 會把行程、照片與影片製作成旅行的動態地圖回顧。
 
 代理讀取的內容會傳送給它，通常也會傳送到其背後的服務（[隱私權聲明 §3](privacy.md#3-瀏覽器的-ai-代理)），因此請只在您願意與其分享的旅行開啟「**AI 代理**」。Android 應用程式沒有此按鈕。
 
+### 在電腦上使用 AI 代理（MCP）
+
+Claude Desktop 與 Claude Code 等代理可以透過在您電腦上執行的 TripReplay MCP server 處理開啟中的旅行（[ADR 0012](adr/0012-mcp-server.md)）。此功能在您開啟之前保持關閉，Android 應用程式不提供。
+
+1. 取得原始碼，並用啟動程式（§1）啟動 TripReplay 一次，以安裝 server 所需的套件。需要 Node.js 24 以上版本。
+2. 將 server 加入您的代理，並填入您原始碼所在的路徑：
+   - **Claude Desktop：** 在 `claude_desktop_config.json`（Windows 位於 `%APPDATA%\Claude\`，macOS 位於 `~/Library/Application Support/Claude/`）中加入：
+
+     ```json
+     {
+       "mcpServers": {
+         "tripreplay": { "command": "node", "args": ["C:\\path\\to\\TripReplay\\apps\\mcp\\src\\main.ts"] }
+       }
+     }
+     ```
+
+     然後重新啟動 Claude Desktop。
+   - **Claude Code：** 執行 `claude mcp add tripreplay -- node /path/to/TripReplay/apps/mcp/src/main.ts`。
+3. 在同一台電腦上，以 Chrome 或 Edge 開啟專案網站或 `http://localhost:4173` 上的 TripReplay，開啟一趟旅行，並選取旅行上方的「**MCP**」。
+4. 請代理使用 TripReplay。第一次使用時，代理會告訴您六位數的配對碼；在 TripReplay 中輸入後選取「**連線**」。瀏覽器可能會詢問是否允許網站連線到您電腦或區域網路上的裝置，請允許。TripReplay 會在該瀏覽器中記住配對碼。
+
+之後代理就能像上述瀏覽器代理一樣讀取並修改旅行的文字，每項變更都可以用「**復原**」撤銷。再次選取「**MCP**」即可中斷連線。代理讀取的內容會傳送給它，通常也會傳送到其背後的服務（[隱私權聲明 §3](privacy.md#3-瀏覽器的-ai-代理)）。
+
 ## 6. 加入音樂
 
 1. 開啟「**音樂**」分頁，選取「**加入音樂**」，然後選擇一個或多個音訊檔，例如 MP3、M4A 或 WAV。

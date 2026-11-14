@@ -18,7 +18,8 @@ export const CONTENT_SECURITY_POLICY = [
   "default-src 'self'",
   "script-src 'self'",
   "worker-src 'self' blob:",
-  `connect-src 'self' ${MAP_SOURCE} blob: data:`,
+  // The TripReplay MCP server on this computer, which the user connects to by choice (ADR 0012).
+  `connect-src 'self' ${MAP_SOURCE} ws://127.0.0.1:4174 blob: data:`,
   "img-src 'self' blob: data:",
   "media-src 'self' blob:",
   "style-src 'self' 'unsafe-inline'",
