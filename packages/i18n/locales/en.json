@@ -975,6 +975,26 @@
     "message": "Export video",
     "description": "Title of the export dialog."
   },
+  "export.fileSize": {
+    "message": "File size",
+    "description": "Heading of the choice of how much the encoder keeps of the picture, and so how large the video file is."
+  },
+  "export.size.large": {
+    "message": "Larger file (sharpest)",
+    "description": "File size choice: about 12 Mbit/s at 1080p."
+  },
+  "export.size.standard": {
+    "message": "Standard",
+    "description": "File size choice: about 8 Mbit/s at 1080p."
+  },
+  "export.size.small": {
+    "message": "Smaller file (for sharing)",
+    "description": "File size choice: about 4 Mbit/s at 1080p."
+  },
+  "export.estimate": {
+    "message": "The video will be about {size}.",
+    "description": "Estimated size of the exported video, from the chosen quality and file size; {size} is formatted, for example 25 MB."
+  },
   "export.quality": {
     "message": "Quality",
     "description": "Label of the choice of video size."
@@ -1446,6 +1466,18 @@
   "backup.fileType": {
     "message": "TripReplay backup",
     "description": "Name of the backup file type in the save dialog."
+  },
+  "backup.choose": {
+    "message": "Back up “{title}” with its photos at full size, or with smaller photos (at most 2560 pixels on their longest side) for a much smaller file? The trip here is not changed either way.",
+    "description": "Asked when backing up a trip."
+  },
+  "backup.full": {
+    "message": "Full size",
+    "description": "Button that backs up a trip with its photos as stored."
+  },
+  "backup.smaller": {
+    "message": "Smaller photos",
+    "description": "Button that backs up a trip with smaller copies of its photos."
   },
   "backup.working": {
     "message": "Backing up…",

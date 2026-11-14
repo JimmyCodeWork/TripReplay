@@ -32,7 +32,7 @@ Editing and preview share **one workspace**, so every change is visible immediat
 - A "⋯" menu on each card: rename, duplicate, back up, delete.
 - A "New trip" button in the heading and as the last card.
 - With no trips, a single call to action: "Create your first trip".
-- The header offers "Trips", "Maps" and "Settings"; the trip list offers "Restore backup", and each card "Back up". A backup is one project package file ([Project Package Format](project-package.md)); where the browser can, it is written straight to the chosen file. A backup whose trip is already on the device can be restored as a copy. Each card also offers **Shrink photos**, which shows the number of photos and the space they take, asks to confirm, reports progress, and then the space before and after ([ADR 0011](adr/0011-smaller-media.md)).
+- The header offers "Trips", "Maps" and "Settings"; the trip list offers "Restore backup", and each card "Back up". A backup is one project package file ([Project Package Format](project-package.md)); where the browser can, it is written straight to the chosen file. A backup whose trip is already on the device can be restored as a copy. **Back up** asks for **Full size** or **Smaller photos**; with smaller photos, the backup holds copies at most 2560 pixels on their longest side under new asset ids, and the trip on the device is not changed. Each card also offers **Shrink photos**, which shows the number of photos and the space they take, asks to confirm, reports progress, and then the space before and after ([ADR 0011](adr/0011-smaller-media.md)).
 
 ### 2.1 Maps dialog
 
@@ -129,7 +129,7 @@ On every layout, what the user chooses stays under the finger: when a click or a
 
 "Export video", under the preview, opens a dialog ([ADR 0009](adr/0009-export-in-1-0.md)):
 
-1. **Quality**: 1080p (sharper) or 720p (faster, smaller file), in the trip's aspect ratio. The dialog probes the encoders and states the format that will be produced, such as "H.264 video with AAC sound", that the video will be silent where no audio encoder exists, or that this browser cannot export.
+1. **Quality**: 1080p (sharper) or 720p (faster, smaller file), in the trip's aspect ratio. **File size**: larger (about 12 Mbit/s at 1080p), standard (about 8 Mbit/s) or smaller (about 4 Mbit/s), with the expected size of the video. The dialog probes the encoders and states the format that will be produced, such as "H.264 video with AAC sound", that the video will be silent where no audio encoder exists, or that this browser cannot export.
 2. "Start export" shows the progress: mixing the sound, then "Drawing frame n of N" with a progress bar. "Cancel" stops it and removes the partial file. A note asks to keep the application in front; going to the background stops the export with an explanation.
 3. When done, the dialog shows the file size and "Save video", which opens the save dialog, the downloads folder, or the system save screen in the Android application. Closing the dialog removes the temporary file, saved or not.
 

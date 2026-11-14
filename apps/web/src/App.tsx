@@ -115,9 +115,16 @@ export function App({ services, locale, t }: AppProps) {
 
   const failed = (key: "backup.failed" | "restore.failed") => (error: unknown) =>
     setStatus(t(key, { message: error instanceof Error ? error.message : String(error) }));
-  const backup = (id: string) => {
+  /** A trip to back up, waiting for the user to choose full-size or smaller photos. */
+  const [backingUp, setBackingUp] = useState<{ readonly id: string; readonly title: string } | undefined>();
+  const askBackup = (id: string) => {
+    setStatus(undefined);
+    setBackingUp({ id, title: list.find((trip) => trip.id === id)?.title ?? "" });
+  };
+  const backup = (id: string, shrinkPhotos: boolean) => {
+    setBackingUp(undefined);
     setStatus(t("backup.working"));
-    backupTrip(services, id, t("backup.fileType")).then(
+    backupTrip(services, id, t("backup.fileType"), { shrinkPhotos }).then(
       (saved) => setStatus(saved ? t("backup.done") : undefined),
       failed("backup.failed"),
     );
@@ -215,11 +222,27 @@ export function App({ services, locale, t }: AppProps) {
             void trips.duplicate(id, t("tripList.copyTitle", { title }));
           }}
           onDelete={(id) => void trips.remove(id)}
-          onBackup={backup}
+          onBackup={askBackup}
           onShrink={askShrink}
           onRestore={() => restoreInput.current?.click()}
           status={status}
         />
+      )}
+      {screen.kind === "trips" && backingUp && (
+        <div className="app-alert" role="alert">
+          <p>{t("backup.choose", { title: backingUp.title })}</p>
+          <div className="app-alert-actions">
+            <button type="button" className="header-button" onClick={() => backup(backingUp.id, false)}>
+              {t("backup.full")}
+            </button>
+            <button type="button" className="header-button" onClick={() => backup(backingUp.id, true)}>
+              {t("backup.smaller")}
+            </button>
+            <button type="button" className="header-button" onClick={() => setBackingUp(undefined)}>
+              {t("common.cancel")}
+            </button>
+          </div>
+        </div>
       )}
       {screen.kind === "trips" && shrinking && (
         <div className="app-alert" role="alert">

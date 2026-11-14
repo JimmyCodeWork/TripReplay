@@ -12,6 +12,49 @@ export function tripPhotos(project: Project): TripPhotos {
   return { count: photos.length, bytes: photos.reduce((sum, photo) => sum + photo.byteSize, 0) };
 }
 
+/** The project with some assets replaced by others, such as smaller copies, and its clips moved to them. */
+export function replaceAssets(project: Project, replaced: ReadonlyMap<AssetId, Asset>): Project {
+  return {
+    ...project,
+    assets: project.assets.map((asset) => replaced.get(asset.id) ?? asset),
+    clips: project.clips.map((clip) => {
+      const copy = replaced.get(clip.assetId);
+      return copy ? { ...clip, assetId: copy.id } : clip;
+    }),
+  };
+}
+
+/**
+ * Smaller copies of a project's photos, each under a new asset id, made with `shrink`; photos it
+ * cannot make noticeably smaller are left out. `onCopy` receives each copy's file, to store or keep.
+ */
+export async function shrunkPhotoAssets<File>(
+  project: Project,
+  shrink: NonNullable<MediaPort<File>["shrinkPhoto"]>,
+  read: (asset: Asset) => Promise<File | undefined>,
+  newId: () => string,
+  onCopy: (copy: PhotoAsset, file: File) => Promise<void>,
+  onProgress?: (done: number, total: number) => void,
+  signal?: AbortSignal,
+): Promise<Map<AssetId, PhotoAsset>> {
+  const photos = project.assets.filter((asset): asset is PhotoAsset => asset.kind === "photo");
+  const replaced = new Map<AssetId, PhotoAsset>();
+  for (const [index, photo] of photos.entries()) {
+    signal?.throwIfAborted();
+    const file = await read(photo);
+    const smaller = file === undefined ? undefined : await shrink(file);
+    if (smaller) {
+      const { file: copyFile, ...changes } = smaller;
+      const copy: PhotoAsset = { ...photo, ...changes, rotation: 0, id: newId() };
+      await onCopy(copy, copyFile);
+      replaced.set(photo.id, copy);
+    }
+    onProgress?.(index + 1, photos.length);
+  }
+  signal?.throwIfAborted();
+  return replaced;
+}
+
 export interface ShrinkTripOptions<File> {
   readonly repository: ProjectRepository;
   readonly media: MediaPort<File>;
@@ -45,42 +88,34 @@ export async function shrinkTripPhotos<File>(
   const project = await repository.load(tripId);
   if (!project) throw new Error(`Trip "${tripId}" does not exist`);
   const shrink = media.shrinkPhoto?.bind(media);
-  const photos = project.assets.filter((asset): asset is PhotoAsset => asset.kind === "photo");
   const before = tripPhotos(project).bytes;
   if (!shrink) return { shrunk: 0, before, after: before };
 
-  const replaced = new Map<AssetId, PhotoAsset>();
+  const stored: AssetId[] = [];
   const discard = async () => {
-    for (const copy of replaced.values()) await media.discard(copy.id).catch(() => {});
+    for (const id of stored) await media.discard(id).catch(() => {});
   };
+  let replaced: Map<AssetId, PhotoAsset>;
   try {
-    for (const [index, photo] of photos.entries()) {
-      signal?.throwIfAborted();
-      const file = await read(photo);
-      const smaller = file === undefined ? undefined : await shrink(file);
-      if (smaller) {
-        const id = newId();
-        await media.store(smaller.file, id, signal);
-        const { file: _, ...changes } = smaller;
-        replaced.set(photo.id, { ...photo, ...changes, rotation: 0, id });
-      }
-      onProgress?.(index + 1, photos.length);
-    }
-    signal?.throwIfAborted();
+    replaced = await shrunkPhotoAssets(
+      project,
+      shrink,
+      read,
+      newId,
+      async (copy, file) => {
+        await media.store(file, copy.id, signal);
+        stored.push(copy.id);
+      },
+      onProgress,
+      signal,
+    );
   } catch (error) {
     await discard();
     throw error;
   }
   if (replaced.size === 0) return { shrunk: 0, before, after: before };
 
-  const next: Project = {
-    ...project,
-    assets: project.assets.map((asset) => replaced.get(asset.id) ?? asset),
-    clips: project.clips.map((clip) => {
-      const copy = replaced.get(clip.assetId);
-      return copy ? { ...clip, assetId: copy.id } : clip;
-    }),
-  };
+  const next = replaceAssets(project, replaced);
   const saved = await repository.save(next);
   if (saved.kind === "conflict") {
     await discard();

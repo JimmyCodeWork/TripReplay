@@ -20,7 +20,9 @@ The maintainer asked for smaller media as a choice at import, when backing up, a
 3. **Only when it helps.** A copy is kept only when it is at least a fifth smaller than the original. Photos the browser cannot decode (such as HEIC outside Safari) and animated GIFs stay as they are.
 4. **At import, by choice.** A **Make imported photos smaller** checkbox in the Media tab chooses whether an import stores smaller copies. It is on until the user turns it off, and the choice is kept in the browser. The original's content hash stays with the asset, so importing the original again is still recognized as a duplicate.
 5. **For a trip already imported.** **Shrink photos** on a trip in the trip list replaces the trip's photos with smaller copies, after showing how many photos there are and how much space they take, and asking to confirm. It works on a trip that is not open. Each copy is stored under a new asset id and the trip is saved once, so an interrupted run leaves the trip unchanged. The originals are then removed unless another trip uses them, as a duplicated trip does. The change cannot be undone in TripReplay; the user is told to back up first to keep the full-size photos.
-6. **Next steps.** Making media smaller when backing up, a quality choice for exported videos, and smaller copies of videos (1080p) follow in separate changes. Videos need decoding and encoding again, which needs its own decision on the tools.
+6. **When backing up, by choice.** **Back up** asks for **Full size** or **Smaller photos**. With smaller photos, the package holds the copies under new asset ids, so that restoring it where the full-size photos are stored keeps both; the trip on the device is not changed. The copies are made after the user has chosen where to save the file.
+7. **Exported videos.** Besides 1080p or 720p, the export offers a file size: larger, standard or smaller, at 6, 4 or 2 bits per second for each pixel of a frame (about 12, 8 and 4 Mbit/s at 1080p), and shows the expected size of the video.
+8. **Next step.** Smaller copies of videos (1080p) follow in a separate change. Videos need decoding and encoding again, which needs its own decision on the tools.
 
 ## Alternatives Considered
 
@@ -31,5 +33,6 @@ The maintainer asked for smaller media as a choice at import, when backing up, a
 ## Consequences
 
 - With the checkbox on, a trip of phone photos takes a fraction of the space, and so do its backups.
+- A backup with smaller photos holds the copies in memory while it is written, about 1 MB for each photo, unlike a full-size backup, which streams the stored files.
 - Photos stored smaller cannot be made full size again in TripReplay; the original files on the device are not changed.
 - A recap exported at 4K, if ever offered, would not be sharper for photos stored smaller.

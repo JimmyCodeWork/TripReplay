@@ -11,6 +11,7 @@ export { PlaceSearchBox, type PlaceSearchBoxProps } from "./places/PlaceSearchBo
 export {
   ExportDialog,
   type ExportDialogProps,
+  type ExportFileSize,
   type ExportFormatNames,
   type ExportQuality,
   type ExportState,

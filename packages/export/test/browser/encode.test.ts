@@ -87,6 +87,16 @@ describe("encodeRecap", () => {
     expect(video.videoWidth).toBe(320);
   });
 
+  it("sets the video bit rate from the chosen file size", async () => {
+    const size = { width: 320, height: 180, fps: 30 };
+    const rates = await Promise.all(
+      (["large", "standard", "small"] as const).map(
+        async (fileSize) => (await chooseFormat(size, SAMPLE_RATE, CHANNELS, fileSize))?.video.config.bitrate,
+      ),
+    );
+    expect(rates).toEqual([320 * 180 * 6, 320 * 180 * 4, 320 * 180 * 2]);
+  });
+
   it("stops when cancelled", async () => {
     const size = { width: 160, height: 90, fps: 30 };
     const format = await chooseFormat(size, SAMPLE_RATE, CHANNELS);

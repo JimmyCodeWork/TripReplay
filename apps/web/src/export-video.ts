@@ -10,6 +10,7 @@ import {
   type ExportProgress,
   type ExportSize,
   encodeRecap,
+  type FileSize,
   type FrameDescription,
   mixAudio,
   planAudio,
@@ -47,10 +48,15 @@ export function exportSize(timeline: Timeline, quality: ExportQuality): ExportSi
     : { width: long, height: short, fps: FPS };
 }
 
-/** Bytes the video is expected to take, from the encoders' bit rates, with room to spare. */
-function expectedBytes(format: ExportFormat, durationUs: number): number {
+/** Bytes the video should take, from the encoders' bit rates; the encoders keep close to them. */
+export function estimatedBytes(format: ExportFormat, durationUs: number): number {
   const bits = (format.video.config.bitrate ?? 8_000_000) + (format.audio?.config.bitrate ?? 128_000);
-  return Math.ceil((bits / 8) * (durationUs / 1_000_000) * 1.5);
+  return Math.ceil((bits / 8) * (durationUs / 1_000_000));
+}
+
+/** Bytes the video is expected to take, with room to spare. */
+function expectedBytes(format: ExportFormat, durationUs: number): number {
+  return Math.ceil(estimatedBytes(format, durationUs) * 1.5);
 }
 
 type Picture = { readonly image: CanvasImageSource; readonly width: number; readonly height: number };
@@ -152,6 +158,7 @@ async function decodeSounds(services: Services, assetIds: readonly string[]): Pr
 export interface ExportOptions {
   readonly timeline: Timeline;
   readonly quality: ExportQuality;
+  readonly fileSize: FileSize;
   readonly files: readonly MapFiles[];
   readonly labels: RecapLabels;
   /** The trip's photos and videos, for the sizes recorded at import. */
@@ -168,8 +175,12 @@ export interface ExportResult {
 }
 
 /** Whether this browser can export at all, for the dialog to say so before anything starts. */
-export async function canExport(timeline: Timeline, quality: ExportQuality): Promise<ExportFormat | undefined> {
-  return chooseFormat(exportSize(timeline, quality), SAMPLE_RATE, CHANNELS);
+export async function canExport(
+  timeline: Timeline,
+  quality: ExportQuality,
+  fileSize: FileSize,
+): Promise<ExportFormat | undefined> {
+  return chooseFormat(exportSize(timeline, quality), SAMPLE_RATE, CHANNELS, fileSize);
 }
 
 /**
@@ -180,7 +191,7 @@ export async function canExport(timeline: Timeline, quality: ExportQuality): Pro
 export async function exportVideo(services: Services, options: ExportOptions): Promise<ExportResult> {
   const { timeline, signal } = options;
   const size = exportSize(timeline, options.quality);
-  const format = await chooseFormat(size, SAMPLE_RATE, CHANNELS);
+  const format = await chooseFormat(size, SAMPLE_RATE, CHANNELS, options.fileSize);
   if (!format) throw new ExportFailure("unsupported");
   const estimate = await navigator.storage?.estimate?.().catch(() => undefined);
   if (estimate?.quota !== undefined && estimate.usage !== undefined) {

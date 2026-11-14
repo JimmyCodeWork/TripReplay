@@ -132,7 +132,7 @@ If no downloaded map contains your stops, the preview says so and draws the reca
 
 To keep or share the recap, select **Export video** under the preview.
 
-1. Choose **1080p (sharper)** or **720p (faster, smaller file)**. The dialog says which format your device will produce.
+1. Choose **1080p (sharper)** or **720p (faster, smaller file)**, and a **File size**: **Larger file (sharpest)**, **Standard** or **Smaller file (for sharing)**. The dialog says which format your device will produce and about how large the video will be.
 2. Select **Start export** and keep TripReplay open and in front until it finishes; the export stops if the app goes to the background. Each frame waits for the map to be drawn, so a recap of a few minutes can take several minutes.
 3. Select **Save video** and choose where to keep it. In the Android application, the system's save screen opens.
 
@@ -142,7 +142,7 @@ The video is made entirely on your device; nothing is uploaded.
 
 The browser can clear stored data, for example when the device runs out of space or, in Safari, after a website has not been used for some time ([Browser Support](browser-support.md)). Back up the trips you care about.
 
-- **Back up.** In **Trips**, select **Back up** on a trip. TripReplay saves one `.tripreplay` file with the trip, its journal, its music and all its photos and videos. Chrome, Edge and the Android application ask where to save it; other browsers put it in your downloads folder.
+- **Back up.** In **Trips**, select **Back up** on a trip. Choose **Full size** to keep the photos as stored, or **Smaller photos** to put copies at most 2560 pixels on their longest side in the backup, for a much smaller file; the trip on this device is not changed either way. TripReplay saves one `.tripreplay` file with the trip, its journal, its music and all its photos and videos. Chrome, Edge and the Android application ask where to save it; other browsers put it in your downloads folder.
 - **Restore.** Select **Restore backup** and choose a `.tripreplay` file. If the trip is already on this device, you can **Restore as a copy**; the existing trip is not changed.
 
 A backup also moves a trip to another device or browser: back it up on one and restore it on the other. Maps are not part of a backup; download them again on the new device.

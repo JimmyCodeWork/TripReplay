@@ -11,16 +11,25 @@ export interface ExportSize {
   readonly fps: number;
 }
 
-/** Bits per second of video for a frame size, about 8 Mbit/s at 1080p. */
-const bitrate = ({ width, height }: ExportSize) => Math.round(width * height * 4);
+/**
+ * How much of the picture the encoder keeps, as bits per second for each pixel of a frame: the
+ * standard is about 8 Mbit/s at 1080p; a larger file keeps fine detail such as map labels in
+ * motion, a smaller one suits sharing.
+ */
+export const FILE_SIZES = { large: 6, standard: 4, small: 2 } as const;
+export type FileSize = keyof typeof FILE_SIZES;
+
+/** Bits per second of video for a frame size and file size. */
+const bitrate = ({ width, height }: ExportSize, fileSize: FileSize) =>
+  Math.round(width * height * FILE_SIZES[fileSize]);
 
 /**
  * Video codecs in order of preference. H.264 plays everywhere and is what phones and Chrome
  * encode; VP9 and AV1 also go in MP4 and are used where H.264 cannot be encoded.
  */
-function videoCandidates(size: ExportSize): ExportFormat["video"][] {
+function videoCandidates(size: ExportSize, fileSize: FileSize): ExportFormat["video"][] {
   const large = Math.max(size.width, size.height) > 1280;
-  const base = { width: size.width, height: size.height, framerate: size.fps, bitrate: bitrate(size) };
+  const base = { width: size.width, height: size.height, framerate: size.fps, bitrate: bitrate(size, fileSize) };
   return [
     { mux: "avc", config: { ...base, codec: large ? "avc1.640028" : "avc1.64001f", avc: { format: "avc" } } },
     { mux: "avc", config: { ...base, codec: large ? "avc1.4d0028" : "avc1.4d001f", avc: { format: "avc" } } },
@@ -45,10 +54,11 @@ export async function chooseFormat(
   size: ExportSize,
   sampleRate: number,
   numberOfChannels: number,
+  fileSize: FileSize = "standard",
 ): Promise<ExportFormat | undefined> {
   if (typeof VideoEncoder === "undefined") return undefined;
   let video: ExportFormat["video"] | undefined;
-  for (const candidate of videoCandidates(size)) {
+  for (const candidate of videoCandidates(size, fileSize)) {
     const { supported } = await VideoEncoder.isConfigSupported(candidate.config).catch(() => ({ supported: false }));
     if (supported) {
       video = candidate;

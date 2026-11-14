@@ -2,13 +2,14 @@ import type { Timeline } from "@tripreplay/app";
 import type { Locale, Translate } from "@tripreplay/i18n";
 import type { MapFiles } from "@tripreplay/map";
 import type { RecapLabels } from "@tripreplay/renderer";
-import { ExportDialog, type ExportQuality, type ExportState } from "@tripreplay/ui";
+import { ExportDialog, type ExportFileSize, type ExportQuality, type ExportState } from "@tripreplay/ui";
 import { useEffect, useRef, useState } from "react";
 import {
   canExport,
   ExportFailure,
   type ExportOptions,
   type ExportResult,
+  estimatedBytes,
   exportVideo,
   saveVideo,
   videoFileName,
@@ -53,6 +54,7 @@ export function ExportVideo({
   t,
 }: ExportVideoProps) {
   const [quality, setQuality] = useState<ExportQuality>("1080p");
+  const [fileSize, setFileSize] = useState<ExportFileSize>("standard");
   const [state, setState] = useState<ExportState>({ kind: "checking" });
   const controller = useRef<AbortController | undefined>(undefined);
   const result = useRef<ExportResult | undefined>(undefined);
@@ -61,7 +63,7 @@ export function ExportVideo({
   useEffect(() => {
     let current = true;
     setState({ kind: "checking" });
-    void canExport(timeline, quality).then((format) => {
+    void canExport(timeline, quality, fileSize).then((format) => {
       if (!current) return;
       setState(
         format
@@ -71,6 +73,7 @@ export function ExportVideo({
                 video: CODEC_NAMES[format.video.mux] ?? format.video.mux,
                 audio: format.audio ? (CODEC_NAMES[format.audio.mux] ?? format.audio.mux) : undefined,
               },
+              bytes: estimatedBytes(format, timeline.durationUs),
             }
           : { kind: "failed", reason: "unsupported" },
       );
@@ -78,7 +81,7 @@ export function ExportVideo({
     return () => {
       current = false;
     };
-  }, [timeline, quality]);
+  }, [timeline, quality, fileSize]);
 
   const start = async () => {
     const abort = new AbortController();
@@ -89,6 +92,7 @@ export function ExportVideo({
       const done = await exportVideo(services, {
         timeline,
         quality,
+        fileSize,
         files: await files(),
         labels,
         assets,
@@ -138,6 +142,8 @@ export function ExportVideo({
       state={state}
       quality={quality}
       onQuality={setQuality}
+      fileSize={fileSize}
+      onFileSize={setFileSize}
       onStart={() => void start()}
       onClose={close}
       onSave={() => void save()}

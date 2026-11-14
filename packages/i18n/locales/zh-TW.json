@@ -731,6 +731,21 @@
   "export.title": {
     "message": "匯出影片"
   },
+  "export.fileSize": {
+    "message": "檔案大小"
+  },
+  "export.size.large": {
+    "message": "較大檔案（最清晰）"
+  },
+  "export.size.standard": {
+    "message": "標準"
+  },
+  "export.size.small": {
+    "message": "較小檔案（適合分享）"
+  },
+  "export.estimate": {
+    "message": "影片約 {size}。"
+  },
   "export.quality": {
     "message": "畫質"
   },
@@ -1084,6 +1099,15 @@
   },
   "backup.fileType": {
     "message": "TripReplay 備份"
+  },
+  "backup.choose": {
+    "message": "備份「{title}」時要保留照片原尺寸，還是縮小照片（長邊最多 2560 像素）以大幅縮小檔案？無論哪一種，這裡的旅行都不會變更。"
+  },
+  "backup.full": {
+    "message": "原尺寸"
+  },
+  "backup.smaller": {
+    "message": "縮小照片"
   },
   "backup.working": {
     "message": "正在備份…"
