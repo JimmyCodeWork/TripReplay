@@ -34,6 +34,7 @@ import {
   useSyncExternalStore,
 } from "react";
 import { ExportVideo } from "./ExportVideo.tsx";
+import { McpConnection } from "./McpConnection.tsx";
 import { NATIVE } from "./platform.ts";
 import { createPreviewMedia } from "./preview-media.ts";
 import { animationClock, createRecapSurface } from "./recap-surface.ts";
@@ -394,6 +395,7 @@ function EditorView({ editor, services, locale, t, onClose }: EditorViewProps) {
             {t("workspace.agentTools")}
           </button>
         )}
+        {!NATIVE && <McpConnection editor={editor} newId={services.newId} t={t} />}
         <span className="workspace-save" role="status">
           {saveText(state.save, t)}
         </span>

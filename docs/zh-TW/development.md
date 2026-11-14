@@ -78,6 +78,7 @@ pnpm run hooks:install   # 選用；見「本機驗證」
 | 路徑 | 內容 |
 |---|---|
 | `apps/web/` | Web 應用程式：建立轉接器並掛載介面的組合根 |
+| `apps/mcp/` | TripReplay MCP server（[ADR 0012](adr/0012-mcp-server.md)）：以標準輸入與輸出供代理使用 MCP，並在 `127.0.0.1:4174` 提供 WebSocket 給 TripReplay；`pnpm --filter @tripreplay/mcp start` 可執行它，`test/` 為其 Node 測試 |
 | `apps/android/` | Android 應用程式（[ADR 0008](adr/0008-android-in-1-0.md)）：Capacitor 設定與 `android/` 中的 Gradle 專案，含用於備份的 `SaveFile` 外掛 |
 | `packages/` | 產品套件：`domain`、`themes`、`i18n`、`timeline`、`app`、`renderer`、`map`、`media`、`audio`、`storage`、`ui`；其餘依[應用程式架構 §3](architecture.md#3-套件) 規劃 |
 | `packages/domain/` | 資料模型、不變條件及純函式的編輯操作 |

@@ -97,6 +97,29 @@ You can then ask the agent, for example, to add the stops of a day from your not
 
 What the agent reads is sent to it and usually to the service behind it ([Privacy Statement §3](privacy.md#3-the-browsers-ai-agent)), so turn **AI agent** on only for trips you are willing to share with it. The Android application does not have this button.
 
+### Use an AI agent on your computer (MCP)
+
+Agents such as Claude Desktop and Claude Code can work on the open trip through the TripReplay MCP server, which runs on your computer ([ADR 0012](adr/0012-mcp-server.md)). It is off until you turn it on, and the Android application does not have it.
+
+1. Get the source code and start TripReplay once with a launcher (§1), which installs what the server needs. Node.js 24 or later is required.
+2. Add the server to your agent, with the path of your copy of the source:
+   - **Claude Desktop:** in `claude_desktop_config.json` (on Windows in `%APPDATA%\Claude\`, on macOS in `~/Library/Application Support/Claude/`), add:
+
+     ```json
+     {
+       "mcpServers": {
+         "tripreplay": { "command": "node", "args": ["C:\\path\\to\\TripReplay\\apps\\mcp\\src\\main.ts"] }
+       }
+     }
+     ```
+
+     and restart Claude Desktop.
+   - **Claude Code:** run `claude mcp add tripreplay -- node /path/to/TripReplay/apps/mcp/src/main.ts`.
+3. Open a trip in TripReplay in Chrome or Edge on the same computer, at the project's site or at `http://localhost:4173`, and select **MCP** at the top of the trip.
+4. Ask the agent to use TripReplay. The first time, it tells you a six-digit pairing code; enter it in TripReplay and select **Connect**. The browser may ask whether the site may connect to devices on your computer or local network; allow it. TripReplay remembers the code in that browser.
+
+The agent then reads the trip's text and changes it like the browser's agent above, and each change can be undone with **Undo**. Select **MCP** again to disconnect. What the agent reads goes to it and usually to the service behind it ([Privacy Statement §3](privacy.md#3-the-browsers-ai-agent)).
+
 ## 6. Add Music
 
 1. Open the **Music** tab and select **Add music**, then choose one or more audio files, such as MP3, M4A or WAV.

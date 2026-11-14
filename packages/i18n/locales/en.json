@@ -907,6 +907,42 @@
     "message": "Undo",
     "description": "Button that undoes the last change; Ctrl+Z does the same."
   },
+  "mcp.button": {
+    "message": "MCP",
+    "description": "Toggle button in the workspace bar of the Web application: connects the open trip to the TripReplay MCP server on this computer, for an agent such as Claude Desktop. Off until the user turns it on."
+  },
+  "mcp.hint": {
+    "message": "Connect this trip to the TripReplay MCP server on this computer, so that an AI agent such as Claude Desktop can read it and edit its stops, journal, notes and timing. What it reads is sent to the agent's service. Changes can be undone.",
+    "description": "Tooltip of the MCP button."
+  },
+  "mcp.askCode": {
+    "message": "Pairing code from the AI agent:",
+    "description": "Label of the field for the six-digit code that the agent shows when TripReplay is not connected."
+  },
+  "mcp.pair": {
+    "message": "Connect",
+    "description": "Button that connects with the pairing code."
+  },
+  "mcp.waiting": {
+    "message": "Waiting for the TripReplay MCP server. Start it in your AI agent, for example by asking it to use TripReplay.",
+    "description": "Shown while TripReplay looks for the MCP server, which runs only while the agent has it started."
+  },
+  "mcp.connected": {
+    "message": "Connected: the AI agent can work on this trip.",
+    "description": "Shown while the MCP server is connected."
+  },
+  "mcp.wrongCode": {
+    "message": "The pairing code was not accepted. Enter the code the AI agent shows:",
+    "description": "Shown, as the field's label, when the server refused the code."
+  },
+  "mcp.replaced": {
+    "message": "Another TripReplay window took over the connection. Select MCP twice to take it back.",
+    "description": "Shown when TripReplay in another tab or window connected to the server."
+  },
+  "mcp.forget": {
+    "message": "Change pairing code",
+    "description": "Link that forgets the stored pairing code, to enter another."
+  },
   "workspace.agentTools": {
     "message": "AI agent",
     "description": "Toggle button in the workspace bar, shown only in browsers with WebMCP: lets the browser's AI agent read and edit the text of the open trip. Off until the user turns it on."

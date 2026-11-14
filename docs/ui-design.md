@@ -109,6 +109,7 @@ On every layout, what the user chooses stays under the finger: when a click or a
 - **Reset timing**, at the start of the row above the timeline, returns the opening, travel, stop title and closing lengths to the theme's and every photo to 3 s, as one command; video trims, music and day lines are kept.
 - Each change is a single command and can be undone with the **Undo** and **Redo** buttons in the workspace bar, beside the save status, or with Ctrl+Z and Ctrl+Shift+Z. The buttons are disabled when there is nothing to undo or redo.
 - Where the browser offers WebMCP, an **AI agent** toggle button follows them. Pressed, it offers the open trip to the browser's AI agent through tools that read the trip and edit its text ([ADR 0010](adr/0010-agent-tools.md)); each change the agent makes is also one step to undo. It is off until the user presses it, and the choice is kept in the browser.
+- In the Web application, an **MCP** toggle button connects the open trip to the TripReplay MCP server on the computer ([ADR 0012](adr/0012-mcp-server.md)). Pressed, it opens a row under the bar that asks for the pairing code the agent shows, then reports whether TripReplay is waiting for the server, connected, refused or replaced by another window, with **Change pairing code**. It is off until the user presses it.
 - The selected stop's segments are highlighted; selecting a segment selects its stop and media in the side panel.
 
 ## 4. Import and Matching Dialog

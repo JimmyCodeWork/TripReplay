@@ -11,12 +11,13 @@ This directory records significant architecture and policy decisions. Each recor
 | [0003](0003-language-and-toolchain.md) | Primary language and toolchain | Accepted |
 | [0004](0004-web-first-release.md) | Web-first, screen-first 1.0 with self-hosted OpenStreetMap tiles | Accepted; map hosting superseded by 0006, platform amended by 0008 |
 | [0005](0005-modular-architecture.md) | Modular, layered application architecture | Accepted |
-| [0006](0006-local-only-operation.md) | Local-only operation: downloaded maps and on-device place search | Accepted |
+| [0006](0006-local-only-operation.md) | Local-only operation: downloaded maps and on-device place search | Accepted; amended by 0012 |
 | [0007](0007-architecture-gate.md) | Architecture gate: renderer, map pipeline and supported browsers | Accepted |
 | [0008](0008-android-in-1-0.md) | An Android application in 1.0, built with Capacitor | Accepted |
 | [0009](0009-export-in-1-0.md) | MP4 export in 1.0, with WebCodecs and mp4-muxer | Accepted |
 | [0010](0010-agent-tools.md) | Tools for the browser's AI agent, offered through WebMCP | Accepted |
 | [0011](0011-smaller-media.md) | Smaller copies of photos and videos | Accepted |
+| [0012](0012-mcp-server.md) | A local MCP server for AI agents, connected by choice | Accepted |
 
 ## Writing a Record
 

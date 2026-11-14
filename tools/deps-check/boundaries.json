@@ -14,6 +14,7 @@
     "storage": ["domain", "app"],
     "ui": ["app", "i18n", "themes"],
     "web": "*",
-    "android": []
+    "android": [],
+    "mcp": ["app"]
   }
 }
