@@ -1,0 +1,4 @@
+# Windows runs .cmd files with CRLF line endings; the shell scripts need LF.
+*.cmd text eol=crlf
+*.sh text eol=lf
+*.command text eol=lf

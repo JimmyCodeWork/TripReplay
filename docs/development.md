@@ -27,6 +27,7 @@ pnpm run hooks:install   # optional; see Local Verification
 | `pnpm run verify` | Run every check that CI runs, in the same order |
 | `pnpm run verify:clean` | Run `verify` in a clean Linux container (requires Docker) |
 | `pnpm run dev` | Start the Web application in development mode (Vite) at `http://localhost:5173` |
+| `pnpm start` | Build the Web application and serve it at `http://localhost:4173`, opening the browser; what the launchers in `launch/` run ([User Guide §1](user-guide.md#1-before-you-start)) |
 | `pnpm run build` | Build the Web application into `apps/web/dist`, with its SBOM, third-party notices and service worker ([Releasing](releasing.md)) |
 | `pnpm run build:native` | Build the page of the Android application into `apps/web/dist-native` |
 | `pnpm run android:build` | Build the Android application into `apps/android/android/app/build/outputs/apk/` (release, unsigned without a key). For a debug APK, run `./gradlew assembleDebug` in `apps/android/android` after the first build |

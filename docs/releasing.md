@@ -50,6 +50,10 @@ The built page carries a Content Security Policy that allows network access only
 
 The release archive is a static site with relative paths, so it can be served from any HTTPS location, including a sub-path. The server must send `.webmanifest` files as `application/manifest+json` and must not cache `sw.js` for long, so that browsers find new versions.
 
+The project's own site is published with GitHub Pages at [https://jimmycodework.github.io/TripReplay/](https://jimmycodework.github.io/TripReplay/). The `Deploy to GitHub Pages` workflow (`.github/workflows/pages.yml`) runs `verify`, builds the Web application and deploys `apps/web/dist` on every push to `main`, and can be run by hand. GitHub Pages sends `.webmanifest` files with the right type and caches files for ten minutes. Before the first deployment, set **Settings → Pages → Build and deployment → Source** to **GitHub Actions** in the repository.
+
+To use TripReplay on a computer without any website, `pnpm start`, or the launchers in `launch/` that run it, builds the application and serves it at `http://localhost:4173` ([User Guide §1](user-guide.md#1-before-you-start)). The port is fixed, because the browser keeps trips for each origin.
+
 ## 4. Android Signing Key
 
 Android installs an update only when it is signed with the same key as the installed application. The key is created once, kept in the repository secrets for the release workflow, and backed up outside GitHub. **If it is lost, users must uninstall the application, and with it their trips, to install a new version.**
