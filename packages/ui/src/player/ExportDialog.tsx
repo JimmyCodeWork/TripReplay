@@ -4,6 +4,8 @@ import { formatBytes } from "../format-bytes.ts";
 import styles from "./ExportDialog.module.css";
 
 export type ExportQuality = "1080p" | "720p";
+/** How much the encoder keeps of the picture, and so the size of the file. */
+export type ExportFileSize = "large" | "standard" | "small";
 
 /** The encodings an export will use, by name, such as H.264 and AAC; no audio means a silent video. */
 export interface ExportFormatNames {
@@ -14,7 +16,12 @@ export interface ExportFormatNames {
 /** What the export dialog shows; the shell runs the export and moves between these. */
 export type ExportState =
   | { readonly kind: "checking" }
-  | { readonly kind: "ready"; readonly format: ExportFormatNames }
+  | {
+      readonly kind: "ready";
+      readonly format: ExportFormatNames;
+      /** The size the video should have, from the encoders' bit rates. */
+      readonly bytes?: number;
+    }
   | {
       readonly kind: "running";
       readonly phase: "audio" | "video" | "finishing";
@@ -32,6 +39,8 @@ export interface ExportDialogProps {
   readonly state: ExportState;
   readonly quality: ExportQuality;
   readonly onQuality: (quality: ExportQuality) => void;
+  readonly fileSize: ExportFileSize;
+  readonly onFileSize: (fileSize: ExportFileSize) => void;
   readonly onStart: () => void;
   /** Stops a running export, or closes the dialog and removes an unsaved video. */
   readonly onClose: () => void;
@@ -44,7 +53,24 @@ export interface ExportDialogProps {
  * Exporting the recap as an MP4 video (docs/ui-design.md §5.1): choose the quality, follow the
  * progress, then save the file. The video is saved only when the user asks, once it is complete.
  */
-export function ExportDialog({ state, quality, onQuality, onStart, onClose, onSave, locale, t }: ExportDialogProps) {
+const FILE_SIZE_LABELS = {
+  large: "export.size.large",
+  standard: "export.size.standard",
+  small: "export.size.small",
+} as const;
+
+export function ExportDialog({
+  state,
+  quality,
+  onQuality,
+  fileSize,
+  onFileSize,
+  onStart,
+  onClose,
+  onSave,
+  locale,
+  t,
+}: ExportDialogProps) {
   const dialog = useRef<HTMLDialogElement>(null);
   const titleId = useId();
   useEffect(() => {
@@ -84,6 +110,24 @@ export function ExportDialog({ state, quality, onQuality, onStart, onClose, onSa
               </label>
             ))}
           </fieldset>
+          <fieldset className={styles.quality}>
+            <legend>{t("export.fileSize")}</legend>
+            {(["large", "standard", "small"] as const).map((value) => (
+              <label key={value}>
+                <input
+                  type="radio"
+                  name="fileSize"
+                  value={value}
+                  checked={fileSize === value}
+                  onChange={() => onFileSize(value)}
+                />
+                {t(FILE_SIZE_LABELS[value])}
+              </label>
+            ))}
+          </fieldset>
+          {state.kind === "ready" && state.bytes !== undefined && (
+            <p className={styles.note}>{t("export.estimate", { size: formatBytes(locale, state.bytes) })}</p>
+          )}
           <p className={styles.note} role="status">
             {state.kind === "checking"
               ? t("export.checking")

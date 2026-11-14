@@ -81,9 +81,11 @@ export {
   type UpdateStatus,
 } from "./regions.ts";
 export {
+  replaceAssets,
   type ShrinkTripOptions,
   type ShrinkTripResult,
   shrinkTripPhotos,
+  shrunkPhotoAssets,
   type TripPhotos,
   tripPhotos,
 } from "./shrink-trip.ts";

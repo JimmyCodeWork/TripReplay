@@ -1,4 +1,5 @@
-import type { Project } from "@tripreplay/domain";
+import { replaceAssets, shrunkPhotoAssets } from "@tripreplay/app";
+import type { Asset, Project } from "@tripreplay/domain";
 import {
   blobMedia,
   blobSource,
@@ -28,16 +29,9 @@ export function backupFileName(title: string, date = new Date()): string {
   return `${safe} ${date.toISOString().slice(0, 10)}${PACKAGE_EXTENSION}`;
 }
 
-/**
- * Backs up a trip with all its media as a project package (docs/project-package.md). In the
- * installed application and where the browser can, the package streams straight into the chosen
- * file; otherwise it is assembled and downloaded. Resolves false when the user cancels the save
- * dialog.
- */
-export async function backupTrip(services: Services, tripId: string, description: string): Promise<boolean> {
-  const project = await services.projects.load(tripId);
-  if (!project) throw new Error(`Trip "${tripId}" is not stored`);
-  const chunks = writeProjectPackage(
+/** The trip with its media as stored. */
+function wholePackage(services: Services, project: Project): AsyncIterable<Uint8Array> {
+  return writeProjectPackage(
     project,
     async (id) => {
       const file = await services.assets.open(id);
@@ -45,6 +39,53 @@ export async function backupTrip(services: Services, tripId: string, description
     },
     new Date(),
   );
+}
+
+/**
+ * The trip with smaller copies of its photos (docs/adr/0011-smaller-media.md); the trip in the
+ * application is not changed. The copies take new asset ids, so that restoring the backup where
+ * the full-size photos are stored keeps both. They are made only once the package is written, after
+ * the user chose where to save it.
+ */
+async function* smallerPackage(services: Services, project: Project): AsyncIterable<Uint8Array> {
+  const copies = new Map<string, Blob>();
+  const shrink = services.media.shrinkPhoto?.bind(services.media);
+  const read = async (asset: Asset) => {
+    const blob = await services.assets.open(asset.id);
+    return blob && new File([blob], asset.fileName, { type: asset.mimeType });
+  };
+  const replaced = shrink
+    ? await shrunkPhotoAssets(project, shrink, read, services.newId, async (copy, file) => {
+        copies.set(copy.id, file);
+      })
+    : new Map();
+  yield* writeProjectPackage(
+    replaceAssets(project, replaced),
+    async (id) => {
+      const copy = copies.get(id);
+      if (copy) return blobMedia(copy);
+      const file = await services.assets.open(id);
+      return file && blobMedia(file);
+    },
+    new Date(),
+  );
+}
+
+/**
+ * Backs up a trip with all its media as a project package (docs/project-package.md). In the
+ * installed application and where the browser can, the package streams straight into the chosen
+ * file; otherwise it is assembled and downloaded. Resolves false when the user cancels the save
+ * dialog.
+ */
+export async function backupTrip(
+  services: Services,
+  tripId: string,
+  description: string,
+  options: { readonly shrinkPhotos?: boolean } = {},
+): Promise<boolean> {
+  const project = await services.projects.load(tripId);
+  if (!project) throw new Error(`Trip "${tripId}" is not stored`);
+  const chunks = options.shrinkPhotos ? smallerPackage(services, project) : wholePackage(services, project);
   const name = backupFileName(project.trip.title);
   if (NATIVE) {
     const { saveFile } = await import("./native-save.ts");

@@ -12,6 +12,8 @@ function setup(state: ExportState) {
       state={current}
       quality="1080p"
       onQuality={(quality) => void calls.push(`quality ${quality}`)}
+      fileSize="standard"
+      onFileSize={(fileSize) => void calls.push(`size ${fileSize}`)}
       onStart={() => void calls.push("start")}
       onClose={() => void calls.push("close")}
       onSave={() => void calls.push("save")}
@@ -28,15 +30,17 @@ describe("ExportDialog", () => {
     const dialog = await view;
     expect(dialog.textContent).toContain("正在確認此裝置可用的編碼格式");
     expect((dialog.querySelector("button:last-of-type") as HTMLButtonElement).disabled).toBe(true);
-    await rerender(ui({ kind: "ready", format: { video: "H.264", audio: "AAC" } }));
+    await rerender(ui({ kind: "ready", format: { video: "H.264", audio: "AAC" }, bytes: 31_000_000 }));
     expect(dialog.textContent).toContain("影片將以 H.264 影像與 AAC 聲音編碼。");
+    expect(dialog.textContent).toContain("影片約 31 MB。");
     await click(dialog, "開始匯出");
     await rerender(ui({ kind: "ready", format: { video: "VP9" } }));
     expect(dialog.textContent).toContain("此裝置無法編碼聲音");
     expect(calls).toEqual(["start"]);
     const radio = dialog.querySelector('input[value="720p"]') as HTMLInputElement;
     radio.click();
-    expect(calls).toEqual(["start", "quality 720p"]);
+    (dialog.querySelector('input[value="small"]') as HTMLInputElement).click();
+    expect(calls).toEqual(["start", "quality 720p", "size small"]);
   });
 
   it("shows the progress, then the size and Save, and explains failures", async () => {
