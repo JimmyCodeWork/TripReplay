@@ -17,6 +17,7 @@
 | [0007](0007-architecture-gate.md) | 架構決策關卡：渲染器、地圖管線與支援的瀏覽器 | 已接受 |
 | [0008](0008-android-in-1-0.md) | 1.0 提供以 Capacitor 建置的 Android 應用程式 | 已接受 |
 | [0009](0009-export-in-1-0.md) | 1.0 提供以 WebCodecs 與 mp4-muxer 實作的 MP4 匯出 | 已接受 |
+| [0010](0010-agent-tools.md) | 透過 WebMCP 為瀏覽器的 AI 代理提供工具 | 已接受 |
 
 ## 撰寫紀錄
 

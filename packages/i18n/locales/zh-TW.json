@@ -680,6 +680,36 @@
   "workspace.undo": {
     "message": "復原"
   },
+  "workspace.agentTools": {
+    "message": "AI 代理"
+  },
+  "workspace.agentToolsHint": {
+    "message": "讓此瀏覽器內建的 AI 代理讀取這趟旅行，並編輯其景點、日記、備註與時間設定。它讀取的內容會傳送到該代理的服務。所有變更都可以復原。"
+  },
+  "agent.tool.getTrip": {
+    "message": "讀取旅行"
+  },
+  "agent.tool.renameTrip": {
+    "message": "重新命名旅行"
+  },
+  "agent.tool.addStop": {
+    "message": "新增景點"
+  },
+  "agent.tool.updateStop": {
+    "message": "編輯景點"
+  },
+  "agent.tool.setDayNote": {
+    "message": "設定當日開場文字"
+  },
+  "agent.tool.setMediaNote": {
+    "message": "設定照片或影片備註"
+  },
+  "agent.tool.setPhotoDuration": {
+    "message": "設定照片秒數"
+  },
+  "agent.tool.setTiming": {
+    "message": "設定回顧時間"
+  },
   "workspace.redo": {
     "message": "重做"
   },

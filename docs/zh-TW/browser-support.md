@@ -35,6 +35,7 @@ Android 應用程式（[ADR 0008](adr/0008-android-in-1-0.md)）可在 Android 7
 | 安裝為應用程式 | 網址列中的安裝按鈕或瀏覽器選單 | 桌面版不提供。Android 上請使用瀏覽器的安裝選項（若有） | macOS：「**檔案 → 加入 Dock**」。iPhone 與 iPad：「**分享 → 加入主畫面**」 |
 | 儲存備份 | 詢問儲存位置並直接寫入檔案 | 存到下載資料夾 | 存到下載資料夾 |
 | 影片匯出 | H.264 影像與 AAC 聲音（Linux 上的 Chrome：VP9 與 Opus） | VP9 或 AV1 影像與 Opus 聲音；多數播放器可播放，但部分較舊的內建播放器不支援 | H.264 影像與 AAC 聲音 |
+| AI 代理（WebMCP，[ADR 0010](adr/0010-agent-tools.md)） | 截至 2026 年 11 月，桌面版 Chrome 149 至 156，須網站參與 WebMCP 來源試用，或開啟 `chrome://flags/#enable-webmcp-testing` | 不支援 | 不支援 |
 | 全螢幕播放 | 支援 | 支援 | Mac 與 iPad：支援。iPhone：瀏覽器不允許網頁進入全螢幕；請將手機轉為橫向並使用預覽 |
 | HEIC 照片（iPhone 的預設格式） | 無法顯示；請見 §3 | 無法顯示；請見 §3 | 可顯示 |
 | HEVC（H.265）影片 | 裝置能解碼 HEVC 時可播放 | 視系統與版本而定 | 支援 |

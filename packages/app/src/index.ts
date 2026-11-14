@@ -11,6 +11,7 @@ export type {
   Segment,
   Timeline,
 } from "@tripreplay/timeline";
+export { type AgentTool, type AgentToolContext, agentTools, describeTrip, type InputSchema } from "./agent-tools.ts";
 export { AUTOSAVE_DELAY_MS, type SaveStatus } from "./autosave.ts";
 export { applyCommand, type Command } from "./commands.ts";
 export { createEditor, type DispatchResult, type Editor, type EditorOptions, type EditorState } from "./editor.ts";

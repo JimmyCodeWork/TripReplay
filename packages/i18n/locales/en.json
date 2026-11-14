@@ -907,6 +907,46 @@
     "message": "Undo",
     "description": "Button that undoes the last change; Ctrl+Z does the same."
   },
+  "workspace.agentTools": {
+    "message": "AI agent",
+    "description": "Toggle button in the workspace bar, shown only in browsers with WebMCP: lets the browser's AI agent read and edit the text of the open trip. Off until the user turns it on."
+  },
+  "workspace.agentToolsHint": {
+    "message": "Let the AI agent built into this browser read this trip and edit its stops, journal, notes and timing. What it reads is sent to the agent's service. Changes can be undone.",
+    "description": "Tooltip of the AI agent toggle button."
+  },
+  "agent.tool.getTrip": {
+    "message": "Read the trip",
+    "description": "Label of an AI agent tool, shown by the browser when the agent uses it: reads the open trip."
+  },
+  "agent.tool.renameTrip": {
+    "message": "Rename the trip",
+    "description": "Label of an AI agent tool, shown by the browser when the agent uses it."
+  },
+  "agent.tool.addStop": {
+    "message": "Add a stop",
+    "description": "Label of an AI agent tool, shown by the browser when the agent uses it."
+  },
+  "agent.tool.updateStop": {
+    "message": "Edit a stop",
+    "description": "Label of an AI agent tool, shown by the browser when the agent uses it: name, location, journal or day of a stop."
+  },
+  "agent.tool.setDayNote": {
+    "message": "Set a day's line",
+    "description": "Label of an AI agent tool, shown by the browser when the agent uses it: the line shown as a day of the trip begins."
+  },
+  "agent.tool.setMediaNote": {
+    "message": "Set a photo or video note",
+    "description": "Label of an AI agent tool, shown by the browser when the agent uses it."
+  },
+  "agent.tool.setPhotoDuration": {
+    "message": "Set a photo's duration",
+    "description": "Label of an AI agent tool, shown by the browser when the agent uses it."
+  },
+  "agent.tool.setTiming": {
+    "message": "Set the recap timing",
+    "description": "Label of an AI agent tool, shown by the browser when the agent uses it: lengths of the opening, travel, titles and closing."
+  },
   "workspace.redo": {
     "message": "Redo",
     "description": "Button that redoes the change last undone; Ctrl+Shift+Z does the same."
