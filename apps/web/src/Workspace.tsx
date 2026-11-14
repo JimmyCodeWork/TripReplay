@@ -38,6 +38,7 @@ import { NATIVE } from "./platform.ts";
 import { createPreviewMedia } from "./preview-media.ts";
 import { animationClock, createRecapSurface } from "./recap-surface.ts";
 import type { Services } from "./services.ts";
+import { AGENT_TOOLS_KEY, agentBridge } from "./web-mcp.ts";
 
 const scheduler: Scheduler = {
   schedule(delayMs, callback) {
@@ -87,6 +88,55 @@ type Tab = (typeof TABS)[number];
 
 const REDUCED_MOTION_KEY = "tripreplay.reducedMotion";
 
+/** Labels of the agent tools for people, by the names agents call them by. */
+const AGENT_TOOL_TITLES = {
+  get_trip: "agent.tool.getTrip",
+  rename_trip: "agent.tool.renameTrip",
+  add_stop: "agent.tool.addStop",
+  update_stop: "agent.tool.updateStop",
+  set_day_note: "agent.tool.setDayNote",
+  set_media_note: "agent.tool.setMediaNote",
+  set_photo_duration: "agent.tool.setPhotoDuration",
+  set_timing: "agent.tool.setTiming",
+} as const;
+
+/**
+ * Offers the open trip to the browser's AI agent through WebMCP while the user has turned it on
+ * (docs/adr/0010-agent-tools.md). Returns undefined where the browser offers no WebMCP, else
+ * whether it is on and how to turn it on or off; the choice is kept in the browser.
+ */
+function useAgentTools(editor: Editor, services: Services, t: Translate) {
+  const bridge = useMemo(
+    () =>
+      agentBridge(
+        (name) => (name in AGENT_TOOL_TITLES ? t(AGENT_TOOL_TITLES[name as keyof typeof AGENT_TOOL_TITLES]) : name),
+        services.newId,
+      ),
+    [services, t],
+  );
+  const [on, setOn] = useState(() => {
+    try {
+      return localStorage.getItem(AGENT_TOOLS_KEY) === "true";
+    } catch {
+      return false;
+    }
+  });
+  useEffect(() => {
+    if (!bridge || !on) return;
+    bridge.set({ project: () => editor.getState().project, dispatch: (command) => editor.dispatch(command) });
+    return () => bridge.set(undefined);
+  }, [bridge, editor, on]);
+  const choose = useCallback((next: boolean) => {
+    setOn(next);
+    try {
+      localStorage.setItem(AGENT_TOOLS_KEY, String(next));
+    } catch {
+      // Storage can be unavailable, for example in a private window; the choice then lasts for this visit.
+    }
+  }, []);
+  return bridge ? ([on, choose] as const) : undefined;
+}
+
 /**
  * Whether the recap cross-fades instead of flying: the user's choice in the player, kept in this
  * browser, or else the system's "Reduce motion" setting.
@@ -129,6 +179,7 @@ interface EditorViewProps {
 
 function EditorView({ editor, services, locale, t, onClose }: EditorViewProps) {
   const state = useSyncExternalStore(editor.subscribe, editor.getState);
+  const agentTools = useAgentTools(editor, services, t);
   const regions = useSyncExternalStore(services.regions.subscribe, services.regions.getState);
   const [selectedId, setSelectedId] = useState<string | undefined>();
   const { project } = state;
@@ -299,6 +350,17 @@ function EditorView({ editor, services, locale, t, onClose }: EditorViewProps) {
             ↷ {t("workspace.redo")}
           </button>
         </span>
+        {agentTools && (
+          <button
+            type="button"
+            className="header-button"
+            aria-pressed={agentTools[0]}
+            title={t("workspace.agentToolsHint")}
+            onClick={() => agentTools[1](!agentTools[0])}
+          >
+            {t("workspace.agentTools")}
+          </button>
+        )}
         <span className="workspace-save" role="status">
           {saveText(state.save, t)}
         </span>

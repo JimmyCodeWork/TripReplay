@@ -1,3 +1,4 @@
+export { dayOfTrip } from "./calendar.ts";
 export { compile } from "./compile.ts";
 export {
   DUCK_GAIN,

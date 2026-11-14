@@ -4,7 +4,7 @@ English | [繁體中文](zh-TW/privacy.md)
 
 | | |
 |---|---|
-| Date | 2026-10-30 |
+| Date | 2026-11-14 |
 | Applies to | TripReplay 1.0, the Web application and the Android application |
 
 TripReplay processes your trips, photos, videos, journal and music only on your device. It has no account, no analytics, no advertising and no server of its own. This statement lists every network request the application makes, and what it stores on your device.
@@ -20,7 +20,7 @@ The application makes the following requests, and no others. The built page carr
 
 In particular:
 
-- **No trip data leaves the device.** Trips, stops, journal entries, photos, videos, music, their metadata (such as GPS positions and capture times) and backups are never sent anywhere.
+- **No trip data leaves the device.** Trips, stops, journal entries, photos, videos, music, their metadata (such as GPS positions and capture times) and backups are never sent anywhere by TripReplay. If you turn on **AI agent** in a trip, the browser's own AI agent can read that trip's text (§3).
 - **Your location stays on the device.** "Use current location" in **Maps** reads the device's position once, only when you select it, to find the regions you are in. It is not stored or sent anywhere.
 - **Place search runs on the device**, in the downloaded maps. Searches, pasted coordinates and pasted map links are not sent anywhere; a short map link that only its service can resolve is not opened.
 - **No other services are contacted**: no fonts, map styles, telemetry, crash reports or update checks of other parties.
@@ -37,11 +37,24 @@ Everything TripReplay stores is kept by your browser for the website you opened 
 | IndexedDB | Trips (itinerary, journal, settings) and the records of downloaded maps |
 | Origin private file system | Map files, and copies of the photos, videos and music you added |
 | Cache storage | The application's own files, so that it starts without a connection |
-| Local storage | Your "Reduce motion" choice in the preview, and your favorite map regions |
+| Local storage | Your "Reduce motion" choice in the preview, your favorite map regions, and whether the browser's AI agent may use the open trip |
 
 The browser may clear this data, for example when the device is short of space ([Browser Support §3](browser-support.md#3-known-issues)). Back up trips you want to keep ([User Guide §9](user-guide.md#9-back-up-and-restore)).
 
-## 3. The Android Application
+## 3. The Browser's AI Agent
+
+Some browsers have an AI agent built in, which websites can offer tools to through WebMCP ([ADR 0010](adr/0010-agent-tools.md)). Where the browser offers it, the workspace shows an **AI agent** button. It is off until you turn it on, and the choice is kept in the browser.
+
+While it is on and a trip is open, the agent can:
+
+- read the trip's text: its title, dates, day lines, stops with their names, locations and journal entries, and the file names, notes and durations of its photos and videos;
+- rename the trip, add and change stops, and set day lines, notes, photo durations and the recap timing. Each change can be undone.
+
+The agent cannot read photos, videos or music, remove anything, import files or open other trips.
+
+TripReplay sends nothing itself, but what the agent reads goes to the agent, and usually to the service behind it, under that service's privacy policy. Turn **AI agent** on only for trips whose text you are willing to share with it, and off when you are done.
+
+## 4. The Android Application
 
 The Android application ([ADR 0008](adr/0008-android-in-1-0.md)) contains the same application and makes the same map requests. It differs in these points:
 
@@ -49,15 +62,16 @@ The Android application ([ADR 0008](adr/0008-android-in-1-0.md)) contains the sa
 - It asks Android for network access, which the map downloads need, and for location, which only "Use current location" uses and asks for when you first select it. Approximate location is enough.
 - It stores its data in the application's own storage on the device, separate from any browser. Uninstalling the application deletes that data.
 - Android's automatic backup is turned off for the application, so trips and media are not copied to a Google account. Use TripReplay's own backup (§2) instead.
+- It does not offer tools to an AI agent: the Android System WebView has no WebMCP.
 
-## 4. Files You Choose
+## 5. Files You Choose
 
 TripReplay reads only the files you choose: photos, videos, music, map files and backups. It copies them into its storage on your device. A backup file that you save contains a whole trip with its media, including their GPS positions; share it only with people who may see them.
 
-## 5. Links
+## 6. Links
 
 The **Open-source licenses** link opens a file of the application itself. Links in this documentation, such as the issue tracker, lead to other websites with their own privacy policies.
 
-## 6. Changes and Contact
+## 7. Changes and Contact
 
 Changes to this statement are recorded in the [changelog](../CHANGELOG.md). Report a privacy problem as described in the [Security Policy](../SECURITY.md).

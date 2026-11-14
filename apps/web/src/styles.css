@@ -120,7 +120,8 @@ body {
   cursor: pointer;
 }
 
-.header-button[aria-current="true"] {
+.header-button[aria-current="true"],
+.header-button[aria-pressed="true"] {
   border-color: var(--color-accent);
   color: var(--color-accent);
 }

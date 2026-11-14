@@ -15,6 +15,7 @@ This directory records significant architecture and policy decisions. Each recor
 | [0007](0007-architecture-gate.md) | Architecture gate: renderer, map pipeline and supported browsers | Accepted |
 | [0008](0008-android-in-1-0.md) | An Android application in 1.0, built with Capacitor | Accepted |
 | [0009](0009-export-in-1-0.md) | MP4 export in 1.0, with WebCodecs and mp4-muxer | Accepted |
+| [0010](0010-agent-tools.md) | Tools for the browser's AI agent, offered through WebMCP | Accepted |
 
 ## Writing a Record
 

@@ -86,6 +86,14 @@ The **Journal** tab is a diary of the trip. For each day, you can write a line t
 - Notes on photos and videos are shown over the bottom of the picture, in up to two lines, shortly after it appears.
 - An entry is saved when you leave the field, or with **Ctrl+Enter** (**⌘+Enter** on a Mac).
 
+### Write with the browser's AI agent
+
+Some desktop browsers have an AI agent built in. Where yours offers its tools to websites (WebMCP), an **AI agent** button appears at the top of the trip. Select it to let the agent work on the open trip; select it again to stop. It stays off until you turn it on.
+
+You can then ask the agent, for example, to add the stops of a day from your notes, to write a journal entry or captions in your style, or to give each stop a shorter title. The agent reads the trip's text and changes it with the same steps as the interface, so you see each change at once and can undo it with **Undo**. It cannot see your photos and videos, delete anything or import files.
+
+What the agent reads is sent to it and usually to the service behind it ([Privacy Statement §3](privacy.md#3-the-browsers-ai-agent)), so turn **AI agent** on only for trips you are willing to share with it. The Android application does not have this button.
+
 ## 6. Add Music
 
 1. Open the **Music** tab and select **Add music**, then choose one or more audio files, such as MP3, M4A or WAV.
