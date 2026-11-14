@@ -7,6 +7,7 @@ export {
   inspectMediaFile,
   type MediaPortOptions,
 } from "./media-port.ts";
+export { SHRUNK_PHOTO_SIZE, type ShrunkImage, shrinkPhoto } from "./shrink-photo.ts";
 export {
   isHeif,
   parseIso6709,

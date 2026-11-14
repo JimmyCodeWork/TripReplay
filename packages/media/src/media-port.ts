@@ -1,6 +1,7 @@
 import { type AssetStore, MediaFailure, type MediaInfo, type MediaPort } from "@tripreplay/app";
 import { audioFormat } from "./audio-format.ts";
 import { IMAGE_HEAD_BYTES, readImageMetadata } from "./image-metadata.ts";
+import { shrinkPhoto } from "./shrink-photo.ts";
 import { isHeif, readVideoMetadata, type VideoMetadata } from "./video-metadata.ts";
 
 /** Files up to this size are hashed whole; larger ones from samples, see `contentHash`. */
@@ -183,5 +184,11 @@ export function createMediaPort({ store }: MediaPortOptions): MediaPort<File> {
       }
     },
     discard: (id) => store.remove(id),
+    async shrinkPhoto(file) {
+      const shrunk = await shrinkPhoto(file);
+      if (!shrunk) return undefined;
+      const { blob, ...size } = shrunk;
+      return { file: new File([blob], file.name, { type: blob.type }), byteSize: blob.size, ...size };
+    },
   };
 }

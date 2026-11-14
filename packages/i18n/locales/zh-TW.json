@@ -830,6 +830,12 @@
   "media.title": {
     "message": "媒體"
   },
+  "media.shrinkPhotos": {
+    "message": "匯入時縮小照片"
+  },
+  "media.shrinkPhotosHint": {
+    "message": "以長邊最多 2560 像素儲存照片，在回顧中依然清晰，檔案通常小 5 到 10 倍。您裝置上的原始檔案不會變更。"
+  },
   "media.import": {
     "message": "匯入媒體"
   },
@@ -1048,6 +1054,27 @@
   },
   "themes.intro": {
     "message": "主題決定回顧的地圖配色、路線與標題樣式。選取後立即套用；選擇「直式」時也會切換為 9:16。"
+  },
+  "tripList.shrink": {
+    "message": "縮小照片"
+  },
+  "shrink.confirm": {
+    "message": "{count, plural, other {「{title}」有 # 張照片，共 {size}。}}要將它們以長邊最多 2560 像素儲存嗎？通常可省下大部分空間，且在此無法復原；您裝置上的原始檔案不會變更。若要在此保留原尺寸照片，請先備份這趟旅行。"
+  },
+  "shrink.start": {
+    "message": "縮小照片"
+  },
+  "shrink.working": {
+    "message": "正在縮小照片……{done} / {total}"
+  },
+  "shrink.done": {
+    "message": "{count, plural, other {已縮小 # 張照片：{before} → {after}。}}"
+  },
+  "shrink.none": {
+    "message": "沒有照片能再明顯縮小。"
+  },
+  "shrink.failed": {
+    "message": "無法縮小照片：{message}。這趟旅行沒有變更。"
   },
   "tripList.backup": {
     "message": "備份"

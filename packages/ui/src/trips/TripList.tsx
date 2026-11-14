@@ -16,6 +16,8 @@ export interface TripListProps {
   readonly onDelete: (id: string) => void;
   /** Saves a trip with its media as a backup file. */
   readonly onBackup?: (id: string) => void;
+  /** Replaces the trip's photos with smaller copies, after the shell asks to confirm. */
+  readonly onShrink?: (id: string) => void;
   /** Opens a backup file to restore. */
   readonly onRestore?: () => void;
   /** Progress or the outcome of a backup or restore. */
@@ -36,6 +38,7 @@ function TripCard({
   onDuplicate,
   onDelete,
   onBackup,
+  onShrink,
 }: Omit<TripListProps, "trips" | "onCreate"> & { readonly trip: TripSummary }) {
   const [mode, setMode] = useState<Mode>({ kind: "idle" });
   const headingId = useId();
@@ -112,6 +115,11 @@ function TripCard({
             {onBackup && (
               <button type="button" className={styles.button} onClick={() => onBackup(trip.id)}>
                 {t("tripList.backup")}
+              </button>
+            )}
+            {onShrink && (
+              <button type="button" className={styles.button} onClick={() => onShrink(trip.id)}>
+                {t("tripList.shrink")}
               </button>
             )}
             <button type="button" className={styles.button} onClick={() => setMode({ kind: "deleting" })}>

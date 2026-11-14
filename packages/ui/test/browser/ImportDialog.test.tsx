@@ -238,6 +238,28 @@ describe("MediaPanel", () => {
     expect(imports).toBe(1);
   });
 
+  it("offers to make imported photos smaller", async () => {
+    const choices: boolean[] = [];
+    const view = await render(
+      <MediaPanel
+        project={withMedia}
+        selectedStopId="kiyomizu"
+        dispatch={() => ({ ok: true }) as never}
+        mediaUrl={async () => undefined}
+        onImport={() => {}}
+        shrinkPhotos={true}
+        onShrinkPhotosChange={(shrink) => void choices.push(shrink)}
+        locale="zh-TW"
+        t={createTranslator("zh-TW")}
+      />,
+    );
+    const box = [...view.querySelectorAll("label")].find((l) => l.textContent === "匯入時縮小照片");
+    const input = box?.querySelector("input") as HTMLInputElement;
+    expect(input.checked).toBe(true);
+    await act(async () => input.click());
+    expect(choices).toEqual([false]);
+  });
+
   it("chooses the stop by day and moves media to another stop", async () => {
     const commands: Command[] = [];
     const selected: string[] = [];

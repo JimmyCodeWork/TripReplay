@@ -1,6 +1,6 @@
-import { CATALOG_COUNTRIES, REGION_CATALOG } from "@tripreplay/app";
+import { CATALOG_COUNTRIES, REGION_CATALOG, shrinkTripPhotos, tripPhotos } from "@tripreplay/app";
 import type { Locale, Translate } from "@tripreplay/i18n";
-import { MapsDialog, PlaceSearchBox, TripList } from "@tripreplay/ui";
+import { formatBytes, MapsDialog, PlaceSearchBox, TripList } from "@tripreplay/ui";
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { backupTrip, inspectBackup, restoreBackup } from "./backup.ts";
 import { MapPreview } from "./MapPreview.tsx";
@@ -108,6 +108,10 @@ export function App({ services, locale, t }: AppProps) {
   /** A backup whose trip is already stored, waiting for the user to restore it as a copy or not. */
   const [conflict, setConflict] = useState<{ readonly file: File; readonly title: string } | undefined>();
   const restoreInput = useRef<HTMLInputElement>(null);
+  /** A trip whose photos are about to be made smaller, waiting for the user to confirm. */
+  const [shrinking, setShrinking] = useState<
+    { readonly id: string; readonly title: string; readonly count: number; readonly bytes: number } | undefined
+  >();
 
   const failed = (key: "backup.failed" | "restore.failed") => (error: unknown) =>
     setStatus(t(key, { message: error instanceof Error ? error.message : String(error) }));
@@ -125,6 +129,42 @@ export function App({ services, locale, t }: AppProps) {
       (project) => setStatus(t("restore.done", { title: project.trip.title })),
       failed("restore.failed"),
     );
+  };
+  const shrinkFailed = (error: unknown) =>
+    setStatus(t("shrink.failed", { message: error instanceof Error ? error.message : String(error) }));
+  const askShrink = (id: string) => {
+    setStatus(undefined);
+    services.projects.load(id).then((project) => {
+      if (!project) return;
+      const photos = tripPhotos(project);
+      if (photos.count === 0) setStatus(t("shrink.none"));
+      else setShrinking({ id, title: project.trip.title, ...photos });
+    }, shrinkFailed);
+  };
+  const shrink = (target: { readonly id: string; readonly count: number }) => {
+    setShrinking(undefined);
+    setStatus(t("shrink.working", { done: 0, total: target.count }));
+    shrinkTripPhotos(target.id, {
+      repository: services.projects,
+      media: services.media,
+      read: async (asset) => {
+        const blob = await services.assets.open(asset.id);
+        return blob && new File([blob], asset.fileName, { type: asset.mimeType });
+      },
+      newId: services.newId,
+      onProgress: (done, total) => setStatus(t("shrink.working", { done, total })),
+    }).then((result) => {
+      setStatus(
+        result.shrunk === 0
+          ? t("shrink.none")
+          : t("shrink.done", {
+              count: result.shrunk,
+              before: formatBytes(locale, result.before),
+              after: formatBytes(locale, result.after),
+            }),
+      );
+      void trips.refresh();
+    }, shrinkFailed);
   };
   const chooseBackup = (file: File) => {
     setStatus(undefined);
@@ -176,9 +216,29 @@ export function App({ services, locale, t }: AppProps) {
           }}
           onDelete={(id) => void trips.remove(id)}
           onBackup={backup}
+          onShrink={askShrink}
           onRestore={() => restoreInput.current?.click()}
           status={status}
         />
+      )}
+      {screen.kind === "trips" && shrinking && (
+        <div className="app-alert" role="alert">
+          <p>
+            {t("shrink.confirm", {
+              count: shrinking.count,
+              title: shrinking.title,
+              size: formatBytes(locale, shrinking.bytes),
+            })}
+          </p>
+          <div className="app-alert-actions">
+            <button type="button" className="header-button" onClick={() => shrink(shrinking)}>
+              {t("shrink.start")}
+            </button>
+            <button type="button" className="header-button" onClick={() => setShrinking(undefined)}>
+              {t("common.cancel")}
+            </button>
+          </div>
+        </div>
       )}
       {screen.kind === "trips" && conflict && (
         <div className="app-alert" role="alert">

@@ -88,6 +88,33 @@ type Tab = (typeof TABS)[number];
 
 const REDUCED_MOTION_KEY = "tripreplay.reducedMotion";
 
+/** Whether imports make photos smaller; on unless the user turned it off (docs/adr/0011-smaller-media.md). */
+const SHRINK_PHOTOS_KEY = "tripreplay.shrinkPhotos";
+
+/** A choice kept in the browser's local storage, with `initial` until the user makes one. */
+function useStoredFlag(key: string, initial: boolean): readonly [boolean, (value: boolean) => void] {
+  const [value, setValue] = useState(() => {
+    try {
+      const stored = localStorage.getItem(key);
+      return stored === null ? initial : stored === "true";
+    } catch {
+      return initial;
+    }
+  });
+  const choose = useCallback(
+    (next: boolean) => {
+      setValue(next);
+      try {
+        localStorage.setItem(key, String(next));
+      } catch {
+        // Storage can be unavailable, for example in a private window; the choice then lasts for this visit.
+      }
+    },
+    [key],
+  );
+  return [value, choose];
+}
+
 /** Labels of the agent tools for people, by the names agents call them by. */
 const AGENT_TOOL_TITLES = {
   get_trip: "agent.tool.getTrip",
@@ -180,6 +207,7 @@ interface EditorViewProps {
 function EditorView({ editor, services, locale, t, onClose }: EditorViewProps) {
   const state = useSyncExternalStore(editor.subscribe, editor.getState);
   const agentTools = useAgentTools(editor, services, t);
+  const [shrinkPhotos, setShrinkPhotos] = useStoredFlag(SHRINK_PHOTOS_KEY, true);
   const regions = useSyncExternalStore(services.regions.subscribe, services.regions.getState);
   const [selectedId, setSelectedId] = useState<string | undefined>();
   const { project } = state;
@@ -269,6 +297,7 @@ function EditorView({ editor, services, locale, t, onClose }: EditorViewProps) {
       project: () => editor.getState().project,
       newId: services.newId,
       selectedStopId: selected?.id,
+      shrinkPhotos,
     });
     playback.pause();
     setImporting(session);
@@ -430,6 +459,8 @@ function EditorView({ editor, services, locale, t, onClose }: EditorViewProps) {
                 dispatch={editor.dispatch}
                 mediaUrl={media.url}
                 onImport={() => fileInput.current?.click()}
+                shrinkPhotos={shrinkPhotos}
+                onShrinkPhotosChange={setShrinkPhotos}
                 locale={locale}
                 t={t}
               />

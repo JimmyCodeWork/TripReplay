@@ -23,6 +23,12 @@ export interface MediaPanelProps {
   readonly mediaUrl: (assetId: string) => Promise<string | undefined>;
   /** Opens the file chooser for an import. */
   readonly onImport: () => void;
+  /**
+   * Whether imports store smaller copies of photos, and how to change it; the checkbox is shown
+   * only with both.
+   */
+  readonly shrinkPhotos?: boolean | undefined;
+  readonly onShrinkPhotosChange?: ((shrink: boolean) => void) | undefined;
   readonly locale: Locale;
   readonly t: Translate;
 }
@@ -94,6 +100,8 @@ export function MediaPanel({
   dispatch,
   mediaUrl,
   onImport,
+  shrinkPhotos,
+  onShrinkPhotosChange,
   locale,
   t,
 }: MediaPanelProps) {
@@ -120,6 +128,16 @@ export function MediaPanel({
           {t("media.import")}
         </button>
       </div>
+      {shrinkPhotos !== undefined && onShrinkPhotosChange && (
+        <label className={styles.option} title={t("media.shrinkPhotosHint")}>
+          <input
+            type="checkbox"
+            checked={shrinkPhotos}
+            onChange={(event) => onShrinkPhotosChange(event.target.checked)}
+          />
+          {t("media.shrinkPhotos")}
+        </label>
+      )}
       {!stop && <p className={styles.empty}>{t("media.noStops")}</p>}
       {stop && (
         <>

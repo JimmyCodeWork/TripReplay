@@ -79,7 +79,7 @@ describe("TripList", () => {
 });
 
 describe("TripList backups", () => {
-  it("backs up a trip, opens a backup to restore and shows the outcome", async () => {
+  it("backs up a trip, shrinks its photos, opens a backup to restore and shows the outcome", async () => {
     const calls: string[] = [];
     const view = await render(
       <TripList
@@ -92,13 +92,15 @@ describe("TripList backups", () => {
         onDuplicate={() => {}}
         onDelete={() => {}}
         onBackup={(id) => void calls.push(`backup ${id}`)}
+        onShrink={(id) => void calls.push(`shrink ${id}`)}
         onRestore={() => void calls.push("restore")}
         status="備份已儲存。"
       />,
     );
     await click(view, "備份");
+    await click(view, "縮小照片");
     await click(view, "還原備份");
-    expect(calls).toEqual(["backup kyoto", "restore"]);
+    expect(calls).toEqual(["backup kyoto", "shrink kyoto", "restore"]);
     expect(view.querySelector('[role="status"]')?.textContent).toBe("備份已儲存。");
   });
 });

@@ -68,6 +68,8 @@ Add stops first; every photo and video belongs to a stop.
 4. Times are shown in the trip's time zone. If your camera's clock was set to another zone, select **Change** and choose the right one; the suggestions update.
 5. Select **Add … files** to finish.
 
+**Make imported photos smaller**, above the stop list in the **Media** tab, stores each photo at most 2560 pixels on its longest side, which is sharp in the recap and usually takes a fifth to a tenth of the space. It is on until you turn it off. The original files on your device are not changed, and the capture time and position are kept with the trip. To make the photos of a trip already imported smaller, select **Shrink photos** on the trip in **Trips**, check the number of photos and the space they take, and confirm. This cannot be undone in TripReplay, so back up the trip first (§9) if you want to keep the full-size photos in it.
+
 Files already in the trip are recognized and not added twice. Photos and videos are copied into the browser's storage, so the originals can be moved or deleted afterwards; keep them, or a backup (§9), in case the browser's storage is cleared.
 
 In the **Media** tab, choose the **Stop** whose photos and videos you want to see; the list is grouped by day. To change the order, select **Reorder**, drag a photo or video by its handle (⠿), then select **Done**. For each one you can also:

@@ -1,6 +1,6 @@
 import { type AssetStore, MediaFailure } from "@tripreplay/app";
 import { describe, expect, it } from "vitest";
-import { contentHash, createMediaPort, inspectMediaFile } from "../../src/index.ts";
+import { contentHash, createMediaPort, inspectMediaFile, shrinkPhoto } from "../../src/index.ts";
 import { withExif } from "../support/exif.ts";
 
 const FIXTURES = {
@@ -135,5 +135,44 @@ describe("contentHash", () => {
     const a = await contentHash(new Blob(["abc"]));
     expect(a).toBe(await contentHash(new Blob(["abc"])));
     expect(a).not.toBe(await contentHash(new Blob(["abd"])));
+  });
+});
+
+/** A noisy photo, which compresses as poorly as a camera's, as an encoded file. */
+async function camera(width: number, height: number, type = "image/jpeg"): Promise<File> {
+  const canvas = new OffscreenCanvas(width, height);
+  const context = canvas.getContext("2d") as OffscreenCanvasRenderingContext2D;
+  const pixels = context.createImageData(width, height);
+  for (let i = 0; i < pixels.data.length; i += 4) {
+    const v = (i * 2654435761) >>> 24;
+    pixels.data.set([v, (v * 3) & 255, (v * 7) & 255, 255], i);
+  }
+  context.putImageData(pixels, 0, 0);
+  const blob = await canvas.convertToBlob({ type, quality: 0.98 });
+  return new File([blob], `IMG.${type.split("/")[1]}`, { type });
+}
+
+describe("shrinkPhoto", () => {
+  it("makes a large photo at most 2560 pixels on its longest side, as a smaller JPEG", async () => {
+    const original = await camera(4000, 3000);
+    const shrunk = await shrinkPhoto(original);
+    expect(shrunk).toMatchObject({ width: 2560, height: 1920, mimeType: "image/jpeg" });
+    expect(shrunk?.blob.size).toBeLessThan(original.size * 0.8);
+    const decoded = await createImageBitmap(shrunk?.blob as Blob);
+    expect([decoded.width, decoded.height]).toEqual([2560, 1920]);
+  });
+
+  it("keeps photos that would not get noticeably smaller, and those it cannot decode", async () => {
+    const small = await file(FIXTURES.jpeg, "small.jpg");
+    expect(await shrinkPhoto(small)).toBeUndefined();
+    expect(await shrinkPhoto(new File(["not a photo"], "x.jpg", { type: "image/jpeg" }))).toBeUndefined();
+  });
+
+  it("is offered by the media port, keeping the file's name", async () => {
+    const port = createMediaPort({ store: new MemoryStore() });
+    const shrunk = await port.shrinkPhoto?.(await camera(3000, 4000, "image/png"));
+    expect(shrunk).toMatchObject({ width: 1920, height: 2560, mimeType: "image/jpeg" });
+    expect(shrunk?.file.name).toBe("IMG.png");
+    expect(shrunk?.byteSize).toBe(shrunk?.file.size);
   });
 });

@@ -99,6 +99,20 @@ export interface MediaPort<File = unknown> {
   store(file: File, id: AssetId, signal?: AbortSignal): Promise<void>;
   /** Removes a stored file that no project refers to, as after a cancelled import. */
   discard(id: AssetId): Promise<void>;
+  /**
+   * A smaller copy of a photo for the recap (docs/adr/0011-smaller-media.md), or undefined when it
+   * cannot be made or would not be noticeably smaller. Absent where photos cannot be shrunk.
+   */
+  shrinkPhoto?(file: File): Promise<ShrunkPhoto<File> | undefined>;
+}
+
+/** A photo made smaller, with what changed of its asset. */
+export interface ShrunkPhoto<File = unknown> {
+  readonly file: File;
+  readonly byteSize: number;
+  readonly width: number;
+  readonly height: number;
+  readonly mimeType: string;
 }
 
 /** A place found in the downloaded maps. */
