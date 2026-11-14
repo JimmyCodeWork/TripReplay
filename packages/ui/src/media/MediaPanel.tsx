@@ -29,6 +29,9 @@ export interface MediaPanelProps {
    */
   readonly shrinkPhotos?: boolean | undefined;
   readonly onShrinkPhotosChange?: ((shrink: boolean) => void) | undefined;
+  /** The same for videos. */
+  readonly shrinkVideos?: boolean | undefined;
+  readonly onShrinkVideosChange?: ((shrink: boolean) => void) | undefined;
   readonly locale: Locale;
   readonly t: Translate;
 }
@@ -102,6 +105,8 @@ export function MediaPanel({
   onImport,
   shrinkPhotos,
   onShrinkPhotosChange,
+  shrinkVideos,
+  onShrinkVideosChange,
   locale,
   t,
 }: MediaPanelProps) {
@@ -136,6 +141,16 @@ export function MediaPanel({
             onChange={(event) => onShrinkPhotosChange(event.target.checked)}
           />
           {t("media.shrinkPhotos")}
+        </label>
+      )}
+      {shrinkVideos !== undefined && onShrinkVideosChange && (
+        <label className={styles.option} title={t("media.shrinkVideosHint")}>
+          <input
+            type="checkbox"
+            checked={shrinkVideos}
+            onChange={(event) => onShrinkVideosChange(event.target.checked)}
+          />
+          {t("media.shrinkVideos")}
         </label>
       )}
       {!stop && <p className={styles.empty}>{t("media.noStops")}</p>}

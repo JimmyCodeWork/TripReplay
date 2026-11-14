@@ -1428,32 +1428,32 @@
     "description": "Introduction of the themes tab."
   },
   "tripList.shrink": {
-    "message": "Shrink photos",
-    "description": "Button on a trip that replaces its photos with smaller copies, after confirming."
+    "message": "Shrink media",
+    "description": "Button on a trip that replaces its photos, and its videos if chosen, with smaller copies, after confirming."
   },
   "shrink.confirm": {
-    "message": "{count, plural, one {“{title}” has # photo, taking {size}.} other {“{title}” has # photos, taking {size}.}} Store them at most 2560 pixels on their longest side? This usually saves most of the space and cannot be undone here; the original files on your device are not changed. Back up the trip first to keep the full-size photos.",
-    "description": "Asked before a trip's photos are replaced with smaller copies. {size} is formatted, for example 480 MB."
+    "message": "“{title}” has {photos, plural, one {# photo} other {# photos}} ({photoSize}) and {videos, plural, one {# video} other {# videos}} ({videoSize}). Store the photos at most 2560 pixels on their longest side, and the videos at 1080p if chosen below? This usually saves most of the space and cannot be undone here; the original files on your device are not changed. Back up the trip first to keep the full-size media.",
+    "description": "Asked before a trip's media is replaced with smaller copies. {photoSize} and {videoSize} are formatted, for example 480 MB."
   },
   "shrink.start": {
-    "message": "Shrink photos",
-    "description": "Button that confirms replacing a trip's photos with smaller copies."
+    "message": "Shrink",
+    "description": "Button that confirms replacing a trip's media with smaller copies."
   },
   "shrink.working": {
-    "message": "Making photos smaller… {done} of {total}",
-    "description": "Shown while a trip's photos are made smaller."
+    "message": "Making media smaller… {done} of {total}",
+    "description": "Shown while a trip's photos and videos are made smaller."
   },
   "shrink.done": {
-    "message": "{count, plural, one {# photo made smaller: {before} → {after}.} other {# photos made smaller: {before} → {after}.}}",
-    "description": "Shown after a trip's photos were made smaller, with the space they took before and after."
+    "message": "{count, plural, one {# photo or video made smaller: {before} → {after}.} other {# photos and videos made smaller: {before} → {after}.}}",
+    "description": "Shown after a trip's media was made smaller, with the space it took before and after."
   },
   "shrink.none": {
-    "message": "No photo could be made noticeably smaller.",
-    "description": "Shown when every photo of the trip is already small, or cannot be decoded by the browser."
+    "message": "Nothing could be made noticeably smaller.",
+    "description": "Shown when every photo or video of the trip is already small, or cannot be decoded by the browser."
   },
   "shrink.failed": {
-    "message": "The photos could not be made smaller: {message}. The trip has not been changed.",
-    "description": "Shown when making a trip's photos smaller failed."
+    "message": "The media could not be made smaller: {message}. The trip has not been changed.",
+    "description": "Shown when making a trip's media smaller failed."
   },
   "tripList.backup": {
     "message": "Back up",
@@ -1468,8 +1468,24 @@
     "description": "Name of the backup file type in the save dialog."
   },
   "backup.choose": {
-    "message": "Back up “{title}” with its photos at full size, or with smaller photos (at most 2560 pixels on their longest side) for a much smaller file? The trip here is not changed either way.",
+    "message": "Back up “{title}” with its media at full size, or with smaller photos (at most 2560 pixels on their longest side) for a much smaller file? The trip here is not changed either way.",
     "description": "Asked when backing up a trip."
+  },
+  "backup.withVideos": {
+    "message": "Make videos smaller too (1080p, much slower)",
+    "description": "Checkbox when backing up with smaller photos: also puts 1080p copies of the videos in the backup."
+  },
+  "shrink.withVideos": {
+    "message": "Make videos smaller too (1080p, much slower)",
+    "description": "Checkbox when shrinking a trip's media: also replaces its videos with 1080p copies."
+  },
+  "media.shrinkVideos": {
+    "message": "Make imported videos smaller (1080p, slower)",
+    "description": "Checkbox in the Media tab: imports store videos at most 1080p, encoded again, instead of the original files."
+  },
+  "media.shrinkVideosHint": {
+    "message": "Stores videos at most 1920 pixels on their longest side, which is what the recap shows, usually several times smaller. Encoding takes about as long as the video plays, or longer. The original files on your device are not changed.",
+    "description": "Tooltip of the checkbox that makes imported videos smaller."
   },
   "backup.full": {
     "message": "Full size",

@@ -370,6 +370,12 @@ importers:
       '@tripreplay/domain':
         specifier: workspace:*
         version: link:../domain
+      mp4-muxer:
+        specifier: 5.2.2
+        version: 5.2.2
+      mp4box:
+        specifier: 2.5.0
+        version: 2.5.0
     devDependencies:
       '@vitest/browser-playwright':
         specifier: 5.0.5
@@ -1251,6 +1257,10 @@ packages:
   mp4-muxer@5.2.2:
     resolution: {integrity: sha512-dhozjTywI0h2qFzeShagt8YYw811fh1XlwiDCE2f6Aeqf6xG2CyuShoSa5E0AZDO8pPF0JOZ3wOmWBNWIGdSpQ==}
     deprecated: This library is superseded by Mediabunny. Please migrate to it.
+
+  mp4box@2.5.0:
+    resolution: {integrity: sha512-AK5FQsN5aD2m91HuCGPlRDomDhGxK0o4F8ZVyAbAfcMWBW2QlhZvE0S7v9lBq0Ib4eONq7mT1SBVdrnnIrn4pw==}
+    engines: {node: '>=20.8.1'}
 
   mrmime@2.0.1:
     resolution: {integrity: sha512-Y3wQdFg2Va6etvQ5I82yUhGdsKrcYox6p7FfL1LbK2J4V01F9TGlepTIhnK24t7koZibmg82KGglhA1XK5IsLQ==}
@@ -2289,6 +2299,8 @@ snapshots:
     dependencies:
       '@types/dom-webcodecs': 0.1.19
       '@types/wicg-file-system-access': 2020.9.8
+
+  mp4box@2.5.0: {}
 
   mrmime@2.0.1: {}
 

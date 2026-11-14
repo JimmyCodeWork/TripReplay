@@ -1,4 +1,4 @@
-import { replaceAssets, shrunkPhotoAssets } from "@tripreplay/app";
+import { replaceAssets, shrunkAssets } from "@tripreplay/app";
 import type { Asset, Project } from "@tripreplay/domain";
 import {
   blobMedia,
@@ -42,33 +42,42 @@ function wholePackage(services: Services, project: Project): AsyncIterable<Uint8
 }
 
 /**
- * The trip with smaller copies of its photos (docs/adr/0011-smaller-media.md); the trip in the
- * application is not changed. The copies take new asset ids, so that restoring the backup where
- * the full-size photos are stored keeps both. They are made only once the package is written, after
- * the user chose where to save it.
+ * The trip with smaller copies of its photos, and of its videos if asked
+ * (docs/adr/0011-smaller-media.md); the trip in the application is not changed. The copies take new
+ * asset ids, so that restoring the backup where the full-size media is stored keeps both. They are
+ * made only once the package is written, after the user chose where to save it, and kept in the
+ * media store, not in memory, until the backup is written; start-up recovery removes any left by
+ * an interruption.
  */
-async function* smallerPackage(services: Services, project: Project): AsyncIterable<Uint8Array> {
-  const copies = new Map<string, Blob>();
-  const shrink = services.media.shrinkPhoto?.bind(services.media);
+async function* smallerPackage(services: Services, project: Project, videos: boolean): AsyncIterable<Uint8Array> {
+  const { media } = services;
+  const copies: string[] = [];
   const read = async (asset: Asset) => {
     const blob = await services.assets.open(asset.id);
     return blob && new File([blob], asset.fileName, { type: asset.mimeType });
   };
-  const replaced = shrink
-    ? await shrunkPhotoAssets(project, shrink, read, services.newId, async (copy, file) => {
-        copies.set(copy.id, file);
-      })
-    : new Map();
-  yield* writeProjectPackage(
-    replaceAssets(project, replaced),
-    async (id) => {
-      const copy = copies.get(id);
-      if (copy) return blobMedia(copy);
-      const file = await services.assets.open(id);
-      return file && blobMedia(file);
-    },
-    new Date(),
-  );
+  try {
+    const replaced = await shrunkAssets(
+      project,
+      { photo: media.shrinkPhoto?.bind(media), video: videos ? media.shrinkVideo?.bind(media) : undefined },
+      read,
+      services.newId,
+      async (copy, file) => {
+        await media.store(file, copy.id);
+        copies.push(copy.id);
+      },
+    );
+    yield* writeProjectPackage(
+      replaceAssets(project, replaced),
+      async (id) => {
+        const file = await services.assets.open(id);
+        return file && blobMedia(file);
+      },
+      new Date(),
+    );
+  } finally {
+    for (const id of copies) await media.discard(id).catch(() => {});
+  }
 }
 
 /**
@@ -81,11 +90,13 @@ export async function backupTrip(
   services: Services,
   tripId: string,
   description: string,
-  options: { readonly shrinkPhotos?: boolean } = {},
+  options: { readonly shrink?: "photos" | "photosAndVideos" } = {},
 ): Promise<boolean> {
   const project = await services.projects.load(tripId);
   if (!project) throw new Error(`Trip "${tripId}" is not stored`);
-  const chunks = options.shrinkPhotos ? smallerPackage(services, project) : wholePackage(services, project);
+  const chunks = options.shrink
+    ? smallerPackage(services, project, options.shrink === "photosAndVideos")
+    : wholePackage(services, project);
   const name = backupFileName(project.trip.title);
   if (NATIVE) {
     const { saveFile } = await import("./native-save.ts");

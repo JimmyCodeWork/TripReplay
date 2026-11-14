@@ -1,4 +1,4 @@
-import { CATALOG_COUNTRIES, REGION_CATALOG, shrinkTripPhotos, tripPhotos } from "@tripreplay/app";
+import { CATALOG_COUNTRIES, type MediaCount, REGION_CATALOG, shrinkTrip, tripMedia } from "@tripreplay/app";
 import type { Locale, Translate } from "@tripreplay/i18n";
 import { formatBytes, MapsDialog, PlaceSearchBox, TripList } from "@tripreplay/ui";
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
@@ -108,10 +108,13 @@ export function App({ services, locale, t }: AppProps) {
   /** A backup whose trip is already stored, waiting for the user to restore it as a copy or not. */
   const [conflict, setConflict] = useState<{ readonly file: File; readonly title: string } | undefined>();
   const restoreInput = useRef<HTMLInputElement>(null);
-  /** A trip whose photos are about to be made smaller, waiting for the user to confirm. */
+  /** A trip whose media is about to be made smaller, waiting for the user to confirm. */
   const [shrinking, setShrinking] = useState<
-    { readonly id: string; readonly title: string; readonly count: number; readonly bytes: number } | undefined
+    | { readonly id: string; readonly title: string; readonly photos: MediaCount; readonly videos: MediaCount }
+    | undefined
   >();
+  /** Whether videos are made smaller too, in a backup or a trip; off unless chosen, as it is slow. */
+  const [withVideos, setWithVideos] = useState(false);
 
   const failed = (key: "backup.failed" | "restore.failed") => (error: unknown) =>
     setStatus(t(key, { message: error instanceof Error ? error.message : String(error) }));
@@ -119,12 +122,14 @@ export function App({ services, locale, t }: AppProps) {
   const [backingUp, setBackingUp] = useState<{ readonly id: string; readonly title: string } | undefined>();
   const askBackup = (id: string) => {
     setStatus(undefined);
+    setWithVideos(false);
     setBackingUp({ id, title: list.find((trip) => trip.id === id)?.title ?? "" });
   };
-  const backup = (id: string, shrinkPhotos: boolean) => {
+  const backup = (id: string, smaller: boolean) => {
     setBackingUp(undefined);
     setStatus(t("backup.working"));
-    backupTrip(services, id, t("backup.fileType"), { shrinkPhotos }).then(
+    const shrink = smaller ? (withVideos ? "photosAndVideos" : "photos") : undefined;
+    backupTrip(services, id, t("backup.fileType"), shrink ? { shrink } : {}).then(
       (saved) => setStatus(saved ? t("backup.done") : undefined),
       failed("backup.failed"),
     );
@@ -143,17 +148,20 @@ export function App({ services, locale, t }: AppProps) {
     setStatus(undefined);
     services.projects.load(id).then((project) => {
       if (!project) return;
-      const photos = tripPhotos(project);
-      if (photos.count === 0) setStatus(t("shrink.none"));
-      else setShrinking({ id, title: project.trip.title, ...photos });
+      const { photos, videos } = tripMedia(project);
+      setWithVideos(false);
+      if (photos.count === 0 && videos.count === 0) setStatus(t("shrink.none"));
+      else setShrinking({ id, title: project.trip.title, photos, videos });
     }, shrinkFailed);
   };
-  const shrink = (target: { readonly id: string; readonly count: number }) => {
+  const shrink = (target: { readonly id: string; readonly photos: MediaCount; readonly videos: MediaCount }) => {
     setShrinking(undefined);
-    setStatus(t("shrink.working", { done: 0, total: target.count }));
-    shrinkTripPhotos(target.id, {
+    const total = target.photos.count + (withVideos ? target.videos.count : 0);
+    setStatus(t("shrink.working", { done: 0, total }));
+    shrinkTrip(target.id, {
       repository: services.projects,
       media: services.media,
+      videos: withVideos,
       read: async (asset) => {
         const blob = await services.assets.open(asset.id);
         return blob && new File([blob], asset.fileName, { type: asset.mimeType });
@@ -231,6 +239,10 @@ export function App({ services, locale, t }: AppProps) {
       {screen.kind === "trips" && backingUp && (
         <div className="app-alert" role="alert">
           <p>{t("backup.choose", { title: backingUp.title })}</p>
+          <label className="app-alert-option">
+            <input type="checkbox" checked={withVideos} onChange={(event) => setWithVideos(event.target.checked)} />
+            {t("backup.withVideos")}
+          </label>
           <div className="app-alert-actions">
             <button type="button" className="header-button" onClick={() => backup(backingUp.id, false)}>
               {t("backup.full")}
@@ -248,13 +260,26 @@ export function App({ services, locale, t }: AppProps) {
         <div className="app-alert" role="alert">
           <p>
             {t("shrink.confirm", {
-              count: shrinking.count,
               title: shrinking.title,
-              size: formatBytes(locale, shrinking.bytes),
+              photos: shrinking.photos.count,
+              photoSize: formatBytes(locale, shrinking.photos.bytes),
+              videos: shrinking.videos.count,
+              videoSize: formatBytes(locale, shrinking.videos.bytes),
             })}
           </p>
+          {shrinking.videos.count > 0 && (
+            <label className="app-alert-option">
+              <input type="checkbox" checked={withVideos} onChange={(event) => setWithVideos(event.target.checked)} />
+              {t("shrink.withVideos")}
+            </label>
+          )}
           <div className="app-alert-actions">
-            <button type="button" className="header-button" onClick={() => shrink(shrinking)}>
+            <button
+              type="button"
+              className="header-button"
+              disabled={shrinking.photos.count === 0 && !withVideos}
+              onClick={() => shrink(shrinking)}
+            >
               {t("shrink.start")}
             </button>
             <button type="button" className="header-button" onClick={() => setShrinking(undefined)}>

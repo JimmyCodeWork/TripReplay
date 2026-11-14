@@ -96,6 +96,11 @@
       "category": "code",
       "note": "MP4 writer of the video export. Superseded by Mediabunny, which is MPL-2.0 and not admissible (docs/adr/0009-export-in-1-0.md)."
     },
+    "mp4box@2.5.0": {
+      "declared": "BSD-3-Clause",
+      "category": "code",
+      "note": "MP4 and QuickTime reader for making smaller copies of videos (docs/adr/0011-smaller-media.md). No dependencies; the bundled code carries no other licenses."
+    },
     "murmurhash-js@1.0.0": {
       "declared": "MIT",
       "category": "code"

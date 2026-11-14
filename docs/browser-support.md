@@ -34,6 +34,7 @@ The Android application ([ADR 0008](adr/0008-android-in-1-0.md)) runs on Android
 | Saving a backup | Asks where to save the file and writes it directly | Saved to the downloads folder | Saved to the downloads folder |
 | Video export | H.264 video with AAC sound (Chrome on Linux: VP9 with Opus) | VP9 or AV1 video with Opus sound; plays in most players, but not in some older built-in ones | H.264 video with AAC sound |
 | AI agent (WebMCP, [ADR 0010](adr/0010-agent-tools.md)) | As of November 2026, desktop Chrome 149 to 156 when the website takes part in the WebMCP origin trial, or with `chrome://flags/#enable-webmcp-testing` turned on | No | No |
+| Making videos smaller ([ADR 0011](adr/0011-smaller-media.md)) | Where the browser decodes the video's format; HEVC (iPhone) only with hardware support | Where the browser decodes the video's format | Where the browser decodes the video's format |
 | Full-screen playback | Yes | Yes | Mac and iPad: yes. iPhone: browsers do not allow pages to go full screen; turn the phone sideways and use the preview |
 | HEIC photos (the iPhone's default format) | Not shown; see §3 | Not shown; see §3 | Shown |
 | HEVC (H.265) videos | Where the device can decode HEVC | Depends on the system and version | Yes |

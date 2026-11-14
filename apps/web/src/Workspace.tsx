@@ -90,6 +90,8 @@ const REDUCED_MOTION_KEY = "tripreplay.reducedMotion";
 
 /** Whether imports make photos smaller; on unless the user turned it off (docs/adr/0011-smaller-media.md). */
 const SHRINK_PHOTOS_KEY = "tripreplay.shrinkPhotos";
+/** Whether imports make videos smaller; off unless the user turned it on, as it is slow. */
+const SHRINK_VIDEOS_KEY = "tripreplay.shrinkVideos";
 
 /** A choice kept in the browser's local storage, with `initial` until the user makes one. */
 function useStoredFlag(key: string, initial: boolean): readonly [boolean, (value: boolean) => void] {
@@ -208,6 +210,7 @@ function EditorView({ editor, services, locale, t, onClose }: EditorViewProps) {
   const state = useSyncExternalStore(editor.subscribe, editor.getState);
   const agentTools = useAgentTools(editor, services, t);
   const [shrinkPhotos, setShrinkPhotos] = useStoredFlag(SHRINK_PHOTOS_KEY, true);
+  const [shrinkVideos, setShrinkVideos] = useStoredFlag(SHRINK_VIDEOS_KEY, false);
   const regions = useSyncExternalStore(services.regions.subscribe, services.regions.getState);
   const [selectedId, setSelectedId] = useState<string | undefined>();
   const { project } = state;
@@ -298,6 +301,7 @@ function EditorView({ editor, services, locale, t, onClose }: EditorViewProps) {
       newId: services.newId,
       selectedStopId: selected?.id,
       shrinkPhotos,
+      shrinkVideos,
     });
     playback.pause();
     setImporting(session);
@@ -461,6 +465,8 @@ function EditorView({ editor, services, locale, t, onClose }: EditorViewProps) {
                 onImport={() => fileInput.current?.click()}
                 shrinkPhotos={shrinkPhotos}
                 onShrinkPhotosChange={setShrinkPhotos}
+                shrinkVideos={services.media.shrinkVideo ? shrinkVideos : undefined}
+                onShrinkVideosChange={setShrinkVideos}
                 locale={locale}
                 t={t}
               />
