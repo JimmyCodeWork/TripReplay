@@ -18,6 +18,7 @@
 | [0008](0008-android-in-1-0.md) | 1.0 提供以 Capacitor 建置的 Android 應用程式 | 已接受 |
 | [0009](0009-export-in-1-0.md) | 1.0 提供以 WebCodecs 與 mp4-muxer 實作的 MP4 匯出 | 已接受 |
 | [0010](0010-agent-tools.md) | 透過 WebMCP 為瀏覽器的 AI 代理提供工具 | 已接受 |
+| [0011](0011-smaller-media.md) | 照片的縮小副本 | 已接受 |
 
 ## 撰寫紀錄
 

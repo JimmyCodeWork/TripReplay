@@ -117,6 +117,47 @@ function setup(files: { name: string; info?: MediaInfo }[], project = kyoto(), s
   return { media, session, project };
 }
 
+describe("shrinking photos at import", () => {
+  it("stores the smaller copy with its size, and keeps the original's hash for duplicates", async () => {
+    const media = new FakeMedia();
+    const stored: string[] = [];
+    media.store = async (file: { name: string }, id: string) => {
+      stored.push(file.name);
+      media.stored.add(id);
+    };
+    const shrink = Object.assign(media, {
+      shrinkPhoto: async (file: { name: string }) =>
+        file.name === "small"
+          ? undefined
+          : { file: { name: `${file.name}-small` }, byteSize: 200, width: 2560, height: 1920, mimeType: "image/jpeg" },
+    });
+    let next = 0;
+    const session = createMediaImport({
+      files: [{ name: "big" }, { name: "small" }],
+      media: shrink,
+      project: kyoto,
+      newId: () => `id${++next}`,
+      shrinkPhotos: true,
+    });
+    await session.run();
+    expect(stored).toEqual(["big-small", "small"]);
+    const [big, small] = session.getState().items.map((item) => item.asset);
+    expect(big).toMatchObject({ contentHash: "big", byteSize: 200, width: 2560, height: 1920, mimeType: "image/jpeg" });
+    expect(small).toMatchObject({ contentHash: "small", byteSize: 1000, width: 4000 });
+  });
+
+  it("stores originals unless asked", async () => {
+    const media = Object.assign(new FakeMedia(), {
+      shrinkPhoto: async () => {
+        throw new Error("not asked");
+      },
+    });
+    const session = createMediaImport({ files: [{ name: "a" }], media, project: kyoto, newId: () => "x" });
+    await session.run();
+    expect(session.getState().items[0]?.asset).toMatchObject({ byteSize: 1000 });
+  });
+});
+
 describe("media import", () => {
   it("reads, stores and suggests stops, and adds only what the user accepted", async () => {
     const { media, session, project } = setup([

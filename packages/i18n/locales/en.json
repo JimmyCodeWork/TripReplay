@@ -1107,6 +1107,14 @@
     "message": "Media",
     "description": "Heading of the media tab."
   },
+  "media.shrinkPhotos": {
+    "message": "Make imported photos smaller",
+    "description": "Checkbox in the Media tab: imports store photos at most 2560 pixels on their longest side, as JPEG, instead of the original files."
+  },
+  "media.shrinkPhotosHint": {
+    "message": "Stores photos at most 2560 pixels on their longest side, which is sharp in the recap and usually 5 to 10 times smaller. The original files on your device are not changed.",
+    "description": "Tooltip of the checkbox that makes imported photos smaller."
+  },
   "media.import": {
     "message": "Import media",
     "description": "Button that opens the file chooser to import photos and videos."
@@ -1398,6 +1406,34 @@
   "themes.intro": {
     "message": "A theme sets the map colors, the route and the titles of the recap. Choosing one applies it at once; Portrait also switches to 9:16.",
     "description": "Introduction of the themes tab."
+  },
+  "tripList.shrink": {
+    "message": "Shrink photos",
+    "description": "Button on a trip that replaces its photos with smaller copies, after confirming."
+  },
+  "shrink.confirm": {
+    "message": "{count, plural, one {“{title}” has # photo, taking {size}.} other {“{title}” has # photos, taking {size}.}} Store them at most 2560 pixels on their longest side? This usually saves most of the space and cannot be undone here; the original files on your device are not changed. Back up the trip first to keep the full-size photos.",
+    "description": "Asked before a trip's photos are replaced with smaller copies. {size} is formatted, for example 480 MB."
+  },
+  "shrink.start": {
+    "message": "Shrink photos",
+    "description": "Button that confirms replacing a trip's photos with smaller copies."
+  },
+  "shrink.working": {
+    "message": "Making photos smaller… {done} of {total}",
+    "description": "Shown while a trip's photos are made smaller."
+  },
+  "shrink.done": {
+    "message": "{count, plural, one {# photo made smaller: {before} → {after}.} other {# photos made smaller: {before} → {after}.}}",
+    "description": "Shown after a trip's photos were made smaller, with the space they took before and after."
+  },
+  "shrink.none": {
+    "message": "No photo could be made noticeably smaller.",
+    "description": "Shown when every photo of the trip is already small, or cannot be decoded by the browser."
+  },
+  "shrink.failed": {
+    "message": "The photos could not be made smaller: {message}. The trip has not been changed.",
+    "description": "Shown when making a trip's photos smaller failed."
   },
   "tripList.backup": {
     "message": "Back up",

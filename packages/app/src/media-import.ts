@@ -95,6 +95,8 @@ export interface MediaImportOptions<File> {
    * suggestion is kept, so that the dialog can offer it instead.
    */
   readonly selectedStopId?: StopId | undefined;
+  /** Stores smaller copies of photos instead of the originals, where they are noticeably smaller. */
+  readonly shrinkPhotos?: boolean;
 }
 
 export function createMediaImport<File>({
@@ -103,6 +105,7 @@ export function createMediaImport<File>({
   project,
   newId,
   selectedStopId,
+  shrinkPhotos = false,
 }: MediaImportOptions<File>): MediaImport {
   const store = createStore<MediaImportState>({
     phase: "reading",
@@ -164,9 +167,12 @@ export function createMediaImport<File>({
           } else {
             hashes.add(info.contentHash);
             const id = newId();
-            await media.store(file, id, controller.signal);
+            // The original's content hash stays, so that importing the original again is a duplicate.
+            const shrunk = shrinkPhotos && info.kind === "photo" ? await media.shrinkPhoto?.(file) : undefined;
+            await media.store(shrunk?.file ?? file, id, controller.signal);
             stored.push(id);
-            const asset = { ...info, id } as Asset;
+            const { file: _, ...changes } = shrunk ?? { file };
+            const asset = { ...info, ...changes, ...(shrunk ? { rotation: 0 } : {}), id } as Asset;
             update(index, (item) => ({ ...item, status: "ready", asset, ...suggested(asset) }));
           }
         } catch (error) {
