@@ -146,6 +146,38 @@ describe("shrinking photos at import", () => {
     expect(small).toMatchObject({ contentHash: "small", byteSize: 1000, width: 4000 });
   });
 
+  it("makes videos smaller only when asked", async () => {
+    const video = {
+      ...photo("v"),
+      kind: "video",
+      durationUs: 5_000_000,
+      hasAudio: true,
+      mimeType: "video/quicktime",
+    } as MediaInfo;
+    const shrunk: string[] = [];
+    const media = Object.assign(new FakeMedia(), {
+      shrinkVideo: async (file: { name: string; info?: MediaInfo }) => {
+        shrunk.push(file.name);
+        const copy: { name: string; info?: MediaInfo } = { name: "small" };
+        return { file: copy, byteSize: 100, width: 1920, height: 1080, mimeType: "video/mp4" };
+      },
+    });
+    const run = async (shrinkVideos: boolean) => {
+      const session = createMediaImport<{ name: string; info?: MediaInfo }>({
+        files: [{ name: "v", info: video }],
+        media,
+        project: kyoto,
+        newId: () => "x",
+        shrinkVideos,
+      });
+      await session.run();
+      return session.getState().items[0]?.asset;
+    };
+    expect(await run(false)).toMatchObject({ byteSize: 1000, mimeType: "video/quicktime" });
+    expect(await run(true)).toMatchObject({ byteSize: 100, width: 1920, mimeType: "video/mp4", durationUs: 5_000_000 });
+    expect(shrunk).toEqual(["v"]);
+  });
+
   it("stores originals unless asked", async () => {
     const media = Object.assign(new FakeMedia(), {
       shrinkPhoto: async () => {

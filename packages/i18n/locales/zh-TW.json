@@ -1071,25 +1071,25 @@
     "message": "主題決定回顧的地圖配色、路線與標題樣式。選取後立即套用；選擇「直式」時也會切換為 9:16。"
   },
   "tripList.shrink": {
-    "message": "縮小照片"
+    "message": "縮小媒體"
   },
   "shrink.confirm": {
-    "message": "{count, plural, other {「{title}」有 # 張照片，共 {size}。}}要將它們以長邊最多 2560 像素儲存嗎？通常可省下大部分空間，且在此無法復原；您裝置上的原始檔案不會變更。若要在此保留原尺寸照片，請先備份這趟旅行。"
+    "message": "「{title}」有 {photos, plural, other {# 張照片}}（{photoSize}）與 {videos, plural, other {# 段影片}}（{videoSize}）。要將照片以長邊最多 2560 像素儲存，並依下方選擇將影片縮為 1080p 嗎？通常可省下大部分空間，且在此無法復原；您裝置上的原始檔案不會變更。若要在此保留原尺寸媒體，請先備份這趟旅行。"
   },
   "shrink.start": {
-    "message": "縮小照片"
+    "message": "縮小"
   },
   "shrink.working": {
-    "message": "正在縮小照片……{done} / {total}"
+    "message": "正在縮小媒體……{done} / {total}"
   },
   "shrink.done": {
-    "message": "{count, plural, other {已縮小 # 張照片：{before} → {after}。}}"
+    "message": "{count, plural, other {已縮小 # 個照片或影片：{before} → {after}。}}"
   },
   "shrink.none": {
-    "message": "沒有照片能再明顯縮小。"
+    "message": "沒有媒體能再明顯縮小。"
   },
   "shrink.failed": {
-    "message": "無法縮小照片：{message}。這趟旅行沒有變更。"
+    "message": "無法縮小媒體：{message}。這趟旅行沒有變更。"
   },
   "tripList.backup": {
     "message": "備份"
@@ -1101,7 +1101,19 @@
     "message": "TripReplay 備份"
   },
   "backup.choose": {
-    "message": "備份「{title}」時要保留照片原尺寸，還是縮小照片（長邊最多 2560 像素）以大幅縮小檔案？無論哪一種，這裡的旅行都不會變更。"
+    "message": "備份「{title}」時要保留媒體原尺寸，還是縮小照片（長邊最多 2560 像素）以大幅縮小檔案？無論哪一種，這裡的旅行都不會變更。"
+  },
+  "backup.withVideos": {
+    "message": "也縮小影片（1080p，較慢）"
+  },
+  "shrink.withVideos": {
+    "message": "也縮小影片（1080p，較慢）"
+  },
+  "media.shrinkVideos": {
+    "message": "匯入時縮小影片（1080p，較慢）"
+  },
+  "media.shrinkVideosHint": {
+    "message": "以長邊最多 1920 像素儲存影片，即回顧所呈現的大小，檔案通常小好幾倍。重新編碼所需時間約與影片長度相當或更久。您裝置上的原始檔案不會變更。"
   },
   "backup.full": {
     "message": "原尺寸"

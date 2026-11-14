@@ -103,11 +103,16 @@ export interface MediaPort<File = unknown> {
    * A smaller copy of a photo for the recap (docs/adr/0011-smaller-media.md), or undefined when it
    * cannot be made or would not be noticeably smaller. Absent where photos cannot be shrunk.
    */
-  shrinkPhoto?(file: File): Promise<ShrunkPhoto<File> | undefined>;
+  shrinkPhoto?(file: File): Promise<ShrunkMedia<File> | undefined>;
+  /**
+   * A smaller copy of a video, at most 1080p, or undefined when it cannot be made or would not be
+   * noticeably smaller; much slower than a photo. Absent where videos cannot be shrunk.
+   */
+  shrinkVideo?(file: File, signal?: AbortSignal): Promise<ShrunkMedia<File> | undefined>;
 }
 
-/** A photo made smaller, with what changed of its asset. */
-export interface ShrunkPhoto<File = unknown> {
+/** A photo or video made smaller, with what changed of its asset. */
+export interface ShrunkMedia<File = unknown> {
   readonly file: File;
   readonly byteSize: number;
   readonly width: number;

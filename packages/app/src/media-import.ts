@@ -97,6 +97,8 @@ export interface MediaImportOptions<File> {
   readonly selectedStopId?: StopId | undefined;
   /** Stores smaller copies of photos instead of the originals, where they are noticeably smaller. */
   readonly shrinkPhotos?: boolean;
+  /** The same for videos, which takes much longer. */
+  readonly shrinkVideos?: boolean;
 }
 
 export function createMediaImport<File>({
@@ -106,6 +108,7 @@ export function createMediaImport<File>({
   newId,
   selectedStopId,
   shrinkPhotos = false,
+  shrinkVideos = false,
 }: MediaImportOptions<File>): MediaImport {
   const store = createStore<MediaImportState>({
     phase: "reading",
@@ -168,11 +171,21 @@ export function createMediaImport<File>({
             hashes.add(info.contentHash);
             const id = newId();
             // The original's content hash stays, so that importing the original again is a duplicate.
-            const shrunk = shrinkPhotos && info.kind === "photo" ? await media.shrinkPhoto?.(file) : undefined;
+            const shrunk =
+              shrinkPhotos && info.kind === "photo"
+                ? await media.shrinkPhoto?.(file)
+                : shrinkVideos && info.kind === "video"
+                  ? await media.shrinkVideo?.(file, controller.signal)
+                  : undefined;
             await media.store(shrunk?.file ?? file, id, controller.signal);
             stored.push(id);
             const { file: _, ...changes } = shrunk ?? { file };
-            const asset = { ...info, ...changes, ...(shrunk ? { rotation: 0 } : {}), id } as Asset;
+            const asset = {
+              ...info,
+              ...changes,
+              ...(shrunk && info.kind === "photo" ? { rotation: 0 } : {}),
+              id,
+            } as Asset;
             update(index, (item) => ({ ...item, status: "ready", asset, ...suggested(asset) }));
           }
         } catch (error) {

@@ -13,7 +13,9 @@
   },
   "dependencies": {
     "@tripreplay/app": "workspace:*",
-    "@tripreplay/domain": "workspace:*"
+    "@tripreplay/domain": "workspace:*",
+    "mp4-muxer": "5.2.2",
+    "mp4box": "2.5.0"
   },
   "devDependencies": {
     "@vitest/browser-playwright": "5.0.5",

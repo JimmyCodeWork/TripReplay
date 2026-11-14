@@ -98,7 +98,7 @@ describe("TripList backups", () => {
       />,
     );
     await click(view, "備份");
-    await click(view, "縮小照片");
+    await click(view, "縮小媒體");
     await click(view, "還原備份");
     expect(calls).toEqual(["backup kyoto", "shrink kyoto", "restore"]);
     expect(view.querySelector('[role="status"]')?.textContent).toBe("備份已儲存。");

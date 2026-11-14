@@ -184,6 +184,14 @@ export function createMediaPort({ store }: MediaPortOptions): MediaPort<File> {
       }
     },
     discard: (id) => store.remove(id),
+    async shrinkVideo(file, signal) {
+      // The video reader and writer load only when a video is made smaller.
+      const { shrinkVideo } = await import("./shrink-video.ts");
+      const shrunk = await shrinkVideo(file, signal ? { signal } : {});
+      if (!shrunk) return undefined;
+      const { blob, ...size } = shrunk;
+      return { file: new File([blob], file.name, { type: blob.type }), byteSize: blob.size, ...size };
+    },
     async shrinkPhoto(file) {
       const shrunk = await shrinkPhoto(file);
       if (!shrunk) return undefined;

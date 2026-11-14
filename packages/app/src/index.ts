@@ -56,7 +56,7 @@ export type {
   RegionRepository,
   SaveResult,
   Scheduler,
-  ShrunkPhoto,
+  ShrunkMedia,
   StoredRegion,
   TripSummary,
 } from "./ports.ts";
@@ -81,13 +81,14 @@ export {
   type UpdateStatus,
 } from "./regions.ts";
 export {
+  type MediaCount,
   replaceAssets,
+  type Shrinkers,
   type ShrinkTripOptions,
   type ShrinkTripResult,
-  shrinkTripPhotos,
-  shrunkPhotoAssets,
-  type TripPhotos,
-  tripPhotos,
+  shrinkTrip,
+  shrunkAssets,
+  tripMedia,
 } from "./shrink-trip.ts";
 export { createStore, type Listener, type Store } from "./store.ts";
 export { createTimelineCache } from "./timeline-cache.ts";

@@ -1,6 +1,9 @@
 import { type AssetStore, MediaFailure } from "@tripreplay/app";
+import { ArrayBufferTarget, Muxer } from "mp4-muxer";
+import { createFile, MP4BoxBuffer } from "mp4box";
 import { describe, expect, it } from "vitest";
 import { contentHash, createMediaPort, inspectMediaFile, shrinkPhoto } from "../../src/index.ts";
+import { shrinkVideo } from "../../src/shrink-video.ts";
 import { withExif } from "../support/exif.ts";
 
 const FIXTURES = {
@@ -174,5 +177,102 @@ describe("shrinkPhoto", () => {
     expect(shrunk).toMatchObject({ width: 1920, height: 2560, mimeType: "image/jpeg" });
     expect(shrunk?.file.name).toBe("IMG.png");
     expect(shrunk?.byteSize).toBe(shrunk?.file.size);
+  });
+});
+
+/** Two seconds of noisy 720p video with sound, recorded turned by 90°, as a camera would. */
+async function cameraVideo(): Promise<File> {
+  const [width, height, fps, frames] = [1280, 720, 30, 60];
+  const target = new ArrayBufferTarget();
+  const muxer = new Muxer({
+    target,
+    fastStart: "in-memory",
+    video: { codec: "vp9", width, height, rotation: 90 },
+    audio: { codec: "opus", numberOfChannels: 2, sampleRate: 48_000 },
+  });
+  const encoder = new VideoEncoder({
+    output: (chunk, meta) => muxer.addVideoChunk(chunk, meta),
+    error: (e) => {
+      throw e;
+    },
+  });
+  encoder.configure({ codec: "vp09.00.40.08", width, height, framerate: fps, bitrate: 20_000_000 });
+  const canvas = new OffscreenCanvas(width, height);
+  const context = canvas.getContext("2d") as OffscreenCanvasRenderingContext2D;
+  const pixels = context.createImageData(width, height);
+  for (let f = 0; f < frames; f++) {
+    for (let i = 0; i < pixels.data.length; i += 4) {
+      const v = ((i + f * 7919) * 2654435761) >>> 24;
+      pixels.data.set([v, (v * 3) & 255, (v * 7) & 255, 255], i);
+    }
+    context.putImageData(pixels, 0, 0);
+    const frame = new VideoFrame(canvas, { timestamp: (f * 1_000_000) / fps, duration: 1_000_000 / fps });
+    encoder.encode(frame, { keyFrame: f % 30 === 0 });
+    frame.close();
+  }
+  await encoder.flush();
+  const audio = new AudioEncoder({
+    output: (chunk, meta) => muxer.addAudioChunk(chunk, meta),
+    error: (e) => {
+      throw e;
+    },
+  });
+  audio.configure({ codec: "opus", sampleRate: 48_000, numberOfChannels: 2, bitrate: 96_000 });
+  const samples = new Float32Array(48_000 * 2 * 2).map((_, i) => Math.sin(i / 20) * 0.3);
+  audio.encode(
+    new AudioData({
+      format: "f32",
+      sampleRate: 48_000,
+      numberOfFrames: 96_000,
+      numberOfChannels: 2,
+      timestamp: 0,
+      data: samples,
+    }),
+  );
+  await audio.flush();
+  muxer.finalize();
+  return new File([target.buffer], "VID_0001.mp4", { type: "video/mp4" });
+}
+
+async function tracksOf(blob: Blob) {
+  const iso = createFile();
+  const ready = new Promise<
+    { type?: string; matrix: ArrayLike<number>; nb_samples: number; video?: { width: number; height: number } }[]
+  >((resolve) => {
+    iso.onReady = (info) => resolve(info.tracks);
+  });
+  iso.appendBuffer(MP4BoxBuffer.fromArrayBuffer(await blob.arrayBuffer(), 0));
+  iso.flush();
+  return ready;
+}
+
+describe("shrinkVideo", () => {
+  it("encodes a large video again at the smaller size, keeping its sound and rotation", async () => {
+    const original = await cameraVideo();
+    const progress: number[] = [];
+    const shrunk = await shrinkVideo(original, { maxSide: 640, onProgress: (share) => void progress.push(share) });
+    expect(shrunk).toMatchObject({ width: 360, height: 640, mimeType: "video/mp4" });
+    expect(shrunk?.blob.size).toBeLessThan(original.size * 0.8);
+    expect(progress.at(-1)).toBe(1);
+    const [before, after] = [await tracksOf(original), await tracksOf(shrunk?.blob as Blob)];
+    const video = after.find((t) => t.type === "video");
+    expect(video?.video).toEqual({ width: 640, height: 360 });
+    expect(Array.from(video?.matrix ?? [])).toEqual(Array.from(before.find((t) => t.type === "video")?.matrix ?? []));
+    expect(video?.nb_samples).toBe(60);
+    expect(after.find((t) => t.type === "audio")?.nb_samples).toBe(before.find((t) => t.type === "audio")?.nb_samples);
+    // The browser plays the copy, turned as recorded.
+    const shown = await inspectMediaFile(new File([shrunk?.blob as Blob], "copy.mp4"));
+    expect(shown).toMatchObject({ kind: "video", width: 360, height: 640, hasAudio: true });
+  });
+
+  it("keeps videos that are already small, and files that are not video", async () => {
+    expect(await shrinkVideo(await file(FIXTURES.video, "kyoto.mp4"))).toBeUndefined();
+    expect(await shrinkVideo(await file(FIXTURES.text, "notes.txt"))).toBeUndefined();
+  });
+
+  it("stops when cancelled", async () => {
+    const controller = new AbortController();
+    controller.abort(new Error("stop"));
+    await expect(shrinkVideo(await cameraVideo(), { maxSide: 640, signal: controller.signal })).rejects.toThrow("stop");
   });
 });
