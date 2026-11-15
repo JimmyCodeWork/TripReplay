@@ -1207,6 +1207,10 @@
     "message": "Opening",
     "description": "Segment of the recap timeline: overview with the trip title."
   },
+  "player.segment.day": {
+    "message": "New day",
+    "description": "Name of the part of the recap where a new day, its date and its line are shown before the move to its first stop."
+  },
   "player.segment.travel": {
     "message": "Travel",
     "description": "Segment of the recap timeline: the camera moves to the next stop."

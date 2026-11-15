@@ -71,7 +71,7 @@ export interface SummaryOverlay {
 }
 
 /**
- * A new day of the trip, shown while the camera travels to its first stop: the day and its date,
+ * A new day of the trip, shown before the camera travels to its first stop: the day and its date,
  * over a tint that deepens like nightfall and lifts again (`night`, 0 to 1).
  */
 export interface DayChangeOverlay {
@@ -80,7 +80,7 @@ export interface DayChangeOverlay {
   readonly date: IsoDate;
   /** The user's line for the day, under its date; empty without one. */
   readonly note: string;
-  /** Time since the travel began, to reveal the line after the day. */
+  /** Time since the day appeared, to reveal the line after the day. */
   readonly shownUs: Microseconds;
   readonly night: number;
   readonly opacity: number;

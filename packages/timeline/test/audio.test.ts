@@ -47,7 +47,7 @@ describe("audio", () => {
     const [music] = timeline.music;
     expect(music?.endUs).toBe(timeline.durationUs);
     expect(renderAt(timeline, timeline.durationUs).audio).toEqual([]);
-    // Half way through the fade at the end, which the third day's text moved one second later.
-    expect(audio(timeline, 27, "music")?.gain).toBeCloseTo(0.7 / 2);
+    // Half way through the fade at the end, which the third day moved 1.5 seconds later.
+    expect(audio(timeline, 27.5, "music")?.gain).toBeCloseTo(0.7 / 2);
   });
 });

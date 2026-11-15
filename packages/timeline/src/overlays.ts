@@ -3,7 +3,6 @@ import { EN_ROUTE_FRAME, PHOTO_PUSH_IN } from "./constants.ts";
 import type { MediaOverlay, Overlay } from "./frame.ts";
 import { envelope, lerp, progress } from "./math.ts";
 import type { MediaSegment, Segment, Timeline, TravelSegment } from "./model.ts";
-import { startsDay } from "./segments.ts";
 
 function isMedia(segment: Segment | undefined): segment is MediaSegment {
   return segment?.kind === "photo" || segment?.kind === "video";
@@ -98,9 +97,9 @@ export function overlaysAt(timeline: Timeline, index: number, timeUs: Microsecon
       lastDate: timeline.stops.at(-1)?.date ?? null,
       opacity: envelope(timeUs, segment.startUs, segment.endUs, fadeUs),
     });
-  } else if (segment.kind === "travel") {
+  } else if (segment.kind === "day") {
     const stop = timeline.stops[segment.stopIndex];
-    if (stop && startsDay(timeline.stops, segment.stopIndex)) {
+    if (stop) {
       overlays.push({
         kind: "dayChange",
         day: stop.day,
@@ -111,7 +110,7 @@ export function overlaysAt(timeline: Timeline, index: number, timeUs: Microsecon
         opacity: envelope(timeUs, segment.startUs, segment.endUs, fadeUs),
       });
     }
-    // Above the night of a new day, which would otherwise darken them.
+  } else if (segment.kind === "travel") {
     overlays.push(...enRouteCards(timeline, segment, timeUs));
   } else if (segment.kind === "title") {
     const stop = timeline.stops[segment.stopIndex];

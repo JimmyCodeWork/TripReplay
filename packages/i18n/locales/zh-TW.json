@@ -905,6 +905,9 @@
   "player.segment.opening": {
     "message": "開場"
   },
+  "player.segment.day": {
+    "message": "新的一天"
+  },
   "player.segment.travel": {
     "message": "移動"
   },

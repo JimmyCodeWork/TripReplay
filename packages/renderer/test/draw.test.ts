@@ -242,17 +242,17 @@ describe("drawFrame", () => {
       return (s.startUs + s.endUs) / 2;
     };
     // The opening, a stop's title without a journal, the travel to a new day, and the closing.
-    for (const us of [middle("opening"), middle("title", 2), middle("travel", 2), timeline.durationUs - 100_000]) {
+    for (const us of [middle("opening"), middle("title", 2), middle("day", 2), timeline.durationUs - 100_000]) {
       expect(glow(us)).toHaveLength(1);
     }
     // Not over the map while travelling on the same day.
     expect(glow(middle("travel", 1))).toHaveLength(0);
   });
 
-  it("marks a new day while travelling to its first stop, under a passing night", () => {
+  it("marks a new day before travelling to its first stop, under a passing night", () => {
     const night = (list: ReturnType<typeof draw>["calls"]) =>
       list.find((c) => c.name === "fillRect" && typeof c.fill === "string" && c.fill.startsWith("rgba(14, 22, 52"));
-    const toNextDay = segment("travel", 2);
+    const toNextDay = segment("day", 2);
     if (!toNextDay) throw new Error("missing segment");
     const middle = draw(timeline, (toNextDay.startUs + toNextDay.endUs) / 2);
     expect(middle.texts).toContain("Day 2");
@@ -268,10 +268,10 @@ describe("drawFrame", () => {
 
   it("shows a day's line under its date once the day has appeared", () => {
     const withLine = compile({ ...project, trip: { ...project.trip, dayNotes: { "2026-04-02": "Snow overnight" } } });
-    const travel = withLine.segments.find((s) => s.kind === "travel" && s.stopIndex === 2);
-    if (!travel) throw new Error("missing segment");
-    expect(draw(withLine, travel.startUs + 300_000).texts).not.toContain("Snow overnight");
-    expect(draw(withLine, (travel.startUs + travel.endUs) / 2).texts).toContain("Snow overnight");
+    const day = withLine.segments.find((s) => s.kind === "day" && s.stopIndex === 2);
+    if (!day) throw new Error("missing segment");
+    expect(draw(withLine, day.startUs + 300_000).texts).not.toContain("Snow overnight");
+    expect(draw(withLine, (day.startUs + day.endUs) / 2).texts).toContain("Snow overnight");
   });
 
   it("shows the summary at the end", () => {

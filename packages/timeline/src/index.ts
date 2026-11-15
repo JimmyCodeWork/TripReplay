@@ -1,7 +1,6 @@
 export { dayOfTrip } from "./calendar.ts";
 export { compile } from "./compile.ts";
 export {
-  DAY_INTRO,
   DUCK_GAIN,
   DUCK_RAMP,
   MAX_OVERVIEW_ZOOM,
@@ -16,4 +15,4 @@ export { normalizeLon } from "./mercator.ts";
 export type * from "./model.ts";
 export { TIMELINE_VERSION } from "./model.ts";
 export { renderAt, segmentIndexAt } from "./render.ts";
-export { JOURNAL_EXCERPT, journalExcerpt, titleLength, travelLength } from "./segments.ts";
+export { dayLength, JOURNAL_EXCERPT, journalExcerpt, titleLength } from "./segments.ts";

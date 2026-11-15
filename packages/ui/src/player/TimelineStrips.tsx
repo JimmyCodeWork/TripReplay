@@ -240,9 +240,12 @@ export function TimelineStrips({ timeline, timeUs, onSeek, onEdit, locale = "en"
   const dayStarts = [
     0,
     ...segments.flatMap((segment, index) => {
+      if (segment.kind === "day") return segment.stopIndex === 0 ? [] : [index];
       if (segment.kind !== "travel" || segment.stopIndex === 0) return [];
       const stop = timeline.stops[segment.stopIndex];
       const before = timeline.stops[segment.stopIndex - 1];
+      // A new day that is shown on its own starts at its day segment, just before.
+      if (segments[index - 1]?.kind === "day") return [];
       return stop && before && stop.day > before.day ? [index] : [];
     }),
   ];
@@ -259,6 +262,8 @@ export function TimelineStrips({ timeline, timeUs, onSeek, onEdit, locale = "en"
     const phase = PHASES[segment.kind];
     if ("clipId" in segment) setSelection({ kind: "clip", clipId: segment.clipId });
     else if (phase) setSelection({ kind: "phase", phase, startUs: segment.startUs });
+    // A part without lengths to edit, such as a new day, closes the fields of the one before.
+    else setSelection(undefined);
   };
   const stepButton = (label: MessageKey, text: string, index: number | undefined) => (
     <button
