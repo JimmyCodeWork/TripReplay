@@ -152,7 +152,7 @@ On every layout, what the user chooses stays under the finger: when a click or a
 
 1. **Quality**: 1080p (sharper) or 720p (faster, smaller file), in the trip's aspect ratio. **File size**: larger (about 12 Mbit/s at 1080p), standard (about 8 Mbit/s) or smaller (about 4 Mbit/s), with the expected size of the video. The dialog probes the encoders and states the format that will be produced, such as "H.264 video with AAC sound", that the video will be silent where no audio encoder exists, or that this browser cannot export.
 2. "Start export" shows the progress: mixing the sound, then "Drawing frame n of N" with a progress bar. "Cancel" stops it and removes the partial file. A note asks to keep the application in front; going to the background stops the export with an explanation.
-3. When done, the dialog shows the file size and "Save video", which opens the save dialog, the downloads folder, or the system save screen in the Android application. Closing the dialog removes the temporary file, saved or not.
+3. When done, the dialog shows the file size and "Save video", which opens the save dialog, the downloads folder, or the system save screen in the Android application. In a browser, "Download" beside it hands the file to the browser's downloads folder. A save dialog that fails, or that the browser closes at once without showing it, also falls back to a download, so that saving never does nothing; the dialog then says the video is downloading. Closing the dialog removes the temporary file, saved or not.
 
 The export uses the recap as it was when the dialog opened; edits made meanwhile do not change it.
 

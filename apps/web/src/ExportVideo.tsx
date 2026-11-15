@@ -14,6 +14,7 @@ import {
   saveVideo,
   videoFileName,
 } from "./export-video.ts";
+import { NATIVE } from "./platform.ts";
 import type { Services } from "./services.ts";
 
 const CODEC_NAMES: Readonly<Record<string, string>> = {
@@ -119,12 +120,13 @@ export function ExportVideo({
     }
   };
 
-  const save = async () => {
+  const save = async (download = false) => {
     const done = result.current;
     if (!done) return;
     try {
-      if (await saveVideo(done.file, videoFileName(title), t("export.fileType")))
-        setState({ kind: "done", bytes: done.file.size, saved: true });
+      const outcome = await saveVideo(done.file, videoFileName(title), t("export.fileType"), { download });
+      if (outcome !== "cancelled")
+        setState({ kind: "done", bytes: done.file.size, saved: true, downloaded: outcome === "downloaded" });
     } catch (error) {
       setState({ kind: "failed", reason: "other", message: error instanceof Error ? error.message : String(error) });
     }
@@ -147,6 +149,7 @@ export function ExportVideo({
       onStart={() => void start()}
       onClose={close}
       onSave={() => void save()}
+      onDownload={NATIVE ? undefined : () => void save(true)}
       locale={locale}
       t={t}
     />

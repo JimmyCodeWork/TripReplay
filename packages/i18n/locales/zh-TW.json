@@ -866,6 +866,12 @@
   "export.save": {
     "message": "儲存影片"
   },
+  "export.download": {
+    "message": "下載"
+  },
+  "export.downloaded": {
+    "message": "影片正在下載到瀏覽器的下載資料夾。"
+  },
   "export.failed": {
     "message": "{reason, select, unsupported {此瀏覽器或裝置無法編碼影片。請改用最新版 Chrome、Edge 或 Android 應用程式。} storage {可用空間不足，請先釋出空間再試一次。} background {TripReplay 切到背景，匯出已停止。請保持在前景後重新匯出。} other {匯出失敗：{message}}}"
   },

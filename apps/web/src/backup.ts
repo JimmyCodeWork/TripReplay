@@ -103,17 +103,21 @@ export async function backupTrip(
     return saveFile(name, "application/zip", chunks);
   }
   const picker = (window as unknown as Partial<SavePicker>).showSaveFilePicker;
+  let handle: Awaited<ReturnType<SavePicker["showSaveFilePicker"]>> | undefined;
   if (picker) {
-    let handle: Awaited<ReturnType<SavePicker["showSaveFilePicker"]>>;
+    const asked = performance.now();
     try {
       handle = await picker.call(window, {
         suggestedName: name,
         types: [{ description, accept: { "application/zip": [PACKAGE_EXTENSION] } }],
       });
     } catch (error) {
-      if (error instanceof DOMException && error.name === "AbortError") return false;
-      throw error;
+      // A cancel this soon came from the browser, which showed no dialog; the file is then downloaded.
+      const cancelled = error instanceof DOMException && error.name === "AbortError";
+      if (cancelled && performance.now() - asked > INSTANT_CANCEL_MS) return false;
     }
+  }
+  if (handle) {
     const writable = await handle.createWritable();
     const writer = writable.getWriter();
     try {
@@ -138,6 +142,9 @@ export async function backupTrip(
   setTimeout(() => URL.revokeObjectURL(url), 60_000);
   return true;
 }
+
+/** A cancel this soon after the save dialog was asked for came from the browser, not from the user. */
+const INSTANT_CANCEL_MS = 500;
 
 /** What restoring a package would do: its trip, and whether a trip with its id is already stored. */
 export async function inspectBackup(

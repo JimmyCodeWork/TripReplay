@@ -1155,6 +1155,14 @@
     "message": "Save video",
     "description": "Button that saves the exported video."
   },
+  "export.download": {
+    "message": "Download",
+    "description": "Button that saves the exported video into the browser's downloads folder instead of asking where."
+  },
+  "export.downloaded": {
+    "message": "The video is downloading to your browser's downloads folder.",
+    "description": "Shown after the video was handed to the browser as a download."
+  },
   "export.failed": {
     "message": "{reason, select, unsupported {This browser or device cannot encode video. Use a current Chrome or Edge, or the Android application.} storage {There is not enough free space for the video. Free some space and try again.} background {The export stopped because TripReplay went to the background. Keep it in front and export again.} other {The export failed: {message}}}",
     "description": "Why an export failed."
