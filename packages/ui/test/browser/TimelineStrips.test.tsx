@@ -265,10 +265,10 @@ describe("TimelineStrips", () => {
     expect(button("全部").getAttribute("aria-pressed")).toBe("true");
     await act(async () => button("第 2 天").click());
     await rerender(ui());
-    // The second day: the move to its first stop, its title and the closing.
-    expect(titles()).toEqual(["移動 · 金閣寺", "景點標題 · 金閣寺", "結尾"]);
-    const move = twoDays.segments.find((s) => s.kind === "travel" && s.stopIndex === 1);
-    expect(seeks.at(-1)).toBe((move?.startUs ?? 0) + 500_000);
+    // The second day: the day itself, the move to its first stop, its title and the closing.
+    expect(titles()).toEqual(["新的一天 · 金閣寺", "移動 · 金閣寺", "景點標題 · 金閣寺", "結尾"]);
+    const newDay = twoDays.segments.find((s) => s.kind === "day" && s.stopIndex === 1);
+    expect(seeks.at(-1)).toBe((newDay?.startUs ?? 0) + 500_000);
     expect(button("第 2 天").getAttribute("aria-pressed")).toBe("true");
     // Stepping back a day shows the first day.
     await act(async () =>
@@ -323,9 +323,11 @@ describe("TimelineStrips", () => {
       Math.min((travel?.startUs ?? 0) + 500_000, ((travel?.startUs ?? 0) + (travel?.endUs ?? 0)) / 2),
     );
     expect(view.querySelector("section h3")?.textContent).toContain("移動 · 清水寺");
-    // The second day starts with the move to its first stop.
+    // The second day starts with the day itself, which has no lengths to edit.
     await press("下一天");
-    expect(view.querySelector("section h3")?.textContent).toContain("移動 · 金閣寺");
+    const newDay = twoDays.segments.find((s) => s.kind === "day" && s.stopIndex === 1);
+    expect(seeks.at(-1)).toBe((newDay?.startUs ?? 0) + 500_000);
+    expect(view.querySelector("section h3")).toBeNull();
     expect(button("下一天").disabled).toBe(true);
     await press("上一段");
     expect(view.querySelector("section h3")?.textContent).toContain("影片 · 清水寺");

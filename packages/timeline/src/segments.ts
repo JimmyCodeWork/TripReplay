@@ -9,7 +9,7 @@ import {
 } from "@tripreplay/domain";
 import type { Timing } from "@tripreplay/themes";
 import { stopCamera } from "./camera.ts";
-import { DAY_INTRO, EN_ROUTE_GAP } from "./constants.ts";
+import { EN_ROUTE_GAP } from "./constants.ts";
 import type { Camera, EnRoutePhoto, Segment, TimelineStop } from "./model.ts";
 
 /** Characters of a stop's journal entry shown in the recap; the rest stays in the journal. */
@@ -33,13 +33,13 @@ export function titleLength(titleUs: Microseconds, journal: string): Microsecond
 }
 
 /**
- * How long the travel to a day's first stop lasts so that the day's line can be read, like a
- * stop's title: about eight characters a second after a moment for the day, at most eight seconds.
+ * How long a new day is shown before the move to its first stop: a moment for the day and its date,
+ * or, with the day's line, long enough to read it like a stop's title: about eight characters a
+ * second after two seconds for the day, at most eight seconds.
  */
-export function travelLength(travelUs: Microseconds, dayNote: string): Microseconds {
-  if (dayNote === "") return travelUs;
-  const reading = Math.min(seconds(8), seconds(2) + Math.round(Array.from(dayNote).length * seconds(0.12)));
-  return Math.max(travelUs, reading);
+export function dayLength(dayNote: string): Microseconds {
+  if (dayNote === "") return seconds(1.5);
+  return Math.min(seconds(8), seconds(2) + Math.round(Array.from(dayNote).length * seconds(0.12)));
 }
 
 /** Whether the move to stop `index` begins a new day, or the first day when it has a line of its own. */
@@ -81,7 +81,7 @@ export function placeEnRoute(
 }
 
 /**
- * Lays out the recap: opening, then for each stop a travel move with the photos taken on the way,
+ * Lays out the recap: opening, then for each stop a new day when it begins one, a travel move with the photos taken on the way,
  * its title and its other clips, then the closing. A stop without clips still gets its travel and title, so the map is never left empty.
  */
 export function buildSegments(
@@ -103,10 +103,13 @@ export function buildSegments(
   let camera = overview;
   stops.forEach((stop, stopIndex) => {
     const here = stopCamera(stop.location);
-    const chosen = stop.ownTravelUs ?? travelLength(timing.travelUs, stop.dayNote);
-    const holdUs = startsDay(stops, stopIndex) ? DAY_INTRO[stop.dayNote ? "withNote" : "withoutNote"] : 0;
-    const { lengthUs, photos } = placeEnRoute(cursor + holdUs, chosen, enRoute[stopIndex] ?? []);
-    segments.push({ kind: "travel", stopIndex, ...next(holdUs + lengthUs), from: camera, to: here, photos, holdUs });
+    // A new day is shown on its own before the move, so that the line is drawn after its text.
+    if (startsDay(stops, stopIndex)) {
+      segments.push({ kind: "day", stopIndex, ...next(dayLength(stop.dayNote)), from: camera, to: camera });
+    }
+    const chosen = stop.ownTravelUs ?? timing.travelUs;
+    const { lengthUs, photos } = placeEnRoute(cursor, chosen, enRoute[stopIndex] ?? []);
+    segments.push({ kind: "travel", stopIndex, ...next(lengthUs), from: camera, to: here, photos });
     segments.push({
       kind: "title",
       stopIndex,

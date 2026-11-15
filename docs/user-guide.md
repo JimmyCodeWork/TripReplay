@@ -85,7 +85,7 @@ In the **Media** tab, choose the **Stop** whose photos and videos you want to se
 
 The **Journal** tab is a diary of the trip. For each day, you can write a line that the recap shows as the day begins, such as "Off to Kyoto on the first train"; for each stop, write what happened there; for each photo or video, add a short note. On a long trip, **Day 1**, **Day 2** and so on show one day at a time.
 
-- A day's line appears under "Day 2" and the date while the recap travels to the day's first stop; that move lasts long enough to read it. The first day's line appears on the way to the first stop.
+- A day's line appears under "Day 2" and the date when the day begins, before the recap moves to the day's first stop, and stays long enough to read it. The first day's line appears before the move to the first stop.
 
 - A stop's entry is shown in the recap under the stop's name, in up to three lines (about 80 characters), appearing line by line in a serif face like a printed diary. The stop's title stays on screen longer so that it can be read.
 - Notes on photos and videos are shown over the bottom of the picture, in up to two lines, shortly after it appears.
@@ -141,7 +141,7 @@ The preview on the right always shows the current recap.
 
 - **Play** and **Pause**, or press the space bar while no button or field has the focus.
 - Drag the **Playback position** slider, or use the arrow keys on it, to move through the recap.
-- The bar under the slider shows the parts of the recap: opening, travel, stop titles, photos, videos and closing. Select a part to jump to it.
+- The bar under the slider shows the parts of the recap: opening, new days, travel, stop titles, photos, videos and closing. Select a part to jump to it.
 - Times are marked above the bar.
 - On a trip of several days, **All**, **Day 1**, **Day 2** and so on above the bar show one day of the recap at a time, as in the itinerary: the bar then spans that day, from the move to its first stop (the opening for the first day) to its last part, and the playhead goes to its start. Stepping to another day with **Previous day** or **Next day** shows that day.
 - **Previous day**, **Previous part**, **Next part** and **Next day** above the bar move to that part and select it, which is easier than tapping a thin segment.

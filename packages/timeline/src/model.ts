@@ -10,7 +10,7 @@ import type {
 } from "@tripreplay/domain";
 import type { Theme } from "@tripreplay/themes";
 
-export const TIMELINE_VERSION = 5;
+export const TIMELINE_VERSION = 6;
 
 /**
  * A map view. `zoom` is the Web Mercator zoom level for the reference frame size of the aspect
@@ -71,11 +71,16 @@ export interface TravelSegment extends SegmentBase {
   readonly stopIndex: number;
   /** Photos taken on the way, in order; empty for most moves. */
   readonly photos: readonly EnRoutePhoto[];
-  /**
-   * Time at the start while the camera and the line wait, so that a new day's text is shown in full
-   * before the move (`DAY_INTRO`); 0 for other moves.
-   */
-  readonly holdUs: Microseconds;
+}
+
+/**
+ * A new day before the move to its first stop: the day, its date and its line over a passing night,
+ * while the camera and the line stay where they are. Also the first day when it has a line.
+ */
+export interface DaySegment extends SegmentBase {
+  readonly kind: "day";
+  /** Index of the day's first stop, travelled to next. */
+  readonly stopIndex: number;
 }
 
 export interface TitleSegment extends SegmentBase {
@@ -101,7 +106,7 @@ export interface ClosingSegment extends SegmentBase {
 }
 
 /** Segments are contiguous: each starts where the previous one ends. */
-export type Segment = OpeningSegment | TravelSegment | TitleSegment | MediaSegment | ClosingSegment;
+export type Segment = OpeningSegment | DaySegment | TravelSegment | TitleSegment | MediaSegment | ClosingSegment;
 
 export interface TimelineStop {
   readonly id: StopId;
@@ -111,7 +116,7 @@ export interface TimelineStop {
   readonly day: number;
   /** The start of the stop's journal entry, shown under its title; empty without one. */
   readonly journal: string;
-  /** The line of the day this stop begins, shown while travelling to it; empty otherwise. */
+  /** The line of the day this stop begins, shown before travelling to it; empty otherwise. */
   readonly dayNote: string;
   /** The stop's own travel and title lengths, which replace the trip's and any lengthening. */
   readonly ownTravelUs?: Microseconds;

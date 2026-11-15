@@ -21,7 +21,7 @@ export function segmentIndexAt(timeline: Timeline, timeUs: Microseconds): number
 
 /** Progress from 0 to 1 of the camera move in a segment, or undefined when the camera is still. */
 function moveProgress(timeline: Timeline, segment: Segment, timeUs: Microseconds): number | undefined {
-  if (segment.kind === "travel") return progress(timeUs, segment.startUs + segment.holdUs, segment.endUs);
+  if (segment.kind === "travel") return progress(timeUs, segment.startUs, segment.endUs);
   if (segment.kind === "closing")
     return progress(timeUs, segment.startUs, segment.startUs + closingMoveUs(timeline, segment));
   return undefined;
@@ -39,7 +39,7 @@ function cameraAt(timeline: Timeline, segment: Segment, move: number | undefined
  * next: through where each photo taken on the way was taken, reached half way through the photo.
  */
 export function legProgress(segment: TravelSegment, timeUs: Microseconds): number {
-  const start = segment.startUs + segment.holdUs;
+  const start = segment.startUs;
   const length = segment.endUs - start;
   const u = progress(timeUs, start, segment.endUs);
   const keys = [{ u: 0, at: 0 }];
@@ -64,6 +64,9 @@ function routeProgress(timeline: Timeline, segment: Segment, move: number | unde
       return 0;
     case "closing":
       return Math.max(0, timeline.stops.length - 1);
+    case "day":
+      // The line waits at the day's last stop.
+      return Math.max(0, segment.stopIndex - 1);
     case "travel": {
       if (segment.stopIndex === 0) return 0;
       const step = timeline.reducedMotion ? ((move ?? 0) < 0.5 ? 0 : 1) : legProgress(segment, timeUs);

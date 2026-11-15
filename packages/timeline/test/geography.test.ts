@@ -85,9 +85,7 @@ describe("long distances", () => {
   it("pulls the camera back mid-way so that both ends are in view", () => {
     const travel = timeline.segments.find((s) => s.kind === "travel" && s.stopIndex === 1);
     if (!travel) throw new Error("missing travel segment");
-    // Half way through the move, after the new day's text.
-    const start = travel.kind === "travel" ? travel.startUs + travel.holdUs : travel.startUs;
-    const middle = renderAt(timeline, (start + travel.endUs) / 2);
+    const middle = renderAt(timeline, (travel.startUs + travel.endUs) / 2);
     expect(middle.camera.zoom).toBeLessThan(4);
     expect(middle.camera.zoom).toBeGreaterThanOrEqual(MIN_ZOOM);
   });
