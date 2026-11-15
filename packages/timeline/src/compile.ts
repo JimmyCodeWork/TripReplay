@@ -11,7 +11,9 @@ import { buildSegments, type EnRouteInput, journalExcerpt } from "./segments.ts"
  * Compiles a project into an immutable timeline. The result depends only on the arguments, so the
  * same project and settings always yield an equal timeline.
  */
-export function compile(project: Project, settings: CompileSettings = {}): Timeline {
+export function compile(source: Project, settings: CompileSettings = {}): Timeline {
+  const itineraryOnly = settings.itineraryOnly ?? false;
+  const project = itineraryOnly ? { ...source, clips: [] } : source;
   const aspectRatio = settings.aspectRatio ?? project.trip.aspectRatio;
   const themed = resolveTheme(project.trip.themeId);
   // The trip's own phase lengths replace the theme's, for everything that reads them.
@@ -57,6 +59,7 @@ export function compile(project: Project, settings: CompileSettings = {}): Timel
     title: project.trip.title,
     aspectRatio,
     reducedMotion: settings.reducedMotion ?? false,
+    itineraryOnly,
     theme,
     durationUs,
     stops,

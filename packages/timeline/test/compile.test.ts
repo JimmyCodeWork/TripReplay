@@ -255,3 +255,28 @@ describe("photos taken on the way", () => {
     }
   });
 });
+
+describe("itinerary only", () => {
+  it("leaves out photos and videos, those on the way included, and keeps the moves and titles", () => {
+    let project = moveClip(kyoto(), "c2", "b", 0);
+    project = setClipEnRoute(project, "c2", true);
+    const full = compile(project);
+    const itinerary = compile(project, { itineraryOnly: true });
+    expect(full.itineraryOnly).toBe(false);
+    expect(itinerary.itineraryOnly).toBe(true);
+    expect(itinerary.segments.map((s) => s.kind)).toEqual([
+      "opening",
+      "travel",
+      "title",
+      "travel",
+      "title",
+      "travel",
+      "title",
+      "closing",
+    ]);
+    expect(itinerary.segments.every((s) => s.kind !== "travel" || s.photos.length === 0)).toBe(true);
+    expect(itinerary.audibleClips).toEqual([]);
+    expect(itinerary.music).toHaveLength(1);
+    expect(itinerary.durationUs).toBeLessThan(full.durationUs);
+  });
+});

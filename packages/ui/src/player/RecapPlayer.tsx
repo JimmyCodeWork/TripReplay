@@ -1,5 +1,5 @@
 import type { Command, Playback, PreviewSurface, Timeline } from "@tripreplay/app";
-import type { Translate } from "@tripreplay/i18n";
+import type { Locale, Translate } from "@tripreplay/i18n";
 import {
   type CSSProperties,
   type KeyboardEvent as ReactKeyboardEvent,
@@ -32,6 +32,11 @@ export interface RecapPlayerProps {
    */
   readonly onReducedMotion?: (reducedMotion: boolean) => void;
   /**
+   * Turns "Itinerary only" on or off: the recap then plays without photos and videos, to check
+   * the stops and the moves between them. Without it the button is not shown.
+   */
+  readonly onItineraryOnly?: (itineraryOnly: boolean) => void;
+  /**
    * How "Full screen" works: with the browser's Fullscreen API, or by filling the page, for a
    * WebView that does not offer the API, such as the Android application's.
    */
@@ -40,6 +45,8 @@ export interface RecapPlayerProps {
   readonly notice?: string;
   /** Opens the export of the recap as a video; without it the button is not shown. */
   readonly onExport?: (() => void) | undefined;
+  /** For the dates of the timeline's day buttons. */
+  readonly locale?: Locale | undefined;
   readonly t: Translate;
 }
 
@@ -64,9 +71,11 @@ export function RecapPlayer({
   onAspectRatio,
   onEdit,
   onReducedMotion,
+  onItineraryOnly,
   fullScreen: fullScreenMode = "browser",
   notice,
   onExport,
+  locale,
   t,
 }: RecapPlayerProps) {
   const state = useSyncExternalStore(playback.subscribe, playback.getState);
@@ -205,6 +214,17 @@ export function RecapPlayer({
             {t("player.reduceMotion")}
           </button>
         )}
+        {onItineraryOnly && (
+          <button
+            type="button"
+            className={styles.option}
+            aria-pressed={timeline.itineraryOnly}
+            title={t("player.itineraryOnlyHint")}
+            onClick={() => onItineraryOnly(!timeline.itineraryOnly)}
+          >
+            {t("player.itineraryOnly")}
+          </button>
+        )}
         <button
           type="button"
           className={styles.option}
@@ -219,13 +239,17 @@ export function RecapPlayer({
           </button>
         )}
       </div>
-      <TimelineStrips
-        timeline={timeline}
-        timeUs={state.timeUs}
-        onSeek={(us) => playback.seek(us)}
-        onEdit={onEdit}
-        t={t}
-      />
+      {/* Left out in full screen, which shows only the recap and its controls. */}
+      <div className={styles.timeline}>
+        <TimelineStrips
+          timeline={timeline}
+          timeUs={state.timeUs}
+          onSeek={(us) => playback.seek(us)}
+          onEdit={onEdit}
+          locale={locale}
+          t={t}
+        />
+      </div>
     </div>
   );
 }

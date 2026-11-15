@@ -22,6 +22,8 @@ All notable changes to TripReplay are recorded here. The format follows [Keep a 
 - A stop's own title length and length of the move to it, over the trip's and the lengthening for text.
 - Imported files go to the stop selected in the Media tab, with the suggested stop one tap away.
 - The journal shows one day at a time too, and the Media tab chooses the stop from a list grouped by day, reorders media by dragging, and moves a photo or video to another stop from its Edit button.
+- The timeline shows one day at a time with the same day buttons as the itinerary.
+- **Itinerary only** under the preview plays the recap without photos and videos, to check the itinerary; full screen leaves out the timeline so that the controls stay on screen.
 - The TripReplay MCP server (`apps/mcp`) for agents such as Claude Desktop and Claude Code, which TripReplay connects to on the same computer with **MCP**, off until turned on, and a pairing code.
 - Smaller videos: **Make imported videos smaller** (off until turned on) and **Make videos smaller too** when shrinking a trip or backing up store videos at 1080p, encoded again with their sound unchanged; **Shrink photos** becomes **Shrink media**.
 - Backups with **Smaller photos**, and a **File size** choice with the expected size when exporting a video.

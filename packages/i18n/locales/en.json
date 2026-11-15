@@ -1111,6 +1111,14 @@
     "message": "Next day",
     "description": "Button that moves to the start of the next day of the recap."
   },
+  "player.itineraryOnly": {
+    "message": "Itinerary only",
+    "description": "Toggle button under the preview: plays the recap without photos and videos, to check the stops and the moves between them."
+  },
+  "player.itineraryOnlyHint": {
+    "message": "Play only the stops and the moves between them, without photos and videos, to check the itinerary. Export uses what the preview shows.",
+    "description": "Tooltip of the Itinerary only button."
+  },
   "player.noMap": {
     "message": "No downloaded map contains these stops; the recap is shown without a base map.",
     "description": "Shown under the preview when no ready map region contains the trip's stops."

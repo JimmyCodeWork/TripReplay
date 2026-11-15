@@ -231,6 +231,59 @@ describe("TimelineStrips", () => {
     expect(commands).toEqual([{ type: "resetTiming" }]);
   });
 
+  it("shows one day at a time, from its first move, and follows a step to another day", async () => {
+    const twoDays = compile({
+      ...project,
+      stops: [
+        ...project.stops,
+        { id: "b", name: "金閣寺", description: "", date: "2026-04-02", location: { lon: 135.7292, lat: 35.0394 } },
+      ],
+    });
+    const seeks: number[] = [];
+    let at = 0;
+    const ui = () => (
+      <div style={{ width: "1000px" }}>
+        <TimelineStrips
+          timeline={twoDays}
+          timeUs={at}
+          onSeek={(us) => {
+            seeks.push(us);
+            at = us;
+          }}
+          onEdit={() => {}}
+          locale="zh-TW"
+          t={createTranslator("zh-TW")}
+        />
+      </div>
+    );
+    const view = await render(ui());
+    const button = (label: string) =>
+      [...view.querySelectorAll("button")].find((b) => b.textContent === label) as HTMLButtonElement;
+    const titles = () =>
+      [...view.querySelectorAll('[data-row="segments"] > [title]')].map((s) => s.getAttribute("title"));
+    expect(titles()).toHaveLength(twoDays.segments.length);
+    expect(button("全部").getAttribute("aria-pressed")).toBe("true");
+    await act(async () => button("第 2 天").click());
+    await rerender(ui());
+    // The second day: the move to its first stop, its title and the closing.
+    expect(titles()).toEqual(["移動 · 金閣寺", "景點標題 · 金閣寺", "結尾"]);
+    const move = twoDays.segments.find((s) => s.kind === "travel" && s.stopIndex === 1);
+    expect(seeks.at(-1)).toBe((move?.startUs ?? 0) + 500_000);
+    expect(button("第 2 天").getAttribute("aria-pressed")).toBe("true");
+    // Stepping back a day shows the first day.
+    await act(async () =>
+      (
+        [...view.querySelectorAll("button")].find((b) => b.textContent?.includes("上一天")) as HTMLButtonElement
+      ).click(),
+    );
+    await rerender(ui());
+    expect(button("第 1 天").getAttribute("aria-pressed")).toBe("true");
+    expect(titles()[0]).toBe("開場");
+    await act(async () => button("全部").click());
+    await rerender(ui());
+    expect(titles()).toHaveLength(twoDays.segments.length);
+  });
+
   it("steps to the previous and next part and day with buttons, selecting the part", async () => {
     const twoDays = compile({
       ...project,

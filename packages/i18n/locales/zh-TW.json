@@ -833,6 +833,12 @@
   "player.nextDay": {
     "message": "下一天"
   },
+  "player.itineraryOnly": {
+    "message": "只看行程"
+  },
+  "player.itineraryOnlyHint": {
+    "message": "只播放景點與其間的移動，不含照片與影片，用來確認行程。匯出影片時會以預覽所呈現的內容為準。"
+  },
   "player.noMap": {
     "message": "已下載的地圖都不包含這些景點，因此預覽時不顯示底圖。"
   },

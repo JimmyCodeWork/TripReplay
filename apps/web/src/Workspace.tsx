@@ -224,7 +224,9 @@ function EditorView({ editor, services, locale, t, onClose }: EditorViewProps) {
   useEffect(() => () => playback.dispose(), [playback]);
   const compileTimeline = useMemo(() => createTimelineCache(), []);
   const [reducedMotion, setReducedMotion] = useReducedMotion();
-  const timeline = compileTimeline(project, { reducedMotion });
+  // Only for checking the itinerary in the preview; it is not kept, so that the full recap returns.
+  const [itineraryOnly, setItineraryOnly] = useState(false);
+  const timeline = compileTimeline(project, { reducedMotion, itineraryOnly });
   const labels = useMemo(() => recapTexts(locale, t), [locale, t]);
   const media = useMemo(
     () => createPreviewMedia(services.assets, () => editor.getState().project.assets),
@@ -506,6 +508,8 @@ function EditorView({ editor, services, locale, t, onClose }: EditorViewProps) {
             onAspectRatio={(aspectRatio) => editor.dispatch({ type: "setAspectRatio", aspectRatio })}
             onEdit={(command) => editor.dispatch(command)}
             onReducedMotion={setReducedMotion}
+            onItineraryOnly={setItineraryOnly}
+            locale={locale}
             fullScreen={NATIVE ? "page" : "browser"}
             onExport={() => {
               playback.pause();

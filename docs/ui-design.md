@@ -95,6 +95,7 @@ On every layout, what the user chooses stays under the finger: when a click or a
 - A scale above the segments marks the time, every 1, 2, 5, 10, 15 or 30 seconds or more, with at most eight marks in view.
 - **Zoom:** − and + buttons above the timeline halve or double its width, from the whole recap up to the zoom at which 5 seconds fill the width; they appear only for a recap long enough to zoom. A zoomed timeline scrolls sideways by swiping, and an overview bar under it shows the whole recap with the part in view as a window that can be dragged, or moved by clicking beside it. Zooming keeps the playhead where it was in view; during playback the timeline scrolls to keep the playhead in view.
 - Clicking or dragging on the timeline moves the playhead; space toggles playback.
+- **Days:** on a trip of several days, the same day chips as the itinerary (§3.3) above the timeline show one day at a time. The opening belongs to the first day and the closing to the last; the strips, the time scale and the music then span only that day's parts, zoom applies within it, and choosing a day moves the playhead a moment into its first part. Stepping to a part of another day shows that day.
 - **Stepping:** above the timeline, "« Previous day", "‹ Previous part", "Next part ›" and "Next day »" move the playhead a moment into that part and select it, so its numbers show below, without aiming at a thin segment. A day starts with the move to its first stop; the first day starts with the opening. The parts are counted from the selected one, or from the one at the playhead.
 - **Durations are edited by dragging, or as numbers:**
 
@@ -122,7 +123,7 @@ On every layout, what the user chooses stays under the finger: when a click or a
 
 ## 5. Full-Screen Player
 
-- Only the recap is shown, at the selected aspect ratio, letterboxed on black.
+- Only the recap is shown, at the selected aspect ratio, letterboxed on black. The timeline and its fields are left out, and the recap takes the height that the controls leave, so the controls stay on screen whatever their number of lines.
 - Controls (play or pause, progress, time, exit) fade out after 2.5 seconds without pointer movement and return on movement.
 - Escape exits. The map attribution remains visible throughout.
 
@@ -151,6 +152,8 @@ The export uses the recap as it was when the dialog opened; edits made meanwhile
 The opening, travel, stop title and closing lengths come from the theme unless the trip sets its own (§3.4).
 
 With "Reduce motion" enabled, camera moves and push-ins are replaced by cross-fades, and journal lines and notes fade in without rising. The **Reduce motion** button under the preview starts as the system setting and keeps the user's choice in the browser.
+
+The **Itinerary only** button under the preview compiles the recap without photos and videos, those on the way included: the opening, the moves, the stop titles with their journal, the closing and the music remain, to check the itinerary. It is not kept, so the full recap returns when the trip is opened again; an export made meanwhile is of what the preview shows.
 
 ## 7. Themes
 
