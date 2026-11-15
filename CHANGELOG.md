@@ -8,6 +8,7 @@ All notable changes to TripReplay are recorded here. The format follows [Keep a 
 
 ### Added
 
+- **Previous stop** and **Next stop** in the Media tab too, as in the Journal tab.
 - The Portrait theme is now **Ocean** and no longer switches the recap to 9:16: portrait or landscape is set by the aspect ratio alone, for every theme. In the Media tab, a video's start and end wrap instead of running under **Edit**, and the **On the way** checkbox sits next to its label.
 - A playback speed of 0.5×, 1×, 1.5× or 2× for the preview, with clip sound and music at the same speed. On a wide screen the side panel scrolls on its own with the wheel, so that the preview stays in view.
 - The Journal tab shows one stop at a time, chosen from a list grouped by day or with **Previous stop** and **Next stop**, so that a long journal no longer makes it slow to scroll; **Show the journal** in Settings switches it to one day at a time.

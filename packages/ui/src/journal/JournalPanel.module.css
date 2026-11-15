@@ -131,54 +131,6 @@
   display: contents;
 }
 
-/* The stop chosen in the one-stop view, and the buttons to the stops before and after it. */
-.chooser {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px 12px;
-  align-items: end;
-  justify-content: space-between;
-}
-
-.stopChoice {
-  display: grid;
-  flex: 1 1 200px;
-  gap: 4px;
-  color: var(--color-muted, #5b665f);
-  font-size: 0.9rem;
-}
-
-.stopChoice select {
-  min-height: 36px;
-  padding: 4px 8px;
-  border: 1px solid var(--color-field, #7a857e);
-  border-radius: 6px;
-  background: var(--color-surface, #fff);
-  color: var(--color-text, #1d2420);
-  font: inherit;
-}
-
-.steps {
-  display: flex;
-  gap: 8px;
-}
-
-.step {
-  min-height: 36px;
-  padding: 4px 10px;
-  border: 1px solid var(--color-line, #d6ddd6);
-  border-radius: 6px;
-  background: var(--color-surface, #fff);
-  color: inherit;
-  font: inherit;
-  cursor: pointer;
-}
-
-.step:disabled {
-  cursor: default;
-  opacity: 0.45;
-}
-
 h4.stopName {
   margin: 0;
   cursor: default;

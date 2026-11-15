@@ -3,7 +3,7 @@ import { createTranslator } from "@tripreplay/i18n";
 import { act } from "react";
 import { afterEach, describe, expect, it } from "vitest";
 import { formatCaptureTime, ImportDialog, MediaPanel } from "../../src/index.ts";
-import { cleanup, click, render } from "./support.tsx";
+import { button, cleanup, click, render } from "./support.tsx";
 
 afterEach(cleanup);
 
@@ -286,6 +286,10 @@ describe("MediaPanel", () => {
       picker.dispatchEvent(new Event("change", { bubbles: true }));
     });
     expect(selected).toEqual(["station"]);
+    // Or the stop before and after, with the buttons; there is none after the last.
+    await click(view, "‹ 上一個景點");
+    expect(selected).toEqual(["station", "station"]);
+    expect(button(view, "下一個景點 ›").disabled).toBe(true);
     await click(view, "編輯 a.jpg");
     const move = view.querySelector('select[aria-label="將 a.jpg 移到其他景點"]') as HTMLSelectElement;
     expect([...move.options].map((o) => o.textContent)).toEqual(["移到…", "1. 京都車站"]);
