@@ -1,4 +1,4 @@
-import type { MessageKey, Translate } from "@tripreplay/i18n";
+import type { Locale, MessageKey, Translate } from "@tripreplay/i18n";
 import { type ReactNode, useEffect, useId, useRef, useState } from "react";
 import styles from "./SettingsPanel.module.css";
 
@@ -13,6 +13,8 @@ export interface SettingsValues {
   readonly agentTools: boolean;
   readonly mcp: boolean;
   readonly journalView: "stop" | "day";
+  /** The display language; undefined follows the browser. */
+  readonly language: Locale | undefined;
 }
 
 export interface SettingsPanelProps {
@@ -30,6 +32,13 @@ export interface SettingsPanelProps {
   readonly onForgetMcpCode?: (() => void) | undefined;
   readonly t: Translate;
 }
+
+/** Each display language, named in itself. */
+const LANGUAGES: readonly (readonly [Locale, MessageKey])[] = [
+  ["en", "language.english"],
+  ["zh-TW", "language.traditionalChinese"],
+  ["ja", "language.japanese"],
+];
 
 /**
  * A small "?" for an explanation or "!" for a caution, which opens a small dialog with its text in
@@ -113,17 +122,42 @@ function Toggle({
 
 /**
  * The Settings dialog's content (docs/ui-design.md §2.2): the choices that apply to every trip,
- * grouped into playback and map, editing, import, and AI agents. Each setting with something to explain has a
+ * grouped into language, playback and map, editing, import, and agent tools. Each setting with something to explain has a
  * "?", and each with a cost or a consequence to know has a "!", which opens a small dialog with it.
  */
 export function SettingsPanel({ values, onChange, nearKmChoices, offers, onForgetMcpCode, t }: SettingsPanelProps) {
   const nearId = useId();
   const journalId = useId();
+  const languageId = useId();
   const note = (kind: "help" | "caution", name: MessageKey, text: MessageKey) => (
     <Note kind={kind} name={t(name)} text={t(text)} t={t} />
   );
   return (
     <div className={styles.panel}>
+      <fieldset className={styles.section}>
+        <legend>{t("settings.section.language")}</legend>
+        <div className={styles.row}>
+          <label className={styles.choice} htmlFor={languageId}>
+            <span>{t("settings.language")}</span>
+            <select
+              id={languageId}
+              value={values.language ?? "auto"}
+              onChange={(event) => {
+                const chosen = LANGUAGES.find(([locale]) => locale === event.target.value);
+                onChange({ language: chosen?.[0] });
+              }}
+            >
+              <option value="auto">{t("settings.language.auto")}</option>
+              {LANGUAGES.map(([locale, name]) => (
+                <option key={locale} value={locale} lang={locale}>
+                  {t(name)}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
+      </fieldset>
+
       <fieldset className={styles.section}>
         <legend>{t("settings.section.playback")}</legend>
         <Toggle

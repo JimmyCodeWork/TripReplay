@@ -1,6 +1,6 @@
 # TripReplay
 
-[English](README.md) | 繁體中文
+[English](README.md) | 繁體中文 | [日本語](README.ja.md)
 
 TripReplay 將您的行程、照片與影片，製作成以地圖呈現的動態旅行回顧。所有處理皆在您的裝置上完成。
 
@@ -9,6 +9,8 @@ TripReplay 將您的行程、照片與影片，製作成以地圖呈現的動態
 ## 試用
 
 - **在瀏覽器中：** 以 Chrome 或 Edge 開啟 [https://jimmycodework.github.io/TripReplay/](https://jimmycodework.github.io/TripReplay/)，按網址列的安裝按鈕，即可在桌面建立圖示，一鍵開啟 TripReplay。
+- **在 Windows 上：** 從[發行版本](https://github.com/JimmyCodeWork/TripReplay/releases)下載 `tripreplay-windows-…-setup.exe` 並執行。安裝檔尚未簽章，Windows SmartScreen 會要求確認，請選擇「**其他資訊 → 仍要執行**」。
+- **在 Android 上：** 從[發行版本](https://github.com/JimmyCodeWork/TripReplay/releases)下載 `tripreplay-android-….apk`。
 - **在自己的電腦上：** 安裝 Node.js 24 以上版本後，按兩下 `launch/TripReplay.cmd`（Windows）或 `launch/TripReplay.command`（macOS），或執行 `launch/start.sh`（Linux），即可在 `http://localhost:4173` 提供 TripReplay。詳見[使用指南 §1](docs/zh-TW/user-guide.md#1-開始之前)。
 
 ## 規劃功能
@@ -21,7 +23,8 @@ TripReplay 將您的行程、照片與影片，製作成以地圖呈現的動態
 - 在瀏覽器中以全螢幕播放回顧。
 - 只需下載一次所需區域的地圖，之後所有功能皆可離線使用，包含地點搜尋。
 - 將回顧匯出為 MP4 影片（1080p 或 720p，30 fps）。
-- 1.0 版於瀏覽器中執行，可安裝為漸進式網頁應用程式，並提供 Android 應用程式（APK）；Windows、macOS、Linux 及 iOS 安裝版將於之後推出。
+- 介面提供英文、繁體中文與日文；預設依瀏覽器的語言，也可以在「設定」中選擇。
+- 1.0 版於瀏覽器中執行，可安裝為漸進式網頁應用程式，並提供 Android 應用程式（APK）與 Windows 應用程式（安裝檔）；macOS、Linux 及 iOS 安裝版將於之後推出。
 
 ## 隱私
 

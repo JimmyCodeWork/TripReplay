@@ -1,4 +1,4 @@
-export const locales = ["en", "zh-TW"] as const;
+export const locales = ["en", "zh-TW", "ja"] as const;
 export type Locale = (typeof locales)[number];
 export const sourceLocale: Locale = "en";
 
@@ -10,6 +10,7 @@ function match(tag: string): Locale | undefined {
     return undefined;
   }
   if (locale.language === "en") return "en";
+  if (locale.language === "ja") return "ja";
   // zh-TW, zh-HK, zh-MO and any zh-Hant tag maximize to the Traditional script.
   if (locale.language === "zh" && locale.maximize().script === "Hant") return "zh-TW";
   return undefined;

@@ -726,7 +726,7 @@
     "message": "匯入"
   },
   "settings.section.agents": {
-    "message": "AI 代理"
+    "message": "代理工具"
   },
   "settings.help": {
     "message": "關於「{name}」"
@@ -750,31 +750,31 @@
     "message": "離景點較遠的地方只會先讀取全球概覽，速度較快；那裡的詳細地圖會在播放時才出現，因此可能先看到較粗略的地圖。未下載全球概覽時，會讀取整段路徑。"
   },
   "settings.agentTools": {
-    "message": "允許瀏覽器的 AI 代理使用開啟中的旅行"
+    "message": "允許瀏覽器內建的代理工具使用開啟中的旅行"
   },
   "settings.mcp": {
-    "message": "連線到本電腦的 TripReplay MCP server"
+    "message": "開啟 MCP Server"
   },
   "mcp.button": {
     "message": "MCP"
   },
   "mcp.hint": {
-    "message": "將這趟旅行連線到本電腦上的 TripReplay MCP server，讓 Claude Desktop 等 AI 代理讀取旅行，並編輯其景點、日記、備註與時間設定。它讀取的內容會傳送到該代理的服務。所有變更都可以復原。"
+    "message": "讓您在這台電腦上使用的代理工具（例如 Claude Desktop）協助處理目前開啟的旅行：新增景點、撰寫日記與備註、調整時間。此功能預設關閉；開啟後，也必須輸入代理工具顯示的配對碼才能連線。代理工具只能看到開啟中旅行的名稱、地點、日期、日記、備註與媒體的檔名，看不到照片與影片本身，也看不到其他旅行。它看到的內容由該工具的服務處理，與您在該工具中輸入的內容相同。所有變更都可以復原，關閉此設定即會立即中斷連線。"
   },
   "mcp.askCode": {
-    "message": "AI 代理提供的配對碼："
+    "message": "代理工具提供的配對碼："
   },
   "mcp.pair": {
     "message": "連線"
   },
   "mcp.waiting": {
-    "message": "正在等待 TripReplay MCP server。請在您的 AI 代理中啟動它，例如請它使用 TripReplay。"
+    "message": "正在等待 TripReplay MCP Server。請在您的代理工具中啟動它，例如請它使用 TripReplay。"
   },
   "mcp.connected": {
-    "message": "已連線：AI 代理可以處理這趟旅行。"
+    "message": "已連線：代理工具可以協助處理這趟旅行。"
   },
   "mcp.wrongCode": {
-    "message": "配對碼未被接受。請輸入 AI 代理顯示的配對碼："
+    "message": "配對碼未被接受。請輸入代理工具顯示的配對碼："
   },
   "mcp.replaced": {
     "message": "另一個 TripReplay 視窗已接手連線。按兩次 MCP 即可重新連線。"
@@ -783,10 +783,10 @@
     "message": "變更配對碼"
   },
   "workspace.agentTools": {
-    "message": "AI 代理"
+    "message": "代理工具"
   },
   "workspace.agentToolsHint": {
-    "message": "讓此瀏覽器內建的 AI 代理讀取這趟旅行，並編輯其景點、日記、備註與時間設定。它讀取的內容會傳送到該代理的服務。所有變更都可以復原。"
+    "message": "讓此瀏覽器內建的代理工具協助處理這趟旅行：新增景點、撰寫日記與備註、調整時間。此功能預設關閉。代理工具只能看到這趟旅行的名稱、地點、日期、日記、備註與媒體的檔名，看不到照片與影片本身，也看不到其他旅行。它看到的內容由該工具的服務處理，與您在該工具中輸入的內容相同。所有變更都可以復原。"
   },
   "agent.tool.getTrip": {
     "message": "讀取旅行"
@@ -1285,5 +1285,23 @@
   },
   "app.notices": {
     "message": "開放原始碼授權"
+  },
+  "settings.section.language": {
+    "message": "語言"
+  },
+  "settings.language": {
+    "message": "顯示語言"
+  },
+  "settings.language.auto": {
+    "message": "與瀏覽器相同"
+  },
+  "language.english": {
+    "message": "English"
+  },
+  "language.traditionalChinese": {
+    "message": "繁體中文"
+  },
+  "language.japanese": {
+    "message": "日本語"
   }
 }

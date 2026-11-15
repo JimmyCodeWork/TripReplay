@@ -14,8 +14,9 @@ English | [繁體中文](zh-TW/localization.md)
 |---|---|---|
 | `en` | Source locale | All UI strings, documentation and store listings |
 | `zh-TW` | Translation | All UI strings, documentation and store listings |
+| `ja` | Translation | All UI strings and the README; the documentation is not translated |
 
-English is the source of truth. A string is added in `en` first and translated into `zh-TW` in the same pull request whenever possible.
+English is the source of truth. A string is added in `en` first and translated into `zh-TW` and `ja` in the same pull request whenever possible.
 
 ## 2. Locale Resolution
 
@@ -24,12 +25,13 @@ The application checks the user's preferred languages (operating system or brows
 | Requested tag | Resolved locale |
 |---|---|
 | `zh-TW`, `zh-Hant`, `zh-Hant-*`, `zh-HK`, `zh-MO` | `zh-TW` |
+| `ja`, `ja-*` | `ja` |
 | `en`, `en-*` | `en` |
 | Anything else, including `zh`, `zh-CN` and `zh-Hans` | Skipped |
 
 If no preference is supported, `en` is used. Tags are matched by their likely script, so any Chinese tag that implies Traditional script resolves to `zh-TW`. The implementation is `resolveLocale` in [`packages/i18n`](../packages/i18n/src/locale.ts).
 
-Users can override the language in Settings. The choice is stored locally with other preferences.
+Users can override the language in **Settings → Language**, where each language is named in itself. The choice applies at once and is stored locally with other preferences.
 
 ## 3. Message Catalogs
 
@@ -68,7 +70,7 @@ Pending translations are listed but do not fail the check. Detection of unused k
 
 - Dates, times, numbers, file sizes and durations are formatted with the platform `Intl` APIs for the active locale.
 - Trip dates are displayed in the trip's time zone, with the zone shown when it differs from the device's.
-- Units follow the locale; distances are shown in kilometers for both supported locales.
+- Units follow the locale; distances are shown in kilometers for every supported locale.
 
 ## 5. Content That Is Not Translated
 

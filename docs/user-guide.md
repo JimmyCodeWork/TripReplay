@@ -20,7 +20,7 @@ This guide follows the core scenario: download a map, plan the trip, add your ph
 - **On your own computer, without the website (optional).** With [Node.js](https://nodejs.org/) 24 or later and a copy of the [source code](https://github.com/JimmyCodeWork/TripReplay), double-click `launch/TripReplay.cmd` on Windows or `launch/TripReplay.command` on macOS, or run `launch/start.sh` on Linux. It builds TripReplay (the first start also installs what it needs), serves it at `http://localhost:4173` and opens it in the browser; keep its window open while you use TripReplay. You can install it as an app from there too, and the installed app then starts even when the window is closed; run the launcher again to update it. The browser keeps trips for each address separately, so trips made at `localhost` do not appear on the website and the other way round; move them with a backup (§9).
 - **Storage.** Maps and media are stored by the browser on this device. A region map takes a few hundred megabytes, and your photos and videos take as much space as the files themselves. TripReplay checks the free space before every download and import.
 - **Offline.** You need a connection only to open TripReplay the first time and to download maps. After that, everything works without one, including place search.
-- **Settings.** **Settings** at the top gathers the choices that apply to every trip: playing and loading the map, making imported photos and videos smaller, and letting AI agents use the open trip. Select **?** beside a setting to read what it does, and **!** for what to know before turning it on. Your choices are kept in this browser.
+- **Settings.** **Settings** at the top gathers the choices that apply to every trip: the display language (English, Traditional Chinese or Japanese, or the browser's), playing and loading the map, making imported photos and videos smaller, and letting agent tools help with the open trip. Select **?** beside a setting to read what it does, and **!** for what to know before turning it on. Your choices are kept in this browser.
 
 ## 2. Download a Map
 
@@ -94,7 +94,7 @@ The **Journal** tab is a diary of the trip. For each day, you can write a line t
 
 ### Write with the browser's AI agent
 
-Some desktop browsers have an AI agent built in. Where yours offers its tools to websites (WebMCP), **Settings** offers **Let the browser's AI agent use the open trip**. Turn it on to let the agent work on the trip you open; turn it off to stop. It stays off until you turn it on.
+Some desktop browsers have an AI agent built in. Where yours offers its tools to websites (WebMCP), **Settings** offers **Let the browser's built-in agent tool use the open trip**. Turn it on to let the agent work on the trip you open; turn it off to stop. It stays off until you turn it on.
 
 You can then ask the agent, for example, to add the stops of a day from your notes, to write a journal entry or captions in your style, or to give each stop a shorter title. The agent reads the trip's text and changes it with the same steps as the interface, so you see each change at once and can undo it with **Undo**. It cannot see your photos and videos, delete anything or import files.
 
@@ -118,7 +118,7 @@ Agents such as Claude Desktop and Claude Code can work on the open trip through 
 
      and restart Claude Desktop.
    - **Claude Code:** run `claude mcp add tripreplay -- node /path/to/TripReplay/apps/mcp/src/main.ts`.
-3. Open a trip in TripReplay in Chrome or Edge on the same computer, at the project's site or at `http://localhost:4173`, and turn on **Connect to the TripReplay MCP server on this computer** in **Settings**. A row marked **MCP** appears under the top of the trip.
+3. Open a trip in TripReplay in Chrome or Edge on the same computer, at the project's site or at `http://localhost:4173`, and turn on **Turn on the MCP server** in **Settings**. A row marked **MCP** appears under the top of the trip.
 4. Ask the agent to use TripReplay. The first time, it tells you a six-digit pairing code; enter it in TripReplay and select **Connect**. The browser may ask whether the site may connect to devices on your computer or local network; allow it. TripReplay remembers the code in that browser.
 
 The agent then reads the trip's text and changes it like the browser's agent above, and each change can be undone with **Undo**. Turn the setting off to disconnect. What the agent reads goes to it and usually to the service behind it ([Privacy Statement §3](privacy.md#3-the-browsers-ai-agent)).

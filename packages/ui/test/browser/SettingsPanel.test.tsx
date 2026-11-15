@@ -15,6 +15,7 @@ const values: SettingsValues = {
   agentTools: false,
   mcp: false,
   journalView: "stop",
+  language: undefined,
 };
 
 function setup(offers = { shrinkVideos: true, agentTools: true, mcp: true }, forget?: () => void) {
@@ -43,10 +44,11 @@ describe("SettingsPanel", () => {
     const { changes, ui } = setup();
     const view = await render(ui);
     expect([...view.querySelectorAll("legend")].map((l) => l.textContent)).toEqual([
+      "語言",
       "播放與地圖",
       "編輯",
       "匯入",
-      "AI 代理",
+      "代理工具",
     ]);
     expect(checkbox(view, "先讀取地圖").checked).toBe(true);
     await act(async () => checkbox(view, "匯入時縮小影片（1080p，較慢）").click());
@@ -56,7 +58,7 @@ describe("SettingsPanel", () => {
       journal.value = "day";
       journal.dispatchEvent(new Event("change", { bubbles: true }));
     });
-    const select = view.querySelector("select") as HTMLSelectElement;
+    const select = view.querySelector('select:has(option[value="all"])') as HTMLSelectElement;
     expect([...select.options].map((o) => o.textContent)).toEqual([
       "景點附近 10 公里內",
       "景點附近 25 公里內",
@@ -67,7 +69,23 @@ describe("SettingsPanel", () => {
       select.value = "all";
       select.dispatchEvent(new Event("change", { bubbles: true }));
     });
-    expect(changes).toEqual([{ shrinkVideos: true }, { journalView: "day" }, { preloadNearKm: undefined }]);
+    const language = view.querySelector('select:has(option[value="ja"])') as HTMLSelectElement;
+    expect([...language.options].map((o) => o.textContent)).toEqual(["與瀏覽器相同", "English", "繁體中文", "日本語"]);
+    await act(async () => {
+      language.value = "ja";
+      language.dispatchEvent(new Event("change", { bubbles: true }));
+    });
+    await act(async () => {
+      language.value = "auto";
+      language.dispatchEvent(new Event("change", { bubbles: true }));
+    });
+    expect(changes).toEqual([
+      { shrinkVideos: true },
+      { journalView: "day" },
+      { preloadNearKm: undefined },
+      { language: "ja" },
+      { language: undefined },
+    ]);
   });
 
   it("explains with ? and cautions with !, in a dialog", async () => {
@@ -89,7 +107,7 @@ describe("SettingsPanel", () => {
       await new Promise((resolve) => setTimeout(resolve, 50));
     });
     expect(view.querySelector("dialog")).toBeNull();
-    const caution = view.querySelector('button[aria-label="「連線到本電腦的 TripReplay MCP server」注意事項"]');
+    const caution = view.querySelector('button[aria-label="「開啟 MCP Server」注意事項"]');
     expect(caution?.textContent).toBe("!");
   });
 
@@ -114,7 +132,12 @@ describe("SettingsPanel", () => {
   it("leaves out what the device does not offer", async () => {
     let forgotten = 0;
     const view = await render(setup({ shrinkVideos: false, agentTools: false, mcp: false }, () => forgotten++).ui);
-    expect([...view.querySelectorAll("legend")].map((l) => l.textContent)).toEqual(["播放與地圖", "編輯", "匯入"]);
+    expect([...view.querySelectorAll("legend")].map((l) => l.textContent)).toEqual([
+      "語言",
+      "播放與地圖",
+      "編輯",
+      "匯入",
+    ]);
     expect(view.textContent).not.toContain("縮小影片");
     expect(forgotten).toBe(0);
   });

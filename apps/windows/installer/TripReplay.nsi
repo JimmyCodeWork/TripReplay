@@ -46,11 +46,14 @@ VIAddVersionKey "LegalCopyright" "Copyright (c) TripReplay contributors. MIT Lic
 ; The installer follows the language of Windows, and falls back to the first, English.
 !insertmacro MUI_LANGUAGE "English"
 !insertmacro MUI_LANGUAGE "TradChinese"
+!insertmacro MUI_LANGUAGE "Japanese"
 
 LangString NoWebView2 ${LANG_ENGLISH} "TripReplay needs the Microsoft Edge WebView2 Runtime, which is part of Windows 10 and 11 but was not found. Install it from https://developer.microsoft.com/microsoft-edge/webview2/ before starting TripReplay."
 LangString NoWebView2 ${LANG_TRADCHINESE} "TripReplay 需要 Microsoft Edge WebView2 Runtime；Windows 10 與 11 通常已內建，但這台電腦上找不到。啟動 TripReplay 前，請先從 https://developer.microsoft.com/microsoft-edge/webview2/ 安裝。"
+LangString NoWebView2 ${LANG_JAPANESE} "TripReplay には Microsoft Edge WebView2 Runtime が必要です。Windows 10 と 11 には通常含まれていますが、このパソコンでは見つかりませんでした。TripReplay を起動する前に https://developer.microsoft.com/microsoft-edge/webview2/ からインストールしてください。"
 LangString KeptTrips ${LANG_ENGLISH} "Your trips and maps are kept in $LOCALAPPDATA\TripReplay. Delete that folder to remove them too."
 LangString KeptTrips ${LANG_TRADCHINESE} "您的旅行與地圖仍保留在 $LOCALAPPDATA\TripReplay。若要一併移除，請刪除該資料夾。"
+LangString KeptTrips ${LANG_JAPANESE} "旅行と地図は $LOCALAPPDATA\TripReplay に残っています。これらも削除するには、このフォルダーを削除してください。"
 
 Section "TripReplay"
   ; An earlier version is replaced whole, so that no file of it is left behind.

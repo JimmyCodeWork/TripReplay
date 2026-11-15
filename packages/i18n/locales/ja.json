@@ -1,0 +1,1307 @@
+{
+  "app.name": {
+    "message": "TripReplay"
+  },
+  "common.cancel": {
+    "message": "キャンセル"
+  },
+  "common.retry": {
+    "message": "再試行"
+  },
+  "tripList.title": {
+    "message": "旅行"
+  },
+  "tripList.empty": {
+    "message": "旅行はまだありません"
+  },
+  "tripList.stopCount": {
+    "message": "{count, plural, other {# か所}}"
+  },
+  "offline.status.ready": {
+    "message": "オフラインで使用できます"
+  },
+  "export.preflight.missingTiles": {
+    "message": "{count, plural, other {地図タイルが # 枚不足しています}}。書き出す前にオフラインパッケージをダウンロードしてください。"
+  },
+  "theme.classic.name": {
+    "message": "クラシック"
+  },
+  "theme.classic.description": {
+    "message": "明るい地図と濃い色のルート。一般的な用途に"
+  },
+  "theme.night.name": {
+    "message": "ナイト"
+  },
+  "theme.night.description": {
+    "message": "暗い地図と光るルート。夜の鑑賞やプロジェクター投影に"
+  },
+  "theme.portrait.name": {
+    "message": "オーシャン"
+  },
+  "theme.portrait.description": {
+    "message": "砂色の地図、青いルート、大きな白いタイトル"
+  },
+  "region.world": {
+    "message": "世界の概要地図"
+  },
+  "maps.overviewNote": {
+    "message": "世界全体を数段階のズームで収めた地図で、約 60 MB です。ダウンロードした地域の下に描かれるため、地域の間や周辺をカメラが移動しても、空白ではなく陸地・海・境界が表示されます。"
+  },
+  "maps.title": {
+    "message": "地図"
+  },
+  "maps.intro": {
+    "message": "旅行先の地域ごとに地図をダウンロードしてください。地図はこのデバイスに保存され、オフラインでも使えます。"
+  },
+  "maps.privacy": {
+    "message": "ダウンロード元に伝わるのは、どの地域をダウンロードしたかだけです。"
+  },
+  "maps.attribution": {
+    "message": "地図データ © OpenStreetMap contributors, Overture Maps Foundation"
+  },
+  "maps.filter.label": {
+    "message": "国・地域"
+  },
+  "maps.filter.popular": {
+    "message": "人気の国"
+  },
+  "maps.filter.favorites": {
+    "message": "{count, plural, =0 {お気に入り} other {お気に入り（#）}}"
+  },
+  "maps.filter.downloaded": {
+    "message": "ダウンロード済み"
+  },
+  "maps.filter.nearby": {
+    "message": "現在地"
+  },
+  "maps.filter.popularGroup": {
+    "message": "人気"
+  },
+  "maps.filter.moreGroup": {
+    "message": "その他の国"
+  },
+  "maps.favorite": {
+    "message": "お気に入り：{name}"
+  },
+  "maps.locate": {
+    "message": "現在地を使用"
+  },
+  "maps.locating": {
+    "message": "現在地を取得しています…"
+  },
+  "maps.locateFailed": {
+    "message": "{reason, select, denied {位置情報の使用が許可されませんでした。} other {現在地を特定できませんでした。}}"
+  },
+  "maps.nearbyNote": {
+    "message": "現在地を含む地域です。位置情報はこのデバイス内でのみ使用されます。"
+  },
+  "maps.empty.favorites": {
+    "message": "お気に入りはまだありません。地域の横の ☆ を選ぶと追加できます。"
+  },
+  "maps.empty.downloaded": {
+    "message": "ダウンロードした地図はまだありません。"
+  },
+  "maps.empty.nearby": {
+    "message": "現在地はダウンロードできるどの地域にも含まれていません。"
+  },
+  "maps.status.notDownloaded": {
+    "message": "未ダウンロード"
+  },
+  "maps.status.checking": {
+    "message": "サイズを確認しています…"
+  },
+  "maps.status.downloading": {
+    "message": "ダウンロード中：{completed} / {total}"
+  },
+  "maps.status.paused": {
+    "message": "{completed} / {total} で一時停止中"
+  },
+  "maps.status.verifying": {
+    "message": "検証しています…"
+  },
+  "maps.status.ready": {
+    "message": "準備完了 · {size}"
+  },
+  "maps.status.insufficientStorage": {
+    "message": "空き容量が不足しています：{needed} 必要、空き {free}"
+  },
+  "maps.status.failed": {
+    "message": "{reason, select, network {ダウンロード元に接続できませんでした。} unavailable {この地図のバージョンは提供が終了しました。最新版をダウンロードしてください。} changed {ダウンロード中に地図が更新されました。もう一度ダウンロードしてください。} damaged {ダウンロードしたデータが破損しています。} missing {この地図のファイルが見つかりません。ブラウザーによって削除された可能性があります。} other {ダウンロードに失敗しました。}}"
+  },
+  "maps.status.updateAvailable": {
+    "message": "更新があります（{release}）"
+  },
+  "maps.confirm": {
+    "message": "{size} をダウンロードしますか？このデバイスの空き容量は {free} です。"
+  },
+  "maps.confirmUnknownFree": {
+    "message": "{size} をダウンロードしますか？"
+  },
+  "maps.action.download": {
+    "message": "ダウンロード"
+  },
+  "maps.action.pause": {
+    "message": "一時停止"
+  },
+  "maps.action.resume": {
+    "message": "再開"
+  },
+  "maps.action.update": {
+    "message": "更新"
+  },
+  "maps.action.delete": {
+    "message": "削除"
+  },
+  "maps.action.checkUpdates": {
+    "message": "更新を確認"
+  },
+  "maps.status.copying": {
+    "message": "コピー中：{completed} / {total}"
+  },
+  "maps.files.title": {
+    "message": "このデバイスの地図ファイル"
+  },
+  "maps.files.hint": {
+    "message": "Overture Maps のテーマ base・transportation・divisions の PMTiles ファイルをまとめて開いてください。スポット情報には places も使えます。たとえば pmtiles extract で作った抽出ファイルです。ファイルはこのアプリにコピーされます。"
+  },
+  "maps.files.open": {
+    "message": "地図ファイルを開く"
+  },
+  "maps.files.failed": {
+    "message": "{reason, select, damaged {ファイルが破損しているか、PMTiles の地図ファイルではありません。} unsupported {Overture Maps のテーマではないファイルがあるか、同じテーマのファイルが 2 つあります。} incomplete {base・transportation・divisions のファイルが揃っている必要があります。} other {地図ファイルを開けませんでした。}}"
+  },
+  "region.taiwan": {
+    "message": "台湾"
+  },
+  "region.japanHokkaido": {
+    "message": "日本 – 北海道"
+  },
+  "region.japanTohoku": {
+    "message": "日本 – 東北"
+  },
+  "region.japanKanto": {
+    "message": "日本 – 関東"
+  },
+  "region.japanChubu": {
+    "message": "日本 – 中部"
+  },
+  "region.japanKansai": {
+    "message": "日本 – 関西"
+  },
+  "region.japanChugoku": {
+    "message": "日本 – 中国"
+  },
+  "region.japanShikoku": {
+    "message": "日本 – 四国"
+  },
+  "region.japanKyushu": {
+    "message": "日本 – 九州"
+  },
+  "region.japanOkinawa": {
+    "message": "日本 – 沖縄"
+  },
+  "region.southKorea": {
+    "message": "韓国"
+  },
+  "region.hongKongMacau": {
+    "message": "香港・マカオ"
+  },
+  "region.singapore": {
+    "message": "シンガポール"
+  },
+  "region.thailandCentral": {
+    "message": "タイ – 中部（バンコク、パタヤ）"
+  },
+  "region.thailandNorth": {
+    "message": "タイ – 北部（チェンマイ、チェンライ）"
+  },
+  "region.thailandNortheast": {
+    "message": "タイ – 東北部"
+  },
+  "region.thailandSouth": {
+    "message": "タイ – 南部（プーケット、クラビ、サムイ島）"
+  },
+  "region.vietnamNorth": {
+    "message": "ベトナム – 北部（ハノイ、ハロン）"
+  },
+  "region.vietnamCentral": {
+    "message": "ベトナム – 中部（ダナン、ホイアン、フエ）"
+  },
+  "region.vietnamSouth": {
+    "message": "ベトナム – 南部（ホーチミン市）"
+  },
+  "region.malaysiaPeninsular": {
+    "message": "マレーシア – 半島部（クアラルンプール、ペナン）"
+  },
+  "region.malaysiaBorneo": {
+    "message": "マレーシア – ボルネオ（サバ、サラワク）"
+  },
+  "region.philippinesLuzon": {
+    "message": "フィリピン – ルソン（マニラ）"
+  },
+  "region.philippinesVisayas": {
+    "message": "フィリピン – ビサヤ（セブ、ボラカイ、ボホール）"
+  },
+  "region.philippinesPalawan": {
+    "message": "フィリピン – パラワン"
+  },
+  "region.indonesiaBali": {
+    "message": "インドネシア – バリ島・ロンボク島"
+  },
+  "region.indonesiaJavaWest": {
+    "message": "インドネシア – 西ジャワ（ジャカルタ、バンドン）"
+  },
+  "region.indonesiaJavaEast": {
+    "message": "インドネシア – 中部・東ジャワ（ジョグジャカルタ）"
+  },
+  "region.cambodia": {
+    "message": "カンボジア"
+  },
+  "region.chinaNorth": {
+    "message": "中国 – 華北（北京、天津）"
+  },
+  "region.chinaEast": {
+    "message": "中国 – 華東（上海、杭州、蘇州、南京）"
+  },
+  "region.chinaSouth": {
+    "message": "中国 – 華南（広州、深圳、桂林、廈門）"
+  },
+  "region.chinaSichuan": {
+    "message": "中国 – 四川・重慶"
+  },
+  "region.chinaYunnan": {
+    "message": "中国 – 雲南（昆明、大理、麗江）"
+  },
+  "region.chinaShaanxi": {
+    "message": "中国 – 陝西（西安）"
+  },
+  "region.chinaHainan": {
+    "message": "中国 – 海南"
+  },
+  "region.unitedKingdomSouth": {
+    "message": "イギリス – 南部（ロンドン、オックスフォード、バース）"
+  },
+  "region.unitedKingdomNorth": {
+    "message": "イギリス – 北部・スコットランド"
+  },
+  "region.ireland": {
+    "message": "アイルランド"
+  },
+  "region.franceNorth": {
+    "message": "フランス – 北部（パリ）"
+  },
+  "region.franceSouth": {
+    "message": "フランス – 南部（プロヴァンス、リヴィエラ）"
+  },
+  "region.germanyNorth": {
+    "message": "ドイツ – 北部（ベルリン、ハンブルク）"
+  },
+  "region.germanySouth": {
+    "message": "ドイツ – 南部（ミュンヘン、フランクフルト）"
+  },
+  "region.italyNorth": {
+    "message": "イタリア – 北部（ミラノ、ヴェネツィア、フィレンツェ）"
+  },
+  "region.italySouth": {
+    "message": "イタリア – 中南部（ローマ、ナポリ、シチリア）"
+  },
+  "region.spainNorth": {
+    "message": "スペイン – 北部（マドリード、バルセロナ）"
+  },
+  "region.spainSouth": {
+    "message": "スペイン – 南部（セビリア、グラナダ）"
+  },
+  "region.portugal": {
+    "message": "ポルトガル"
+  },
+  "region.switzerland": {
+    "message": "スイス"
+  },
+  "region.austria": {
+    "message": "オーストリア"
+  },
+  "region.netherlands": {
+    "message": "オランダ"
+  },
+  "region.belgium": {
+    "message": "ベルギー"
+  },
+  "region.czechia": {
+    "message": "チェコ"
+  },
+  "region.greece": {
+    "message": "ギリシャ"
+  },
+  "region.usCaliforniaSouth": {
+    "message": "アメリカ – 南カリフォルニア（ロサンゼルス、サンディエゴ）"
+  },
+  "region.usCaliforniaNorth": {
+    "message": "アメリカ – 北カリフォルニア（サンフランシスコ）"
+  },
+  "region.usSouthwest": {
+    "message": "アメリカ – 南西部（ラスベガス、グランドキャニオン）"
+  },
+  "region.usNorthwest": {
+    "message": "アメリカ – 太平洋岸北西部（シアトル、ポートランド）"
+  },
+  "region.usNortheast": {
+    "message": "アメリカ – 北東部（ニューヨーク、ボストン、ワシントン）"
+  },
+  "region.usFlorida": {
+    "message": "アメリカ – フロリダ"
+  },
+  "region.usHawaii": {
+    "message": "アメリカ – ハワイ"
+  },
+  "region.canadaWest": {
+    "message": "カナダ – ブリティッシュコロンビア・ロッキー（バンクーバー、バンフ）"
+  },
+  "region.canadaEast": {
+    "message": "カナダ – オンタリオ・ケベック（トロント、モントリオール）"
+  },
+  "region.australiaNewSouthWales": {
+    "message": "オーストラリア – ニューサウスウェールズ（シドニー）"
+  },
+  "region.australiaVictoria": {
+    "message": "オーストラリア – ビクトリア（メルボルン）"
+  },
+  "region.australiaQueensland": {
+    "message": "オーストラリア – クイーンズランド沿岸（ブリスベン、ゴールドコースト、ケアンズ）"
+  },
+  "region.australiaPerth": {
+    "message": "オーストラリア – パース"
+  },
+  "region.newZealandNorth": {
+    "message": "ニュージーランド – 北島（オークランド）"
+  },
+  "region.newZealandSouth": {
+    "message": "ニュージーランド – 南島（クイーンズタウン、クライストチャーチ）"
+  },
+  "country.taiwan": {
+    "message": "台湾"
+  },
+  "country.japan": {
+    "message": "日本"
+  },
+  "country.southKorea": {
+    "message": "韓国"
+  },
+  "country.hongKongMacau": {
+    "message": "香港・マカオ"
+  },
+  "country.singapore": {
+    "message": "シンガポール"
+  },
+  "country.thailand": {
+    "message": "タイ"
+  },
+  "country.vietnam": {
+    "message": "ベトナム"
+  },
+  "country.malaysia": {
+    "message": "マレーシア"
+  },
+  "country.philippines": {
+    "message": "フィリピン"
+  },
+  "country.indonesia": {
+    "message": "インドネシア"
+  },
+  "country.cambodia": {
+    "message": "カンボジア"
+  },
+  "country.china": {
+    "message": "中国"
+  },
+  "country.unitedKingdom": {
+    "message": "イギリス"
+  },
+  "country.ireland": {
+    "message": "アイルランド"
+  },
+  "country.france": {
+    "message": "フランス"
+  },
+  "country.germany": {
+    "message": "ドイツ"
+  },
+  "country.italy": {
+    "message": "イタリア"
+  },
+  "country.spain": {
+    "message": "スペイン"
+  },
+  "country.portugal": {
+    "message": "ポルトガル"
+  },
+  "country.switzerland": {
+    "message": "スイス"
+  },
+  "country.austria": {
+    "message": "オーストリア"
+  },
+  "country.netherlands": {
+    "message": "オランダ"
+  },
+  "country.belgium": {
+    "message": "ベルギー"
+  },
+  "country.czechia": {
+    "message": "チェコ"
+  },
+  "country.greece": {
+    "message": "ギリシャ"
+  },
+  "country.unitedStates": {
+    "message": "アメリカ"
+  },
+  "country.canada": {
+    "message": "カナダ"
+  },
+  "country.australia": {
+    "message": "オーストラリア"
+  },
+  "country.newZealand": {
+    "message": "ニュージーランド"
+  },
+  "app.loading": {
+    "message": "開いています…"
+  },
+  "app.unsupported": {
+    "message": "このブラウザーでは TripReplay を実行できません。WebGL 2、オリジンプライベートファイルシステム、IndexedDB が必要です。最新版の Chrome、Edge、Safari、Firefox をお使いください。"
+  },
+  "app.startFailed": {
+    "message": "TripReplay の保存領域を開けませんでした：{message}"
+  },
+  "preview.empty": {
+    "message": "地図をダウンロードすると、ここに表示されます。"
+  },
+  "search.label": {
+    "message": "ダウンロードした地図で場所を検索"
+  },
+  "search.noResults": {
+    "message": "場所が見つかりません"
+  },
+  "search.coordinates": {
+    "message": "座標 {lat}, {lon}"
+  },
+  "search.shortLink": {
+    "message": "短縮リンクは、そのサービスに接続しないと読み取れません。リンクを開いて、完全なアドレスをコピーしてください。"
+  },
+  "common.save": {
+    "message": "保存"
+  },
+  "common.delete": {
+    "message": "削除"
+  },
+  "common.close": {
+    "message": "閉じる"
+  },
+  "common.back": {
+    "message": "戻る"
+  },
+  "tripList.create": {
+    "message": "新しい旅行"
+  },
+  "tripList.createFirst": {
+    "message": "最初の旅行を作成"
+  },
+  "tripList.newTitle": {
+    "message": "新しい旅行"
+  },
+  "tripList.copyTitle": {
+    "message": "{title}（コピー）"
+  },
+  "tripList.dates": {
+    "message": "{first} – {last}"
+  },
+  "tripList.noDates": {
+    "message": "スポットはまだありません"
+  },
+  "tripList.media": {
+    "message": "メディア {size}"
+  },
+  "tripList.open": {
+    "message": "開く"
+  },
+  "tripList.rename": {
+    "message": "名前を変更"
+  },
+  "tripList.duplicate": {
+    "message": "複製"
+  },
+  "tripList.titleLabel": {
+    "message": "旅行の名前"
+  },
+  "tripList.confirmDelete": {
+    "message": "「{title}」を削除しますか？バックアップがない場合、スポットとメディアの割り当ては復元できません。"
+  },
+  "header.maps": {
+    "message": "地図"
+  },
+  "header.trips": {
+    "message": "旅行"
+  },
+  "itinerary.title": {
+    "message": "旅程"
+  },
+  "itinerary.empty": {
+    "message": "場所を検索するか、座標や地図のリンクを貼り付けて、最初のスポットを追加してください。"
+  },
+  "itinerary.day": {
+    "message": "{number} 日目 · {date}"
+  },
+  "itinerary.dateLabel": {
+    "message": "新しいスポットの日付"
+  },
+  "itinerary.moveUp": {
+    "message": "上へ移動"
+  },
+  "itinerary.moveDown": {
+    "message": "下へ移動"
+  },
+  "itinerary.rename": {
+    "message": "スポット名を変更"
+  },
+  "itinerary.remove": {
+    "message": "スポットを削除"
+  },
+  "itinerary.copyTitle": {
+    "message": "{name} をコピー"
+  },
+  "itinerary.copyDate": {
+    "message": "日付"
+  },
+  "itinerary.copyPlace": {
+    "message": "位置"
+  },
+  "itinerary.copyAtStart": {
+    "message": "その日の最初"
+  },
+  "itinerary.copyAfter": {
+    "message": "{number}. {name} の後"
+  },
+  "itinerary.openMedia": {
+    "message": "{count, plural, =0 {メディア} other {メディア（#）}}"
+  },
+  "itinerary.openJournal": {
+    "message": "日記"
+  },
+  "itinerary.drag": {
+    "message": "ドラッグして並べ替え"
+  },
+  "itinerary.days": {
+    "message": "日"
+  },
+  "itinerary.allDays": {
+    "message": "すべての日"
+  },
+  "itinerary.dayTab": {
+    "message": "{number} 日目"
+  },
+  "itinerary.copy": {
+    "message": "コピー"
+  },
+  "search.inTrip": {
+    "message": "この旅行内"
+  },
+  "itinerary.unnamed": {
+    "message": "スポット {number}"
+  },
+  "save.saved": {
+    "message": "保存しました"
+  },
+  "save.pending": {
+    "message": "まもなく保存します…"
+  },
+  "save.saving": {
+    "message": "保存しています…"
+  },
+  "save.error": {
+    "message": "保存されていません：{message}"
+  },
+  "save.conflict": {
+    "message": "この旅行は別のタブで変更されました。続けるには再読み込みしてください。"
+  },
+  "player.play": {
+    "message": "再生"
+  },
+  "player.pause": {
+    "message": "一時停止"
+  },
+  "player.time": {
+    "message": "{current} / {total}"
+  },
+  "player.speed": {
+    "message": "再生速度"
+  },
+  "player.speedHint": {
+    "message": "プレビューを速く、または遅く再生します。長い振り返り動画の確認などに便利です。書き出した動画は常に通常の速度で再生されます。"
+  },
+  "player.rate": {
+    "message": "{rate}×"
+  },
+  "player.position": {
+    "message": "再生位置"
+  },
+  "player.aspectRatio": {
+    "message": "縦横比"
+  },
+  "player.fullscreen": {
+    "message": "全画面"
+  },
+  "player.reduceMotion": {
+    "message": "動きを減らす"
+  },
+  "player.partialMap": {
+    "message": "ダウンロードしたどの地図にも含まれないスポットがあり、背景の地図なしで表示されます。「地図」でその地域をダウンロードしてください。"
+  },
+  "player.phase.openingUs": {
+    "message": "オープニング（秒）"
+  },
+  "player.phase.travelUs": {
+    "message": "各スポットへの移動（秒）"
+  },
+  "player.phase.titleUs": {
+    "message": "各スポットのタイトル（秒）"
+  },
+  "player.phase.closingUs": {
+    "message": "エンディング（秒）"
+  },
+  "player.phase.wholeTrip": {
+    "message": "旅行全体に適用されます。"
+  },
+  "player.phase.titleNote": {
+    "message": "すべてのスポットに適用されます。日記があるスポットは、読めるように長めに表示されます。"
+  },
+  "player.edit.range": {
+    "message": "{start}–{end} 秒"
+  },
+  "player.zoomOut": {
+    "message": "タイムラインを縮小"
+  },
+  "player.zoomIn": {
+    "message": "タイムラインを拡大"
+  },
+  "player.zoomLevel": {
+    "message": "{zoom}×"
+  },
+  "player.resetTiming": {
+    "message": "時間をリセット"
+  },
+  "player.resetTimingHint": {
+    "message": "オープニング、移動、スポットのタイトル、エンディング、各写真の長さが初期値に戻ります。動画のトリミングと音楽はそのままです。「元に戻す」で戻せます。"
+  },
+  "workspace.undo": {
+    "message": "元に戻す"
+  },
+  "header.settings": {
+    "message": "設定"
+  },
+  "settings.title": {
+    "message": "設定"
+  },
+  "settings.intro": {
+    "message": "これらの設定はすべての旅行に適用され、このブラウザーに保存されます。"
+  },
+  "settings.section.playback": {
+    "message": "再生と地図"
+  },
+  "settings.section.editing": {
+    "message": "編集"
+  },
+  "settings.journalView": {
+    "message": "日記の表示"
+  },
+  "settings.journalView.stop": {
+    "message": "1 か所ずつ"
+  },
+  "settings.journalView.day": {
+    "message": "1 日ずつ"
+  },
+  "settings.journalViewHint": {
+    "message": "「1 か所ずつ」では、スポットの日記、その日の一言、写真のメモを、前後のスポットへのボタンとともに表示します。日記がどれだけ長くなってもタブは短いままです。「1 日ずつ」では、同じ日のスポットをまとめて表示します。「すべて」は旅行全体を表示しますが、日記が長いと遅くなることがあります。"
+  },
+  "settings.section.import": {
+    "message": "読み込み"
+  },
+  "settings.section.agents": {
+    "message": "エージェントツール"
+  },
+  "settings.help": {
+    "message": "「{name}」について"
+  },
+  "settings.caution": {
+    "message": "「{name}」の注意事項"
+  },
+  "settings.reduceMotionHint": {
+    "message": "カメラの飛行やズームをクロスフェードに置き換えます。選ぶまでは、システムの「視差効果を減らす」設定に従います。"
+  },
+  "settings.preloadNear": {
+    "message": "詳細な地図を読み込む範囲"
+  },
+  "settings.preloadNear.km": {
+    "message": "スポットから {km} km 以内"
+  },
+  "settings.preloadNear.all": {
+    "message": "カメラの経路全体"
+  },
+  "settings.preloadNearHint": {
+    "message": "スポットから離れた場所では、まず世界の概要地図だけを読み込むため速くなります。そこの詳細な地図は再生中に表示されるので、最初は粗い地図が見えることがあります。世界の概要地図がない場合は、経路全体を読み込みます。"
+  },
+  "settings.agentTools": {
+    "message": "ブラウザー内蔵のエージェントツールに開いている旅行の利用を許可"
+  },
+  "settings.mcp": {
+    "message": "MCP サーバーを有効にする"
+  },
+  "mcp.button": {
+    "message": "MCP"
+  },
+  "mcp.hint": {
+    "message": "このパソコンで使っている Claude Desktop などのエージェントツールが、開いている旅行の作業を手伝えるようにします。スポットの追加、日記やメモの作成、時間の調整ができます。有効にするまではオフのままで、有効にした後も、ツールが表示するペアリングコードを入力しない限り接続されません。ツールに見えるのは、開いている旅行の名前、場所、日付、日記、メモ、メディアのファイル名だけです。写真や動画そのもの、ほかの旅行は見えません。ツールに見えた内容は、ツールに入力した内容と同じく、そのツールのサービスで扱われます。変更はすべて元に戻せ、この設定をオフにするとすぐに切断されます。"
+  },
+  "mcp.askCode": {
+    "message": "エージェントツールのペアリングコード："
+  },
+  "mcp.pair": {
+    "message": "接続"
+  },
+  "mcp.waiting": {
+    "message": "TripReplay MCP サーバーを待っています。エージェントツールで起動してください。たとえば、TripReplay を使うよう頼みます。"
+  },
+  "mcp.connected": {
+    "message": "接続しました：エージェントツールがこの旅行の作業を手伝えます。"
+  },
+  "mcp.wrongCode": {
+    "message": "ペアリングコードが受け付けられませんでした。エージェントツールに表示されたコードを入力してください："
+  },
+  "mcp.replaced": {
+    "message": "別の TripReplay ウィンドウが接続を引き継ぎました。MCP を 2 回選ぶと接続を取り戻せます。"
+  },
+  "mcp.forget": {
+    "message": "ペアリングコードを変更"
+  },
+  "workspace.agentTools": {
+    "message": "エージェントツール"
+  },
+  "workspace.agentToolsHint": {
+    "message": "このブラウザーに内蔵されたエージェントツールが、この旅行の作業を手伝えるようにします。スポットの追加、日記やメモの作成、時間の調整ができます。有効にするまではオフのままです。ツールに見えるのは、この旅行の名前、場所、日付、日記、メモ、メディアのファイル名だけです。写真や動画そのもの、ほかの旅行は見えません。ツールに見えた内容は、ツールに入力した内容と同じく、そのツールのサービスで扱われます。変更はすべて元に戻せます。"
+  },
+  "agent.tool.getTrip": {
+    "message": "旅行を読む"
+  },
+  "agent.tool.renameTrip": {
+    "message": "旅行の名前を変更"
+  },
+  "agent.tool.addStop": {
+    "message": "スポットを追加"
+  },
+  "agent.tool.updateStop": {
+    "message": "スポットを編集"
+  },
+  "agent.tool.setDayNote": {
+    "message": "その日の一言を設定"
+  },
+  "agent.tool.setMediaNote": {
+    "message": "写真・動画のメモを設定"
+  },
+  "agent.tool.setPhotoDuration": {
+    "message": "写真の表示秒数を設定"
+  },
+  "agent.tool.setTiming": {
+    "message": "振り返り動画の時間を設定"
+  },
+  "workspace.redo": {
+    "message": "やり直す"
+  },
+  "player.stop.titleUs": {
+    "message": "このスポットのタイトル（秒）"
+  },
+  "player.stop.travelUs": {
+    "message": "このスポットへの移動（秒）"
+  },
+  "player.stop.automatic": {
+    "message": "旅行の設定に従い、読む文章があれば長くなります。"
+  },
+  "player.stop.useTrip": {
+    "message": "旅行の長さを使う"
+  },
+  "export.button": {
+    "message": "動画を書き出す"
+  },
+  "export.title": {
+    "message": "動画を書き出す"
+  },
+  "export.fileSize": {
+    "message": "ファイルサイズ"
+  },
+  "export.size.large": {
+    "message": "大きいファイル（最も鮮明）"
+  },
+  "export.size.standard": {
+    "message": "標準"
+  },
+  "export.size.small": {
+    "message": "小さいファイル（共有向け）"
+  },
+  "export.estimate": {
+    "message": "動画は約 {size} になります。"
+  },
+  "export.quality": {
+    "message": "画質"
+  },
+  "export.q1080": {
+    "message": "1080p（より鮮明）"
+  },
+  "export.q720": {
+    "message": "720p（速く、ファイルが小さい）"
+  },
+  "export.checking": {
+    "message": "このデバイスでエンコードできる形式を確認しています…"
+  },
+  "export.format": {
+    "message": "動画は {video}、音声は {audio} でエンコードされます。"
+  },
+  "export.silent": {
+    "message": "動画は {video} でエンコードされます。このデバイスは音声をエンコードできないため、動画は無音になります。"
+  },
+  "export.keepOpen": {
+    "message": "書き出し中は TripReplay を開いたまま前面に表示してください。アプリがバックグラウンドに移ると中止されます。"
+  },
+  "export.start": {
+    "message": "書き出しを開始"
+  },
+  "export.phase.audio": {
+    "message": "音声をミックスしています…"
+  },
+  "export.phase.video": {
+    "message": "フレームを描画しています：{completed} / {total}"
+  },
+  "export.phase.finishing": {
+    "message": "ファイルを仕上げています…"
+  },
+  "export.done": {
+    "message": "動画ができました（{size}）。残すには保存してください。"
+  },
+  "export.saved": {
+    "message": "動画を保存しました。"
+  },
+  "export.save": {
+    "message": "動画を保存"
+  },
+  "export.download": {
+    "message": "ダウンロード"
+  },
+  "export.downloaded": {
+    "message": "動画をブラウザーのダウンロードフォルダーにダウンロードしています。"
+  },
+  "export.failed": {
+    "message": "{reason, select, unsupported {このブラウザーまたはデバイスでは動画をエンコードできません。最新版の Chrome か Edge、または Android アプリをお使いください。} storage {動画を保存する空き容量が足りません。空き容量を増やして、もう一度お試しください。} background {TripReplay がバックグラウンドに移ったため、書き出しが中止されました。前面に表示したまま、もう一度書き出してください。} other {書き出しに失敗しました：{message}}}"
+  },
+  "export.fileType": {
+    "message": "MP4 動画"
+  },
+  "player.previousDay": {
+    "message": "前の日"
+  },
+  "player.previousPart": {
+    "message": "前のパート"
+  },
+  "player.nextPart": {
+    "message": "次のパート"
+  },
+  "player.nextDay": {
+    "message": "次の日"
+  },
+  "player.preload": {
+    "message": "先に地図を読み込む"
+  },
+  "player.preloadHint": {
+    "message": "再生する前に、カメラの経路全体の地図を読み込みます。空白や描きかけの部分なしで再生できます。数秒かかり、長い旅行ではさらにかかります。"
+  },
+  "player.preparing": {
+    "message": "地図を読み込んでいます… {percent}%"
+  },
+  "player.itineraryOnly": {
+    "message": "旅程のみ"
+  },
+  "player.itineraryOnlyHint": {
+    "message": "写真や動画を除き、スポットとその間の移動だけを再生して旅程を確認します。書き出しはプレビューの表示内容に従います。"
+  },
+  "player.noMap": {
+    "message": "ダウンロードしたどの地図にもこれらのスポットが含まれていないため、背景の地図なしで表示されます。"
+  },
+  "player.segment.opening": {
+    "message": "オープニング"
+  },
+  "player.segment.day": {
+    "message": "新しい日"
+  },
+  "player.segment.travel": {
+    "message": "移動"
+  },
+  "player.segment.title": {
+    "message": "スポットのタイトル"
+  },
+  "player.segment.photo": {
+    "message": "写真"
+  },
+  "player.segment.video": {
+    "message": "動画"
+  },
+  "player.segment.closing": {
+    "message": "エンディング"
+  },
+  "recap.day": {
+    "message": "{number} 日目"
+  },
+  "recap.summary": {
+    "message": "{stops, plural, other {# か所}} · {days, plural, other {# 日間}}"
+  },
+  "workspace.tabs": {
+    "message": "サイドパネル"
+  },
+  "workspace.tab.itinerary": {
+    "message": "旅程"
+  },
+  "workspace.tab.media": {
+    "message": "メディア"
+  },
+  "media.title": {
+    "message": "メディア"
+  },
+  "media.shrinkPhotos": {
+    "message": "読み込む写真を小さくする"
+  },
+  "media.shrinkPhotosHint": {
+    "message": "写真を長辺 2560 ピクセル以下で保存します。振り返り動画では十分に鮮明で、通常は 5～10 分の 1 の大きさになります。デバイス上の元のファイルは変更されません。"
+  },
+  "media.import": {
+    "message": "メディアを読み込む"
+  },
+  "media.noStops": {
+    "message": "先にスポットを追加してください。写真と動画はスポットに割り当てられます。"
+  },
+  "media.forStop": {
+    "message": "{name} · {date}"
+  },
+  "media.empty": {
+    "message": "このスポットにはまだ写真や動画がありません。"
+  },
+  "media.enRoute": {
+    "message": "移動中"
+  },
+  "media.enRouteHint": {
+    "message": "ここへ来る途中に撮影したもの：このスポットへ線が引かれる間、小さなカードで表示されます。位置情報があれば、線は撮影場所を通ります。"
+  },
+  "media.duration": {
+    "message": "秒数"
+  },
+  "media.videoLength": {
+    "message": "動画 · {length}"
+  },
+  "media.stop": {
+    "message": "スポット"
+  },
+  "media.dropHint": {
+    "message": "ドロップすると、写真と動画は選択中のスポットに、音声ファイルは音楽として読み込まれます"
+  },
+  "media.moveTo": {
+    "message": "{file} を別のスポットへ移動"
+  },
+  "media.moveToPlaceholder": {
+    "message": "移動先…"
+  },
+  "media.edit": {
+    "message": "編集"
+  },
+  "media.editFor": {
+    "message": "{file} を編集"
+  },
+  "sort.start": {
+    "message": "並べ替え"
+  },
+  "sort.done": {
+    "message": "完了"
+  },
+  "media.moveUp": {
+    "message": "上へ移動"
+  },
+  "media.moveDown": {
+    "message": "下へ移動"
+  },
+  "media.remove": {
+    "message": "スポットから外す"
+  },
+  "import.title": {
+    "message": "メディアを読み込む"
+  },
+  "import.reading": {
+    "message": "読み込んでいます：{completed} / {total}…"
+  },
+  "import.timeZone": {
+    "message": "時刻は旅行のタイムゾーン（{zone}）で表示しています。"
+  },
+  "import.changeTimeZone": {
+    "message": "変更"
+  },
+  "import.timeZoneLabel": {
+    "message": "タイムゾーン"
+  },
+  "import.noStops": {
+    "message": "これらのファイルを割り当てるには、旅程にスポットを追加してください。"
+  },
+  "import.suggested": {
+    "message": "{count, plural, other {候補 # 件}}"
+  },
+  "import.acceptAll": {
+    "message": "すべて承認"
+  },
+  "import.accept": {
+    "message": "承認"
+  },
+  "import.accepted": {
+    "message": "承認済み"
+  },
+  "import.byLocation": {
+    "message": "位置情報から"
+  },
+  "import.byDate": {
+    "message": "日付から"
+  },
+  "import.undetermined": {
+    "message": "{count, plural, other {# 個のファイルを割り当てられませんでした}}"
+  },
+  "import.useSuggestion": {
+    "message": "候補を使う：{stop}"
+  },
+  "import.chooseStop": {
+    "message": "スポットを選択"
+  },
+  "import.stopFor": {
+    "message": "{file} のスポット"
+  },
+  "import.noTime": {
+    "message": "撮影時刻なし"
+  },
+  "import.skipped": {
+    "message": "{count, plural, other {# 個のファイルをスキップしました}}"
+  },
+  "import.skipReason": {
+    "message": "{reason, select, duplicate {すでにこの旅行にあります} unsupported {このブラウザーで表示できる写真や動画ではありません} other {読み取りまたは保存ができませんでした}}"
+  },
+  "import.finish": {
+    "message": "{count, plural, =0 {読み込みを完了} other {# 個のファイルを追加}}"
+  },
+  "workspace.tab.journal": {
+    "message": "日記"
+  },
+  "journal.title": {
+    "message": "日記"
+  },
+  "journal.intro": {
+    "message": "各スポットでの出来事を書き留めましょう。写真や動画のメモは、振り返り動画でキャプションになります。"
+  },
+  "journal.empty": {
+    "message": "日記を始めるには、旅程にスポットを追加してください。"
+  },
+  "journal.dayNoteFor": {
+    "message": "{date} の一言"
+  },
+  "journal.dayNotePlaceholder": {
+    "message": "この日の始まりに表示する一言"
+  },
+  "journal.entryFor": {
+    "message": "{name} の日記"
+  },
+  "journal.entryPlaceholder": {
+    "message": "ここで何がありましたか？"
+  },
+  "journal.noteFor": {
+    "message": "{file} のメモ"
+  },
+  "journal.notePlaceholder": {
+    "message": "この瞬間についてひとこと"
+  },
+  "stops.previous": {
+    "message": "前のスポット"
+  },
+  "stops.next": {
+    "message": "次のスポット"
+  },
+  "workspace.tab.music": {
+    "message": "音楽"
+  },
+  "music.title": {
+    "message": "BGM"
+  },
+  "music.import": {
+    "message": "音楽を追加"
+  },
+  "music.rights": {
+    "message": "権利を持っている音楽だけを使ってください。TripReplay には音楽は含まれていません。"
+  },
+  "music.empty": {
+    "message": "音楽はまだありません。音楽がない場合、振り返り動画では動画の音声だけが再生されます。"
+  },
+  "music.failed": {
+    "message": "{reason, select, unsupported {このファイルは、このブラウザーで再生できる音楽ではありません。} other {音楽ファイルを読み取るか保存することができませんでした。}}"
+  },
+  "music.remove": {
+    "message": "{name} を削除"
+  },
+  "music.start": {
+    "message": "開始位置（秒）"
+  },
+  "music.fadeIn": {
+    "message": "フェードイン（秒）"
+  },
+  "music.fadeOut": {
+    "message": "フェードアウト（秒）"
+  },
+  "music.volume": {
+    "message": "音量"
+  },
+  "music.volumeFor": {
+    "message": "{name} の音量"
+  },
+  "music.duck": {
+    "message": "音声のあるクリップの間は音楽を下げる"
+  },
+  "player.music": {
+    "message": "BGM"
+  },
+  "media.volume": {
+    "message": "音量"
+  },
+  "media.volumeFor": {
+    "message": "{file} の音量"
+  },
+  "player.dragDuration": {
+    "message": "ドラッグして長さを変更"
+  },
+  "player.dragTrimStart": {
+    "message": "ドラッグして開始をトリミング"
+  },
+  "player.dragTrimEnd": {
+    "message": "ドラッグして終了をトリミング"
+  },
+  "player.dragMusic": {
+    "message": "ドラッグして音楽を移動"
+  },
+  "media.trimIn": {
+    "message": "開始（秒）"
+  },
+  "media.trimOut": {
+    "message": "終了（秒）"
+  },
+  "workspace.tab.themes": {
+    "message": "テーマ"
+  },
+  "themes.title": {
+    "message": "テーマ"
+  },
+  "themes.intro": {
+    "message": "テーマは振り返り動画の地図の色、ルート、タイトルのスタイルを決め、すぐに適用されます。縦向きか横向きかは、プレビューの下の縦横比で決まります。"
+  },
+  "tripList.shrink": {
+    "message": "メディアを小さくする"
+  },
+  "shrink.confirm": {
+    "message": "「{title}」には写真 {photos, plural, other {# 枚}}（{photoSize}）と動画 {videos, plural, other {# 本}}（{videoSize}）があります。写真を長辺 2560 ピクセル以下で、下で選んだ場合は動画を 1080p で保存しますか？通常は容量の大部分を節約できますが、ここでは元に戻せません。デバイス上の元のファイルは変更されません。元のサイズのメディアを残すには、先に旅行をバックアップしてください。"
+  },
+  "shrink.start": {
+    "message": "小さくする"
+  },
+  "shrink.working": {
+    "message": "メディアを小さくしています… {done} / {total}"
+  },
+  "shrink.done": {
+    "message": "{count, plural, other {# 個の写真・動画を小さくしました：{before} → {after}。}}"
+  },
+  "shrink.none": {
+    "message": "目立って小さくできるものはありませんでした。"
+  },
+  "shrink.failed": {
+    "message": "メディアを小さくできませんでした：{message}。旅行は変更されていません。"
+  },
+  "tripList.backup": {
+    "message": "バックアップ"
+  },
+  "tripList.restore": {
+    "message": "バックアップから復元"
+  },
+  "backup.fileType": {
+    "message": "TripReplay バックアップ"
+  },
+  "backup.choose": {
+    "message": "「{title}」をメディアを元のサイズのままバックアップしますか？それとも写真を小さくして（長辺 2560 ピクセル以下）、ずっと小さいファイルにしますか？どちらでも、ここにある旅行は変更されません。"
+  },
+  "backup.withVideos": {
+    "message": "動画も小さくする（1080p、かなり時間がかかります）"
+  },
+  "shrink.withVideos": {
+    "message": "動画も小さくする（1080p、かなり時間がかかります）"
+  },
+  "media.shrinkVideos": {
+    "message": "読み込む動画を小さくする（1080p、時間がかかります）"
+  },
+  "media.shrinkVideosHint": {
+    "message": "動画を長辺 1920 ピクセル以下で保存します。振り返り動画で表示される大きさで、通常は数分の 1 になります。エンコードには動画の再生時間と同じか、それ以上かかります。デバイス上の元のファイルは変更されません。"
+  },
+  "backup.full": {
+    "message": "元のサイズ"
+  },
+  "backup.smaller": {
+    "message": "写真を小さく"
+  },
+  "backup.working": {
+    "message": "バックアップしています…"
+  },
+  "backup.done": {
+    "message": "バックアップを保存しました。旅行とそのすべての写真・動画が入っているので、ファイルは安全な場所に保管してください。"
+  },
+  "backup.failed": {
+    "message": "バックアップを保存できませんでした：{message}"
+  },
+  "restore.working": {
+    "message": "復元しています…"
+  },
+  "restore.done": {
+    "message": "「{title}」を復元しました。"
+  },
+  "restore.failed": {
+    "message": "バックアップを復元できませんでした：{message}"
+  },
+  "restore.exists": {
+    "message": "「{title}」はすでにこのデバイスにあります。コピーとして復元しますか？"
+  },
+  "restore.asCopy": {
+    "message": "コピーとして復元"
+  },
+  "restore.copyTitle": {
+    "message": "{title}（復元）"
+  },
+  "app.notices": {
+    "message": "オープンソースライセンス"
+  },
+  "settings.section.language": {
+    "message": "言語"
+  },
+  "settings.language": {
+    "message": "表示言語"
+  },
+  "settings.language.auto": {
+    "message": "ブラウザーと同じ"
+  },
+  "language.english": {
+    "message": "English"
+  },
+  "language.traditionalChinese": {
+    "message": "繁體中文"
+  },
+  "language.japanese": {
+    "message": "日本語"
+  }
+}

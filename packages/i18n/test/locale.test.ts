@@ -13,13 +13,16 @@ describe("resolveLocale", () => {
     ["zh-CN", "en"],
     ["zh-Hans", "en"],
     ["zh", "en"],
-    ["ja-JP", "en"],
+    ["ja-JP", "ja"],
+    ["ja", "ja"],
+    ["ko-KR", "en"],
   ])("resolves %s to %s", (tag, expected) => {
     expect(resolveLocale([tag])).toBe(expected);
   });
 
   it("uses the first supported preference", () => {
-    expect(resolveLocale(["ja-JP", "zh-CN", "zh-TW", "en"])).toBe("zh-TW");
+    expect(resolveLocale(["ko-KR", "zh-CN", "zh-TW", "en"])).toBe("zh-TW");
+    expect(resolveLocale(["ja-JP", "zh-TW"])).toBe("ja");
   });
 
   it("falls back to English for no or invalid preferences", () => {

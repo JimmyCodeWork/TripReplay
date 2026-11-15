@@ -1,12 +1,13 @@
-import { createTranslator, resolveLocale } from "@tripreplay/i18n";
+import { createTranslator, type Locale, resolveLocale } from "@tripreplay/i18n";
 import { setMapWorkerUrl } from "@tripreplay/map";
 import { keepInPlace } from "@tripreplay/ui";
 import mapWorkerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?url";
-import { StrictMode } from "react";
+import { StrictMode, useEffect, useMemo } from "react";
 import { createRoot } from "react-dom/client";
 import { App } from "./App.tsx";
 import { PACKAGED } from "./platform.ts";
-import { createServices, requestPersistence } from "./services.ts";
+import { createServices, requestPersistence, type Services } from "./services.ts";
+import { readSettings, useSettings } from "./settings.ts";
 import { missingFeatures } from "./support.ts";
 import "./styles.css";
 
@@ -18,10 +19,30 @@ if (import.meta.env.PROD && !PACKAGED && "serviceWorker" in navigator) {
   void navigator.serviceWorker.register("./sw.js").catch(() => {});
 }
 
-const locale = resolveLocale(navigator.languages);
+/** The language chosen in Settings, or else the first of the browser's preferred ones that TripReplay has. */
+const localeOf = (chosen: Locale | undefined): Locale => chosen ?? resolveLocale(navigator.languages);
+
+const storage = (() => {
+  try {
+    return localStorage;
+  } catch {
+    return undefined;
+  }
+})();
+const locale = localeOf(readSettings(storage).language);
 const t = createTranslator(locale);
 document.documentElement.lang = locale;
 document.title = t("app.name");
+
+/** The application in the display language, which changes as soon as it is chosen in Settings. */
+function Root({ services }: { services: Services }) {
+  const current = localeOf(useSettings().language);
+  const translate = useMemo(() => createTranslator(current), [current]);
+  useEffect(() => {
+    document.documentElement.lang = current;
+  }, [current]);
+  return <App services={services} locale={current} t={translate} />;
+}
 
 // Choosing something keeps it under the finger when rows open or close around it.
 keepInPlace(window);
@@ -40,7 +61,7 @@ if (missingFeatures().length > 0) {
       void import("./export-video.ts").then(({ clearExports }) => clearExports());
       root.render(
         <StrictMode>
-          <App services={services} locale={locale} t={t} />
+          <Root services={services} />
         </StrictMode>,
       );
     },

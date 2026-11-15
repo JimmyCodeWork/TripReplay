@@ -1,3 +1,4 @@
+import { type Locale, locales } from "@tripreplay/i18n";
 import { useSyncExternalStore } from "react";
 
 /**
@@ -23,6 +24,8 @@ export interface Settings {
   readonly mcpCode: string;
   /** How the Journal tab shows the journal: one stop or one day at a time. */
   readonly journalView: "stop" | "day";
+  /** The display language; undefined follows the browser's preferred languages. */
+  readonly language: Locale | undefined;
 }
 
 /** The distances offered for loading the detailed map first, in kilometres. */
@@ -38,6 +41,7 @@ const DEFAULTS: Settings = {
   mcp: false,
   mcpCode: "",
   journalView: "stop",
+  language: undefined,
 };
 
 const KEYS: Record<keyof Settings, string> = {
@@ -50,6 +54,7 @@ const KEYS: Record<keyof Settings, string> = {
   mcp: "tripreplay.mcp",
   mcpCode: "tripreplay.mcpCode",
   journalView: "tripreplay.journalView",
+  language: "tripreplay.language",
 };
 
 /** Turns a stored text into a setting's value, or undefined where it holds none or a wrong one. */
@@ -57,6 +62,8 @@ function parse<K extends keyof Settings>(key: K, text: string): Settings[K] | un
   switch (key) {
     case "mcpCode":
       return text as Settings[K];
+    case "language":
+      return (locales.includes(text as Locale) ? text : undefined) as Settings[K] | undefined;
     case "journalView":
       return (text === "day" || text === "stop" ? text : undefined) as Settings[K] | undefined;
     case "preloadNearKm":
