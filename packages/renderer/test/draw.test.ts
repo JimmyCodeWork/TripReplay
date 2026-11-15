@@ -186,7 +186,32 @@ describe("drawFrame", () => {
     expect(settled.texts).toContain("Day 2 · 2026-04-02");
   });
 
-  it("shows a stop's journal under its title, on a dark glow below a rule", () => {
+  it("draws the leg being travelled and its stops above the rest, with an arrow at its head", () => {
+    const travel = segment("travel", 2);
+    if (!travel) throw new Error("missing segment");
+    const { calls } = draw(timeline, (travel.startUs + travel.endUs) / 2);
+    const route = timeline.theme.route.color;
+    const lineStrokes = calls.flatMap((c, i) => (c.name === "stroke" && c.stroke === route ? [i] : []));
+    // The line already drawn, then the leg being drawn.
+    expect(lineStrokes).toHaveLength(2);
+    const arcs = calls.flatMap((c, i) => (c.name === "arc" ? [{ i, x: c.args[0] as number }] : []));
+    expect(arcs).toHaveLength(3);
+    // The first stop, reached before this leg, lies under it; the leg's ends are drawn after it.
+    const legStroke = lineStrokes[1] ?? 0;
+    expect(arcs.filter((a) => a.i > legStroke)).toHaveLength(2);
+    // The arrow: a closed shape filled in the route's color after the markers.
+    const lastArc = arcs.at(-1)?.i ?? 0;
+    const arrow = calls.findIndex((c, i) => i > lastArc && c.name === "closePath");
+    expect(arrow).toBeGreaterThan(lastArc);
+    expect(calls.slice(arrow).some((c) => c.name === "fill" && c.fill === route)).toBe(true);
+    // Not between legs.
+    const title = segment("title", 1);
+    if (!title) throw new Error("missing segment");
+    const still = draw(timeline, (title.startUs + title.endUs) / 2).calls;
+    expect(still.some((c) => c.name === "closePath")).toBe(false);
+  });
+
+  it("shows a stop's journal under its title, on the dark glow below a rule", () => {
     const withJournal = compile({
       ...project,
       stops: project.stops.map((s, i) => (i === 2 ? { ...s, description: "金閣寺在雪中特別漂亮。" } : s)),
@@ -204,10 +229,24 @@ describe("drawFrame", () => {
     // The lines rise into place one after another: none is shown as the title appears.
     const early = draw(withJournal, title.startUs + 100_000);
     expect(early.texts).not.toContain("金閣寺在雪中特別漂亮。");
-    // Without a journal, the title has no glow.
-    const plain = segment("title", 2);
-    if (!plain) throw new Error("missing segment");
-    expect(band(draw(timeline, (plain.startUs + plain.endUs) / 2).calls)).toBe(false);
+  });
+
+  it("puts the same glow behind every title: trip, stop, new day and summary", () => {
+    const glow = (us: number) =>
+      draw(timeline, us).calls.filter((c) => c.name === "fillRect" && typeof c.fill === "object");
+    const middle = (kind: string, stopIndex?: number) => {
+      const s = timeline.segments.find(
+        (x) => x.kind === kind && (stopIndex === undefined || ("stopIndex" in x && x.stopIndex === stopIndex)),
+      );
+      if (!s) throw new Error(`missing ${kind}`);
+      return (s.startUs + s.endUs) / 2;
+    };
+    // The opening, a stop's title without a journal, the travel to a new day, and the closing.
+    for (const us of [middle("opening"), middle("title", 2), middle("travel", 2), timeline.durationUs - 100_000]) {
+      expect(glow(us)).toHaveLength(1);
+    }
+    // Not over the map while travelling on the same day.
+    expect(glow(middle("travel", 1))).toHaveLength(0);
   });
 
   it("marks a new day while travelling to its first stop, under a passing night", () => {

@@ -9,7 +9,7 @@ import {
 } from "@tripreplay/domain";
 import type { Timing } from "@tripreplay/themes";
 import { stopCamera } from "./camera.ts";
-import { EN_ROUTE_GAP } from "./constants.ts";
+import { DAY_INTRO, EN_ROUTE_GAP } from "./constants.ts";
 import type { Camera, EnRoutePhoto, Segment, TimelineStop } from "./model.ts";
 
 /** Characters of a stop's journal entry shown in the recap; the rest stays in the journal. */
@@ -40,6 +40,13 @@ export function travelLength(travelUs: Microseconds, dayNote: string): Microseco
   if (dayNote === "") return travelUs;
   const reading = Math.min(seconds(8), seconds(2) + Math.round(Array.from(dayNote).length * seconds(0.12)));
   return Math.max(travelUs, reading);
+}
+
+/** Whether the move to stop `index` begins a new day, or the first day when it has a line of its own. */
+export function startsDay(stops: readonly TimelineStop[], index: number): boolean {
+  const stop = stops[index];
+  const before = stops[index - 1];
+  return stop !== undefined && ((before !== undefined && stop.day > before.day) || stop.dayNote !== "");
 }
 
 /** A photo taken on the way to a stop, before it is placed in time. */
@@ -97,8 +104,9 @@ export function buildSegments(
   stops.forEach((stop, stopIndex) => {
     const here = stopCamera(stop.location);
     const chosen = stop.ownTravelUs ?? travelLength(timing.travelUs, stop.dayNote);
-    const { lengthUs, photos } = placeEnRoute(cursor, chosen, enRoute[stopIndex] ?? []);
-    segments.push({ kind: "travel", stopIndex, ...next(lengthUs), from: camera, to: here, photos });
+    const holdUs = startsDay(stops, stopIndex) ? DAY_INTRO[stop.dayNote ? "withNote" : "withoutNote"] : 0;
+    const { lengthUs, photos } = placeEnRoute(cursor + holdUs, chosen, enRoute[stopIndex] ?? []);
+    segments.push({ kind: "travel", stopIndex, ...next(holdUs + lengthUs), from: camera, to: here, photos, holdUs });
     segments.push({
       kind: "title",
       stopIndex,

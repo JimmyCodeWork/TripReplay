@@ -1,6 +1,7 @@
 export { dayOfTrip } from "./calendar.ts";
 export { compile } from "./compile.ts";
 export {
+  DAY_INTRO,
   DUCK_GAIN,
   DUCK_RAMP,
   MAX_OVERVIEW_ZOOM,

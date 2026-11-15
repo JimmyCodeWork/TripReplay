@@ -34,6 +34,12 @@ export const EN_ROUTE_FRAME: Readonly<
   "9:16": { x: 0.1, y: 0.56, width: 0.8, height: 0.34 },
 };
 
+/**
+ * How long a new day's text is shown before the camera moves to its first stop: the day and its
+ * date fade in, and the day's line, when there is one, rises in after them (docs/ui-design.md §6).
+ */
+export const DAY_INTRO = { withoutNote: seconds(1), withNote: seconds(1.6) } as const;
+
 /** The least time before, between and after photos taken on the way, while only the line moves. */
 export const EN_ROUTE_GAP = seconds(0.5);
 

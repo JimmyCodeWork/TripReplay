@@ -71,6 +71,11 @@ export interface TravelSegment extends SegmentBase {
   readonly stopIndex: number;
   /** Photos taken on the way, in order; empty for most moves. */
   readonly photos: readonly EnRoutePhoto[];
+  /**
+   * Time at the start while the camera and the line wait, so that a new day's text is shown in full
+   * before the move (`DAY_INTRO`); 0 for other moves.
+   */
+  readonly holdUs: Microseconds;
 }
 
 export interface TitleSegment extends SegmentBase {

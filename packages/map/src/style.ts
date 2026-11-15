@@ -70,8 +70,28 @@ function overviewLayers(colors: MapColors): StyleSpecification["layers"] {
   ];
 }
 
+/**
+ * Below this zoom level, with the world overview, only the overview is drawn: a region's tiles are
+ * then much larger than the region and end at tile edges far from it, where their detailed map met
+ * the overview's coarse one in visible seams (docs/adr/0014-load-map-before-playing.md).
+ */
+export const REGION_MIN_ZOOM = 7;
+
 /** The base map drawn under every recap: land, water, parks, roads, boundaries and place labels. */
-export function baseMapStyle({ sources, colors, glyphs, overview }: StyleOptions): StyleSpecification {
+export function baseMapStyle(options: StyleOptions): StyleSpecification {
+  const style = regionStyle(options);
+  if (!options.overview) return style;
+  return {
+    ...style,
+    layers: style.layers.map((layer) =>
+      "source" in layer && (MAP_THEMES as readonly string[]).includes(layer.source as string)
+        ? { ...layer, minzoom: Math.max(layer.minzoom ?? 0, REGION_MIN_ZOOM) }
+        : layer,
+    ),
+  };
+}
+
+function regionStyle({ sources, colors, glyphs, overview }: StyleOptions): StyleSpecification {
   const style: StyleSpecification = {
     version: 8,
     sources: {
