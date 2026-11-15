@@ -83,7 +83,7 @@ In the **Media** tab, choose the **Stop** whose photos and videos you want to se
 
 ## 5. Write the Journal
 
-The **Journal** tab is a diary of the trip. For each day, you can write a line that the recap shows as the day begins, such as "Off to Kyoto on the first train"; for each stop, write what happened there; for each photo or video, add a short note. On a long trip, **Day 1**, **Day 2** and so on show one day at a time.
+The **Journal** tab is a diary of the trip. For each day, you can write a line that the recap shows as the day begins, such as "Off to Kyoto on the first train"; for each stop, write what happened there; for each photo or video, add a short note. The tab shows one stop at a time: choose it in **Stop**, or go through the trip with **Previous stop** and **Next stop**; its day's line is shown above it. To see a whole day's stops together instead, set **Show the journal** to **One day at a time** in **Settings**.
 
 - A day's line appears under "Day 2" and the date when the day begins, before the recap moves to the day's first stop, and stays long enough to read it. The first day's line appears before the move to the first stop.
 

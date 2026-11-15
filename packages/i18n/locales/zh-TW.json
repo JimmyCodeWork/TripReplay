@@ -698,6 +698,21 @@
   "settings.section.playback": {
     "message": "播放與地圖"
   },
+  "settings.section.editing": {
+    "message": "編輯"
+  },
+  "settings.journalView": {
+    "message": "日記顯示方式"
+  },
+  "settings.journalView.stop": {
+    "message": "一次一個景點"
+  },
+  "settings.journalView.day": {
+    "message": "一次一天"
+  },
+  "settings.journalViewHint": {
+    "message": "一次一個景點會顯示該景點的日記、當天的開場文字與照片備註，並有前往前後景點的按鈕；無論日記多長，分頁都不會變得很長。一次一天會一起顯示同一天的各個景點；選「全部」則顯示整趟旅行，日記很長時可能較慢。"
+  },
   "settings.section.import": {
     "message": "匯入"
   },
@@ -1096,6 +1111,12 @@
   },
   "journal.notePlaceholder": {
     "message": "為這一刻寫幾句話"
+  },
+  "journal.previousStop": {
+    "message": "上一個景點"
+  },
+  "journal.nextStop": {
+    "message": "下一個景點"
   },
   "workspace.tab.music": {
     "message": "音樂"

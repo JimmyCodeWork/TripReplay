@@ -931,6 +931,26 @@
     "message": "Playback and map",
     "description": "Heading of the settings for playing the recap and loading the map."
   },
+  "settings.section.editing": {
+    "message": "Editing",
+    "description": "Heading of the settings for editing a trip."
+  },
+  "settings.journalView": {
+    "message": "Show the journal",
+    "description": "Label of the choice of how the Journal tab shows the journal."
+  },
+  "settings.journalView.stop": {
+    "message": "One stop at a time",
+    "description": "Choice: the Journal tab shows one stop, chosen from a list."
+  },
+  "settings.journalView.day": {
+    "message": "One day at a time",
+    "description": "Choice: the Journal tab shows one day with its stops."
+  },
+  "settings.journalViewHint": {
+    "message": "One stop at a time shows a stop's entry, its day's line and its photos' notes, with buttons to the stops before and after, and keeps the tab short however long the journal grows. One day at a time shows the stops of a day together; All shows the whole trip, which can be slow with a long journal.",
+    "description": "Explanation of the Show the journal setting."
+  },
   "settings.section.import": {
     "message": "Import",
     "description": "Heading of the settings for importing photos and videos."
@@ -1462,6 +1482,14 @@
   "journal.notePlaceholder": {
     "message": "A few words about this moment",
     "description": "Placeholder of an empty note on a photo or video."
+  },
+  "journal.previousStop": {
+    "message": "Previous stop",
+    "description": "Button in the Journal tab that shows the stop before."
+  },
+  "journal.nextStop": {
+    "message": "Next stop",
+    "description": "Button in the Journal tab that shows the stop after."
   },
   "workspace.tab.music": {
     "message": "Music",

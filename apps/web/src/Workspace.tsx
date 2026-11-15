@@ -345,6 +345,7 @@ function EditorView({ editor, services, locale, t, onClose }: EditorViewProps) {
                 selectedStopId={selected?.id}
                 onSelect={select}
                 mediaUrl={media.url}
+                view={settings.journalView}
                 locale={locale}
                 t={t}
               />

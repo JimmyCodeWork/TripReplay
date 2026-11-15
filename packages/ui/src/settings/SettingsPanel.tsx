@@ -12,6 +12,7 @@ export interface SettingsValues {
   readonly shrinkVideos: boolean;
   readonly agentTools: boolean;
   readonly mcp: boolean;
+  readonly journalView: "stop" | "day";
 }
 
 export interface SettingsPanelProps {
@@ -103,11 +104,12 @@ function Toggle({
 
 /**
  * The Settings dialog's content (docs/ui-design.md §2.2): the choices that apply to every trip,
- * grouped into playback and map, import, and AI agents. Each setting with something to explain has a
+ * grouped into playback and map, editing, import, and AI agents. Each setting with something to explain has a
  * "?", and each with a cost or a consequence to know has a "!", which opens a small dialog with it.
  */
 export function SettingsPanel({ values, onChange, nearKmChoices, offers, onForgetMcpCode, t }: SettingsPanelProps) {
   const nearId = useId();
+  const journalId = useId();
   const note = (kind: "help" | "caution", name: MessageKey, text: MessageKey) => (
     <Note kind={kind} name={t(name)} text={t(text)} t={t} />
   );
@@ -147,6 +149,24 @@ export function SettingsPanel({ values, onChange, nearKmChoices, offers, onForge
             </select>
           </label>
           {note("caution", "settings.preloadNear", "settings.preloadNearHint")}
+        </div>
+      </fieldset>
+
+      <fieldset className={styles.section}>
+        <legend>{t("settings.section.editing")}</legend>
+        <div className={styles.row}>
+          <label className={styles.choice} htmlFor={journalId}>
+            <span>{t("settings.journalView")}</span>
+            <select
+              id={journalId}
+              value={values.journalView}
+              onChange={(event) => onChange({ journalView: event.target.value === "day" ? "day" : "stop" })}
+            >
+              <option value="stop">{t("settings.journalView.stop")}</option>
+              <option value="day">{t("settings.journalView.day")}</option>
+            </select>
+          </label>
+          {note("help", "settings.journalView", "settings.journalViewHint")}
         </div>
       </fieldset>
 

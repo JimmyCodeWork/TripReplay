@@ -5,6 +5,7 @@ import { CommitRange } from "../controls/CommitRange.tsx";
 import { useDragReorder } from "../controls/drag-reorder.ts";
 import { SecondsField } from "../controls/SecondsField.tsx";
 import { SortToggle } from "../controls/SortToggle.tsx";
+import { StopOptions } from "../controls/StopOptions.tsx";
 import { formatDate } from "../format-date.ts";
 import { formatTime } from "../player/format-time.ts";
 import styles from "./MediaPanel.module.css";
@@ -37,39 +38,6 @@ export interface MediaPanelProps {
 }
 
 const SECOND = 1_000_000;
-
-type Stop = Project["stops"][number];
-
-/** The trip's stops for a drop-down list, in a group for each day. */
-function StopOptions({
-  stops,
-  except,
-  locale,
-  t,
-}: {
-  readonly stops: readonly Stop[];
-  /** A stop left out, such as the one the media is at. */
-  readonly except?: string;
-  readonly locale: Locale;
-  readonly t: Translate;
-}) {
-  const dates = [...new Set(stops.map((stop) => stop.date))];
-  return (
-    <>
-      {dates.map((date, dayIndex) => (
-        <optgroup key={date} label={t("itinerary.day", { number: dayIndex + 1, date: formatDate(locale, date) })}>
-          {stops.map((stop, index) =>
-            stop.date === date && stop.id !== except ? (
-              <option key={stop.id} value={stop.id}>
-                {`${index + 1}. ${stop.name}`}
-              </option>
-            ) : null,
-          )}
-        </optgroup>
-      ))}
-    </>
-  );
-}
 
 function Thumbnail({ asset, mediaUrl }: { readonly asset: Asset; readonly mediaUrl: MediaPanelProps["mediaUrl"] }) {
   const [url, setUrl] = useState<string | undefined>();
