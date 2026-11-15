@@ -141,6 +141,7 @@ The preview on the right always shows the current recap.
 - Drag the **Playback position** slider, or use the arrow keys on it, to move through the recap.
 - The bar under the slider shows the parts of the recap: opening, travel, stop titles, photos, videos and closing. Select a part to jump to it.
 - Times are marked above the bar.
+- On a trip of several days, **All**, **Day 1**, **Day 2** and so on above the bar show one day of the recap at a time, as in the itinerary: the bar then spans that day, from the move to its first stop (the opening for the first day) to its last part, and the playhead goes to its start. Stepping to another day with **Previous day** or **Next day** shows that day.
 - **Previous day**, **Previous part**, **Next part** and **Next day** above the bar move to that part and select it, which is easier than tapping a thin segment.
 - **Reset timing** returns the opening, travel, stop titles, closing and every photo to their default lengths. Video trims and music stay as they are, and **Undo** brings your lengths back.
 - When the recap is long and its parts are thin, select **+** above the bar to enlarge it, up to the point where about five seconds fill the width, and **−** to see more of it again. An enlarged bar scrolls sideways: swipe it, or drag the window in the overview bar below it. While the recap plays, the bar follows the playback position.

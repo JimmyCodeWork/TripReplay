@@ -1,5 +1,5 @@
 import type { Command, Segment, Timeline } from "@tripreplay/app";
-import type { MessageKey, Translate } from "@tripreplay/i18n";
+import type { Locale, MessageKey, Translate } from "@tripreplay/i18n";
 import {
   type MouseEvent as ReactMouseEvent,
   type ReactNode,
@@ -10,6 +10,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { DayChips, tripDates } from "../controls/DayChips.tsx";
 import { formatTime } from "./format-time.ts";
 import styles from "./RecapPlayer.module.css";
 import { type Phase, SegmentEditor, type TimelineSelection } from "./SegmentEditor.tsx";
@@ -21,6 +22,8 @@ export interface TimelineStripsProps {
   readonly onSeek: (timeUs: number) => void;
   /** Applies a drag on the timeline as one command; without it the timeline cannot be edited. */
   readonly onEdit?: ((command: Command) => void) | undefined;
+  /** For the dates of the day buttons; English when not given. */
+  readonly locale?: Locale | undefined;
   readonly t: Translate;
 }
 
@@ -85,15 +88,31 @@ const isSelected = (selection: TimelineSelection | undefined, segment: Segment) 
  * dragging the edge of a photo changes its duration, the edges of a video trim it, and music is
  * moved by dragging it or trimmed at either end. Each change is one undoable command.
  */
-export function TimelineStrips({ timeline, timeUs, onSeek, onEdit, t }: TimelineStripsProps) {
+export function TimelineStrips({ timeline, timeUs, onSeek, onEdit, locale = "en", t }: TimelineStripsProps) {
   const [drag, setDrag] = useState<Drag | undefined>();
   const [selection, setSelection] = useState<TimelineSelection | undefined>();
   const [zoomLevel, setZoom] = useState(1);
   const [view, setView] = useState({ left: 0, width: 1 });
   const viewport = useRef<HTMLDivElement>(null);
   const dragged = useRef(false);
-  const total = timeline.durationUs || 1;
-  const largest = maxZoom(timeline.durationUs);
+
+  // One day at a time, like the itinerary: the opening belongs to the first day and the closing
+  // to the last; the strips then show that day's part of the recap, from `from` to `to`.
+  const segments = timeline.segments;
+  const dates = tripDates(timeline.stops);
+  const dateOf = (segment: Segment) =>
+    "stopIndex" in segment
+      ? timeline.stops[segment.stopIndex]?.date
+      : segment.kind === "opening"
+        ? dates[0]
+        : dates.at(-1);
+  const [shownDay, setShownDay] = useState<string | undefined>();
+  const day = shownDay !== undefined && dates.includes(shownDay) ? shownDay : undefined;
+  const shown = day === undefined ? segments : segments.filter((segment) => dateOf(segment) === day);
+  const from = day === undefined ? 0 : (shown[0]?.startUs ?? 0);
+  const to = day === undefined ? timeline.durationUs : (shown.at(-1)?.endUs ?? timeline.durationUs);
+  const total = to - from || 1;
+  const largest = maxZoom(to - from);
   const zoom = Math.min(zoomLevel, largest);
 
   // The part of the timeline in view, as fractions of its whole width, for the overview below it.
@@ -106,10 +125,10 @@ export function TimelineStrips({ timeline, timeUs, onSeek, onEdit, t }: Timeline
     const box = viewport.current;
     const clamped = Math.min(Math.max(next, 1), largest);
     if (!box || clamped === zoom) return;
-    const offset = (timeUs / total) * box.scrollWidth - box.scrollLeft;
+    const offset = ((timeUs - from) / total) * box.scrollWidth - box.scrollLeft;
     setZoom(clamped);
     requestAnimationFrame(() => {
-      box.scrollLeft = (timeUs / total) * box.scrollWidth - offset;
+      box.scrollLeft = ((timeUs - from) / total) * box.scrollWidth - offset;
       measure();
     });
   };
@@ -117,12 +136,13 @@ export function TimelineStrips({ timeline, timeUs, onSeek, onEdit, t }: Timeline
   useLayoutEffect(() => {
     const box = viewport.current;
     if (!box || zoom === 1) return;
-    const x = (timeUs / total) * box.scrollWidth;
+    if (timeUs < from || timeUs > to) return;
+    const x = ((timeUs - from) / total) * box.scrollWidth;
     if (x < box.scrollLeft || x > box.scrollLeft + box.clientWidth) {
       box.scrollLeft = x - box.clientWidth * 0.1;
       measure();
     }
-  }, [timeUs, total, zoom, measure]);
+  }, [timeUs, from, to, total, zoom, measure]);
   useEffect(() => {
     const box = viewport.current;
     if (!box) return;
@@ -131,7 +151,7 @@ export function TimelineStrips({ timeline, timeUs, onSeek, onEdit, t }: Timeline
     return () => observer.disconnect();
   }, [measure]);
 
-  const start = (event: ReactPointerEvent<HTMLElement>, target: DragTarget) => {
+  const startDrag = (event: ReactPointerEvent<HTMLElement>, target: DragTarget) => {
     if (!onEdit || event.button !== 0) return;
     event.stopPropagation();
     event.preventDefault();
@@ -162,7 +182,7 @@ export function TimelineStrips({ timeline, timeUs, onSeek, onEdit, t }: Timeline
       return;
     }
     const box = event.currentTarget.getBoundingClientRect();
-    onSeek(((event.clientX - box.left) / box.width) * total);
+    onSeek(from + ((event.clientX - box.left) / box.width) * total);
     if (onEdit) setSelection(selectionAt(event.target as Element));
   };
   const rowEvents = { onPointerMove: move, onPointerUp: end, onPointerCancel: end, onClick: seek };
@@ -176,19 +196,20 @@ export function TimelineStrips({ timeline, timeUs, onSeek, onEdit, t }: Timeline
     <span
       className={side === "start" ? styles.handleStart : styles.handleEnd}
       title={label}
-      onPointerDown={(event) => start(event, target)}
+      onPointerDown={(event) => startDrag(event, target)}
     />
   );
 
-  const percent = (us: number) => `${(us / total) * 100}%`;
+  const percent = (us: number) => `${((us - from) / total) * 100}%`;
   const musicEnd = timeline.durationUs;
 
-  const step = tickStep(timeline.durationUs / zoom);
+  const step = tickStep((to - from) / zoom);
   // A tick right at the end would have its label cut off by the edge of the timeline.
+  const firstTick = Math.ceil(from / (step * 1_000_000));
   const ticks = Array.from(
-    { length: Math.floor(timeline.durationUs / (step * 1_000_000)) + 1 },
-    (_, i) => i * step,
-  ).filter((second) => timeline.durationUs - second * 1_000_000 >= step * 400_000);
+    { length: Math.max(0, Math.floor(to / (step * 1_000_000)) - firstTick + 1) },
+    (_, i) => (firstTick + i) * step,
+  ).filter((second) => to - second * 1_000_000 >= step * 400_000);
   const selectedName = (() => {
     if (!selection) return "";
     if (selection.kind === "music") return t("player.music");
@@ -210,7 +231,6 @@ export function TimelineStrips({ timeline, timeUs, onSeek, onEdit, t }: Timeline
 
   // Stepping through the recap with buttons instead of aiming at a thin segment: by part, or by
   // day, where a day starts with the move to its first stop (the recap's opening for the first).
-  const segments = timeline.segments;
   const current = (() => {
     const selected = selection ? segments.findIndex((s) => isSelected(selection, s)) : -1;
     if (selected >= 0) return selected;
@@ -233,6 +253,8 @@ export function TimelineStrips({ timeline, timeUs, onSeek, onEdit, t }: Timeline
     if (!segment) return;
     // A moment in, so that the frame shows the part rather than its fade from the one before.
     onSeek(Math.min(segment.startUs + 500_000, (segment.startUs + segment.endUs) / 2));
+    // Stepping out of the day shown shows the day stepped to.
+    if (day !== undefined && dateOf(segment) !== day) setShownDay(dateOf(segment));
     if (!onEdit) return;
     const phase = PHASES[segment.kind];
     if ("clipId" in segment) setSelection({ kind: "clip", clipId: segment.clipId });
@@ -250,8 +272,17 @@ export function TimelineStrips({ timeline, timeUs, onSeek, onEdit, t }: Timeline
     </button>
   );
 
+  const showDay = (date: string | undefined) => {
+    setShownDay(date);
+    setZoom(1);
+    if (viewport.current) viewport.current.scrollLeft = 0;
+    const first = date === undefined ? undefined : segments.find((segment) => dateOf(segment) === date);
+    if (first) onSeek(Math.min(first.startUs + 500_000, (first.startUs + first.endUs) / 2));
+  };
+
   return (
     <>
+      <DayChips dates={dates} shown={day} onShow={showDay} locale={locale} t={t} />
       {segments.length > 1 && (
         <div className={styles.steps}>
           {stepButton("player.previousDay", `« ${t("player.previousDay")}`, previousDay)}
@@ -310,7 +341,7 @@ export function TimelineStrips({ timeline, timeUs, onSeek, onEdit, t }: Timeline
             ))}
           </div>
           <div className={styles.strip} data-row="segments" {...rowEvents}>
-            {timeline.segments.map((segment) => {
+            {shown.map((segment) => {
               const length = segment.endUs - segment.startUs;
               let grow = length;
               let handles: ReactNode = null;
@@ -355,7 +386,7 @@ export function TimelineStrips({ timeline, timeUs, onSeek, onEdit, t }: Timeline
                 </div>
               );
             })}
-            <div className={styles.playhead} style={{ left: percent(timeUs) }} />
+            {timeUs >= from && timeUs <= to && <div className={styles.playhead} style={{ left: percent(timeUs) }} />}
           </div>
           {timeline.music.length > 0 && (
             <div className={styles.music} data-row="music" title={t("player.music")} {...rowEvents}>
@@ -363,19 +394,24 @@ export function TimelineStrips({ timeline, timeUs, onSeek, onEdit, t }: Timeline
                 const length = track.endUs - track.startUs;
                 const preview =
                   sameTarget(drag, track.trackId) && drag ? dragPreview(drag.target, drag.deltaUs) : undefined;
-                const left = track.startUs + (preview?.startUs ?? 0);
-                const width = length + (preview?.lengthUs ?? 0);
+                // Cut to the day shown; an end outside it cannot be dragged from here.
+                const start = track.startUs + (preview?.startUs ?? 0);
+                const end = start + length + (preview?.lengthUs ?? 0);
+                const left = Math.max(start, from);
+                const width = Math.min(end, to) - left;
+                if (width <= 0) return null;
                 const id = { trackId: track.trackId };
                 return (
                   <div
                     key={track.trackId}
                     className={`${styles.track} ${onEdit ? styles.movable : ""} ${selection?.kind === "music" && selection.trackId === track.trackId ? styles.selected : ""}`}
                     data-track={track.trackId}
-                    style={{ left: percent(left), width: percent(width) }}
+                    style={{ left: percent(left), width: `${(width / total) * 100}%` }}
                     title={onEdit ? t("player.dragMusic") : undefined}
-                    onPointerDown={(event) => start(event, { kind: "music", startUs: track.startUs, ...id })}
+                    onPointerDown={(event) => startDrag(event, { kind: "music", startUs: track.startUs, ...id })}
                   >
                     {onEdit &&
+                      start >= from &&
                       handle("start", t("player.dragTrimStart"), {
                         kind: "musicIn",
                         inUs: track.inUs,
@@ -385,6 +421,7 @@ export function TimelineStrips({ timeline, timeUs, onSeek, onEdit, t }: Timeline
                     {/* A track cut at the end of the recap is not trimmed here, so that its hidden end is kept. */}
                     {onEdit &&
                       track.endUs < musicEnd &&
+                      end <= to &&
                       handle("end", t("player.dragTrimEnd"), {
                         kind: "musicOut",
                         outUs: track.inUs + length,
@@ -395,13 +432,18 @@ export function TimelineStrips({ timeline, timeUs, onSeek, onEdit, t }: Timeline
                 );
               })}
               {timeline.music.some((track) => track.duckUnderClips) &&
-                timeline.audibleClips.map((clip) => (
-                  <div
-                    key={clip.startUs}
-                    className={styles.ducked}
-                    style={{ left: percent(clip.startUs), width: percent(clip.endUs - clip.startUs) }}
-                  />
-                ))}
+                timeline.audibleClips
+                  .filter((clip) => clip.endUs > from && clip.startUs < to)
+                  .map((clip) => (
+                    <div
+                      key={clip.startUs}
+                      className={styles.ducked}
+                      style={{
+                        left: percent(Math.max(clip.startUs, from)),
+                        width: `${((Math.min(clip.endUs, to) - Math.max(clip.startUs, from)) / total) * 100}%`,
+                      }}
+                    />
+                  ))}
             </div>
           )}
         </div>
@@ -428,7 +470,7 @@ export function TimelineStrips({ timeline, timeUs, onSeek, onEdit, t }: Timeline
             overview.current = undefined;
           }}
         >
-          <div className={styles.overviewHead} style={{ left: percent(timeUs) }} />
+          {timeUs >= from && timeUs <= to && <div className={styles.overviewHead} style={{ left: percent(timeUs) }} />}
           <div
             className={styles.overviewWindow}
             style={{ left: `${view.left * 100}%`, width: `${view.width * 100}%` }}

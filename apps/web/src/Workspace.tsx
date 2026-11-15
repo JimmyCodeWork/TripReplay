@@ -509,6 +509,7 @@ function EditorView({ editor, services, locale, t, onClose }: EditorViewProps) {
             onEdit={(command) => editor.dispatch(command)}
             onReducedMotion={setReducedMotion}
             onItineraryOnly={setItineraryOnly}
+            locale={locale}
             fullScreen={NATIVE ? "page" : "browser"}
             onExport={() => {
               playback.pause();

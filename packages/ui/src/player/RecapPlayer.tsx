@@ -1,5 +1,5 @@
 import type { Command, Playback, PreviewSurface, Timeline } from "@tripreplay/app";
-import type { Translate } from "@tripreplay/i18n";
+import type { Locale, Translate } from "@tripreplay/i18n";
 import {
   type CSSProperties,
   type KeyboardEvent as ReactKeyboardEvent,
@@ -45,6 +45,8 @@ export interface RecapPlayerProps {
   readonly notice?: string;
   /** Opens the export of the recap as a video; without it the button is not shown. */
   readonly onExport?: (() => void) | undefined;
+  /** For the dates of the timeline's day buttons. */
+  readonly locale?: Locale | undefined;
   readonly t: Translate;
 }
 
@@ -73,6 +75,7 @@ export function RecapPlayer({
   fullScreen: fullScreenMode = "browser",
   notice,
   onExport,
+  locale,
   t,
 }: RecapPlayerProps) {
   const state = useSyncExternalStore(playback.subscribe, playback.getState);
@@ -243,6 +246,7 @@ export function RecapPlayer({
           timeUs={state.timeUs}
           onSeek={(us) => playback.seek(us)}
           onEdit={onEdit}
+          locale={locale}
           t={t}
         />
       </div>
