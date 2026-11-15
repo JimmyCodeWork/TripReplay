@@ -3,6 +3,7 @@ import { EN_ROUTE_FRAME, PHOTO_PUSH_IN } from "./constants.ts";
 import type { MediaOverlay, Overlay } from "./frame.ts";
 import { envelope, lerp, progress } from "./math.ts";
 import type { MediaSegment, Segment, Timeline, TravelSegment } from "./model.ts";
+import { startsDay } from "./segments.ts";
 
 function isMedia(segment: Segment | undefined): segment is MediaSegment {
   return segment?.kind === "photo" || segment?.kind === "video";
@@ -99,9 +100,7 @@ export function overlaysAt(timeline: Timeline, index: number, timeUs: Microsecon
     });
   } else if (segment.kind === "travel") {
     const stop = timeline.stops[segment.stopIndex];
-    const before = timeline.stops[segment.stopIndex - 1];
-    // A new day, or the first day when it has a line of its own.
-    if (stop && ((before && stop.day > before.day) || stop.dayNote !== "")) {
+    if (stop && startsDay(timeline.stops, segment.stopIndex)) {
       overlays.push({
         kind: "dayChange",
         day: stop.day,

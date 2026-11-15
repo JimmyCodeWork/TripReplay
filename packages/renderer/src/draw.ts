@@ -43,6 +43,8 @@ export interface DrawOptions<Image = unknown> {
 const MARKER_RADIUS = 0.011;
 const CURRENT_MARKER_RADIUS = 0.017;
 const MARKER_OUTLINE = 0.004;
+/** Length of the arrow at the head of the line being drawn. */
+const HEAD_SIZE = 0.028;
 const ATTRIBUTION_SIZE = 0.6;
 const PROGRESS_HEIGHT = 0.006;
 /** Lines of a caption under a picture; longer captions end with an ellipsis. */
@@ -173,16 +175,11 @@ export function routePoints(
   return points.length > 1 ? points : [];
 }
 
-function drawRoute(ctx: Canvas2D, { timeline, frame, width, height, project }: DrawOptions): void {
-  const points = routePoints(
-    timeline.route,
-    frame.route.progress,
-    project,
-    timeline.stops.map((s) => s.via),
-  );
-  if (points.length === 0) return;
-  const unit = Math.min(width, height);
-  const { color, width: lineWidth, glow } = timeline.theme.route;
+/** Strokes a line with the route's style: its glow, if any, then the line. */
+function strokeRoute(ctx: Canvas2D, options: DrawOptions, points: readonly ScreenPoint[]): void {
+  if (points.length < 2) return;
+  const unit = Math.min(options.width, options.height);
+  const { color, width: lineWidth, glow } = options.timeline.theme.route;
   const path = () => {
     ctx.beginPath();
     points.forEach((p, i) => {
@@ -206,20 +203,89 @@ function drawRoute(ctx: Canvas2D, { timeline, frame, width, height, project }: D
   ctx.restore();
 }
 
-function drawMarkers(ctx: Canvas2D, { timeline, frame, width, height, project }: DrawOptions): void {
-  const unit = Math.min(width, height);
-  const style = timeline.theme.marker;
+/**
+ * An arrow at the head of the line being drawn, pointing the way it goes, in the route's color with
+ * the markers' outline.
+ */
+function drawHead(ctx: Canvas2D, options: DrawOptions, points: readonly ScreenPoint[]): void {
+  const tip = points.at(-1);
+  // The direction comes from the last stretch long enough to have one.
+  const from = [...points].reverse().find((p) => tip && Math.hypot(tip.x - p.x, tip.y - p.y) > 0.5);
+  if (!tip || !from) return;
+  const unit = Math.min(options.width, options.height);
+  const size = HEAD_SIZE * unit;
+  const angle = Math.atan2(tip.y - from.y, tip.x - from.x);
+  const corner = (turn: number, length: number) => ({
+    x: tip.x + Math.cos(angle + turn) * length,
+    y: tip.y + Math.sin(angle + turn) * length,
+  });
+  const left = corner(Math.PI * 0.8, size);
+  const back = corner(Math.PI, size * 0.55);
+  const right = corner(-Math.PI * 0.8, size);
   ctx.save();
-  for (const marker of frame.markers) {
-    const { x, y } = project(marker.location);
-    ctx.beginPath();
-    ctx.arc(x, y, (marker.state === "current" ? CURRENT_MARKER_RADIUS : MARKER_RADIUS) * unit, 0, Math.PI * 2);
-    ctx.fillStyle = marker.state === "upcoming" ? style.upcoming : style.visited;
-    ctx.fill();
-    ctx.strokeStyle = style.outline;
-    ctx.lineWidth = MARKER_OUTLINE * unit;
-    ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(tip.x, tip.y);
+  ctx.lineTo(left.x, left.y);
+  ctx.lineTo(back.x, back.y);
+  ctx.lineTo(right.x, right.y);
+  ctx.closePath();
+  ctx.lineJoin = "round";
+  ctx.fillStyle = options.timeline.theme.route.color;
+  ctx.strokeStyle = options.timeline.theme.marker.outline;
+  ctx.lineWidth = MARKER_OUTLINE * unit;
+  ctx.stroke();
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawMarker(ctx: Canvas2D, options: DrawOptions, marker: FrameDescription["markers"][number]): void {
+  const unit = Math.min(options.width, options.height);
+  const style = options.timeline.theme.marker;
+  const { x, y } = options.project(marker.location);
+  ctx.beginPath();
+  ctx.arc(x, y, (marker.state === "current" ? CURRENT_MARKER_RADIUS : MARKER_RADIUS) * unit, 0, Math.PI * 2);
+  ctx.fillStyle = marker.state === "upcoming" ? style.upcoming : style.visited;
+  ctx.fill();
+  ctx.strokeStyle = style.outline;
+  ctx.lineWidth = MARKER_OUTLINE * unit;
+  ctx.stroke();
+}
+
+/**
+ * The route and the stops' markers, newest on top: the stops ahead, then the line already drawn
+ * and the stops reached, then the leg being drawn with the arrow at its head, and last the markers
+ * of that leg's ends or of the current stop, so that a line crossing earlier ones stays in view.
+ */
+function drawRouteAndMarkers(ctx: Canvas2D, options: DrawOptions): void {
+  const { timeline, frame, project } = options;
+  const via = timeline.stops.map((s) => s.via);
+  const progress = Math.min(Math.max(0, timeline.route.length - 1), Math.max(0, frame.route.progress));
+  const reached = Math.floor(progress);
+  const moving = progress > reached;
+  const done = routePoints(timeline.route, reached, project, via);
+  const all = moving ? routePoints(timeline.route, progress, project, via) : done;
+  // The active stops: the ends of the leg being drawn, or the stop the recap is at.
+  const active = new Set<number>(moving ? [reached, reached + 1] : []);
+  frame.markers.forEach((m, i) => {
+    if (m.state === "current") active.add(i);
+  });
+  ctx.save();
+  frame.markers.forEach((m, i) => {
+    if (m.state === "upcoming" && !active.has(i)) drawMarker(ctx, options, m);
+  });
+  strokeRoute(ctx, options, done);
+  frame.markers.forEach((m, i) => {
+    if (m.state !== "upcoming" && !active.has(i)) drawMarker(ctx, options, m);
+  });
+  if (moving) {
+    const leg = all.slice(Math.max(0, done.length - 1));
+    strokeRoute(ctx, options, leg.length > 1 ? leg : all);
   }
+  for (const i of [...active].sort((a, b) => a - b)) {
+    const marker = frame.markers[i];
+    if (marker) drawMarker(ctx, options, marker);
+  }
+  if (moving && !timeline.reducedMotion) drawHead(ctx, options, all);
   ctx.restore();
 }
 
@@ -589,8 +655,7 @@ export function drawFrame(ctx: Canvas2D, options: DrawOptions, withoutMap = fals
     ctx.fillStyle = timeline.theme.map.background;
     ctx.fillRect(0, 0, width, height);
   }
-  drawRoute(ctx, options);
-  drawMarkers(ctx, options);
+  drawRouteAndMarkers(ctx, options);
   if (frame.fade < 1) {
     ctx.save();
     ctx.globalAlpha = 1 - frame.fade;

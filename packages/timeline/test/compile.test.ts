@@ -13,6 +13,7 @@ import {
 import { describe, expect, it } from "vitest";
 import {
   compile,
+  DAY_INTRO,
   JOURNAL_EXCERPT,
   journalExcerpt,
   type MediaSegment,
@@ -48,8 +49,9 @@ describe("compile", () => {
     const { segments, durationUs } = compile(kyoto());
     expect(segments[0]?.startUs).toBe(0);
     for (let i = 1; i < segments.length; i++) expect(segments[i]?.startUs).toBe(segments[i - 1]?.endUs);
-    // opening 3 + 3 × (travel 2 + title 1) + photos 3 + 3 + videos 4 + 2 + closing 3
-    expect(durationUs).toBe(seconds(3 + 9 + 6 + 6 + 3));
+    // opening 3 + 3 × (travel 2 + title 1) + photos 3 + 3 + videos 4 + 2 + closing 3, and the
+    // third day's text before the move to c
+    expect(durationUs).toBe(seconds(3 + 9 + 6 + 6 + 3) + DAY_INTRO.withoutNote);
     expect(segments.at(-1)?.endUs).toBe(durationUs);
   });
 
@@ -59,7 +61,7 @@ describe("compile", () => {
     );
     const lengths = (kind: string) => timeline.segments.filter((s) => s.kind === kind).map((s) => s.endUs - s.startUs);
     expect(lengths("opening")).toEqual([seconds(5)]);
-    expect(lengths("travel")).toEqual([seconds(4), seconds(4), seconds(4)]);
+    expect(lengths("travel")).toEqual([seconds(4), seconds(4), seconds(4) + DAY_INTRO.withoutNote]);
     expect(lengths("closing")).toEqual([seconds(6)]);
     expect(timeline.theme.timing.travelUs).toBe(seconds(4));
   });
@@ -145,13 +147,30 @@ describe("day lines", () => {
     expect(timeline.stops.map((s) => s.dayNote)).toEqual(["出發", "", "搭首班車前往嵐山，十二個字"]);
     const travel = timeline.segments.filter((s) => s.kind === "travel");
     const length = (i: number) => (travel[i]?.endUs ?? 0) - (travel[i]?.startUs ?? 0);
-    // Two seconds for the day, then about eight characters a second.
-    expect(length(2)).toBe(seconds(2) + 13 * seconds(0.12));
+    // The day's text first, then two seconds for the day and about eight characters a second.
+    expect(length(2)).toBe(DAY_INTRO.withNote + seconds(2) + 13 * seconds(0.12));
     expect(length(1)).toBe(timeline.theme.timing.travelUs);
     const middle = (i: number) => ((travel[i]?.startUs ?? 0) + (travel[i]?.endUs ?? 0)) / 2;
     const at = (us: number) => renderAt(timeline, us).overlays.find((o) => o.kind === "dayChange");
     expect(at(middle(2))).toMatchObject({ day: 3, note: "搭首班車前往嵐山，十二個字" });
     expect(at(middle(0))).toMatchObject({ day: 1, note: "出發" });
+  });
+});
+
+describe("a new day's text", () => {
+  it("is shown in full before the camera and the line move", () => {
+    const timeline = compile(setDayNote(kyoto(), "2026-04-03", "搭首班車前往嵐山"));
+    const travel = timeline.segments.find((s) => s.kind === "travel" && s.stopIndex === 2);
+    if (travel?.kind !== "travel") throw new Error("missing travel segment");
+    expect(travel.holdUs).toBe(DAY_INTRO.withNote);
+    const start = renderAt(timeline, travel.startUs);
+    const held = renderAt(timeline, travel.startUs + travel.holdUs - 1);
+    expect(held.camera).toEqual(start.camera);
+    expect(held.route.progress).toBe(1);
+    expect(held.overlays.find((o) => o.kind === "dayChange")).toMatchObject({ day: 3 });
+    expect(renderAt(timeline, travel.startUs + travel.holdUs + seconds(0.5)).route.progress).toBeGreaterThan(1);
+    // Moves on the same day do not wait.
+    expect(timeline.segments.find((s) => s.kind === "travel" && s.stopIndex === 1)).toMatchObject({ holdUs: 0 });
   });
 });
 
@@ -167,7 +186,7 @@ describe("a stop's own lengths", () => {
       return (s?.endUs ?? 0) - (s?.startUs ?? 0);
     };
     expect(length("title", 0)).toBe(seconds(2));
-    expect(length("travel", 2)).toBe(seconds(1));
+    expect(length("travel", 2)).toBe(DAY_INTRO.withNote + seconds(1));
     expect(timeline.stops[0]?.ownTitleUs).toBe(seconds(2));
     expect(timeline.stops[1]?.ownTitleUs).toBeUndefined();
   });

@@ -186,6 +186,31 @@ describe("drawFrame", () => {
     expect(settled.texts).toContain("Day 2 · 2026-04-02");
   });
 
+  it("draws the leg being travelled and its stops above the rest, with an arrow at its head", () => {
+    const travel = segment("travel", 2);
+    if (!travel) throw new Error("missing segment");
+    const { calls } = draw(timeline, (travel.startUs + travel.endUs) / 2);
+    const route = timeline.theme.route.color;
+    const lineStrokes = calls.flatMap((c, i) => (c.name === "stroke" && c.stroke === route ? [i] : []));
+    // The line already drawn, then the leg being drawn.
+    expect(lineStrokes).toHaveLength(2);
+    const arcs = calls.flatMap((c, i) => (c.name === "arc" ? [{ i, x: c.args[0] as number }] : []));
+    expect(arcs).toHaveLength(3);
+    // The first stop, reached before this leg, lies under it; the leg's ends are drawn after it.
+    const legStroke = lineStrokes[1] ?? 0;
+    expect(arcs.filter((a) => a.i > legStroke)).toHaveLength(2);
+    // The arrow: a closed shape filled in the route's color after the markers.
+    const lastArc = arcs.at(-1)?.i ?? 0;
+    const arrow = calls.findIndex((c, i) => i > lastArc && c.name === "closePath");
+    expect(arrow).toBeGreaterThan(lastArc);
+    expect(calls.slice(arrow).some((c) => c.name === "fill" && c.fill === route)).toBe(true);
+    // Not between legs.
+    const title = segment("title", 1);
+    if (!title) throw new Error("missing segment");
+    const still = draw(timeline, (title.startUs + title.endUs) / 2).calls;
+    expect(still.some((c) => c.name === "closePath")).toBe(false);
+  });
+
   it("shows a stop's journal under its title, on a dark glow below a rule", () => {
     const withJournal = compile({
       ...project,

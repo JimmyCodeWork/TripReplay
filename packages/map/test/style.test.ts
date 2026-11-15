@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { baseMapStyle, OVERVIEW_LAYERS } from "../src/style.ts";
+import { baseMapStyle, OVERVIEW_LAYERS, REGION_MIN_ZOOM } from "../src/style.ts";
 
 const colors = {
   background: "#000000",
@@ -45,11 +45,18 @@ describe("baseMapStyle", () => {
       "source-layer": "land",
       paint: { "fill-color": colors.land },
     });
+    // Zoomed out, the overview alone is drawn, without seams where the regions' tiles end.
+    const themes = ["base", "transportation", "divisions"];
+    const regionLayers = style.layers.filter((l) => "source" in l && themes.includes(l.source as string));
+    expect(regionLayers.length).toBeGreaterThan(4);
+    expect(regionLayers.every((l) => l.minzoom === REGION_MIN_ZOOM)).toBe(true);
+    expect(style.layers.find((l) => l.id === OVERVIEW_LAYERS.water)?.minzoom).toBeUndefined();
   });
 
   it("leaves the overview out without its files", () => {
     const style = baseMapStyle({ sources, colors });
     expect(Object.keys(style.sources)).toEqual(["base", "transportation", "divisions"]);
     expect(style.layers.some((layer) => layer.id === OVERVIEW_LAYERS.cover)).toBe(false);
+    expect(style.layers.every((layer) => layer.minzoom === undefined)).toBe(true);
   });
 });

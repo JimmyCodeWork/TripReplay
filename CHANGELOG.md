@@ -8,6 +8,8 @@ All notable changes to TripReplay are recorded here. The format follows [Keep a 
 
 ### Added
 
+- The recap waits until a new day's text is shown in full before the camera and the line move; the leg being drawn and its stops are drawn above the earlier line and markers, with an arrow at the line's head.
+- Zoomed out below zoom level 7, only the world overview is drawn, which removes the seams where a region's tiles ended ([ADR 0015](docs/adr/0015-overview-alone-when-zoomed-out.md)).
 - **Settings** in the header gathers the choices that apply to every trip, grouped into playback and map, import, and AI agents, with a small **?** to explain a setting and **!** for what to know first. **Reduce motion** moves there from under the preview, and the switches of the browser's AI agent and of MCP from the workspace bar.
 - **Load map first**, on until turned off in Settings: **Play** first loads the map along the camera's path, with its progress, so that long camera moves play without blank or half-drawn areas; the detailed map is loaded within 25 km of the stops by default, and only the world overview farther away, which is faster ([ADR 0014](docs/adr/0014-load-map-before-playing.md)). The world overview is now covered by the regions' land instead of their bounds, so that it shows wherever a region's tiles are not drawn yet.
 - **World overview** in Maps: a map of the whole world at a few zoom levels, about 60 MB, drawn under the downloaded regions so that flights between them no longer show a blank background ([ADR 0013](docs/adr/0013-world-overview.md)); loaded map tiles stay in memory at every zoom level.
