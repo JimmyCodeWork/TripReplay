@@ -1339,6 +1339,10 @@
     "message": "Stop",
     "description": "Label of the list that chooses whose media the tab shows, grouped by day."
   },
+  "media.dropHint": {
+    "message": "Drop to import photos and videos into the selected stop, or an audio file as music",
+    "description": "Shown over the workspace while files are dragged onto it."
+  },
   "media.moveTo": {
     "message": "Move {file} to another stop",
     "description": "Label of the list that moves a photo or video to another stop."

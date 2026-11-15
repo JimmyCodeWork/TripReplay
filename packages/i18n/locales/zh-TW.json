@@ -1004,6 +1004,9 @@
   "media.stop": {
     "message": "景點"
   },
+  "media.dropHint": {
+    "message": "放開即可將照片與影片匯入所選景點，或將音訊檔加入為音樂"
+  },
   "media.moveTo": {
     "message": "將 {file} 移到其他景點"
   },
