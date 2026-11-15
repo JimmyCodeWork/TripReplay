@@ -62,7 +62,7 @@ In the trip list, each trip can be opened, renamed, duplicated, backed up and de
 
 Add stops first; every photo and video belongs to a stop.
 
-1. Open the **Media** tab and select **Import media**, then choose your photos and videos.
+1. Open the **Media** tab and select **Import media**, then choose your photos and videos. On a computer you can also drag them from a folder onto TripReplay; an audio file dragged in the same way is added as music.
 2. TripReplay reads each file's capture time and GPS position and suggests a stop:
    - **by location** — the nearest stop of that day, from the file's GPS position;
    - **by date** — the first stop of the day it was taken, when the file has no position.

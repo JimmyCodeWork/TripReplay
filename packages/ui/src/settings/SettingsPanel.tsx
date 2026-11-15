@@ -56,7 +56,16 @@ function Note({ kind, name, text, t }: { kind: "help" | "caution"; name: string;
         {kind === "help" ? "?" : "!"}
       </button>
       {open && (
-        <dialog ref={dialog} className={styles.note} aria-labelledby={titleId} onClose={() => setOpen(false)}>
+        <dialog
+          ref={dialog}
+          className={styles.note}
+          aria-labelledby={titleId}
+          onClose={(event) => {
+            // React passes a dialog's close on to the dialogs around it, such as Settings itself.
+            event.stopPropagation();
+            setOpen(false);
+          }}
+        >
           <h3 id={titleId} className={styles.noteTitle}>
             <span aria-hidden="true" className={kind === "help" ? styles.help : styles.caution}>
               {kind === "help" ? "?" : "!"}

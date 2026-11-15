@@ -272,6 +272,52 @@ function EditorView({ editor, services, locale, t, onClose }: EditorViewProps) {
     document.getElementById(`tab-${name}`)?.focus();
   };
 
+  // Files dragged from the desktop onto the workspace: photos and videos are imported like with
+  // "Import media", to the selected stop, and an audio file is added as music.
+  const [dragging, setDragging] = useState(false);
+  const dropRef = useRef({ startImport, addMusic, busy: false });
+  dropRef.current = { startImport, addMusic, busy: importing !== undefined || exporting !== undefined };
+  useEffect(() => {
+    let depth = 0;
+    const carriesFiles = (event: DragEvent) => event.dataTransfer?.types.includes("Files") === true;
+    const enter = (event: DragEvent) => {
+      if (!carriesFiles(event)) return;
+      depth += 1;
+      if (!dropRef.current.busy) setDragging(true);
+    };
+    const leave = (event: DragEvent) => {
+      if (!carriesFiles(event)) return;
+      depth = Math.max(0, depth - 1);
+      if (depth === 0) setDragging(false);
+    };
+    const over = (event: DragEvent) => {
+      // Without this the browser would open the file in place of TripReplay.
+      if (carriesFiles(event)) event.preventDefault();
+    };
+    const drop = (event: DragEvent) => {
+      if (!carriesFiles(event)) return;
+      event.preventDefault();
+      depth = 0;
+      setDragging(false);
+      if (dropRef.current.busy) return;
+      const files = [...(event.dataTransfer?.files ?? [])];
+      const media = files.filter((file) => file.type.startsWith("image/") || file.type.startsWith("video/"));
+      const music = files.find((file) => file.type.startsWith("audio/"));
+      if (media.length > 0) dropRef.current.startImport(media);
+      else if (music) void dropRef.current.addMusic(music);
+    };
+    window.addEventListener("dragenter", enter);
+    window.addEventListener("dragleave", leave);
+    window.addEventListener("dragover", over);
+    window.addEventListener("drop", drop);
+    return () => {
+      window.removeEventListener("dragenter", enter);
+      window.removeEventListener("dragleave", leave);
+      window.removeEventListener("dragover", over);
+      window.removeEventListener("drop", drop);
+    };
+  }, []);
+
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       if (!(event.ctrlKey || event.metaKey) || event.key.toLowerCase() !== "z") return;
@@ -286,6 +332,11 @@ function EditorView({ editor, services, locale, t, onClose }: EditorViewProps) {
 
   return (
     <div className="workspace">
+      {dragging && (
+        <div className="drop-zone" aria-hidden="true">
+          <p>{t("media.dropHint")}</p>
+        </div>
+      )}
       <div className="workspace-bar">
         <button
           type="button"

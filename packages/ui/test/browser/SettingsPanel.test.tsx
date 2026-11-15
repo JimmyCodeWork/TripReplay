@@ -93,6 +93,24 @@ describe("SettingsPanel", () => {
     expect(caution?.textContent).toBe("!");
   });
 
+  it("closes a note without closing the dialog around the panel", async () => {
+    let outerClosed = 0;
+    const view = await render(
+      <dialog open onClose={() => outerClosed++}>
+        {setup().ui}
+      </dialog>,
+    );
+    await act(async () => (view.querySelector('button[aria-label="關於「先讀取地圖」"]') as HTMLButtonElement).click());
+    const note = view.querySelector("dialog dialog") as HTMLDialogElement;
+    await act(async () => {
+      (note.querySelector("button") as HTMLButtonElement).click();
+      await new Promise((resolve) => setTimeout(resolve, 50));
+    });
+    expect(view.querySelector("dialog dialog")).toBeNull();
+    expect(outerClosed).toBe(0);
+    expect((view.querySelector("dialog") as HTMLDialogElement).open).toBe(true);
+  });
+
   it("leaves out what the device does not offer", async () => {
     let forgotten = 0;
     const view = await render(setup({ shrinkVideos: false, agentTools: false, mcp: false }, () => forgotten++).ui);

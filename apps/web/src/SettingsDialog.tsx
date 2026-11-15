@@ -38,7 +38,15 @@ export function SettingsDialog({ services, t }: SettingsDialogProps) {
         {t("header.settings")}
       </button>
       {open && (
-        <dialog ref={dialog} className="settings" aria-labelledby="settings-title" onClose={() => setOpen(false)}>
+        <dialog
+          ref={dialog}
+          className="settings"
+          aria-labelledby="settings-title"
+          onClose={(event) => {
+            // Only its own close: a dialog inside it, such as a setting's note, closes alone.
+            if (event.target === event.currentTarget) setOpen(false);
+          }}
+        >
           <div className="settings-header">
             <h2 id="settings-title">{t("settings.title")}</h2>
             <button type="button" className="header-button" onClick={() => dialog.current?.close()}>
