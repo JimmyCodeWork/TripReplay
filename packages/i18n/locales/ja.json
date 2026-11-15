@@ -1303,5 +1303,35 @@
   },
   "language.japanese": {
     "message": "日本語"
+  },
+  "settings.section.storage": {
+    "message": "ストレージ"
+  },
+  "storage.calculating": {
+    "message": "計算しています…"
+  },
+  "storage.used": {
+    "message": "使用中 {used}（このブラウザーで TripReplay が使える容量：{quota}）"
+  },
+  "storage.unavailable": {
+    "message": "このブラウザーは、使用中の容量と使える容量を知らせません。"
+  },
+  "storage.maps": {
+    "message": "地図：{size}"
+  },
+  "storage.media": {
+    "message": "旅行の写真・動画・音楽：{size}"
+  },
+  "storage.other": {
+    "message": "アプリとその他のデータ：{size}"
+  },
+  "storage.persisted": {
+    "message": "保護されています：削除するまで、ブラウザーはこのデータを保持します。"
+  },
+  "storage.notPersisted": {
+    "message": "保護されていません：デバイスの空き容量が少なくなると、ブラウザーがこのデータを消去することがあります。残したい旅行はバックアップしてください。"
+  },
+  "storage.hint": {
+    "message": "TripReplay 自体に容量の上限はありません。保存できる量はブラウザーが決め、通常はディスクの空き容量の大部分ですが、iPad など一部のデバイスでは 1 GB しかないことがあります。地図のダウンロードやメディアの読み込みの前には、空き容量を確認します。ブラウザーが大きさを丸めるため、表示される値は概算です。"
   }
 }

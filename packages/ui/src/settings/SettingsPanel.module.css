@@ -122,3 +122,24 @@
   text-decoration: underline;
   cursor: pointer;
 }
+
+/* The Storage section: the total, a meter, the parts and whether the browser may clear it. */
+.storage {
+  display: grid;
+  gap: 6px;
+}
+
+.storageText {
+  margin: 0;
+}
+
+.meter {
+  width: 100%;
+  height: 10px;
+}
+
+.storageList {
+  margin: 0;
+  padding-left: 20px;
+  color: var(--color-muted, #5b665f);
+}

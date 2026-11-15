@@ -10,6 +10,7 @@ TripReplay 的所有重要變更皆記錄於此。格式依循 [Keep a Changelog
 
 ### 新增
 
+- 「設定」新增「**儲存空間**」：顯示 TripReplay 已使用的空間與瀏覽器允許的上限、地圖與旅行的照片、影片和音樂各占多少，以及瀏覽器是否可能自行清除資料。
 - 日文：TripReplay 的畫面現在提供英文、繁體中文與日文。可在「**設定 → 語言**」中選擇，或與以往一樣依瀏覽器的語言；變更會立即生效。README 與 Windows 安裝檔也提供這三種語言。
 - MCP 設定改名為「**開啟 MCP Server**」，所屬分組改為「**代理工具**」，說明也以淺白文字交代代理工具能看到與能做的事：只有在您開啟並輸入配對碼後，才能看到開啟中旅行的文字，且所有變更都可以復原。
 - 每個版本附上 Windows 安裝檔 `tripreplay-windows-…-setup.exe`：以 Microsoft Edge WebView2 執行的 Windows 10 與 11 版 TripReplay，以目前使用者身分安裝、不需系統管理員權限，並有自己的旅行資料。安裝檔尚未簽章，因此執行前 SmartScreen 會發出警告（[ADR 0016](../adr/0016-windows-application.md)）。

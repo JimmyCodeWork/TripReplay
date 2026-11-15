@@ -63,6 +63,7 @@ Maps are downloaded once and then used on the device ([ADR 0006](adr/0006-local-
 | | **Make imported videos smaller (1080p, slower)**, where the browser can encode videos | Off | ! |
 | Agent tools | **Let the browser's built-in agent tool use the open trip**, where the browser offers WebMCP ([ADR 0010](adr/0010-agent-tools.md)) | Off | ! |
 | | **Turn on the MCP server**, in the Web application only ([ADR 0012](adr/0012-mcp-server.md)), with **Change pairing code** while a code is kept | Off | ! |
+| Storage | Not a setting: the space TripReplay uses against what the browser allows, with a meter; the maps, the trips' photos, videos and music (each file once) and the rest; and whether the browser may clear the data. Measured each time Settings opens | | ? |
 
 A small **?** beside a setting explains what it does; a small **!** marks a cost or a consequence to know first, such as slow encoding or text sent to an agent's service. Selecting either opens a small dialog with its text, titled with the setting's name, in the application's colors so that it reads in light and dark mode; it has an accessible name such as "About Load map first". A group whose settings the device does not offer is left out.
 

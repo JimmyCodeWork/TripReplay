@@ -1303,5 +1303,35 @@
   },
   "language.japanese": {
     "message": "日本語"
+  },
+  "settings.section.storage": {
+    "message": "儲存空間"
+  },
+  "storage.calculating": {
+    "message": "計算中…"
+  },
+  "storage.used": {
+    "message": "已使用 {used}；此瀏覽器允許 TripReplay 使用 {quota}"
+  },
+  "storage.unavailable": {
+    "message": "此瀏覽器不提供已使用與可用空間的資訊。"
+  },
+  "storage.maps": {
+    "message": "地圖：{size}"
+  },
+  "storage.media": {
+    "message": "旅行的照片、影片與音樂：{size}"
+  },
+  "storage.other": {
+    "message": "應用程式與其他資料：{size}"
+  },
+  "storage.persisted": {
+    "message": "已受保護：在您自行移除之前，瀏覽器會保留這些資料。"
+  },
+  "storage.notPersisted": {
+    "message": "未受保護：裝置空間不足時，瀏覽器可能會清除這些資料。請備份想保留的旅行。"
+  },
+  "storage.hint": {
+    "message": "TripReplay 本身沒有容量上限：可儲存多少由瀏覽器決定，通常是磁碟可用空間的一大部分，但在部分裝置（例如 iPad）上可能只有 1 GB。下載地圖或匯入媒體前都會先檢查可用空間。由於瀏覽器會將大小取概數，顯示的數值為近似值。"
   }
 }

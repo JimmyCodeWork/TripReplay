@@ -28,6 +28,8 @@ export interface SettingsPanelProps {
     readonly agentTools: boolean;
     readonly mcp: boolean;
   };
+  /** The Storage section's content, such as a `StorageSummary`; left out when undefined. */
+  readonly storage?: ReactNode;
   /** Forgets the MCP pairing code; shown while one is kept. */
   readonly onForgetMcpCode?: (() => void) | undefined;
   readonly t: Translate;
@@ -122,10 +124,18 @@ function Toggle({
 
 /**
  * The Settings dialog's content (docs/ui-design.md §2.2): the choices that apply to every trip,
- * grouped into language, playback and map, editing, import, and agent tools. Each setting with something to explain has a
+ * grouped into language, playback and map, editing, import, agent tools and storage. Each setting with something to explain has a
  * "?", and each with a cost or a consequence to know has a "!", which opens a small dialog with it.
  */
-export function SettingsPanel({ values, onChange, nearKmChoices, offers, onForgetMcpCode, t }: SettingsPanelProps) {
+export function SettingsPanel({
+  values,
+  onChange,
+  nearKmChoices,
+  offers,
+  storage,
+  onForgetMcpCode,
+  t,
+}: SettingsPanelProps) {
   const nearId = useId();
   const journalId = useId();
   const languageId = useId();
@@ -257,6 +267,18 @@ export function SettingsPanel({ values, onChange, nearKmChoices, offers, onForge
               </button>
             </div>
           )}
+        </fieldset>
+      )}
+
+      {storage !== undefined && (
+        <fieldset className={styles.section}>
+          <legend>
+            <span className={styles.row}>
+              {t("settings.section.storage")}
+              {note("help", "settings.section.storage", "storage.hint")}
+            </span>
+          </legend>
+          {storage}
         </fieldset>
       )}
     </div>
