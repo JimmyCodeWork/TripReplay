@@ -31,6 +31,11 @@ export interface CompileSettings {
   readonly aspectRatio?: AspectRatio;
   /** Replaces camera moves and push-ins with cross-fades. */
   readonly reducedMotion?: boolean;
+  /**
+   * Leaves out the photos and videos, those taken on the way included, to check the itinerary:
+   * only the moves, the stops' titles and journal, and the music remain.
+   */
+  readonly itineraryOnly?: boolean;
 }
 
 interface SegmentBase {
@@ -136,6 +141,8 @@ export interface Timeline {
   readonly title: string;
   readonly aspectRatio: AspectRatio;
   readonly reducedMotion: boolean;
+  /** Compiled without photos and videos (`CompileSettings.itineraryOnly`). */
+  readonly itineraryOnly: boolean;
   readonly theme: Theme;
   readonly durationUs: Microseconds;
   readonly stops: readonly TimelineStop[];

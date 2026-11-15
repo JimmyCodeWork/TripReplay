@@ -122,7 +122,7 @@ On every layout, what the user chooses stays under the finger: when a click or a
 
 ## 5. Full-Screen Player
 
-- Only the recap is shown, at the selected aspect ratio, letterboxed on black.
+- Only the recap is shown, at the selected aspect ratio, letterboxed on black. The timeline and its fields are left out, and the recap takes the height that the controls leave, so the controls stay on screen whatever their number of lines.
 - Controls (play or pause, progress, time, exit) fade out after 2.5 seconds without pointer movement and return on movement.
 - Escape exits. The map attribution remains visible throughout.
 
@@ -151,6 +151,8 @@ The export uses the recap as it was when the dialog opened; edits made meanwhile
 The opening, travel, stop title and closing lengths come from the theme unless the trip sets its own (§3.4).
 
 With "Reduce motion" enabled, camera moves and push-ins are replaced by cross-fades, and journal lines and notes fade in without rising. The **Reduce motion** button under the preview starts as the system setting and keeps the user's choice in the browser.
+
+The **Itinerary only** button under the preview compiles the recap without photos and videos, those on the way included: the opening, the moves, the stop titles with their journal, the closing and the music remain, to check the itinerary. It is not kept, so the full recap returns when the trip is opened again; an export made meanwhile is of what the preview shows.
 
 ## 7. Themes
 

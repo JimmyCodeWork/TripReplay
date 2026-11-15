@@ -32,6 +32,11 @@ export interface RecapPlayerProps {
    */
   readonly onReducedMotion?: (reducedMotion: boolean) => void;
   /**
+   * Turns "Itinerary only" on or off: the recap then plays without photos and videos, to check
+   * the stops and the moves between them. Without it the button is not shown.
+   */
+  readonly onItineraryOnly?: (itineraryOnly: boolean) => void;
+  /**
    * How "Full screen" works: with the browser's Fullscreen API, or by filling the page, for a
    * WebView that does not offer the API, such as the Android application's.
    */
@@ -64,6 +69,7 @@ export function RecapPlayer({
   onAspectRatio,
   onEdit,
   onReducedMotion,
+  onItineraryOnly,
   fullScreen: fullScreenMode = "browser",
   notice,
   onExport,
@@ -205,6 +211,17 @@ export function RecapPlayer({
             {t("player.reduceMotion")}
           </button>
         )}
+        {onItineraryOnly && (
+          <button
+            type="button"
+            className={styles.option}
+            aria-pressed={timeline.itineraryOnly}
+            title={t("player.itineraryOnlyHint")}
+            onClick={() => onItineraryOnly(!timeline.itineraryOnly)}
+          >
+            {t("player.itineraryOnly")}
+          </button>
+        )}
         <button
           type="button"
           className={styles.option}
@@ -219,13 +236,16 @@ export function RecapPlayer({
           </button>
         )}
       </div>
-      <TimelineStrips
-        timeline={timeline}
-        timeUs={state.timeUs}
-        onSeek={(us) => playback.seek(us)}
-        onEdit={onEdit}
-        t={t}
-      />
+      {/* Left out in full screen, which shows only the recap and its controls. */}
+      <div className={styles.timeline}>
+        <TimelineStrips
+          timeline={timeline}
+          timeUs={state.timeUs}
+          onSeek={(us) => playback.seek(us)}
+          onEdit={onEdit}
+          t={t}
+        />
+      </div>
     </div>
   );
 }

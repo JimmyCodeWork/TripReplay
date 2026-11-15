@@ -145,6 +145,26 @@ describe("RecapPlayer", () => {
   });
 });
 
+describe("RecapPlayer itinerary only", () => {
+  it("offers to play the itinerary without photos and videos", async () => {
+    const { playback, ui } = setup();
+    const choices: boolean[] = [];
+    const view = await render(
+      <RecapPlayer
+        timeline={compile(project, { itineraryOnly: true })}
+        playback={playback}
+        createSurface={ui.props.createSurface}
+        onAspectRatio={() => {}}
+        onItineraryOnly={(on) => void choices.push(on)}
+        t={createTranslator("zh-TW")}
+      />,
+    );
+    expect(button(view, "只看行程").getAttribute("aria-pressed")).toBe("true");
+    await click(view, "只看行程");
+    expect(choices).toEqual([false]);
+  });
+});
+
 describe("RecapPlayer full screen in a WebView", () => {
   it("fills the page instead, until the button or Escape ends it", async () => {
     const { playback, timeline } = setup();

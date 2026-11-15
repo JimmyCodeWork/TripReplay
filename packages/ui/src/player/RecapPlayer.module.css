@@ -399,16 +399,31 @@
  */
 .player:fullscreen,
 .player.filling {
-  grid-template-rows: minmax(0, 1fr) auto auto;
+  box-sizing: border-box;
+  height: 100vh;
+  grid-template-rows: minmax(0, 1fr);
+  grid-auto-rows: auto;
   padding: 16px;
   background: #000;
   color: #fff;
 }
 
+/* The recap takes the height the controls leave, whatever their number of lines. */
+.player:fullscreen .frame,
+.player.filling .frame {
+  container-type: size;
+  height: 100%;
+}
+
 .player:fullscreen .stage,
 .player.filling .stage {
-  --height: calc(100vh - 140px);
+  width: min(100cqw, calc(100cqh * var(--ratio)));
   border-radius: 0;
+}
+
+.player:fullscreen .timeline,
+.player.filling .timeline {
+  display: none;
 }
 
 .player:fullscreen .notice,
