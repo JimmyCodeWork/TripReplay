@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { baseMapStyle } from "../src/style.ts";
+import { baseMapStyle, OVERVIEW_LAYERS } from "../src/style.ts";
 
 const colors = {
   background: "#000000",
@@ -28,5 +28,44 @@ describe("baseMapStyle", () => {
     const style = baseMapStyle({ sources, colors, glyphs: "fonts/{fontstack}/{range}.pbf" });
     expect(style.glyphs).toBe("fonts/{fontstack}/{range}.pbf");
     expect(style.layers.at(-1)?.id).toBe("place");
+  });
+
+  it("draws the world overview under the regions, covered inside their bounds", () => {
+    const style = baseMapStyle({
+      sources,
+      colors,
+      overview: {
+        sources: { ...sources, base: "pmtiles://ob", divisions: "pmtiles://od" },
+        regions: [[119, 21, 123, 26]],
+      },
+    });
+    expect(style.sources["overview-base"]).toEqual({ type: "vector", url: "pmtiles://ob" });
+    expect(style.sources["overview-divisions"]).toEqual({ type: "vector", url: "pmtiles://od" });
+    const ids = style.layers.map((layer) => layer.id);
+    expect(ids.slice(0, 4)).toEqual(["land", OVERVIEW_LAYERS.water, OVERVIEW_LAYERS.boundary, OVERVIEW_LAYERS.cover]);
+    const regions = style.sources.regions;
+    expect(regions?.type === "geojson" && regions.data).toMatchObject({
+      features: [
+        {
+          geometry: {
+            coordinates: [
+              [
+                [119, 21],
+                [123, 21],
+                [123, 26],
+                [119, 26],
+                [119, 21],
+              ],
+            ],
+          },
+        },
+      ],
+    });
+  });
+
+  it("leaves the overview out without its files", () => {
+    const style = baseMapStyle({ sources, colors });
+    expect(Object.keys(style.sources)).toEqual(["base", "transportation", "divisions"]);
+    expect(style.layers.some((layer) => layer.id === OVERVIEW_LAYERS.cover)).toBe(false);
   });
 });

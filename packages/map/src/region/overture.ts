@@ -41,10 +41,17 @@ export async function listOvertureReleases(fetchFn: typeof fetch = fetch): Promi
 export async function overtureRegionRequest(
   release: string,
   bounds: Bounds,
-  options: { readonly fetch?: typeof fetch; readonly signal?: AbortSignal } = {},
+  options: {
+    readonly fetch?: typeof fetch;
+    readonly signal?: AbortSignal;
+    /** Leaves out the zoom levels above it, as for the world overview. */
+    readonly maxZoom?: number;
+  } = {},
 ): Promise<RegionRequest> {
   const themes: ThemeRequest[] = [];
-  for (const theme of REGION_THEMES) {
+  for (const each of REGION_THEMES) {
+    const theme = { ...each, maxZoom: Math.min(each.maxZoom, options.maxZoom ?? each.maxZoom) };
+    // A theme with no zoom level left, such as places for the overview, is still stored, empty.
     const archive = await openRemoteArchive(
       httpRangeSource(overtureUrl(release, theme.theme), options.fetch),
       options.signal,

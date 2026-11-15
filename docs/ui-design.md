@@ -44,6 +44,7 @@ Maps are downloaded once and then used on the device ([ADR 0006](adr/0006-local-
 - "Use current location" reads the device's position once, coarsely, and lists the regions that contain it; the position is used only on the device. It is offered where the browser has geolocation. When permission is refused or the position cannot be found, the list says so.
 - One button per region: "Download", "Pause" or "Resume", "Update", "Delete". The size and the free space are shown before a download starts.
 - "Open map files" adds a map already on the device: the PMTiles files of the Overture Maps themes base, transportation and divisions, opened together, and places for points of interest. The files are copied into storage; the region is listed by the name of its base file and can only be deleted, not updated.
+- Above the regions, a **World overview** row ([ADR 0013](adr/0013-world-overview.md)): zoom levels 0 to 3 of the whole world, about 60 MB, with the same buttons as a region but no star, and a note that it is drawn under the regions. It does not count as covering stops.
 - On first use, and whenever a stop lies outside the downloaded regions, the application opens this dialog with the matching region preselected.
 - A note states that the download source can see which regions are downloaded, and nothing else.
 

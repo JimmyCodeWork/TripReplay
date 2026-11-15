@@ -11,6 +11,7 @@ import {
   type SaveStatus,
   type Scheduler,
   type Timeline,
+  WORLD_REGION,
 } from "@tripreplay/app";
 import { createAudioMixer } from "@tripreplay/audio";
 import type { Locale, Translate } from "@tripreplay/i18n";
@@ -74,14 +75,16 @@ function contains({ bounds: [west, south, east, north] }: RegionEntry, { lon, la
  * them contains.
  */
 function regionsFor(regions: readonly RegionEntry[], stops: readonly { location: { lon: number; lat: number } }[]) {
-  const ready = regions.filter((region) => region.status.kind === "ready");
+  // The world overview contains every stop but only at a few zoom levels; it is drawn under the regions.
+  const ready = regions.filter((region) => region.status.kind === "ready" && region.id !== WORLD_REGION.id);
   const used = ready
     .map((region) => ({ region, count: stops.filter((stop) => contains(region, stop.location)).length }))
     .filter(({ count }) => count > 0)
     .sort((a, b) => b.count - a.count)
     .map(({ region }) => region);
   const uncovered = stops.filter((stop) => !used.some((region) => contains(region, stop.location))).length;
-  return { ids: used.map((region) => region.id), uncovered };
+  const overview = regions.some((region) => region.id === WORLD_REGION.id && region.status.kind === "ready");
+  return { ids: [...used.map((region) => region.id), ...(overview ? [WORLD_REGION.id] : [])], uncovered };
 }
 
 const TABS = ["itinerary", "media", "journal", "music", "themes"] as const;

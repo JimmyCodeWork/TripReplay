@@ -55,6 +55,14 @@
     "message": "Large title at the top and media below; for 9:16",
     "description": "Description of the portrait theme."
   },
+  "region.world": {
+    "message": "World overview",
+    "description": "Name of the world overview map in the maps dialog: the whole world at a few zoom levels, drawn under the downloaded regions."
+  },
+  "maps.overviewNote": {
+    "message": "The whole world at a few zoom levels, about 60 MB: drawn under your regions, so that the recap shows land, sea and borders wherever the camera goes between or around them, instead of empty areas.",
+    "description": "Explains the world overview, under its row in the maps dialog."
+  },
   "maps.title": {
     "message": "Maps",
     "description": "Heading of the maps dialog, where map regions are downloaded."

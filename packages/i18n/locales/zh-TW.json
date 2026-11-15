@@ -41,6 +41,12 @@
   "theme.portrait.description": {
     "message": "大標題置頂、媒體在下；適合 9:16"
   },
+  "region.world": {
+    "message": "全球概覽"
+  },
+  "maps.overviewNote": {
+    "message": "全世界的少數幾個縮放層級，約 60 MB：會畫在您下載的區域下方，讓鏡頭經過區域之間或周圍時，回顧畫面仍有陸地、海洋與國界，而不是空白。"
+  },
   "maps.title": {
     "message": "地圖"
   },

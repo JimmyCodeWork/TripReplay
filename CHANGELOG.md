@@ -8,6 +8,7 @@ All notable changes to TripReplay are recorded here. The format follows [Keep a 
 
 ### Added
 
+- **World overview** in Maps: a map of the whole world at a few zoom levels, about 60 MB, drawn under the downloaded regions so that flights between them no longer show a blank background ([ADR 0013](docs/adr/0013-world-overview.md)); loaded map tiles stay in memory at every zoom level.
 - Maps downloaded by region from Overture Maps, with size shown in advance, pause, resume, verification, updates and deletion; map files already on the device can be opened.
 - Place search on the downloaded maps, entirely on the device, and pasted coordinates or map links.
 - Trips: create, rename, duplicate, delete, back up and restore as a project package.

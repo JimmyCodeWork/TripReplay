@@ -23,6 +23,8 @@ export interface MapsDialogProps {
   readonly onToggleFavorite: (regionId: string) => void;
   /** The device's position, on the device only; without it, "Use current location" is not offered. */
   readonly locate?: (() => Promise<{ readonly lon: number; readonly lat: number }>) | undefined;
+  /** The world overview, offered above the regions (docs/adr/0013-world-overview.md). */
+  readonly overview?: CatalogRegion | undefined;
   readonly locale: Locale;
   readonly t: Translate;
 }
@@ -49,8 +51,9 @@ type Step =
 interface RowProps {
   readonly region: CatalogRegion;
   readonly entry: RegionEntry | undefined;
-  readonly favorite: boolean;
-  readonly onToggleFavorite: () => void;
+  /** Whether the region is a favorite, and how to change it; without them no star is shown. */
+  readonly favorite?: boolean;
+  readonly onToggleFavorite?: () => void;
   readonly manager: RegionManager<File>;
   readonly locale: Locale;
   readonly t: Translate;
@@ -181,16 +184,18 @@ function RegionRow({ region, entry, favorite, onToggleFavorite, manager, locale,
 
   return (
     <li className={styles.region} aria-labelledby={headingId}>
-      <button
-        type="button"
-        className={styles.star}
-        aria-pressed={favorite}
-        aria-label={t("maps.favorite", { name })}
-        title={t("maps.favorite", { name })}
-        onClick={onToggleFavorite}
-      >
-        {favorite ? "★" : "☆"}
-      </button>
+      {onToggleFavorite && (
+        <button
+          type="button"
+          className={styles.star}
+          aria-pressed={favorite}
+          aria-label={t("maps.favorite", { name })}
+          title={t("maps.favorite", { name })}
+          onClick={onToggleFavorite}
+        >
+          {favorite ? "★" : "☆"}
+        </button>
+      )}
       <div className={styles.text}>
         <h3 id={headingId} className={styles.name}>
           {name}
@@ -335,6 +340,7 @@ export function MapsDialog({
   favorites,
   onToggleFavorite,
   locate,
+  overview,
   locale,
   t,
 }: MapsDialogProps) {
@@ -387,6 +393,18 @@ export function MapsDialog({
         </h2>
         <p className={styles.intro}>{t("maps.intro")}</p>
       </header>
+      {overview && (
+        <ul className={styles.list} aria-label={t("region.world")}>
+          <RegionRow
+            region={overview}
+            entry={entries.find((entry) => entry.id === overview.id)}
+            manager={manager}
+            locale={locale}
+            t={t}
+          />
+          <li className={styles.overviewNote}>{t("maps.overviewNote")}</li>
+        </ul>
+      )}
       <div className={styles.toolbar}>
         <label className={styles.filter} htmlFor={filterId}>
           <span>{t("maps.filter.label")}</span>

@@ -1,4 +1,4 @@
-import type { RegionEntry } from "@tripreplay/app";
+import { type RegionEntry, WORLD_REGION } from "@tripreplay/app";
 import type { Translate } from "@tripreplay/i18n";
 import { createMapLibreLayer, type MapLibreLayer, type OvertureMapRegions } from "@tripreplay/map";
 import { resolveTheme } from "@tripreplay/themes";
@@ -16,6 +16,8 @@ export interface MapPreviewProps {
 const THEME = resolveTheme("classic");
 const REGION_ZOOM = 7;
 const PLACE_ZOOM = 14;
+/** The world overview is shown whole (docs/adr/0013-world-overview.md). */
+const WORLD_ZOOM = 1;
 
 /** The downloaded base map of one region, centered on the chosen place. */
 export function MapPreview({ maps, region, focus, t }: MapPreviewProps) {
@@ -50,7 +52,11 @@ export function MapPreview({ maps, region, focus, t }: MapPreviewProps) {
     layer.setView(
       focus
         ? { center: focus, zoom: PLACE_ZOOM, bearing: 0 }
-        : { center: { lon: (west + east) / 2, lat: (south + north) / 2 }, zoom: REGION_ZOOM, bearing: 0 },
+        : {
+            center: { lon: (west + east) / 2, lat: (south + north) / 2 },
+            zoom: region.id === WORLD_REGION.id ? WORLD_ZOOM : REGION_ZOOM,
+            bearing: 0,
+          },
     );
   }, [layer, region, focus]);
 

@@ -22,6 +22,7 @@ const CATALOG = [
   { id: "japanKanto", country: "japan", bounds: [138.4, 34.8, 140.9, 37.2] as const },
   { id: "japanKansai", country: "japan", bounds: [134.2, 33.4, 136.9, 35.8] as const },
 ];
+const WORLD = { id: "world", country: "world", bounds: [-180, -85, 180, 85] as const };
 const COUNTRIES = [
   { id: "taiwan", popular: true },
   { id: "singapore", popular: true },
@@ -80,6 +81,7 @@ afterEach(() => {
 interface Options {
   readonly favorites?: readonly string[];
   readonly locate?: () => Promise<{ lon: number; lat: number }>;
+  readonly overview?: boolean;
 }
 
 async function render(manager: FakeManager, locale: Locale = "en", options: Options = {}) {
@@ -99,6 +101,7 @@ async function render(manager: FakeManager, locale: Locale = "en", options: Opti
           draw();
         }}
         locate={options.locate}
+        {...(options.overview ? { overview: WORLD } : {})}
         locale={locale}
         t={createTranslator(locale)}
       />,
@@ -141,6 +144,17 @@ describe("MapsDialog", () => {
     expect(status(row(view, "臺灣"))).toBe("尚未下載");
     expect(buttons(row(view, "新加坡"))).toEqual(["下載"]);
     expect(view.textContent).toContain("下載來源只能得知您下載了哪些區域");
+  });
+
+  it("offers the world overview above the regions, without a star", async () => {
+    const manager = new FakeManager();
+    const view = await render(manager, "zh-TW", { overview: true });
+    const world = row(view, "全球概覽");
+    expect(world.querySelector("[aria-pressed]")).toBeNull();
+    expect(view.textContent).toContain("約 60 MB");
+    await click(world, "下載");
+    expect(manager.calls).toEqual(["estimate world"]);
+    expect(names(view).slice(1)).toEqual(["臺灣", "新加坡"]);
   });
 
   it("lists the popular countries first and filters by country", async () => {

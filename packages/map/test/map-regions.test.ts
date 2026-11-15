@@ -5,6 +5,7 @@ import {
   type RegionBounds,
   type RegionRepository,
   type StoredRegion,
+  WORLD_REGION,
 } from "@tripreplay/app";
 import { describe, expect, it } from "vitest";
 import { Compression, TileType } from "../src/pmtiles/archive.ts";
@@ -129,6 +130,16 @@ describe("map regions", () => {
     const [match] = await maps.placeSearch.search("下京");
     expect(match).toMatchObject({ label: "下京区", kind: "borough" });
     expect((await maps.placeSearch.search("鴨川"))[0]?.kind).toBe("river/river");
+  });
+
+  it("downloads the world overview marked as the overview, without place names", async () => {
+    const { open, repository } = setup();
+    const { maps, manager } = open();
+    await manager.download({ id: WORLD_REGION.id, name: "World", bounds: WORLD_REGION.bounds });
+    expect(manager.getState()[0]).toMatchObject({ id: "world", status: { kind: "ready" } });
+    const files = await maps.files((repository.regions.get("world") as StoredRegion<MapRegionData>).data);
+    expect(files.overview).toBe(true);
+    expect(await maps.placeSearch.search("下京")).toEqual([]);
   });
 
   it("opens stored regions after a restart, with their place index", async () => {

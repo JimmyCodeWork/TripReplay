@@ -66,6 +66,8 @@ export {
   type CatalogRegion,
   REGION_CATALOG,
   regionsAt,
+  WORLD_MAX_ZOOM,
+  WORLD_REGION,
 } from "./region-catalog.ts";
 export {
   createRegionManager,
