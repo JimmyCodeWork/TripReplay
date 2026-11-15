@@ -8,6 +8,7 @@ All notable changes to TripReplay are recorded here. The format follows [Keep a 
 
 ### Added
 
+- A stop's marker appears only once the camera arrives there, not from the opening. The **?** and **!** of Settings open a small dialog in the application's colors, which also reads in dark mode. Entering full screen while playing loads the map for the larger picture before going on.
 - **Download** beside **Save video** in the export dialog of a browser. Saving an exported video or a backup no longer does nothing when the browser closes its save dialog at once without showing it: the file is downloaded instead.
 - A new day is a part of the recap of its own, before the move to its first stop: its day, date and line are shown while the camera and the line wait, and the move follows. The day and its line no longer lengthen the travel.
 - The recap waits until a new day's text is shown in full before the camera and the line move; the leg being drawn and its stops are drawn above the earlier line and markers, with an arrow at the line's head. Every title, the trip's, a stop's with or without a journal entry, a new day's and the summary, lies on the same soft dark glow.

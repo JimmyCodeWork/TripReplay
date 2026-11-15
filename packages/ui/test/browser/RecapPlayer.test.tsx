@@ -196,6 +196,24 @@ describe("RecapPlayer loading the map first", () => {
     expect(playback.getState().playing).toBe(true);
   });
 
+  it("loads the map again when the stage changes size while playing, as in full screen", async () => {
+    const { playback, calls, ui } = prepared();
+    const view = await render(<div style={{ width: "640px" }}>{ui(true)}</div>);
+    await act(async () => new Promise((resolve) => setTimeout(resolve, 50)));
+    await click(view, "播放");
+    await act(async () => calls[0]?.resolve());
+    expect(playback.getState().playing).toBe(true);
+    await act(async () => {
+      (view.firstElementChild as HTMLElement).style.width = "1200px";
+      await new Promise((resolve) => setTimeout(resolve, 600));
+    });
+    expect(calls).toHaveLength(2);
+    expect(playback.getState().playing).toBe(false);
+    expect(view.querySelector('[role="status"]')?.textContent).toContain("正在讀取地圖");
+    await act(async () => calls[1]?.resolve());
+    expect(playback.getState().playing).toBe(true);
+  });
+
   it("cancels loading, and plays at once with the option off", async () => {
     const { playback, calls, ui } = prepared();
     const view = await render(ui(true));

@@ -61,24 +61,57 @@
 }
 
 .caution {
-  color: #a35a00;
+  color: #b26200;
 }
 
-.helpText,
-.cautionText {
-  flex-basis: 100%;
-  margin: 0;
-  padding: 6px 10px;
+@media (prefers-color-scheme: dark) {
+  .caution {
+    color: #f0a54a;
+  }
+}
+
+/* The marks inside a note's title are not buttons. */
+.noteTitle .help,
+.noteTitle .caution {
+  cursor: default;
+}
+
+/* The dialog of a "?" or "!", in the shell's colors so that it reads in light and dark. */
+.note {
+  max-width: min(100% - 32px, 420px);
+  padding: 16px 20px;
+  border: 1px solid var(--color-line, #d6ddd6);
+  border-radius: 8px;
+  background: var(--color-surface, #fff);
+  color: var(--color-text, #1d2420);
+  font: 15px / 1.6 var(--font-body, system-ui, sans-serif);
+}
+
+.note::backdrop {
+  background: rgb(0 0 0 / 35%);
+}
+
+.noteTitle {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin: 0 0 8px;
+  font-size: 1rem;
+}
+
+.noteText {
+  margin: 0 0 16px;
+}
+
+.close {
+  float: right;
+  padding: 6px 14px;
+  border: 1px solid var(--color-line, #d6ddd6);
   border-radius: 6px;
-  font-size: 0.9rem;
-}
-
-.helpText {
-  background: var(--color-surface-muted, #eef2ef);
-}
-
-.cautionText {
-  background: #fdf1e1;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
 }
 
 .link {
