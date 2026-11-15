@@ -64,7 +64,19 @@ export interface PreviewSurface {
   /** Size of the drawing area in CSS pixels. */
   resize(width: number, height: number): void;
   draw(timeline: Timeline, frame: FrameDescription): void;
+  /**
+   * Loads what the frames from `fromUs` to the end of `timeline` need, such as map tiles, so that
+   * they play without waiting for them, reporting progress from 0 to 1. Without it nothing is loaded
+   * in advance.
+   */
+  prepare?(timeline: Timeline, fromUs: number, options?: PrepareOptions): Promise<void>;
   destroy(): void;
+}
+
+export interface PrepareOptions {
+  readonly onProgress?: (fraction: number) => void;
+  /** Stops loading; the promise then rejects with the signal's reason. */
+  readonly signal?: AbortSignal;
 }
 
 /**

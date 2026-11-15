@@ -839,6 +839,15 @@
   "player.nextDay": {
     "message": "下一天"
   },
+  "player.preload": {
+    "message": "先讀取地圖"
+  },
+  "player.preloadHint": {
+    "message": "播放前先讀取整段鏡頭路徑上的地圖，播放時就不會出現空白或未畫完的區域。需要幾秒鐘，行程越長越久。"
+  },
+  "player.preparing": {
+    "message": "正在讀取地圖…{percent}%"
+  },
   "player.itineraryOnly": {
     "message": "只看行程"
   },

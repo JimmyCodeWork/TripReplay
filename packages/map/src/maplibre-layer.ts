@@ -96,30 +96,22 @@ export async function createMapLibreLayer(options: MapLibreLayerOptions): Promis
     ) as Record<MapTheme, string>;
   const styleSources = register("regions", regions);
   const overviewSources = overview ? register("overview", [overview]) : undefined;
-  // Inside the regions' bounds their own map covers the overview's coarser one.
-  const bounds = overviewSources
-    ? await Promise.all(
-        (sources.get(`layer${layer}-regions-base`) ?? []).map(async (archive) => {
-          const h = await archive.getHeader();
-          return [h.minLon, h.minLat, h.maxLon, h.maxLat] as const;
-        }),
-      )
-    : [];
   const map = new maplibregl.Map({
     container: options.container,
     style: baseMapStyle({
       sources: styleSources,
       colors: options.colors,
       ...(options.glyphs ? { glyphs: options.glyphs } : {}),
-      ...(overviewSources ? { overview: { sources: overviewSources, regions: bounds } } : {}),
+      ...(overviewSources ? { overview: overviewSources } : {}),
     }),
     interactive: false,
     attributionControl: false,
     fadeDuration: 0,
-    // Tiles stay in memory at every zoom level once loaded, so that a recap prepared or played once
-    // plays without waiting for them again (MapLibre keeps five levels by default).
-    maxTileCacheZoomLevels: 16,
-    maxTileCacheSize: 1024,
+    // Loaded tiles stay in memory at every zoom level, up to a number per source, so that a recap
+    // loaded before playing (docs/adr/0014-load-map-before-playing.md) plays without waiting for them.
+    // MapLibre otherwise keeps about five screens' worth of each of five zoom levels.
+    maxTileCacheZoomLevels: 1000,
+    maxTileCacheSize: 1000,
     localIdeographFontFamily: LOCAL_FONTS,
     canvasContextAttributes: { preserveDrawingBuffer: options.readable ?? false },
     ...(options.pixelRatio ? { pixelRatio: options.pixelRatio } : {}),

@@ -8,6 +8,7 @@ All notable changes to TripReplay are recorded here. The format follows [Keep a 
 
 ### Added
 
+- **Load map first** under the preview, on until turned off: **Play** first loads the map along the camera's path, with its progress, so that long camera moves play without blank or half-drawn areas ([ADR 0014](docs/adr/0014-load-map-before-playing.md)). The world overview is now covered by the regions' land instead of their bounds, so that it shows wherever a region's tiles are not drawn yet.
 - **World overview** in Maps: a map of the whole world at a few zoom levels, about 60 MB, drawn under the downloaded regions so that flights between them no longer show a blank background ([ADR 0013](docs/adr/0013-world-overview.md)); loaded map tiles stay in memory at every zoom level.
 - Maps downloaded by region from Overture Maps, with size shown in advance, pause, resume, verification, updates and deletion; map files already on the device can be opened.
 - Place search on the downloaded maps, entirely on the device, and pasted coordinates or map links.

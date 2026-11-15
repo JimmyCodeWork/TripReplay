@@ -156,6 +156,8 @@ With "Reduce motion" enabled, camera moves and push-ins are replaced by cross-fa
 
 The **Itinerary only** button under the preview compiles the recap without photos and videos, those on the way included: the opening, the moves, the stop titles with their journal, the closing and the music remain, to check the itinerary. It is not kept, so the full recap returns when the trip is opened again; an export made meanwhile is of what the preview shows.
 
+The **Load map first** button under the preview, on by default and kept in the browser, makes **Play** first move the map through the camera's path from the current position, waiting at each view until its tiles are drawn ([ADR 0014](adr/0014-load-map-before-playing.md)). Meanwhile a note over the preview shows the progress in percent and **Play** reads **Cancel**. A recap is loaded once; it is loaded again only after it changes.
+
 ## 7. Themes
 
 | Theme | Look | Intended use |

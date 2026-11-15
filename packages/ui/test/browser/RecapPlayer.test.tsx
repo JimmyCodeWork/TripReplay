@@ -165,6 +165,76 @@ describe("RecapPlayer itinerary only", () => {
   });
 });
 
+describe("RecapPlayer loading the map first", () => {
+  function prepared() {
+    const { playback, timeline } = setup();
+    const calls: { fromUs: number; resolve: () => void; signal: AbortSignal | undefined }[] = [];
+    let progress: ((fraction: number) => void) | undefined;
+    const surface: PreviewSurface = {
+      resize: () => {},
+      draw: () => {},
+      destroy: () => {},
+      prepare: (_timeline, fromUs, options) =>
+        new Promise<void>((resolve, reject) => {
+          progress = options?.onProgress;
+          calls.push({ fromUs, resolve, signal: options?.signal });
+          options?.signal?.addEventListener("abort", () => reject(options.signal?.reason));
+        }),
+    };
+    const choices: boolean[] = [];
+    const ui = (preload: boolean) => (
+      <RecapPlayer
+        timeline={timeline}
+        playback={playback}
+        createSurface={async () => surface}
+        onAspectRatio={() => {}}
+        preload={preload}
+        onPreload={(on) => void choices.push(on)}
+        t={createTranslator("zh-TW")}
+      />
+    );
+    return { playback, calls, choices, ui, progress: (fraction: number) => progress?.(fraction) };
+  }
+
+  it("loads the map with its progress before playing, and only once", async () => {
+    const { playback, calls, ui, progress } = prepared();
+    const view = await render(ui(true));
+    await act(async () => {});
+    expect(button(view, "先讀取地圖").getAttribute("aria-pressed")).toBe("true");
+    await click(view, "播放");
+    expect(playback.getState().playing).toBe(false);
+    expect(calls.map((call) => call.fromUs)).toEqual([0]);
+    await act(async () => progress(0.4));
+    expect(view.querySelector('[role="status"]')?.textContent).toBe("正在讀取地圖…40%");
+    await act(async () => calls[0]?.resolve());
+    expect(playback.getState().playing).toBe(true);
+    expect(view.querySelector('[role="status"]')).toBeNull();
+    await click(view, "暫停");
+    await click(view, "播放");
+    expect(calls).toHaveLength(1);
+    expect(playback.getState().playing).toBe(true);
+  });
+
+  it("cancels loading, and plays at once with the option off", async () => {
+    const { playback, calls, choices, ui } = prepared();
+    const view = await render(ui(true));
+    await act(async () => {});
+    await click(view, "播放");
+    await click(view, "取消");
+    expect(calls[0]?.signal?.aborted).toBe(true);
+    expect(playback.getState().playing).toBe(false);
+    expect(view.querySelector('[role="status"]')).toBeNull();
+    await click(view, "先讀取地圖");
+    expect(choices).toEqual([false]);
+    cleanup();
+    const off = await render(ui(false));
+    await act(async () => {});
+    await click(off, "播放");
+    expect(playback.getState().playing).toBe(true);
+    expect(calls).toHaveLength(1);
+  });
+});
+
 describe("RecapPlayer full screen in a WebView", () => {
   it("fills the page instead, until the button or Escape ends it", async () => {
     const { playback, timeline } = setup();

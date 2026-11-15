@@ -11,6 +11,8 @@ export type {
   Segment,
   Timeline,
 } from "@tripreplay/timeline";
+/** The frame of a timeline at a time, for loading what playback will need ahead of it. */
+export { renderAt } from "@tripreplay/timeline";
 export { type AgentTool, type AgentToolContext, agentTools, describeTrip, type InputSchema } from "./agent-tools.ts";
 export { AUTOSAVE_DELAY_MS, type SaveStatus } from "./autosave.ts";
 export { applyCommand, type Command } from "./commands.ts";
@@ -50,6 +52,7 @@ export type {
   PlaceSearch,
   PlannedFiles,
   PlannedRegion,
+  PrepareOptions,
   PreviewSurface,
   ProjectRepository,
   RegionBounds,

@@ -92,6 +92,9 @@ type Tab = (typeof TABS)[number];
 
 const REDUCED_MOTION_KEY = "tripreplay.reducedMotion";
 
+/** Whether playing first loads the map along the recap; on unless the user turned it off (docs/adr/0014-load-map-before-playing.md). */
+const PRELOAD_MAP_KEY = "tripreplay.preloadMap";
+
 /** Whether imports make photos smaller; on unless the user turned it off (docs/adr/0011-smaller-media.md). */
 const SHRINK_PHOTOS_KEY = "tripreplay.shrinkPhotos";
 /** Whether imports make videos smaller; off unless the user turned it on, as it is slow. */
@@ -229,6 +232,7 @@ function EditorView({ editor, services, locale, t, onClose }: EditorViewProps) {
   const [reducedMotion, setReducedMotion] = useReducedMotion();
   // Only for checking the itinerary in the preview; it is not kept, so that the full recap returns.
   const [itineraryOnly, setItineraryOnly] = useState(false);
+  const [preloadMap, setPreloadMap] = useStoredFlag(PRELOAD_MAP_KEY, true);
   const timeline = compileTimeline(project, { reducedMotion, itineraryOnly });
   const labels = useMemo(() => recapTexts(locale, t), [locale, t]);
   const media = useMemo(
@@ -512,6 +516,8 @@ function EditorView({ editor, services, locale, t, onClose }: EditorViewProps) {
             onEdit={(command) => editor.dispatch(command)}
             onReducedMotion={setReducedMotion}
             onItineraryOnly={setItineraryOnly}
+            preload={preloadMap}
+            onPreload={setPreloadMap}
             locale={locale}
             fullScreen={NATIVE ? "page" : "browser"}
             onExport={() => {

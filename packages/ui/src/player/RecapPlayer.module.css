@@ -12,6 +12,21 @@
   min-height: 0;
 }
 
+/* The note on loading lies over the stage. */
+.frame > * {
+  grid-area: 1 / 1;
+}
+
+.preparing {
+  z-index: 1;
+  margin: 0;
+  padding: 8px 16px;
+  border-radius: 8px;
+  background: rgb(0 0 0 / 70%);
+  color: #fff;
+  pointer-events: none;
+}
+
 /* The stage keeps the aspect ratio of the recap (`--ratio`) and fits into the available height. */
 .stage {
   --height: 70vh;

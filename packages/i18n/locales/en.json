@@ -1119,6 +1119,18 @@
     "message": "Next day",
     "description": "Button that moves to the start of the next day of the recap."
   },
+  "player.preload": {
+    "message": "Load map first",
+    "description": "Toggle button under the preview: playing first loads the map along the recap, so that it plays without blank areas."
+  },
+  "player.preloadHint": {
+    "message": "Before playing, load the map along the whole camera path, so that the recap plays without blank or unfinished areas. Takes a few seconds, longer for long trips.",
+    "description": "Tooltip of the Load map first button."
+  },
+  "player.preparing": {
+    "message": "Loading the map… {percent}%",
+    "description": "Shown over the preview while the map is loaded before playing; percent is from 0 to 100."
+  },
   "player.itineraryOnly": {
     "message": "Itinerary only",
     "description": "Toggle button under the preview: plays the recap without photos and videos, to check the stops and the moves between them."
