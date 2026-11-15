@@ -21,5 +21,6 @@ export { RecapPlayer, type RecapPlayerProps } from "./player/RecapPlayer.tsx";
 export { type RecapTexts, recapTexts } from "./player/recap-labels.ts";
 export { maxZoom, TimelineStrips, type TimelineStripsProps, tickStep } from "./player/TimelineStrips.tsx";
 export { type DragTarget, dragCommand, dragPreview, snapPhotoDuration } from "./player/timeline-drag.ts";
+export { SettingsPanel, type SettingsPanelProps, type SettingsValues } from "./settings/SettingsPanel.tsx";
 export { ThemePanel, type ThemePanelProps } from "./themes/ThemePanel.tsx";
 export { TripList, type TripListProps } from "./trips/TripList.tsx";

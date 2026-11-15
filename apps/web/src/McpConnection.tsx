@@ -2,28 +2,7 @@ import { agentTools, type Editor } from "@tripreplay/app";
 import type { Translate } from "@tripreplay/i18n";
 import { type FormEvent, useEffect, useId, useMemo, useState } from "react";
 import { connectMcp, type McpStatus } from "./mcp-client.ts";
-
-/** Whether TripReplay connects to the MCP server; off unless the user turned it on (ADR 0012). */
-const MCP_KEY = "tripreplay.mcp";
-/** The pairing code the user entered, so that it is asked only once in this browser. */
-const MCP_CODE_KEY = "tripreplay.mcpCode";
-
-function stored(key: string): string | null {
-  try {
-    return localStorage.getItem(key);
-  } catch {
-    return null;
-  }
-}
-
-function store(key: string, value: string | null): void {
-  try {
-    if (value === null) localStorage.removeItem(key);
-    else localStorage.setItem(key, value);
-  } catch {
-    // Storage can be unavailable, for example in a private window; the choice then lasts for this visit.
-  }
-}
+import { updateSettings, useSettings } from "./settings.ts";
 
 const STATUS_TEXT = {
   waiting: "mcp.waiting",
@@ -39,13 +18,12 @@ export interface McpConnectionProps {
 }
 
 /**
- * The **MCP** button of the workspace bar and what it opens: it connects the open trip to the
- * TripReplay MCP server on this computer (docs/adr/0012-mcp-server.md), asking first for the
- * pairing code that the agent tells the user. Off until the user turns it on.
+ * The MCP note of the workspace bar: while MCP is on in Settings, it connects the open trip to the
+ * TripReplay MCP server on this computer (docs/adr/0012-mcp-server.md) and shows how the connection
+ * stands, asking first for the pairing code that the agent tells the user.
  */
 export function McpConnection({ editor, newId, t }: McpConnectionProps) {
-  const [on, setOn] = useState(() => stored(MCP_KEY) === "true");
-  const [code, setCode] = useState(() => stored(MCP_CODE_KEY) ?? "");
+  const { mcp: on, mcpCode: code } = useSettings();
   const [entry, setEntry] = useState("");
   const [status, setStatus] = useState<McpStatus | undefined>();
   const codeId = useId();
@@ -64,27 +42,20 @@ export function McpConnection({ editor, newId, t }: McpConnectionProps) {
     };
   }, [on, code, tools]);
 
-  const turn = (next: boolean) => {
-    setOn(next);
-    store(MCP_KEY, String(next));
-  };
   const pair = (event: FormEvent) => {
     event.preventDefault();
     const value = entry.replace(/\s/g, "");
     if (!/^\d{6}$/.test(value)) return;
-    setCode(value);
-    store(MCP_CODE_KEY, value);
+    updateSettings({ mcpCode: value });
     setEntry("");
   };
   const asking = on && (!code || status === "wrongCode");
 
   return (
     <>
-      <button type="button" className="header-button" aria-pressed={on} title={t("mcp.hint")} onClick={() => turn(!on)}>
-        {t("mcp.button")}
-      </button>
       {on && (
         <div className="mcp-panel" role="status">
+          <span className="mcp-label">{t("mcp.button")}</span>
           {asking ? (
             <form className="mcp-pair" onSubmit={pair}>
               <label htmlFor={codeId}>{t(status === "wrongCode" ? "mcp.wrongCode" : "mcp.askCode")}</label>
@@ -105,14 +76,7 @@ export function McpConnection({ editor, newId, t }: McpConnectionProps) {
             <span>{status ? t(STATUS_TEXT[status]) : t("mcp.waiting")}</span>
           )}
           {code && !asking && (
-            <button
-              type="button"
-              className="mcp-link"
-              onClick={() => {
-                setCode("");
-                store(MCP_CODE_KEY, null);
-              }}
-            >
+            <button type="button" className="mcp-link" onClick={() => updateSettings({ mcpCode: "" })}>
               {t("mcp.forget")}
             </button>
           )}

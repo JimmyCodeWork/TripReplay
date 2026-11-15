@@ -48,6 +48,24 @@ Maps are downloaded once and then used on the device ([ADR 0006](adr/0006-local-
 - On first use, and whenever a stop lies outside the downloaded regions, the application opens this dialog with the matching region preselected.
 - A note states that the download source can see which regions are downloaded, and nothing else.
 
+### 2.2 Settings dialog
+
+**Settings** in the header opens a dialog with the choices that apply to every trip, kept in the browser. They are few, so they are grouped under headings on one page rather than in tabs or separate pages:
+
+| Group | Setting | Default | Mark |
+|---|---|---|---|
+| Playback and map | **Reduce motion** (§6) | The system setting | ? |
+| | **Load map first** ([ADR 0014](adr/0014-load-map-before-playing.md)) | On | ? |
+| | **Load the detailed map**: within 10, 25, 50 or 100 km of the stops, or along the whole path; disabled while **Load map first** is off | Within 25 km | ! |
+| Import | **Make imported photos smaller** ([ADR 0011](adr/0011-smaller-media.md)) | On | ? |
+| | **Make imported videos smaller (1080p, slower)**, where the browser can encode videos | Off | ! |
+| AI agents | **Let the browser's AI agent use the open trip**, where the browser offers WebMCP ([ADR 0010](adr/0010-agent-tools.md)) | Off | ! |
+| | **Connect to the TripReplay MCP server on this computer**, in the Web application only ([ADR 0012](adr/0012-mcp-server.md)), with **Change pairing code** while a code is kept | Off | ! |
+
+A small **?** beside a setting explains what it does; a small **!** marks a cost or a consequence to know first, such as slow encoding or text sent to an agent's service. Selecting either shows its text under the setting, and selecting it again hides it; it has an accessible name such as "About Load map first". A group whose settings the device does not offer is left out.
+
+The two import settings also stay as checkboxes in the **Media** tab, where they are used, and change the same setting.
+
 ## 3. Trip Workspace
 
 ### 3.1 Desktop layout
@@ -110,8 +128,8 @@ On every layout, what the user chooses stays under the finger: when a click or a
 - Clicking a segment also selects it: a panel under the timeline names it with its start and end, and offers its values in seconds — a photo's duration, a video's in and out points, a music track's start, or the length of the phase for the whole trip. For a stop title or a move, a field above sets the length for that stop alone ("This stop's title", "Move to this stop"); it replaces the trip's length and the lengthening for its journal entry or its day's line, and "Use the trip's length" removes it. A value is applied when the field loses focus or with Enter. **Close** hides the panel.
 - **Reset timing**, at the start of the row above the timeline, returns the opening, travel, stop title and closing lengths to the theme's and every photo to 3 s, as one command; video trims, music and day lines are kept.
 - Each change is a single command and can be undone with the **Undo** and **Redo** buttons in the workspace bar, beside the save status, or with Ctrl+Z and Ctrl+Shift+Z. The buttons are disabled when there is nothing to undo or redo.
-- Where the browser offers WebMCP, an **AI agent** toggle button follows them. Pressed, it offers the open trip to the browser's AI agent through tools that read the trip and edit its text ([ADR 0010](adr/0010-agent-tools.md)); each change the agent makes is also one step to undo. It is off until the user presses it, and the choice is kept in the browser.
-- In the Web application, an **MCP** toggle button connects the open trip to the TripReplay MCP server on the computer ([ADR 0012](adr/0012-mcp-server.md)). Pressed, it opens a row under the bar that asks for the pairing code the agent shows, then reports whether TripReplay is waiting for the server, connected, refused or replaced by another window, with **Change pairing code**. It is off until the user presses it.
+- With the browser's AI agent allowed in Settings (§2.2), the open trip is offered to it through tools that read the trip and edit its text ([ADR 0010](adr/0010-agent-tools.md)); each change the agent makes is also one step to undo.
+- With MCP on in Settings, in the Web application, the open trip is connected to the TripReplay MCP server on the computer ([ADR 0012](adr/0012-mcp-server.md)). A row under the bar, marked **MCP**, asks for the pairing code the agent shows, then reports whether TripReplay is waiting for the server, connected, refused or replaced by another window, with **Change pairing code**.
 - The selected stop's segments are highlighted; selecting a segment selects its stop and media in the side panel.
 
 ## 4. Import and Matching Dialog
@@ -152,9 +170,11 @@ The export uses the recap as it was when the dialog opened; edits made meanwhile
 
 The opening, travel, stop title and closing lengths come from the theme unless the trip sets its own (§3.4).
 
-With "Reduce motion" enabled, camera moves and push-ins are replaced by cross-fades, and journal lines and notes fade in without rising. The **Reduce motion** button under the preview starts as the system setting and keeps the user's choice in the browser.
+With "Reduce motion" enabled, camera moves and push-ins are replaced by cross-fades, and journal lines and notes fade in without rising. **Reduce motion** in Settings (§2.2) starts as the system setting and keeps the user's choice in the browser.
 
 The **Itinerary only** button under the preview compiles the recap without photos and videos, those on the way included: the opening, the moves, the stop titles with their journal, the closing and the music remain, to check the itinerary. It is not kept, so the full recap returns when the trip is opened again; an export made meanwhile is of what the preview shows.
+
+With **Load map first** on in Settings (§2.2), **Play** first moves the map through the camera's path from the current position, waiting at each view until its tiles are drawn ([ADR 0014](adr/0014-load-map-before-playing.md)); farther than the chosen distance from every stop, only the world overview is loaded. Meanwhile a note over the preview shows the progress in percent and **Play** reads **Cancel**. A recap is loaded once; it is loaded again only after it or the distance changes.
 
 ## 7. Themes
 

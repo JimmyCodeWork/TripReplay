@@ -22,19 +22,26 @@ export interface StyleOptions {
   readonly glyphs?: string;
   /**
    * Source URLs of the world overview (docs/adr/0013-world-overview.md), whose few zoom levels are
-   * enlarged under the regions so that no view is left empty, and the bounds of the regions, inside
-   * which the regions' own map covers it.
+   * enlarged under the regions so that no view is left empty.
    */
-  readonly overview?: {
-    readonly sources: Readonly<Record<MapTheme, string>>;
-    readonly regions: readonly (readonly [number, number, number, number])[];
-  };
+  readonly overview?: Readonly<Record<MapTheme, string>>;
 }
 
-/** Ids of the layers that draw the world overview and cover it inside the regions. */
-export const OVERVIEW_LAYERS = { water: "overview-water", boundary: "overview-boundary", cover: "regions" } as const;
+/** Ids of the world overview's sources. */
+export const OVERVIEW_SOURCES = ["overview-base", "overview-divisions"] as const;
 
-/** The world overview's water and boundaries, and the regions' bounds in land color above them. */
+/** Ids of the layers that draw the world overview and cover it with the regions' land. */
+export const OVERVIEW_LAYERS = {
+  water: "overview-water",
+  boundary: "overview-boundary",
+  cover: "region-land",
+} as const;
+
+/**
+ * The world overview's water and boundaries, and the regions' land above them, which hides the
+ * overview's coarser coastlines wherever a region's tiles are drawn; where they are not, for example
+ * while they load, the overview shows instead.
+ */
 function overviewLayers(colors: MapColors): StyleSpecification["layers"] {
   return [
     {
@@ -52,31 +59,15 @@ function overviewLayers(colors: MapColors): StyleSpecification["layers"] {
       "source-layer": "division_boundary",
       paint: { "line-color": BOUNDARY, "line-width": 1, "line-dasharray": [3, 2] },
     },
-    { id: OVERVIEW_LAYERS.cover, type: "fill", source: "regions", paint: { "fill-color": colors.land } },
+    {
+      id: OVERVIEW_LAYERS.cover,
+      type: "fill",
+      source: "base",
+      "source-layer": "land",
+      filter: ["==", ["get", "subtype"], "land"],
+      paint: { "fill-color": colors.land },
+    },
   ];
-}
-
-/** The regions' bounds as polygons. */
-function regionPolygons(regions: readonly (readonly [number, number, number, number])[]) {
-  return {
-    type: "FeatureCollection" as const,
-    features: regions.map(([west, south, east, north]) => ({
-      type: "Feature" as const,
-      properties: {},
-      geometry: {
-        type: "Polygon" as const,
-        coordinates: [
-          [
-            [west, south],
-            [east, south],
-            [east, north],
-            [west, north],
-            [west, south],
-          ],
-        ],
-      },
-    })),
-  };
 }
 
 /** The base map drawn under every recap: land, water, parks, roads, boundaries and place labels. */
@@ -87,9 +78,8 @@ export function baseMapStyle({ sources, colors, glyphs, overview }: StyleOptions
       ...Object.fromEntries(MAP_THEMES.map((theme) => [theme, { type: "vector", url: sources[theme] }])),
       ...(overview
         ? {
-            "overview-base": { type: "vector", url: overview.sources.base },
-            "overview-divisions": { type: "vector", url: overview.sources.divisions },
-            regions: { type: "geojson", data: regionPolygons(overview.regions) },
+            "overview-base": { type: "vector", url: overview.base },
+            "overview-divisions": { type: "vector", url: overview.divisions },
           }
         : {}),
     },

@@ -1,6 +1,6 @@
 import type { Clock, PreviewSurface } from "@tripreplay/app";
 import { createMapLibreLayer, type MapFiles } from "@tripreplay/map";
-import { createRecapRenderer, type RecapLabels } from "@tripreplay/renderer";
+import { createRecapRenderer, prepareViews, type RecapLabels } from "@tripreplay/renderer";
 import { resolveTheme } from "@tripreplay/themes";
 import type { PreviewMedia } from "./preview-media.ts";
 
@@ -12,6 +12,9 @@ export const animationClock: Clock = {
     return () => cancelAnimationFrame(handle);
   },
 };
+
+/** A view whose tiles take longer than this to load is left to load while playing. */
+const PREPARE_VIEW_TIMEOUT_MS = 5000;
 
 /**
  * The preview surface: the downloaded base map, drawn by MapLibre, with a canvas on top for the
@@ -43,13 +46,40 @@ export async function createRecapSurface(
   });
   // Draws the last frame again once a photo or video it shows is ready.
   let last: Parameters<PreviewSurface["draw"]> | undefined;
+  let width = 0;
   const unsubscribe = media.subscribe(() => last && renderer.draw(...last));
   return {
-    resize: (width, height) => renderer.resize(width, height),
+    resize: (w, h) => {
+      width = w;
+      renderer.resize(w, h);
+    },
     draw: (timeline, frame) => {
       last = [timeline, frame];
       renderer.draw(timeline, frame);
     },
+    // Shows each view of the camera's path from `fromUs` on until its tiles are drawn, which keeps
+    // them in the map's cache for playback; far from the stops, only the world overview is drawn and
+    // loaded. The current frame is drawn again at the end.
+    ...(map && {
+      async prepare(timeline, fromUs, options = {}) {
+        const views = prepareViews(timeline, fromUs, width, { nearKm: options.nearKm });
+        try {
+          for (const [index, { view, near }] of views.entries()) {
+            options.signal?.throwIfAborted();
+            map.setOverviewOnly?.(!near);
+            map.setView(view);
+            await Promise.race([
+              map.whenDrawn(),
+              new Promise((resolve) => setTimeout(resolve, PREPARE_VIEW_TIMEOUT_MS)),
+            ]);
+            options.onProgress?.((index + 1) / views.length);
+          }
+        } finally {
+          map.setOverviewOnly?.(false);
+          if (last) renderer.draw(...last);
+        }
+      },
+    }),
     destroy() {
       unsubscribe();
       renderer.destroy();

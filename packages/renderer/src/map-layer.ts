@@ -29,6 +29,12 @@ export interface MapLayer {
   project(point: LonLat): ScreenPoint;
   /** Resolves once every tile needed for the current view is loaded and drawn, as export requires. */
   whenDrawn(): Promise<void>;
+  /**
+   * Draws only the world overview, where the layer draws one under the regions, until turned off:
+   * the regions' tiles are then not loaded, so that loading a view far from the stops before playing
+   * is quick. Without an overview it has no effect.
+   */
+  setOverviewOnly?(overviewOnly: boolean): void;
   destroy(): void;
 }
 

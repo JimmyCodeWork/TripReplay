@@ -2,7 +2,7 @@ import type { LonLat, MapColors, MapLayer, MapView } from "@tripreplay/renderer"
 import * as maplibregl from "maplibre-gl";
 import { PMTiles } from "pmtiles";
 import { blobSource } from "./blob-source.ts";
-import { baseMapStyle, MAP_THEMES, type MapTheme, OVERVIEW_LAYERS } from "./style.ts";
+import { baseMapStyle, MAP_THEMES, type MapTheme, OVERVIEW_LAYERS, OVERVIEW_SOURCES } from "./style.ts";
 
 /**
  * The downloaded files of one region, one PMTiles archive per theme. The world overview's are
@@ -96,36 +96,30 @@ export async function createMapLibreLayer(options: MapLibreLayerOptions): Promis
     ) as Record<MapTheme, string>;
   const styleSources = register("regions", regions);
   const overviewSources = overview ? register("overview", [overview]) : undefined;
-  // Inside the regions' bounds their own map covers the overview's coarser one.
-  const bounds = overviewSources
-    ? await Promise.all(
-        (sources.get(`layer${layer}-regions-base`) ?? []).map(async (archive) => {
-          const h = await archive.getHeader();
-          return [h.minLon, h.minLat, h.maxLon, h.maxLat] as const;
-        }),
-      )
-    : [];
   const map = new maplibregl.Map({
     container: options.container,
     style: baseMapStyle({
       sources: styleSources,
       colors: options.colors,
       ...(options.glyphs ? { glyphs: options.glyphs } : {}),
-      ...(overviewSources ? { overview: { sources: overviewSources, regions: bounds } } : {}),
+      ...(overviewSources ? { overview: overviewSources } : {}),
     }),
     interactive: false,
     attributionControl: false,
     fadeDuration: 0,
-    // Tiles stay in memory at every zoom level once loaded, so that a recap prepared or played once
-    // plays without waiting for them again (MapLibre keeps five levels by default).
-    maxTileCacheZoomLevels: 16,
-    maxTileCacheSize: 1024,
+    // Loaded tiles stay in memory at every zoom level, up to a number per source, so that a recap
+    // loaded before playing (docs/adr/0014-load-map-before-playing.md) plays without waiting for them.
+    // MapLibre otherwise keeps about five screens' worth of each of five zoom levels.
+    maxTileCacheZoomLevels: 1000,
+    maxTileCacheSize: 1000,
     localIdeographFontFamily: LOCAL_FONTS,
     canvasContextAttributes: { preserveDrawingBuffer: options.readable ?? false },
     ...(options.pixelRatio ? { pixelRatio: options.pixelRatio } : {}),
     center: [0, 0],
     zoom: 0,
   });
+  /** Whether only the overview is drawn (MapLibreLayer.setOverviewOnly). */
+  let overviewOnly = false;
   const release = () => {
     for (const key of keys) sources.delete(key);
   };
@@ -169,9 +163,28 @@ export async function createMapLibreLayer(options: MapLibreLayerOptions): Promis
     },
     whenDrawn() {
       return new Promise<void>((resolve) => {
-        map.once("idle", () => resolve());
+        if (!overviewOnly) {
+          map.once("idle", () => resolve());
+          map.triggerRepaint();
+          return;
+        }
+        // The regions' hidden sources load nothing, but tiles they loaded before would hold back "idle".
+        const check = () => {
+          if (!OVERVIEW_SOURCES.every((id) => map.isSourceLoaded(id))) return;
+          map.off("render", check);
+          resolve();
+        };
+        map.on("render", check);
         map.triggerRepaint();
       });
+    },
+    setOverviewOnly(on) {
+      if (!overviewSources || on === overviewOnly) return;
+      overviewOnly = on;
+      for (const { id } of map.getStyle().layers) {
+        if (id === "land" || id === OVERVIEW_LAYERS.water || id === OVERVIEW_LAYERS.boundary) continue;
+        map.setLayoutProperty(id, "visibility", on ? "none" : "visible");
+      }
     },
     destroy() {
       map.remove();

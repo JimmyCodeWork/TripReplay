@@ -121,28 +121,6 @@ describe("RecapPlayer", () => {
     await click(view, "9:16");
     expect(ratios).toEqual(["9:16"]);
   });
-
-  it("offers reduced motion as a toggle when the shell handles it", async () => {
-    const { playback, ui } = setup();
-    const choices: boolean[] = [];
-    const view = await render(ui);
-    expect(view.textContent).not.toContain("減少動態效果");
-    cleanup();
-    const reduced = compile(project, { reducedMotion: true });
-    const toggled = await render(
-      <RecapPlayer
-        timeline={reduced}
-        playback={playback}
-        createSurface={ui.props.createSurface}
-        onAspectRatio={() => {}}
-        onReducedMotion={(on) => void choices.push(on)}
-        t={createTranslator("zh-TW")}
-      />,
-    );
-    expect(button(toggled, "減少動態效果").getAttribute("aria-pressed")).toBe("true");
-    await click(toggled, "減少動態效果");
-    expect(choices).toEqual([false]);
-  });
 });
 
 describe("RecapPlayer itinerary only", () => {
@@ -162,6 +140,77 @@ describe("RecapPlayer itinerary only", () => {
     expect(button(view, "只看行程").getAttribute("aria-pressed")).toBe("true");
     await click(view, "只看行程");
     expect(choices).toEqual([false]);
+  });
+});
+
+describe("RecapPlayer loading the map first", () => {
+  function prepared() {
+    const { playback, timeline } = setup();
+    const calls: {
+      fromUs: number;
+      nearKm: number | undefined;
+      resolve: () => void;
+      signal: AbortSignal | undefined;
+    }[] = [];
+    let progress: ((fraction: number) => void) | undefined;
+    const surface: PreviewSurface = {
+      resize: () => {},
+      draw: () => {},
+      destroy: () => {},
+      prepare: (_timeline, fromUs, options) =>
+        new Promise<void>((resolve, reject) => {
+          progress = options?.onProgress;
+          calls.push({ fromUs, nearKm: options?.nearKm, resolve, signal: options?.signal });
+          options?.signal?.addEventListener("abort", () => reject(options.signal?.reason));
+        }),
+    };
+    const ui = (preload: boolean, nearKm?: number) => (
+      <RecapPlayer
+        timeline={timeline}
+        playback={playback}
+        createSurface={async () => surface}
+        onAspectRatio={() => {}}
+        preload={preload}
+        preloadNearKm={nearKm}
+        t={createTranslator("zh-TW")}
+      />
+    );
+    return { playback, calls, ui, progress: (fraction: number) => progress?.(fraction) };
+  }
+
+  it("loads the map with its progress before playing, and only once", async () => {
+    const { playback, calls, ui, progress } = prepared();
+    const view = await render(ui(true, 25));
+    await act(async () => {});
+    await click(view, "播放");
+    expect(playback.getState().playing).toBe(false);
+    expect(calls.map((call) => [call.fromUs, call.nearKm])).toEqual([[0, 25]]);
+    await act(async () => progress(0.4));
+    expect(view.querySelector('[role="status"]')?.textContent).toBe("正在讀取地圖…40%");
+    await act(async () => calls[0]?.resolve());
+    expect(playback.getState().playing).toBe(true);
+    expect(view.querySelector('[role="status"]')).toBeNull();
+    await click(view, "暫停");
+    await click(view, "播放");
+    expect(calls).toHaveLength(1);
+    expect(playback.getState().playing).toBe(true);
+  });
+
+  it("cancels loading, and plays at once with the option off", async () => {
+    const { playback, calls, ui } = prepared();
+    const view = await render(ui(true));
+    await act(async () => {});
+    await click(view, "播放");
+    await click(view, "取消");
+    expect(calls[0]?.signal?.aborted).toBe(true);
+    expect(playback.getState().playing).toBe(false);
+    expect(view.querySelector('[role="status"]')).toBeNull();
+    cleanup();
+    const off = await render(ui(false));
+    await act(async () => {});
+    await click(off, "播放");
+    expect(playback.getState().playing).toBe(true);
+    expect(calls).toHaveLength(1);
   });
 });
 

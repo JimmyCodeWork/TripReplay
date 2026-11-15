@@ -50,6 +50,7 @@ export type {
   PlaceSearch,
   PlannedFiles,
   PlannedRegion,
+  PrepareOptions,
   PreviewSurface,
   ProjectRepository,
   RegionBounds,

@@ -39,8 +39,10 @@ import { McpConnection } from "./McpConnection.tsx";
 import { NATIVE } from "./platform.ts";
 import { createPreviewMedia } from "./preview-media.ts";
 import { animationClock, createRecapSurface } from "./recap-surface.ts";
+import { useSystemReducedMotion } from "./SettingsDialog.tsx";
 import type { Services } from "./services.ts";
-import { AGENT_TOOLS_KEY, agentBridge } from "./web-mcp.ts";
+import { updateSettings, useSettings } from "./settings.ts";
+import { agentBridge } from "./web-mcp.ts";
 
 const scheduler: Scheduler = {
   schedule(delayMs, callback) {
@@ -90,37 +92,6 @@ function regionsFor(regions: readonly RegionEntry[], stops: readonly { location:
 const TABS = ["itinerary", "media", "journal", "music", "themes"] as const;
 type Tab = (typeof TABS)[number];
 
-const REDUCED_MOTION_KEY = "tripreplay.reducedMotion";
-
-/** Whether imports make photos smaller; on unless the user turned it off (docs/adr/0011-smaller-media.md). */
-const SHRINK_PHOTOS_KEY = "tripreplay.shrinkPhotos";
-/** Whether imports make videos smaller; off unless the user turned it on, as it is slow. */
-const SHRINK_VIDEOS_KEY = "tripreplay.shrinkVideos";
-
-/** A choice kept in the browser's local storage, with `initial` until the user makes one. */
-function useStoredFlag(key: string, initial: boolean): readonly [boolean, (value: boolean) => void] {
-  const [value, setValue] = useState(() => {
-    try {
-      const stored = localStorage.getItem(key);
-      return stored === null ? initial : stored === "true";
-    } catch {
-      return initial;
-    }
-  });
-  const choose = useCallback(
-    (next: boolean) => {
-      setValue(next);
-      try {
-        localStorage.setItem(key, String(next));
-      } catch {
-        // Storage can be unavailable, for example in a private window; the choice then lasts for this visit.
-      }
-    },
-    [key],
-  );
-  return [value, choose];
-}
-
 /** Labels of the agent tools for people, by the names agents call them by. */
 const AGENT_TOOL_TITLES = {
   get_trip: "agent.tool.getTrip",
@@ -134,9 +105,8 @@ const AGENT_TOOL_TITLES = {
 } as const;
 
 /**
- * Offers the open trip to the browser's AI agent through WebMCP while the user has turned it on
- * (docs/adr/0010-agent-tools.md). Returns undefined where the browser offers no WebMCP, else
- * whether it is on and how to turn it on or off; the choice is kept in the browser.
+ * Offers the open trip to the browser's AI agent through WebMCP while the user has turned it on in
+ * Settings (docs/adr/0010-agent-tools.md), where the browser offers WebMCP.
  */
 function useAgentTools(editor: Editor, services: Services, t: Translate) {
   const bridge = useMemo(
@@ -147,59 +117,12 @@ function useAgentTools(editor: Editor, services: Services, t: Translate) {
       ),
     [services, t],
   );
-  const [on, setOn] = useState(() => {
-    try {
-      return localStorage.getItem(AGENT_TOOLS_KEY) === "true";
-    } catch {
-      return false;
-    }
-  });
+  const on = useSettings().agentTools;
   useEffect(() => {
     if (!bridge || !on) return;
     bridge.set({ project: () => editor.getState().project, dispatch: (command) => editor.dispatch(command) });
     return () => bridge.set(undefined);
   }, [bridge, editor, on]);
-  const choose = useCallback((next: boolean) => {
-    setOn(next);
-    try {
-      localStorage.setItem(AGENT_TOOLS_KEY, String(next));
-    } catch {
-      // Storage can be unavailable, for example in a private window; the choice then lasts for this visit.
-    }
-  }, []);
-  return bridge ? ([on, choose] as const) : undefined;
-}
-
-/**
- * Whether the recap cross-fades instead of flying: the user's choice in the player, kept in this
- * browser, or else the system's "Reduce motion" setting.
- */
-function useReducedMotion(): [boolean, (reducedMotion: boolean) => void] {
-  const query = useMemo(() => window.matchMedia("(prefers-reduced-motion: reduce)"), []);
-  const system = useSyncExternalStore(
-    (listener) => {
-      query.addEventListener("change", listener);
-      return () => query.removeEventListener("change", listener);
-    },
-    () => query.matches,
-  );
-  const [choice, setChoice] = useState<boolean | undefined>(() => {
-    try {
-      const stored = localStorage.getItem(REDUCED_MOTION_KEY);
-      return stored === null ? undefined : stored === "true";
-    } catch {
-      return undefined;
-    }
-  });
-  const choose = useCallback((reducedMotion: boolean) => {
-    setChoice(reducedMotion);
-    try {
-      localStorage.setItem(REDUCED_MOTION_KEY, String(reducedMotion));
-    } catch {
-      // Storage can be unavailable, for example in a private window; the choice then lasts for this visit.
-    }
-  }, []);
-  return [choice ?? system, choose];
 }
 
 interface EditorViewProps {
@@ -212,9 +135,9 @@ interface EditorViewProps {
 
 function EditorView({ editor, services, locale, t, onClose }: EditorViewProps) {
   const state = useSyncExternalStore(editor.subscribe, editor.getState);
-  const agentTools = useAgentTools(editor, services, t);
-  const [shrinkPhotos, setShrinkPhotos] = useStoredFlag(SHRINK_PHOTOS_KEY, true);
-  const [shrinkVideos, setShrinkVideos] = useStoredFlag(SHRINK_VIDEOS_KEY, false);
+  useAgentTools(editor, services, t);
+  const settings = useSettings();
+  const { shrinkPhotos, shrinkVideos } = settings;
   const regions = useSyncExternalStore(services.regions.subscribe, services.regions.getState);
   const [selectedId, setSelectedId] = useState<string | undefined>();
   const { project } = state;
@@ -226,7 +149,8 @@ function EditorView({ editor, services, locale, t, onClose }: EditorViewProps) {
   const playback = useMemo(() => createPlayback({ clock: animationClock }), []);
   useEffect(() => () => playback.dispose(), [playback]);
   const compileTimeline = useMemo(() => createTimelineCache(), []);
-  const [reducedMotion, setReducedMotion] = useReducedMotion();
+  const systemReducedMotion = useSystemReducedMotion();
+  const reducedMotion = settings.reducedMotion ?? systemReducedMotion;
   // Only for checking the itinerary in the preview; it is not kept, so that the full recap returns.
   const [itineraryOnly, setItineraryOnly] = useState(false);
   const timeline = compileTimeline(project, { reducedMotion, itineraryOnly });
@@ -389,17 +313,6 @@ function EditorView({ editor, services, locale, t, onClose }: EditorViewProps) {
             ↷ {t("workspace.redo")}
           </button>
         </span>
-        {agentTools && (
-          <button
-            type="button"
-            className="header-button"
-            aria-pressed={agentTools[0]}
-            title={t("workspace.agentToolsHint")}
-            onClick={() => agentTools[1](!agentTools[0])}
-          >
-            {t("workspace.agentTools")}
-          </button>
-        )}
         {!NATIVE && <McpConnection editor={editor} newId={services.newId} t={t} />}
         <span className="workspace-save" role="status">
           {saveText(state.save, t)}
@@ -471,9 +384,9 @@ function EditorView({ editor, services, locale, t, onClose }: EditorViewProps) {
                 mediaUrl={media.url}
                 onImport={() => fileInput.current?.click()}
                 shrinkPhotos={shrinkPhotos}
-                onShrinkPhotosChange={setShrinkPhotos}
+                onShrinkPhotosChange={(on) => updateSettings({ shrinkPhotos: on })}
                 shrinkVideos={services.media.shrinkVideo ? shrinkVideos : undefined}
-                onShrinkVideosChange={setShrinkVideos}
+                onShrinkVideosChange={(on) => updateSettings({ shrinkVideos: on })}
                 locale={locale}
                 t={t}
               />
@@ -510,8 +423,9 @@ function EditorView({ editor, services, locale, t, onClose }: EditorViewProps) {
             createSurface={createSurface}
             onAspectRatio={(aspectRatio) => editor.dispatch({ type: "setAspectRatio", aspectRatio })}
             onEdit={(command) => editor.dispatch(command)}
-            onReducedMotion={setReducedMotion}
             onItineraryOnly={setItineraryOnly}
+            preload={settings.preloadMap}
+            preloadNearKm={settings.preloadNearKm}
             locale={locale}
             fullScreen={NATIVE ? "page" : "browser"}
             onExport={() => {

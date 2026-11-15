@@ -27,15 +27,17 @@ export interface RecapPlayerProps {
   /** Applies an edit made on the timeline, such as a trimmed video; without it the timeline is read-only. */
   readonly onEdit?: (command: Command) => void;
   /**
-   * Turns "Reduce motion" on or off: the recap then cross-fades instead of moving the camera
-   * (docs/ui-design.md §6). Without it the button is not shown.
-   */
-  readonly onReducedMotion?: (reducedMotion: boolean) => void;
-  /**
    * Turns "Itinerary only" on or off: the recap then plays without photos and videos, to check
    * the stops and the moves between them. Without it the button is not shown.
    */
   readonly onItineraryOnly?: (itineraryOnly: boolean) => void;
+  /**
+   * Whether playing first loads what the recap needs from the current position on, such as the map
+   * along the camera's path, so that it plays without waiting for it (PreviewSurface.prepare).
+   */
+  readonly preload?: boolean;
+  /** Where the detailed map is loaded first; see PrepareOptions.nearKm. */
+  readonly preloadNearKm?: number | undefined;
   /**
    * How "Full screen" works: with the browser's Fullscreen API, or by filling the page, for a
    * WebView that does not offer the API, such as the Android application's.
@@ -70,8 +72,9 @@ export function RecapPlayer({
   createSurface,
   onAspectRatio,
   onEdit,
-  onReducedMotion,
   onItineraryOnly,
+  preload = false,
+  preloadNearKm,
   fullScreen: fullScreenMode = "browser",
   notice,
   onExport,
@@ -128,15 +131,63 @@ export function RecapPlayer({
     };
   }, [surface, playback, timeline]);
 
+  /** Loading before playing, with its progress from 0 to 1; playing or pausing again cancels it. */
+  const [preparing, setPreparing] = useState<{ readonly progress: number; readonly controller: AbortController }>();
+  /** What was last loaded: the surface and timeline, from a time on. */
+  const prepared = useRef<{ surface: PreviewSurface; timeline: Timeline; nearKm: number | undefined; fromUs: number }>(
+    undefined,
+  );
+  const toggle = () => {
+    if (preparing) {
+      preparing.controller.abort();
+      return;
+    }
+    if (state.playing || !preload || !surface?.prepare) {
+      playback.toggle();
+      return;
+    }
+    const fromUs = state.timeUs >= state.durationUs ? 0 : state.timeUs;
+    const done = prepared.current;
+    const loaded =
+      done?.surface === surface && done.timeline === timeline && done.nearKm === preloadNearKm && done.fromUs <= fromUs;
+    if (loaded) {
+      playback.play();
+      return;
+    }
+    const controller = new AbortController();
+    setPreparing({ progress: 0, controller });
+    surface
+      .prepare(timeline, fromUs, {
+        nearKm: preloadNearKm,
+        signal: controller.signal,
+        onProgress: (progress) => setPreparing((current) => current && { ...current, progress }),
+      })
+      .then(
+        () => {
+          prepared.current = { surface, timeline, nearKm: preloadNearKm, fromUs };
+          setPreparing(undefined);
+          playback.play();
+        },
+        () => setPreparing(undefined),
+      );
+  };
+  // Event handlers outside React call the latest toggle.
+  const toggleRef = useRef(toggle);
+  toggleRef.current = toggle;
+  // A new surface or timeline, or leaving, stops loading for the old one.
+  const controller = preparing?.controller;
+  // biome-ignore lint/correctness/useExhaustiveDependencies: stops on a change of surface or timeline.
+  useEffect(() => () => controller?.abort(), [controller, surface, timeline]);
+
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       if (event.key !== " " || typing(event.target) || event.ctrlKey || event.metaKey || event.altKey) return;
       event.preventDefault();
-      playback.toggle();
+      toggleRef.current();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [playback]);
+  }, []);
 
   useEffect(() => () => playback.pause(), [playback]);
 
@@ -155,7 +206,7 @@ export function RecapPlayer({
   const onSliderKey = (event: ReactKeyboardEvent<HTMLInputElement>) => {
     if (event.key === " ") {
       event.preventDefault();
-      playback.toggle();
+      toggle();
     }
   };
 
@@ -167,11 +218,16 @@ export function RecapPlayer({
           className={styles.stage}
           style={{ "--ratio": timeline.aspectRatio === "9:16" ? 9 / 16 : 16 / 9 } as CSSProperties}
         />
+        {preparing && (
+          <p className={styles.preparing} role="status">
+            {t("player.preparing", { percent: Math.round(preparing.progress * 100) })}
+          </p>
+        )}
       </div>
       {notice && <p className={styles.notice}>{notice}</p>}
       <div className={styles.controls}>
-        <button type="button" className={styles.play} onClick={() => playback.toggle()}>
-          {state.playing ? t("player.pause") : t("player.play")}
+        <button type="button" className={styles.play} onClick={toggle}>
+          {preparing ? t("common.cancel") : state.playing ? t("player.pause") : t("player.play")}
         </button>
         <span className={styles.time}>
           {t("player.time", { current: formatTime(state.timeUs), total: formatTime(state.durationUs) })}
@@ -204,16 +260,6 @@ export function RecapPlayer({
             </button>
           ))}
         </fieldset>
-        {onReducedMotion && (
-          <button
-            type="button"
-            className={styles.option}
-            aria-pressed={timeline.reducedMotion}
-            onClick={() => onReducedMotion(!timeline.reducedMotion)}
-          >
-            {t("player.reduceMotion")}
-          </button>
-        )}
         {onItineraryOnly && (
           <button
             type="button"

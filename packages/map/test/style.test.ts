@@ -30,36 +30,20 @@ describe("baseMapStyle", () => {
     expect(style.layers.at(-1)?.id).toBe("place");
   });
 
-  it("draws the world overview under the regions, covered inside their bounds", () => {
+  it("draws the world overview under the regions, covered by their land", () => {
     const style = baseMapStyle({
       sources,
       colors,
-      overview: {
-        sources: { ...sources, base: "pmtiles://ob", divisions: "pmtiles://od" },
-        regions: [[119, 21, 123, 26]],
-      },
+      overview: { ...sources, base: "pmtiles://ob", divisions: "pmtiles://od" },
     });
     expect(style.sources["overview-base"]).toEqual({ type: "vector", url: "pmtiles://ob" });
     expect(style.sources["overview-divisions"]).toEqual({ type: "vector", url: "pmtiles://od" });
     const ids = style.layers.map((layer) => layer.id);
     expect(ids.slice(0, 4)).toEqual(["land", OVERVIEW_LAYERS.water, OVERVIEW_LAYERS.boundary, OVERVIEW_LAYERS.cover]);
-    const regions = style.sources.regions;
-    expect(regions?.type === "geojson" && regions.data).toMatchObject({
-      features: [
-        {
-          geometry: {
-            coordinates: [
-              [
-                [119, 21],
-                [123, 21],
-                [123, 26],
-                [119, 26],
-                [119, 21],
-              ],
-            ],
-          },
-        },
-      ],
+    expect(style.layers[3]).toMatchObject({
+      source: "base",
+      "source-layer": "land",
+      paint: { "fill-color": colors.land },
     });
   });
 
