@@ -1495,13 +1495,13 @@
     "message": "A few words about this moment",
     "description": "Placeholder of an empty note on a photo or video."
   },
-  "journal.previousStop": {
+  "stops.previous": {
     "message": "Previous stop",
-    "description": "Button in the Journal tab that shows the stop before."
+    "description": "Button in the Media and Journal tabs that shows the stop before."
   },
-  "journal.nextStop": {
+  "stops.next": {
     "message": "Next stop",
-    "description": "Button in the Journal tab that shows the stop after."
+    "description": "Button in the Media and Journal tabs that shows the stop after."
   },
   "workspace.tab.music": {
     "message": "Music",

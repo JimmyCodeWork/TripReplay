@@ -1121,10 +1121,10 @@
   "journal.notePlaceholder": {
     "message": "為這一刻寫幾句話"
   },
-  "journal.previousStop": {
+  "stops.previous": {
     "message": "上一個景點"
   },
-  "journal.nextStop": {
+  "stops.next": {
     "message": "下一個景點"
   },
   "workspace.tab.music": {

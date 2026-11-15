@@ -2,7 +2,7 @@ import type { Command, DispatchResult, EditorState } from "@tripreplay/app";
 import type { Locale, Translate } from "@tripreplay/i18n";
 import { useEffect, useId, useRef, useState } from "react";
 import { DayChips } from "../controls/DayChips.tsx";
-import { StopOptions } from "../controls/StopOptions.tsx";
+import { StopChooser } from "../controls/StopChooser.tsx";
 import { formatDate } from "../format-date.ts";
 import styles from "./JournalPanel.module.css";
 
@@ -226,34 +226,14 @@ export function JournalPanel(props: JournalPanelProps) {
 }
 
 function StopView({ project, dispatch, selectedStopId, onSelect, mediaUrl, locale, t }: JournalPanelProps) {
-  const stopId = useId();
   const stops = project.stops;
   const stop = stops.find((s) => s.id === selectedStopId) ?? stops[0];
   if (!stop) return null;
   const index = stops.indexOf(stop);
   const dates = [...new Set(stops.map((s) => s.date))];
-  const step = (by: number) => {
-    const next = stops[index + by];
-    if (next) onSelect(next.id);
-  };
   return (
     <>
-      <div className={styles.chooser}>
-        <label className={styles.stopChoice} htmlFor={stopId}>
-          <span>{t("media.stop")}</span>
-          <select id={stopId} value={stop.id} onChange={(event) => onSelect(event.target.value)}>
-            <StopOptions stops={stops} locale={locale} t={t} />
-          </select>
-        </label>
-        <span className={styles.steps}>
-          <button type="button" className={styles.step} disabled={index <= 0} onClick={() => step(-1)}>
-            ‹ {t("journal.previousStop")}
-          </button>
-          <button type="button" className={styles.step} disabled={index >= stops.length - 1} onClick={() => step(1)}>
-            {t("journal.nextStop")} ›
-          </button>
-        </span>
-      </div>
+      <StopChooser stops={stops} stop={stop} onSelect={onSelect} locale={locale} t={t} />
       <section className={styles.day}>
         <DayLine
           project={project}

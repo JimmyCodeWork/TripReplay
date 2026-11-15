@@ -5,6 +5,7 @@ import { CommitRange } from "../controls/CommitRange.tsx";
 import { useDragReorder } from "../controls/drag-reorder.ts";
 import { SecondsField } from "../controls/SecondsField.tsx";
 import { SortToggle } from "../controls/SortToggle.tsx";
+import { StopChooser } from "../controls/StopChooser.tsx";
 import { StopOptions } from "../controls/StopOptions.tsx";
 import { formatDate } from "../format-date.ts";
 import { formatTime } from "../player/format-time.ts";
@@ -78,7 +79,6 @@ export function MediaPanel({
   locale,
   t,
 }: MediaPanelProps) {
-  const stopId = useId();
   const titleId = useId();
   const stop = project.stops.find((s) => s.id === selectedStopId) ?? project.stops[0];
   const clips = stop ? project.clips.filter((clip) => clip.stopId === stop.id) : [];
@@ -125,12 +125,7 @@ export function MediaPanel({
       {stop && (
         <>
           {onSelect ? (
-            <label className={styles.stop} htmlFor={stopId}>
-              <span>{t("media.stop")}</span>
-              <select id={stopId} value={stop.id} onChange={(event) => onSelect(event.target.value)}>
-                <StopOptions stops={project.stops} locale={locale} t={t} />
-              </select>
-            </label>
+            <StopChooser stops={project.stops} stop={stop} onSelect={onSelect} locale={locale} t={t} />
           ) : (
             <p className={styles.stop}>
               {t("media.forStop", { name: stop.name, date: formatDate(locale, stop.date) })}
