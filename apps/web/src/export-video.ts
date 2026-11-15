@@ -336,32 +336,11 @@ async function* chunks(file: File): AsyncIterable<Uint8Array> {
   }
 }
 
-/**
- * Saves an exported video where the user chooses: through the system screen in the Android
- * application, the save dialog where the browser has one, or the downloads folder otherwise.
- * The file is read from the temporary file in parts, never held in memory. Resolves false when
- * the user cancels.
- */
-export async function saveVideo(file: File, name: string, description: string): Promise<boolean> {
-  if (NATIVE) {
-    const { saveFile } = await import("./native-save.ts");
-    return saveFile(name, "video/mp4", chunks(file));
-  }
-  const picker = (window as unknown as Partial<SavePicker>).showSaveFilePicker;
-  if (picker) {
-    let handle: Awaited<ReturnType<SavePicker["showSaveFilePicker"]>>;
-    try {
-      handle = await picker.call(window, {
-        suggestedName: name,
-        types: [{ description, accept: { "video/mp4": [".mp4"] } }],
-      });
-    } catch (error) {
-      if (error instanceof DOMException && error.name === "AbortError") return false;
-      throw error;
-    }
-    await file.stream().pipeTo(await handle.createWritable());
-    return true;
-  }
+/** A cancel this soon after the save dialog was asked for came from the browser, not from the user. */
+const INSTANT_CANCEL_MS = 500;
+
+/** Hands the file to the browser as a download, into its downloads folder. */
+function download(file: File, name: string): void {
   const url = URL.createObjectURL(file);
   const link = document.createElement("a");
   link.href = url;
@@ -371,5 +350,43 @@ export async function saveVideo(file: File, name: string, description: string): 
   link.click();
   link.remove();
   setTimeout(() => URL.revokeObjectURL(url), 60_000);
-  return true;
+}
+
+/**
+ * Saves an exported video where the user chooses: through the system screen in the Android
+ * application, the save dialog where the browser has one, or the downloads folder otherwise or
+ * when asked. The file is read from the temporary file in parts, never held in memory. A save
+ * dialog that fails, or that the browser closes at once without showing it, falls back to a
+ * download, so that saving never does nothing.
+ */
+export async function saveVideo(
+  file: File,
+  name: string,
+  description: string,
+  options: { readonly download?: boolean } = {},
+): Promise<"saved" | "downloaded" | "cancelled"> {
+  if (NATIVE) {
+    const { saveFile } = await import("./native-save.ts");
+    return (await saveFile(name, "video/mp4", chunks(file))) ? "saved" : "cancelled";
+  }
+  const picker = (window as unknown as Partial<SavePicker>).showSaveFilePicker;
+  if (picker && !options.download) {
+    const asked = performance.now();
+    let handle: Awaited<ReturnType<SavePicker["showSaveFilePicker"]>> | undefined;
+    try {
+      handle = await picker.call(window, {
+        suggestedName: name,
+        types: [{ description, accept: { "video/mp4": [".mp4"] } }],
+      });
+    } catch (error) {
+      const cancelled = error instanceof DOMException && error.name === "AbortError";
+      if (cancelled && performance.now() - asked > INSTANT_CANCEL_MS) return "cancelled";
+    }
+    if (handle) {
+      await file.stream().pipeTo(await handle.createWritable());
+      return "saved";
+    }
+  }
+  download(file, name);
+  return "downloaded";
 }

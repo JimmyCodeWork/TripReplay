@@ -5,7 +5,7 @@ import { cleanup, click, render, rerender } from "./support.tsx";
 
 afterEach(cleanup);
 
-function setup(state: ExportState) {
+function setup(state: ExportState, download = false) {
   const calls: string[] = [];
   const ui = (current: ExportState) => (
     <ExportDialog
@@ -17,6 +17,7 @@ function setup(state: ExportState) {
       onStart={() => void calls.push("start")}
       onClose={() => void calls.push("close")}
       onSave={() => void calls.push("save")}
+      onDownload={download ? () => void calls.push("download") : undefined}
       locale="zh-TW"
       t={createTranslator("zh-TW")}
     />
@@ -57,5 +58,15 @@ describe("ExportDialog", () => {
     await rerender(ui({ kind: "failed", reason: "background" }));
     expect(dialog.textContent).toContain("TripReplay 切到背景，匯出已停止");
     expect(calls).toEqual(["close", "save"]);
+    expect(dialog.textContent).not.toContain("下載");
+  });
+
+  it("offers a download beside Save, and says where it went", async () => {
+    const { calls, ui, view } = setup({ kind: "done", bytes: 4_100_000, saved: false }, true);
+    const dialog = await view;
+    await click(dialog, "下載");
+    expect(calls).toEqual(["download"]);
+    await rerender(ui({ kind: "done", bytes: 4_100_000, saved: true, downloaded: true }));
+    expect(dialog.textContent).toContain("影片正在下載到瀏覽器的下載資料夾。");
   });
 });

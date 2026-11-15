@@ -28,7 +28,13 @@ export type ExportState =
       readonly completed: number;
       readonly total: number;
     }
-  | { readonly kind: "done"; readonly bytes: number; readonly saved: boolean }
+  | {
+      readonly kind: "done";
+      readonly bytes: number;
+      readonly saved: boolean;
+      /** Saved as a download, into the browser's downloads folder. */
+      readonly downloaded?: boolean;
+    }
   | {
       readonly kind: "failed";
       readonly reason: "unsupported" | "storage" | "background" | "other";
@@ -45,6 +51,8 @@ export interface ExportDialogProps {
   /** Stops a running export, or closes the dialog and removes an unsaved video. */
   readonly onClose: () => void;
   readonly onSave: () => void;
+  /** Saves the video as a download instead; without it the button is not shown. */
+  readonly onDownload?: (() => void) | undefined;
   readonly locale: Locale;
   readonly t: Translate;
 }
@@ -68,6 +76,7 @@ export function ExportDialog({
   onStart,
   onClose,
   onSave,
+  onDownload,
   locale,
   t,
 }: ExportDialogProps) {
@@ -155,7 +164,11 @@ export function ExportDialog({
       )}
       {state.kind === "done" && (
         <p className={styles.note} role="status">
-          {state.saved ? t("export.saved") : t("export.done", { size: formatBytes(locale, state.bytes) })}
+          {state.downloaded
+            ? t("export.downloaded")
+            : state.saved
+              ? t("export.saved")
+              : t("export.done", { size: formatBytes(locale, state.bytes) })}
         </p>
       )}
       {state.kind === "failed" && (
@@ -170,6 +183,11 @@ export function ExportDialog({
         {choosing && (
           <button type="button" className={styles.primary} onClick={onStart} disabled={state.kind !== "ready"}>
             {t("export.start")}
+          </button>
+        )}
+        {state.kind === "done" && onDownload && (
+          <button type="button" className={styles.button} onClick={onDownload}>
+            {t("export.download")}
           </button>
         )}
         {state.kind === "done" && (

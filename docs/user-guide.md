@@ -165,7 +165,7 @@ To keep or share the recap, select **Export video** under the preview.
 
 1. Choose **1080p (sharper)** or **720p (faster, smaller file)**, and a **File size**: **Larger file (sharpest)**, **Standard** or **Smaller file (for sharing)**. The dialog says which format your device will produce and about how large the video will be.
 2. Select **Start export** and keep TripReplay open and in front until it finishes; the export stops if the app goes to the background. Each frame waits for the map to be drawn, so a recap of a few minutes can take several minutes.
-3. Select **Save video** and choose where to keep it. In the Android application, the system's save screen opens.
+3. Select **Save video** and choose where to keep it. In the Android application, the system's save screen opens. In a browser, **Download** puts it in the browser's downloads folder instead; **Save video** does the same where the browser shows no save dialog.
 
 The video is made entirely on your device; nothing is uploaded.
 
