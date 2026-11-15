@@ -1,4 +1,4 @@
-import type { Command, Playback, PreviewSurface, Timeline } from "@tripreplay/app";
+import { type Command, PLAYBACK_RATES, type Playback, type PreviewSurface, type Timeline } from "@tripreplay/app";
 import type { Locale, Translate } from "@tripreplay/i18n";
 import {
   type CSSProperties,
@@ -278,6 +278,16 @@ export function RecapPlayer({
           aria-label={t("player.position")}
           aria-valuetext={t("player.time", { current: formatTime(state.timeUs), total: formatTime(state.durationUs) })}
         />
+        <label className={styles.speed} title={t("player.speedHint")}>
+          <span className={styles.hidden}>{t("player.speed")}</span>
+          <select value={state.rate} onChange={(event) => playback.setRate(Number(event.target.value))}>
+            {PLAYBACK_RATES.map((rate) => (
+              <option key={rate} value={rate}>
+                {t("player.rate", { rate })}
+              </option>
+            ))}
+          </select>
+        </label>
         <fieldset className={styles.aspect} aria-labelledby={aspectId}>
           <legend id={aspectId} className={styles.hidden}>
             {t("player.aspectRatio")}

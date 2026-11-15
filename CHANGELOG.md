@@ -8,6 +8,7 @@ All notable changes to TripReplay are recorded here. The format follows [Keep a 
 
 ### Added
 
+- A playback speed of 0.5×, 1×, 1.5× or 2× for the preview, with clip sound and music at the same speed. On a wide screen the side panel scrolls on its own with the wheel, so that the preview stays in view.
 - The Journal tab shows one stop at a time, chosen from a list grouped by day or with **Previous stop** and **Next stop**, so that a long journal no longer makes it slow to scroll; **Show the journal** in Settings switches it to one day at a time.
 - A stop's marker appears only once the camera arrives there, not from the opening. The **?** and **!** of Settings open a small dialog in the application's colors, which also reads in dark mode. Entering full screen while playing loads the map for the larger picture before going on.
 - **Download** beside **Save video** in the export dialog of a browser. Saving an exported video or a backup no longer does nothing when the browser closes its save dialog at once without showing it: the file is downloaded instead.

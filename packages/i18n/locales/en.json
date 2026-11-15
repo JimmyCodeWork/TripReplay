@@ -843,6 +843,18 @@
     "message": "{current} / {total}",
     "description": "Playback position and length of the recap, as minutes:seconds."
   },
+  "player.speed": {
+    "message": "Playback speed",
+    "description": "Accessible name of the choice of playback speed under the preview."
+  },
+  "player.speedHint": {
+    "message": "Play the preview faster or slower, for example to check a long recap; exported videos always play at normal speed.",
+    "description": "Tooltip of the playback speed choice."
+  },
+  "player.rate": {
+    "message": "{rate}×",
+    "description": "A playback speed, such as 1.5×."
+  },
   "player.position": {
     "message": "Playback position",
     "description": "Accessible name of the slider that moves through the recap."

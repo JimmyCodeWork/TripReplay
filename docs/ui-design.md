@@ -88,7 +88,7 @@ The two import settings also stay as checkboxes in the **Media** tab, where they
 └──────────────────────────────────────────────────────────────┘
 ```
 
-- **Side panel** (320 px) with four tabs, described in §3.3.
+- **Side panel** (320 px) with four tabs, described in §3.3. It scrolls on its own, with the wheel over it, and stays in view while the page scrolls, so that the preview beside it stays in view too; at its end the page scrolls on, for example to the timeline.
 - **Preview** fills the remaining area at the selected aspect ratio.
 - **Timeline** spans the full width at the bottom.
 
@@ -115,6 +115,7 @@ On every layout, what the user chooses stays under the finger: when a click or a
 - A scale above the segments marks the time, every 1, 2, 5, 10, 15 or 30 seconds or more, with at most eight marks in view.
 - **Zoom:** − and + buttons above the timeline halve or double its width, from the whole recap up to the zoom at which 5 seconds fill the width; they appear only for a recap long enough to zoom. A zoomed timeline scrolls sideways by swiping, and an overview bar under it shows the whole recap with the part in view as a window that can be dragged, or moved by clicking beside it. Zooming keeps the playhead where it was in view; during playback the timeline scrolls to keep the playhead in view.
 - Clicking or dragging on the timeline moves the playhead; space toggles playback.
+- A **Playback speed** choice beside the play button plays the preview at 0.5×, 1×, 1.5× or 2×, with the sound of clips and music at the same speed; exported videos always play at 1×.
 - **Days:** on a trip of several days, the same day chips as the itinerary (§3.3) above the timeline show one day at a time. The opening belongs to the first day and the closing to the last; the strips, the time scale and the music then span only that day's parts, zoom applies within it, and choosing a day moves the playhead a moment into its first part. Stepping to a part of another day shows that day.
 - **Stepping:** above the timeline, "« Previous day", "‹ Previous part", "Next part ›" and "Next day »" move the playhead a moment into that part and select it, so its numbers show below, without aiming at a thin segment. A day starts with the move to its first stop; the first day starts with the opening. The parts are counted from the selected one, or from the one at the playhead.
 - **Durations are edited by dragging, or as numbers:**

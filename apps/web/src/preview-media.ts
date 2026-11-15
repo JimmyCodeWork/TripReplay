@@ -14,6 +14,8 @@ type Picture = { readonly image: CanvasImageSource; readonly width: number; read
 export interface PreviewMedia extends MediaSource<CanvasImageSource> {
   /** A URL of the stored file, for thumbnails; undefined when it is not stored. */
   url(assetId: string): Promise<string | undefined>;
+  /** Plays the videos at `rate` times real time, as the preview's playback does. */
+  setRate(rate: number): void;
   /** The video element that shows a clip, whose sound the audio mixer takes over. */
   videoElement(assetId: string): HTMLVideoElement;
   /** Called when a picture finished loading or a video reached the requested time, to draw again. */
@@ -81,6 +83,7 @@ export function createPreviewMedia(store: AssetStore<Blob>, assets: () => readon
     );
   };
 
+  let rate = 1;
   const video = (id: string) => {
     let entry = videos.get(id);
     if (!entry) {
@@ -88,6 +91,7 @@ export function createPreviewMedia(store: AssetStore<Blob>, assets: () => readon
       element.muted = true;
       element.playsInline = true;
       element.preload = "auto";
+      element.playbackRate = rate;
       element.addEventListener("loadeddata", notify);
       element.addEventListener("seeked", notify);
       entry = { element, lastTime: Number.NaN };
@@ -101,6 +105,10 @@ export function createPreviewMedia(store: AssetStore<Blob>, assets: () => readon
 
   return {
     url,
+    setRate(next) {
+      rate = next;
+      for (const { element } of videos.values()) element.playbackRate = next;
+    },
     videoElement: (assetId) => video(assetId).element,
 
     frame(assetId, mediaTimeUs) {

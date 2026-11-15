@@ -632,6 +632,15 @@
   "player.time": {
     "message": "{current} / {total}"
   },
+  "player.speed": {
+    "message": "播放速度"
+  },
+  "player.speedHint": {
+    "message": "以較快或較慢的速度播放預覽，例如快速檢查較長的回顧；匯出的影片一律以正常速度播放。"
+  },
+  "player.rate": {
+    "message": "{rate}×"
+  },
   "player.position": {
     "message": "播放位置"
   },

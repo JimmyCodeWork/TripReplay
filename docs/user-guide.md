@@ -140,6 +140,7 @@ Use only music you have the right to use, especially if you show the recap in pu
 The preview on the right always shows the current recap.
 
 - **Play** and **Pause**, or press the space bar while no button or field has the focus.
+- The speed beside them, **1×** at first, plays the preview at 0.5×, 1.5× or 2×, for example to check a long recap quickly. Exported videos always play at normal speed.
 - Drag the **Playback position** slider, or use the arrow keys on it, to move through the recap.
 - The bar under the slider shows the parts of the recap: opening, new days, travel, stop titles, photos, videos and closing. Select a part to jump to it.
 - Times are marked above the bar.

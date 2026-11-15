@@ -181,7 +181,11 @@ function EditorView({ editor, services, locale, t, onClose }: EditorViewProps) {
         return audio;
       },
     });
-    const render = () => mixer.render(playback.frame()?.audio ?? [], playback.getState().playing);
+    const render = () => {
+      const { playing, rate } = playback.getState();
+      media.setRate(rate);
+      mixer.render(playback.frame()?.audio ?? [], playing, rate);
+    };
     const unsubscribe = playback.subscribe(render);
     return () => {
       unsubscribe();
@@ -319,7 +323,7 @@ function EditorView({ editor, services, locale, t, onClose }: EditorViewProps) {
         </span>
       </div>
       <div className="workspace-main">
-        <aside className="workspace-panel">
+        <aside className="workspace-panel" data-keep-in-place>
           <div className="workspace-tabs" role="tablist" aria-label={t("workspace.tabs")} onKeyDown={onTabKey}>
             {TABS.map((name) => (
               <button

@@ -50,7 +50,7 @@ export function createAudioMixer({ context, element }: AudioMixerOptions): Audio
   };
 
   return {
-    render(audio, playing) {
+    render(audio, playing, rate = 1) {
       if (playing && ctx?.state === "suspended") void ctx.resume();
       const active = new Set<string>();
       for (const state of audio) {
@@ -58,8 +58,9 @@ export function createAudioMixer({ context, element }: AudioMixerOptions): Audio
         if (!current || !ctx) continue;
         active.add(keyOf(state));
         current.gain.gain.setTargetAtTime(state.gain, ctx.currentTime, GAIN_SMOOTHING_S);
-        // The preview positions its own videos; only music is moved here.
+        // The preview positions its own videos and sets their speed; only music is moved here.
         if (!current.music) continue;
+        if (current.element.playbackRate !== rate) current.element.playbackRate = rate;
         const action = syncAction(current.element, state.mediaTimeUs / 1_000_000, playing);
         if (action.seekTo !== undefined) current.element.currentTime = action.seekTo;
         if (action.play) void current.element.play().catch(() => {});

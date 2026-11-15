@@ -110,6 +110,22 @@ describe("RecapPlayer", () => {
     expect(drawn.at(-1)).toBe(4_000_000);
   });
 
+  it("plays at a chosen speed", async () => {
+    const { clock, playback, ui } = setup();
+    const view = await render(ui);
+    const speed = view.querySelector("select[class], label select") as HTMLSelectElement;
+    expect([...speed.options].map((o) => o.textContent)).toEqual(["0.5×", "1×", "1.5×", "2×"]);
+    expect(speed.value).toBe("1");
+    await act(async () => {
+      speed.value = "2";
+      speed.dispatchEvent(new Event("change", { bubbles: true }));
+    });
+    expect(playback.getState().rate).toBe(2);
+    await click(view, "播放");
+    await clock.frame(1000);
+    expect(playback.getState().timeUs).toBe(2_000_000);
+  });
+
   it("shows the segments of the recap and switches the aspect ratio", async () => {
     const { timeline, ratios, ui } = setup();
     const view = await render(ui);

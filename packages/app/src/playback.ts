@@ -7,7 +7,12 @@ export interface PlaybackState {
   readonly playing: boolean;
   readonly timeUs: Microseconds;
   readonly durationUs: Microseconds;
+  /** Speed of playback, 1 for real time; the preview's alone, exports are always real time. */
+  readonly rate: number;
 }
+
+/** The speeds offered for playback. */
+export const PLAYBACK_RATES = [0.5, 1, 1.5, 2] as const;
 
 /**
  * Plays a timeline in real time (docs/ui-design.md §3.4, §5). The time comes from the clock, so a
@@ -23,6 +28,8 @@ export interface Playback {
   pause(): void;
   toggle(): void;
   seek(timeUs: Microseconds): void;
+  /** Plays at `rate` times real time from now on, such as 2 to check a long recap quickly. */
+  setRate(rate: number): void;
   /** The frame at the current time, or undefined before a timeline is set. */
   frame(): FrameDescription | undefined;
   dispose(): void;
@@ -33,7 +40,7 @@ export interface PlaybackOptions {
 }
 
 export function createPlayback({ clock }: PlaybackOptions): Playback {
-  const store = createStore<PlaybackState>({ playing: false, timeUs: 0, durationUs: 0 });
+  const store = createStore<PlaybackState>({ playing: false, timeUs: 0, durationUs: 0, rate: 1 });
   let timeline: Timeline | undefined;
   let cancelFrame: (() => void) | undefined;
   /** Clock time and recap time when playback last started or seeked. */
@@ -41,7 +48,7 @@ export function createPlayback({ clock }: PlaybackOptions): Playback {
 
   const set = (changes: Partial<PlaybackState>) => store.setState((state) => ({ ...state, ...changes }));
   const clamp = (timeUs: number) => Math.min(store.getState().durationUs, Math.max(0, timeUs));
-  const current = () => clamp(anchor.timeUs + (clock.now() - anchor.clockMs) * 1000);
+  const current = () => clamp(anchor.timeUs + (clock.now() - anchor.clockMs) * 1000 * store.getState().rate);
 
   const tick = () => {
     const timeUs = current();
@@ -85,6 +92,14 @@ export function createPlayback({ clock }: PlaybackOptions): Playback {
     play,
     pause,
     toggle: () => (store.getState().playing ? pause() : play()),
+
+    setRate(rate) {
+      if (!(rate > 0) || rate === store.getState().rate) return;
+      // The time so far counts at the old speed.
+      const timeUs = store.getState().playing ? current() : store.getState().timeUs;
+      anchor = { clockMs: clock.now(), timeUs };
+      set({ rate, timeUs });
+    },
 
     seek(timeUs) {
       const time = clamp(timeUs);

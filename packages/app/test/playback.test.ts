@@ -40,7 +40,7 @@ function setup() {
 describe("playback", () => {
   it("advances with the clock while playing and stops at the end", () => {
     const { clock, playback, timeline } = setup();
-    expect(playback.getState()).toEqual({ playing: false, timeUs: 0, durationUs: timeline.durationUs });
+    expect(playback.getState()).toEqual({ playing: false, timeUs: 0, durationUs: timeline.durationUs, rate: 1 });
     playback.play();
     clock.frame(500);
     expect(playback.getState()).toMatchObject({ playing: true, timeUs: 500_000 });
@@ -68,6 +68,22 @@ describe("playback", () => {
     expect(playback.getState().timeUs).toBe(timeline.durationUs);
     playback.play();
     expect(playback.getState()).toMatchObject({ playing: true, timeUs: 0 });
+  });
+
+  it("plays faster or slower at a chosen speed, counting the time so far at the old one", () => {
+    const { clock, playback } = setup();
+    expect(playback.getState().rate).toBe(1);
+    playback.play();
+    clock.frame(1000);
+    expect(playback.getState().timeUs).toBe(1_000_000);
+    playback.setRate(2);
+    clock.frame(1000);
+    expect(playback.getState()).toMatchObject({ rate: 2, timeUs: 3_000_000 });
+    playback.setRate(0.5);
+    clock.frame(1000);
+    expect(playback.getState().timeUs).toBe(3_500_000);
+    playback.setRate(0);
+    expect(playback.getState().rate).toBe(0.5);
   });
 
   it("keeps the time within a shorter timeline after an edit", () => {

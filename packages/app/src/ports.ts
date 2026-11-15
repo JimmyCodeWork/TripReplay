@@ -54,8 +54,11 @@ export interface Clock {
  * describes them (FrameDescription.audio).
  */
 export interface AudioPort {
-  /** Plays what `audio` describes while `playing`, at its positions and gains, and silences the rest. */
-  render(audio: FrameDescription["audio"], playing: boolean): void;
+  /**
+   * Plays what `audio` describes while `playing`, at its positions and gains and at `rate` times
+   * real time (1 when not given), and silences the rest.
+   */
+  render(audio: FrameDescription["audio"], playing: boolean, rate?: number): void;
   dispose(): void;
 }
 
