@@ -223,7 +223,7 @@ export function App({ services, locale, t }: AppProps) {
           >
             {t("header.maps")}
           </button>
-          <SettingsDialog services={services} t={t} />
+          <SettingsDialog services={services} locale={locale} t={t} />
         </nav>
       </header>
       {screen.kind === "trips" && (

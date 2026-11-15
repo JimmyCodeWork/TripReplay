@@ -1738,5 +1738,45 @@
   "language.japanese": {
     "message": "日本語",
     "description": "Name of Japanese in Japanese, shown in the language choice. The same in every catalog."
+  },
+  "settings.section.storage": {
+    "message": "Storage",
+    "description": "Heading of the Settings section that shows how much space TripReplay uses."
+  },
+  "storage.calculating": {
+    "message": "Calculating…",
+    "description": "Shown while the storage use is measured."
+  },
+  "storage.used": {
+    "message": "{used} used of the {quota} this browser lets TripReplay use",
+    "description": "Total storage TripReplay uses and the browser's quota for it, both formatted sizes such as 1.2 GB."
+  },
+  "storage.unavailable": {
+    "message": "This browser does not tell how much space is used or available.",
+    "description": "Shown when the browser does not report its storage estimate."
+  },
+  "storage.maps": {
+    "message": "Maps: {size}",
+    "description": "Space the downloaded maps use."
+  },
+  "storage.media": {
+    "message": "Photos, videos and music of your trips: {size}",
+    "description": "Space the media of all trips use, each file counted once."
+  },
+  "storage.other": {
+    "message": "The application and other data: {size}",
+    "description": "Space used by everything else: the application's files, trips' text and settings."
+  },
+  "storage.persisted": {
+    "message": "Protected: the browser keeps this data until you remove it.",
+    "description": "Shown when the browser granted persistent storage."
+  },
+  "storage.notPersisted": {
+    "message": "Not protected: the browser may clear this data when the device runs short of space. Back up the trips you want to keep.",
+    "description": "Shown when the browser did not grant persistent storage."
+  },
+  "storage.hint": {
+    "message": "TripReplay sets no limit of its own: the browser decides how much it may store, usually a large share of the free disk space, but on some devices, such as iPads, as little as 1 GB. Downloading a map or importing media checks the free space first. Sizes are approximate, because browsers round them.",
+    "description": "Explanation of the Storage section, shown by its ?."
   }
 }

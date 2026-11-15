@@ -1,7 +1,7 @@
 import { createTranslator } from "@tripreplay/i18n";
 import { act } from "react";
 import { afterEach, describe, expect, it } from "vitest";
-import { SettingsPanel, type SettingsValues } from "../../src/index.ts";
+import { SettingsPanel, type SettingsValues, StorageSummary } from "../../src/index.ts";
 import { cleanup, render } from "./support.tsx";
 
 afterEach(cleanup);
@@ -140,5 +140,42 @@ describe("SettingsPanel", () => {
     ]);
     expect(view.textContent).not.toContain("縮小影片");
     expect(forgotten).toBe(0);
+  });
+});
+
+describe("StorageSummary", () => {
+  const t = createTranslator("zh-TW");
+
+  it("shows the total against the quota, the parts and whether the data is protected", async () => {
+    const view = await render(
+      <StorageSummary
+        usage={{ used: 3e9, quota: 100e9, maps: 1.2e9, media: 1.5e9, persisted: false }}
+        locale="zh-TW"
+        t={t}
+      />,
+    );
+    expect(view.textContent).toContain("已使用 3 GB；此瀏覽器允許 TripReplay 使用 100 GB");
+    expect((view.querySelector("meter") as HTMLMeterElement).value).toBe(3e9);
+    expect([...view.querySelectorAll("li")].map((li) => li.textContent)).toEqual([
+      "地圖：1.2 GB",
+      "旅行的照片、影片與音樂：1.5 GB",
+      "應用程式與其他資料：300 MB",
+    ]);
+    expect(view.textContent).toContain("未受保護");
+  });
+
+  it("says when it is measuring and when the browser does not tell", async () => {
+    expect((await render(<StorageSummary usage={undefined} locale="en" t={t} />)).textContent).toBe("計算中…");
+    cleanup();
+    const view = await render(
+      <StorageSummary
+        usage={{ used: undefined, quota: undefined, maps: 0, media: 2e6, persisted: undefined }}
+        locale="en"
+        t={t}
+      />,
+    );
+    expect(view.querySelector("meter")).toBeNull();
+    expect(view.textContent).toContain("此瀏覽器不提供");
+    expect(view.querySelectorAll("li")).toHaveLength(2);
   });
 });
