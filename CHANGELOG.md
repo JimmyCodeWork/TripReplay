@@ -8,6 +8,7 @@ All notable changes to TripReplay are recorded here. The format follows [Keep a 
 
 ### Added
 
+- A Windows installer, `tripreplay-windows-…-setup.exe`, with each release: TripReplay as a Windows 10 and 11 application in Microsoft Edge WebView2, installed for the current user without administrator rights, with its own trips. It is not signed yet, so SmartScreen warns before it runs ([ADR 0016](docs/adr/0016-windows-application.md)).
 - Photos and videos dragged from the desktop onto the workspace are imported like with **Import media**, into the selected stop; an audio file dragged in is added as music.
 - **Previous stop** and **Next stop** in the Media tab too, as in the Journal tab.
 - The Portrait theme is now **Ocean** and no longer switches the recap to 9:16: portrait or landscape is set by the aspect ratio alone, for every theme. In the Media tab, a video's start and end wrap instead of running under **Edit**, and the **On the way** checkbox sits next to its label.

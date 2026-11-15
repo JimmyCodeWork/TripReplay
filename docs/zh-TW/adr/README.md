@@ -15,7 +15,7 @@
 | [0005](0005-modular-architecture.md) | 模組化的分層應用程式架構 | 已接受 |
 | [0006](0006-local-only-operation.md) | 完全地端執行：下載地圖與裝置上的地點搜尋 | 已接受；已由 0012 修訂 |
 | [0007](0007-architecture-gate.md) | 架構決策關卡：渲染器、地圖管線與支援的瀏覽器 | 已接受 |
-| [0008](0008-android-in-1-0.md) | 1.0 提供以 Capacitor 建置的 Android 應用程式 | 已接受 |
+| [0008](0008-android-in-1-0.md) | 1.0 提供以 Capacitor 建置的 Android 應用程式 | 已接受；已由 0016 修訂 |
 | [0009](0009-export-in-1-0.md) | 1.0 提供以 WebCodecs 與 mp4-muxer 實作的 MP4 匯出 | 已接受 |
 | [0010](0010-agent-tools.md) | 透過 WebMCP 為瀏覽器的 AI 代理提供工具 | 已接受 |
 | [0011](0011-smaller-media.md) | 照片與影片的縮小副本 | 已接受 |
@@ -23,6 +23,7 @@
 | [0013](0013-world-overview.md) | 可下載、畫在區域下方的全球概覽 | 已接受；已由 0014 與 0015 修訂 |
 | [0014](0014-load-map-before-playing.md) | 播放前先讀取地圖 | 已接受 |
 | [0015](0015-overview-alone-when-zoomed-out.md) | 拉遠時只顯示全球概覽 | 已接受 |
+| [0016](0016-windows-application.md) | 以 WebView2 與 NSIS 安裝檔提供 Windows 應用程式 | 已接受 |
 
 ## 撰寫紀錄
 

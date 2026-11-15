@@ -36,3 +36,9 @@ keystore.properties
 *.keystore
 # The public key of Android test builds (docs/releasing.md §4)
 !apps/android/android/app/debug.keystore
+
+# Windows application (apps/windows): the page built for it, and the .NET and installer output
+apps/web/dist-desktop/
+apps/windows/build/
+apps/windows/bin/
+apps/windows/obj/

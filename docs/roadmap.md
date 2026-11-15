@@ -115,6 +115,7 @@ Packages follow the [Application Architecture](architecture.md):
 Map files go to their own OPFS volume, because start-up recovery of the media store removes files that no project refers to.
 
 - the Android application ([ADR 0008](adr/0008-android-in-1-0.md)): Capacitor packages the same page, built with `vite build --mode native`, into an APK that runs in the Android System WebView. A plugin of the project saves backups where the user chooses, "Full screen" fills the window, and the licenses open in a dialog. The Maven libraries that Gradle resolves pass their own license gate, and the APK's notices and SBOM list them. CI builds a debug APK for every change; the release workflow signs the APK and attaches it to the release. Tauri, the earlier candidate, was dropped because every Tauri application links MPL-2.0 crates.
+- the Windows application ([ADR 0016](adr/0016-windows-application.md)): a C# program shows the same page, built with `vite build --mode desktop`, in Microsoft Edge WebView2, and an NSIS installer installs it for the current user. The NuGet packages and NSIS pass their own license gate. CI builds the installer for every change, and the release workflow attaches it, not signed yet, to the release.
 
 Still to do for 1.0, in this order:
 

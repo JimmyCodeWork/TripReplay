@@ -5,7 +5,7 @@ import mapWorkerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?url";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { App } from "./App.tsx";
-import { NATIVE } from "./platform.ts";
+import { PACKAGED } from "./platform.ts";
 import { createServices, requestPersistence } from "./services.ts";
 import { missingFeatures } from "./support.ts";
 import "./styles.css";
@@ -13,8 +13,8 @@ import "./styles.css";
 setMapWorkerUrl(mapWorkerUrl);
 
 // The installed Web application starts without a connection from the files the service worker
-// keeps; the Android application has its files in its package.
-if (import.meta.env.PROD && !NATIVE && "serviceWorker" in navigator) {
+// keeps; the Android and Windows applications have their files in their packages.
+if (import.meta.env.PROD && !PACKAGED && "serviceWorker" in navigator) {
   void navigator.serviceWorker.register("./sw.js").catch(() => {});
 }
 

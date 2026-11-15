@@ -1,6 +1,6 @@
 name: Release
 
-# Builds the Web application and the signed Android application for a version tag and publishes
+# Builds the Web application, the signed Android application and the Windows installer for a version tag and publishes
 # them as a GitHub release, with the SBOM and third-party notices of each (docs/releasing.md).
 
 on:
@@ -13,8 +13,8 @@ permissions:
 jobs:
   release:
     name: Build and publish the release
-    runs-on: ubuntu-latest
-    timeout-minutes: 40
+    runs-on: ubuntu-24.04
+    timeout-minutes: 50
     permissions:
       contents: write
     steps:
@@ -81,6 +81,18 @@ jobs:
           apksigner="$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -1)/apksigner"
           "$apksigner" verify --print-certs app/build/outputs/apk/release/app-release.apk
 
+      - name: Install the .NET SDK and NSIS
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y -q --no-install-recommends dotnet-sdk-10.0 nsis
+
+      - name: Build the Windows installer
+        # Fails when a NuGet package has not passed the license review. Not signed (docs/releasing.md §5).
+        env:
+          DOTNET: /usr/lib/dotnet/dotnet
+          DOTNET_ROOT: /usr/lib/dotnet
+        run: bash apps/windows/build.sh
+
       - name: Package the release
         run: |
           mkdir release
@@ -91,6 +103,10 @@ jobs:
           cp apps/android/android/app/build/outputs/apk/release/app-release.apk "release/tripreplay-android-$GITHUB_REF_NAME.apk"
           cp "$assets/sbom.cdx.json" "release/tripreplay-android-$GITHUB_REF_NAME.sbom.cdx.json"
           cp "$assets/THIRD-PARTY-NOTICES.txt" "release/THIRD-PARTY-NOTICES-android.txt"
+          windows=apps/windows/build
+          cp "$windows/tripreplay-windows-${GITHUB_REF_NAME#v}-setup.exe" "release/tripreplay-windows-$GITHUB_REF_NAME-setup.exe"
+          cp "$windows/app/web/sbom.cdx.json" "release/tripreplay-windows-$GITHUB_REF_NAME.sbom.cdx.json"
+          cp "$windows/app/web/THIRD-PARTY-NOTICES.txt" "release/THIRD-PARTY-NOTICES-windows.txt"
           (cd release && sha256sum * > SHA256SUMS)
           node tools/release/src/changelog.ts "${GITHUB_REF_NAME#v}" > release/notes.md
 
@@ -102,4 +118,4 @@ jobs:
           case "$GITHUB_REF_NAME" in *-*) prerelease="--prerelease" ;; esac
           gh release create "$GITHUB_REF_NAME" --verify-tag $prerelease \
             --title "TripReplay $GITHUB_REF_NAME" --notes-file release/notes.md \
-            release/*.zip release/*.apk release/*.json release/THIRD-PARTY-NOTICES-*.txt release/SHA256SUMS
+            release/*.zip release/*.apk release/*.exe release/*.json release/THIRD-PARTY-NOTICES-*.txt release/SHA256SUMS

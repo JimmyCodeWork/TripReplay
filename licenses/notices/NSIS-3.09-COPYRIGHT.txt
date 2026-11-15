@@ -1,0 +1,9 @@
+NSIS (Nullsoft Scriptable Install System), the installer of the Windows application.
+https://nsis.sourceforge.io/
+
+Copyright (C) 1999-2021 Nullsoft and Contributors
+
+The installer contains the NSIS executable header and its zlib compression only: the LZMA module
+(Common Public License with an exception) and the bzip2 module are not used.
+
+zlib: Copyright (C) 1995-2003 Jean-loup Gailly and Mark Adler

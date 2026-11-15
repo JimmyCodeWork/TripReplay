@@ -75,7 +75,7 @@ TripReplay 以 [MIT 授權](../../LICENSE)釋出。本政策規範哪些第三�
 
 ### 3.6 執行機制
 
-[`licenses/policy.json`](../../licenses/policy.json) 為 §3 的機器可讀版本，須與本文件於同一個 Pull Request 中修訂。[`licenses/inventory.json`](../../licenses/inventory.json) 記錄所有已審查且隨發行成品散布的元件，以及所有已核准的直接開發相依。CI 會拒絕任何未經審查、宣告授權已變更，或其授權不符所屬類別的已安裝元件。Android 應用程式的 Maven 函式庫於其 `maven` 區段審查；Gradle 解析出的函式庫若未在其中審查，Android 建置即失敗。詳見[開發指南](development.md#授權檢查)。
+[`licenses/policy.json`](../../licenses/policy.json) 為 §3 的機器可讀版本，須與本文件於同一個 Pull Request 中修訂。[`licenses/inventory.json`](../../licenses/inventory.json) 記錄所有已審查且隨發行成品散布的元件，以及所有已核准的直接開發相依。CI 會拒絕任何未經審查、宣告授權已變更，或其授權不符所屬類別的已安裝元件。Android 應用程式的 Maven 函式庫於其 `maven` 區段審查；Gradle 解析出的函式庫若未在其中審查，Android 建置即失敗。同樣地，Windows 應用程式的 NuGet 套件於 `nuget` 區段、NSIS 於 `installer` 區段審查，任一項未經審查時，Windows 建置即失敗。詳見[開發指南](development.md#授權檢查)。
 
 ## 4. 候選項目審查
 
@@ -90,6 +90,9 @@ TripReplay 以 [MIT 授權](../../LICENSE)釋出。本政策規範哪些第三�
 | mp4-muxer | MIT | 可准入；用於匯出。作者已改以 Mediabunny 取代，但其採 MPL-2.0 而不得採用；版本固定於 5.2.2（[ADR 0009](adr/0009-export-in-1-0.md)）。 |
 | Tauri | Apache-2.0 OR MIT（遞移含 Apache-2.0、ISC、Unicode-3.0、CDLA-Permissive-2.0、MPL-2.0） | 不可准入。每個 Tauri 應用程式都會連結無法關閉的 MPL-2.0 套件（`cssparser`、`selectors`、`dtoa-short`、`option-ext`）（[ADR 0008](adr/0008-android-in-1-0.md)）。 |
 | Capacitor（Android） | MIT；Android Jetpack 函式庫為 Apache-2.0 | 可准入。用於 Android 應用程式；Maven 函式庫於清冊的 `maven` 區段審查。 |
+| Electron | MIT；附帶 LGPL-2.1 的 Chromium FFmpeg | 不可准入（[ADR 0016](adr/0016-windows-application.md)）。 |
+| .NET 執行環境、WebView2 SDK（Windows） | MIT；BSD-3-Clause | 可准入。用於 Windows 應用程式；NuGet 套件於清冊的 `nuget` 區段審查。WebView2 Runtime 屬於 Windows 的一部分，不隨應用程式散布（[ADR 0016](adr/0016-windows-application.md)）。 |
+| NSIS | Zlib；其 LZMA 壓縮器為 CPL-1.0、bzip2 壓縮器為 bzip2-1.0.6 | 僅使用 zlib 壓縮時可准入，用於建置 Windows 安裝檔；於清冊的 `installer` 區段審查。 |
 | React | MIT | 可准入。待審查。 |
 | TypeScript | Apache-2.0 | 開發工具，豁免。 |
 | SQLite | blessing（公共領域） | 可准入。待審查所採用的綁定（例如 `sql.js` 或 `rusqlite`）。 |

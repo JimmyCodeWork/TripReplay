@@ -7,7 +7,7 @@
 | | |
 |---|---|
 | 日期 | 2026-10-30 |
-| 適用版本 | TripReplay 1.0 網頁應用程式與 Android 應用程式 |
+| 適用版本 | TripReplay 1.0 網頁應用程式，以及 Android 與 Windows 應用程式 |
 
 本頁於每次發行時更新（[1.0 定義 §6.4](release-1.0.md#64-文件與支援)）。
 
@@ -27,6 +27,10 @@ TripReplay 1.0 支援下列瀏覽器的目前版本與前一個主要版本（[1
 ### Android 應用程式
 
 Android 應用程式（[ADR 0008](adr/0008-android-in-1-0.md)）可在 Android 7.0 以上執行，並以 Android System WebView（即 Chrome 的引擎）顯示 TripReplay；請透過 Google Play 保持其為最新版本。它的行為與在 Chrome 中使用 Web 應用程式相同，差異在於：備份會儲存到您選擇的位置、「全螢幕」會填滿應用程式視窗，且除了 APK 之外不需要另外安裝。其建置版本於裝置上以人工測試；自動化測試則在 Chromium 中執行相同的頁面。
+
+### Windows 應用程式
+
+Windows 應用程式（[ADR 0016](adr/0016-windows-application.md)）可在 64 位元的 Windows 10 與 11 上執行，並以 Microsoft Edge WebView2 顯示 TripReplay；WebView2 由 Windows 保持在最新版本。它的行為與在 Edge 中使用 Web 應用程式相同，差異在於：它有自己的旅行資料、「全螢幕」會去掉視窗框並填滿螢幕，且除了安裝檔之外不需要另外安裝。其建置版本於 Windows 上以人工測試；自動化測試則在 Chromium 中執行相同的頁面。
 
 ## 2. 各瀏覽器的差異
 
@@ -53,5 +57,7 @@ Android 應用程式（[ADR 0008](adr/0008-android-in-1-0.md)）可在 Android 7
 | **在 Firefox 與 Safari 中備份大型旅行**時，備份會先在記憶體中組合再儲存，因此含有數 GB 影片的旅行需要同等大小的可用記憶體 | 請在 Chrome 或 Edge 中備份大型旅行，它們會直接寫入檔案 |
 | **地圖短網址**（例如 `maps.app.goo.gl`）必須詢問其服務才能解讀 | 請開啟連結後複製完整連結，或直接貼上座標 |
 | **安裝 Android 應用程式時需要授權。** Android 會對應用程式商店以外的應用程式提出警告 | 請只從專案的[發行版本](https://github.com/JimmyCodeWork/TripReplay/releases)下載 APK，並在 Android 詢問時允許瀏覽器或檔案管理員安裝 |
+| **執行 Windows 安裝檔前，Windows SmartScreen 會發出警告。** 安裝檔尚未簽章 | 請只從專案的[發行版本](https://github.com/JimmyCodeWork/TripReplay/releases)下載，並選擇「**其他資訊 → 仍要執行**」 |
+| **Windows 應用程式無法啟動：找不到 WebView2。** 部分 Windows 10 版本沒有 WebView2 Runtime | 從 Microsoft 安裝 Evergreen WebView2 Runtime；應用程式會顯示下載連結 |
 | **Android 應用程式的「全螢幕」會保留系統列。** 它會填滿應用程式視窗，但狀態列與導覽列仍會顯示 | 將裝置轉為橫向可獲得較大的畫面 |
 | **匯出影片需要一些時間，且應用程式必須在前景。** 每一格都要等待地圖繪製完成，應用程式切到背景時匯出會停止 | 請讓 TripReplay 保持開啟直到匯出完成；較慢的裝置請選擇 720p |

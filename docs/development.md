@@ -11,6 +11,7 @@ English | [繁體中文](zh-TW/development.md)
 | Git | Any recent version | |
 | Docker | Optional | Required only for `pnpm run verify:clean`. |
 | JDK and Android SDK | 21; Android SDK platform 36 | Optional. Required only to build the Android application; Android Studio installs both. Set `ANDROID_HOME`, and `JAVA_HOME` to JDK 21. |
+| .NET SDK and NSIS | .NET 10; NSIS 3 | Optional. Required only to build the Windows application, on Windows (in Git Bash) or Linux (`apt install dotnet-sdk-10.0 nsis` on Ubuntu 24.04). |
 
 ## Getting Started
 
@@ -30,6 +31,8 @@ pnpm run hooks:install   # optional; see Local Verification
 | `pnpm start` | Build the Web application and serve it at `http://localhost:4173`, opening the browser; what the launchers in `launch/` run ([User Guide §1](user-guide.md#1-before-you-start)) |
 | `pnpm run build` | Build the Web application into `apps/web/dist`, with its SBOM, third-party notices and service worker ([Releasing](releasing.md)) |
 | `pnpm run build:native` | Build the page of the Android application into `apps/web/dist-native` |
+| `pnpm run build:desktop` | Build the page of the Windows application into `apps/web/dist-desktop` |
+| `pnpm run windows:build` | Build the Windows application and its installer into `apps/windows/build/` ([Releasing §1](releasing.md#1-what-the-build-produces)) |
 | `pnpm run android:build` | Build the Android application into `apps/android/android/app/build/outputs/apk/` (release, unsigned without a key). For a debug APK, run `./gradlew assembleDebug` in `apps/android/android` after the first build |
 | `pnpm run hooks:install` | Enable the repository's Git hooks |
 | `pnpm run lint` | Check formatting and lint rules (Biome); fails on any issue |
@@ -77,6 +80,7 @@ To bypass a hook once, add `--no-verify` to `git commit` or `git push`. To disab
 |---|---|
 | `apps/web/` | Web application: the composition root that creates the adapters and mounts the UI |
 | `apps/mcp/` | The TripReplay MCP server ([ADR 0012](adr/0012-mcp-server.md)): MCP over standard input and output for agents, and a WebSocket on `127.0.0.1:4174` for TripReplay; `pnpm --filter @tripreplay/mcp start` runs it, `test/` holds its Node tests |
+| `apps/windows/` | Windows application ([ADR 0016](adr/0016-windows-application.md)): the C# WebView2 program in `src/`, the NSIS installer in `installer/` and `build.sh` |
 | `apps/android/` | Android application ([ADR 0008](adr/0008-android-in-1-0.md)): Capacitor configuration and the Gradle project in `android/`, with the `SaveFile` plugin for backups |
 | `packages/` | Product packages: `domain`, `themes`, `i18n`, `timeline`, `app`, `renderer`, `map`, `media`, `audio`, `storage`, `ui`; others planned as defined in the [Application Architecture §3](architecture.md#3-packages) |
 | `packages/domain/` | Data model, invariants and pure editing operations |
@@ -93,7 +97,7 @@ To bypass a hook once, add `--no-verify` to `git commit` or `git push`. To disab
 | `tools/deps-check/` | Package boundary check used by CI; allowed dependencies in `boundaries.json` |
 | `tools/i18n-check/` | Message catalog check used by CI |
 | `tools/license-check/` | License check used by CI |
-| `tools/release/` | Notices and SBOM of the builds, including the Android libraries (`src/android.ts`), and the release notes |
+| `tools/release/` | Notices and SBOM of the builds, including the Android libraries (`src/android.ts`) and the Windows NuGet packages (`src/windows.ts`), and the release notes |
 | `tools/variants/` | Generates the variant-character table for place search from the OpenCC dictionaries |
 | `tools/ci/` | Container definition for `verify:clean` |
 | `.githooks/` | Optional Git hooks |

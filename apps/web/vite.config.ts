@@ -10,10 +10,12 @@ const { version } = JSON.parse(readFileSync(new URL("../../package.json", import
   version: string;
 };
 
-// `--mode native` builds the page of the Android application (apps/android) into dist-native.
-// Its files are in the package, so there is no service worker.
+// `--mode native` builds the page of the Android application (apps/android) into dist-native, and
+// `--mode desktop` that of the Windows application (apps/windows) into dist-desktop. Their files
+// are in the package, so there is no service worker.
 export default defineConfig(({ mode }) => {
   const native = mode === "native";
+  const desktop = mode === "desktop";
   return {
     // Relative URLs, so that the site works under any path, such as a project page.
     base: "./",
@@ -22,16 +24,18 @@ export default defineConfig(({ mode }) => {
     // Always the same address, as the browser keeps trips for each address (origin) separately:
     // started on another port, TripReplay would open without the trips saved before.
     preview: { host: "localhost", port: 4173, strictPort: true },
-    build: { target: "es2022", outDir: native ? "dist-native" : "dist" },
+    build: { target: "es2022", outDir: native ? "dist-native" : desktop ? "dist-desktop" : "dist" },
     plugins: [
       contentSecurityPolicy(),
-      ...(native ? [] : [serviceWorker(fileURLToPath(new URL("public", import.meta.url)))]),
+      ...(native || desktop ? [] : [serviceWorker(fileURLToPath(new URL("public", import.meta.url)))]),
       releaseNotices({
         root,
         product: "TripReplay",
         version,
-        // The Android build adds its own libraries to the notices (tools/release/src/android.ts).
+        // The Android and Windows builds add their own libraries to the notices
+        // (tools/release/src/android.ts, tools/release/src/windows.ts).
         ...(native ? { componentsFile: join(root, "apps/android/android/build/web-components.json") } : {}),
+        ...(desktop ? { componentsFile: join(root, "apps/windows/build/web-components.json") } : {}),
       }),
     ],
   };

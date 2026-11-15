@@ -22,7 +22,7 @@ TripReplay 將規劃好的行程，以及旅途中拍攝的照片與影片，製
 
 - 建立行程、匯入照片與影片，並依景點順序產生動態回顧。
 - 將回顧匯出為影片檔。
-- 支援 Web、Windows、macOS、Linux、Android 及 iOS。1.0 版發行 Web 版與 Android 應用程式（[ADR 0004](adr/0004-web-first-release.md)、[ADR 0008](adr/0008-android-in-1-0.md)）。
+- 支援 Web、Windows、macOS、Linux、Android 及 iOS。1.0 版發行 Web 版以及 Android 與 Windows 應用程式（[ADR 0004](adr/0004-web-first-release.md)、[ADR 0008](adr/0008-android-in-1-0.md)、[ADR 0016](adr/0016-windows-application.md)）。
 - 所有私人媒體與處理作業皆保留在裝置上。
 - 完全在裝置上執行：使用者預先下載所需區域的地圖，之後編輯、地點搜尋、預覽及匯出皆不需要網路連線。本專案不營運任何伺服器（[ADR 0006](adr/0006-local-only-operation.md)）。
 

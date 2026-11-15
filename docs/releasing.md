@@ -25,10 +25,12 @@ The built page carries a Content Security Policy that allows network access only
 
 `pnpm run android:build` builds the Android application ([ADR 0008](adr/0008-android-in-1-0.md)): the page with `vite build --mode native` into `apps/web/dist-native`, copied by Capacitor into the Gradle project in `apps/android/android`. Before Gradle packages it, `tools/release/src/android.ts` reads the libraries Gradle resolved for the release build, checks them against the `maven` section of `licenses/inventory.json`, and rewrites the page's `THIRD-PARTY-NOTICES.txt` and `sbom.cdx.json` to cover the Web components, the Capacitor runtime and these libraries. **The build fails** when a library is not reviewed. The application shows the notices under "Open-source licenses".
 
+`pnpm run windows:build` builds the Windows application and its installer ([ADR 0016](adr/0016-windows-application.md)) into `apps/windows/build`: the page with `vite build --mode desktop` into `apps/web/dist-desktop`, the program with `dotnet publish`, and the installer with NSIS. Before NSIS packages it, `tools/release/src/windows.ts` checks the NuGet packages the program was published with against the `nuget` section of `licenses/inventory.json` and NSIS against its `installer` section, and writes the notices and SBOM into the page. **The build fails** when a package is not reviewed. A new .NET SDK brings new runtime packs, which must be reviewed before the build passes again. The installer is not signed (§5).
+
 ## 2. Steps
 
 1. On a branch, set the new version in the root `package.json`.
-2. Build the release and check the core scenario of the [User Guide](user-guide.md) by hand in Firefox and Safari, which the automated tests do not cover yet, and in the Android application from the CI build of the branch, including a backup and its restore. Record what changed in [Browser Support and Known Issues](browser-support.md) and its translation.
+2. Build the release and check the core scenario of the [User Guide](user-guide.md) by hand in Firefox and Safari, which the automated tests do not cover yet, and in the Android and Windows applications from the CI build of the branch, including a backup and its restore. Record what changed in [Browser Support and Known Issues](browser-support.md) and its translation.
 3. In `CHANGELOG.md` and its translation, rename `## [Unreleased]` to `## [x.y.z] - YYYY-MM-DD` and add a new empty `## [Unreleased]` section above it.
 4. Open a pull request and merge it once CI passes.
 5. Tag the merged commit on `main` and push the tag:
@@ -41,7 +43,8 @@ The built page carries a Content Security Policy that allows network access only
 6. The release workflow checks that the tag matches the version, runs `verify`, the build and the browser tests, and publishes a GitHub release with:
    - `tripreplay-web-vx.y.z.zip`: the contents of `apps/web/dist`, ready to serve;
    - `tripreplay-android-vx.y.z.apk`: the Android application, signed with the release key (§4);
-   - the SBOM and notices of each: `tripreplay-web-vx.y.z.sbom.cdx.json`, `tripreplay-android-vx.y.z.sbom.cdx.json`, `THIRD-PARTY-NOTICES-web.txt` and `THIRD-PARTY-NOTICES-android.txt`;
+   - `tripreplay-windows-vx.y.z-setup.exe`: the Windows installer, not signed (§5);
+   - the SBOM and notices of each: `tripreplay-web-vx.y.z.sbom.cdx.json`, `tripreplay-android-vx.y.z.sbom.cdx.json`, `tripreplay-windows-vx.y.z.sbom.cdx.json`, `THIRD-PARTY-NOTICES-web.txt`, `THIRD-PARTY-NOTICES-android.txt` and `THIRD-PARTY-NOTICES-windows.txt`;
    - `SHA256SUMS` of these files.
 
    The release notes are the version's section of `CHANGELOG.md`. A tag with a hyphen, such as `v0.1.0-beta.1`, is published as a pre-release.
@@ -79,3 +82,9 @@ Android installs an update only when it is signed with the same key as the insta
 The release workflow fails without these secrets, and checks the signature of the APK with `apksigner` before publishing it.
 
 Test builds from CI are signed instead with a fixed debug key that is public, `apps/android/android/app/debug.keystore`, so that each one installs over the previous one. They are installed as "TripReplay Debug", next to the released application and with their own data. Never sign a release with this key.
+
+## 5. Windows Installer
+
+The Windows installer and program are not signed for now ([ADR 0016](adr/0016-windows-application.md)), so Windows SmartScreen warns before the first start, and users choose **More info → Run anyway**. The installer installs for the current user without administrator rights; running a newer installer updates the application and keeps its trips.
+
+CI and the release workflow build it on Ubuntu with Ubuntu's own `dotnet-sdk-10.0` and `nsis` packages, and use that `dotnet` instead of the one preinstalled on the runner, so that the runtime packs match the reviewed ones. On Windows, `pnpm run windows:build` runs in Git Bash with the .NET 10 SDK and NSIS 3 on the path.
