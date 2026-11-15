@@ -5,10 +5,12 @@ import {
   type PlannedRegion,
   type RegionBounds,
   RegionFailure,
+  WORLD_MAX_ZOOM,
+  WORLD_REGION,
 } from "@tripreplay/app";
 import type { MapFiles } from "../maplibre-layer.ts";
 import { decodePlaceIndex, encodePlaceIndex, PLACE_INDEX_VERSION } from "../places/encode.ts";
-import type { PlaceIndex } from "../places/place-index.ts";
+import { buildPlaceIndex, type PlaceIndex } from "../places/place-index.ts";
 import { buildRegionPlaceIndex, createPlaceSearch } from "../places/region-index.ts";
 import { downloadRegion, regionRecord } from "./download.ts";
 import { RegionError } from "./errors.ts";
@@ -91,7 +93,9 @@ export function createMapRegions(options: MapRegionsOptions): OvertureMapRegions
   const open = new Map<string, { readonly record: RegionRecord; readonly index: PlaceIndex }>();
 
   const storeIndex = async (record: RegionRecord): Promise<PlaceIndex> => {
-    const index = await build(await openRegion(record, store), record.bounds);
+    // The world overview has no place names to search, and its bounds would take every tile of the world.
+    const index =
+      record.id === WORLD_REGION.id ? buildPlaceIndex([]) : await build(await openRegion(record, store), record.bounds);
     const bytes = await transform(encodePlaceIndex(index), new CompressionStream("gzip"));
     const id = indexId(record);
     await store.remove(id);
@@ -127,7 +131,12 @@ export function createMapRegions(options: MapRegionsOptions): OvertureMapRegions
 
   const filesOf = async (record: RegionRecord): Promise<MapFiles> => {
     const archives = await translated(() => openRegion(record, store));
-    return { base: archives.base, transportation: archives.transportation, divisions: archives.divisions } as MapFiles;
+    return {
+      base: archives.base,
+      transportation: archives.transportation,
+      divisions: archives.divisions,
+      ...(record.id === WORLD_REGION.id ? { overview: true } : {}),
+    } as MapFiles;
   };
 
   return {
@@ -152,6 +161,7 @@ export function createMapRegions(options: MapRegionsOptions): OvertureMapRegions
         const request = await overtureRegionRequest(release, bounds, {
           ...(options.fetch ? { fetch: options.fetch } : {}),
           ...(signal ? { signal } : {}),
+          ...(regionId === WORLD_REGION.id ? { maxZoom: WORLD_MAX_ZOOM } : {}),
         });
         const plan = await planRegion(request);
         const record = regionRecord(plan, regionId, regionId);

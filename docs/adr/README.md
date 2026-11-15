@@ -18,6 +18,7 @@ This directory records significant architecture and policy decisions. Each recor
 | [0010](0010-agent-tools.md) | Tools for the browser's AI agent, offered through WebMCP | Accepted |
 | [0011](0011-smaller-media.md) | Smaller copies of photos and videos | Accepted |
 | [0012](0012-mcp-server.md) | A local MCP server for AI agents, connected by choice | Accepted |
+| [0013](0013-world-overview.md) | A downloadable world overview under the regions | Accepted |
 
 ## Writing a Record
 

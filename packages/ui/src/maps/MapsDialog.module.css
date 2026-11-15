@@ -156,3 +156,10 @@
   margin: 0;
   color: var(--color-accent, #b33a46);
 }
+
+/* What the world overview is for, under its row. */
+.overviewNote {
+  padding: 0 12px 8px;
+  color: var(--color-muted, #5b6660);
+  font-size: 0.85rem;
+}

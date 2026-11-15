@@ -20,6 +20,7 @@
 | [0010](0010-agent-tools.md) | 透過 WebMCP 為瀏覽器的 AI 代理提供工具 | 已接受 |
 | [0011](0011-smaller-media.md) | 照片與影片的縮小副本 | 已接受 |
 | [0012](0012-mcp-server.md) | 供 AI 代理使用、依使用者選擇連線的本機 MCP Server | 已接受 |
+| [0013](0013-world-overview.md) | 可下載、畫在區域下方的全球概覽 | 已接受 |
 
 ## 撰寫紀錄
 

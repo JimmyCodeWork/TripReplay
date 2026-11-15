@@ -33,6 +33,7 @@ Other things you can do in **Maps**:
 
 - **Open map files** adds PMTiles map files you already have on this device, for example ones copied from another computer.
 - **Check for updates** looks for a newer map. A region with an update shows **Update**; the current map stays in use until the new one is ready.
+- **World overview**, above the regions, is a coarse map of the whole world, about 60 MB. Once downloaded it is drawn under your regions, so that the recap shows land, sea and borders instead of a blank background when the camera flies between regions, for example from Taiwan to Japan.
 - **Delete** removes a region you no longer need. Your trips are not affected; the preview then shows a plain background for the stops in that region.
 
 Map data © OpenStreetMap contributors, Overture Maps Foundation.

@@ -8,6 +8,16 @@ export interface CatalogRegion {
   readonly bounds: RegionBounds;
 }
 
+/**
+ * The world overview (docs/adr/0013-world-overview.md): the whole world at the few zoom levels of
+ * `WORLD_MAX_ZOOM`, downloaded like a region and drawn under the regions, so that a view between
+ * or around them is not left empty. Its name is the message `region.world`.
+ */
+export const WORLD_REGION: CatalogRegion = { id: "world", country: "world", bounds: [-180, -85, 180, 85] };
+
+/** Zoom levels of the world overview: up to 3, about 60 MB; each further level is about five times more. */
+export const WORLD_MAX_ZOOM = 3;
+
 /** A country or area of the catalog; popular ones are listed first and shown by default. */
 export interface CatalogCountry {
   readonly id: string;

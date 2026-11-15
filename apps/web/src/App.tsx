@@ -1,4 +1,11 @@
-import { CATALOG_COUNTRIES, type MediaCount, REGION_CATALOG, shrinkTrip, tripMedia } from "@tripreplay/app";
+import {
+  CATALOG_COUNTRIES,
+  type MediaCount,
+  REGION_CATALOG,
+  shrinkTrip,
+  tripMedia,
+  WORLD_REGION,
+} from "@tripreplay/app";
 import type { Locale, Translate } from "@tripreplay/i18n";
 import { formatBytes, MapsDialog, PlaceSearchBox, TripList } from "@tripreplay/ui";
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
@@ -64,7 +71,8 @@ function MapsScreen({ services, locale, t }: AppProps) {
   const ready = entries.filter((entry) => entry.status.kind === "ready");
   const [focus, setFocus] = useState<{ readonly lon: number; readonly lat: number } | undefined>();
   const [shownId, setShownId] = useState<string | undefined>();
-  const shown = ready.find((entry) => entry.id === shownId) ?? ready[0];
+  const shown =
+    ready.find((entry) => entry.id === shownId) ?? ready.find((entry) => entry.id !== WORLD_REGION.id) ?? ready[0];
   const [favorites, toggleFavorite] = useFavoriteRegions();
   return (
     <div className="maps-screen">
@@ -91,6 +99,7 @@ function MapsScreen({ services, locale, t }: AppProps) {
         favorites={favorites}
         onToggleFavorite={toggleFavorite}
         locate={locate}
+        overview={WORLD_REGION}
         locale={locale}
         t={t}
       />

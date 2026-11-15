@@ -2,10 +2,13 @@ import type { LonLat, MapColors, MapLayer, MapView } from "@tripreplay/renderer"
 import * as maplibregl from "maplibre-gl";
 import { PMTiles } from "pmtiles";
 import { blobSource } from "./blob-source.ts";
-import { baseMapStyle, MAP_THEMES, type MapTheme } from "./style.ts";
+import { baseMapStyle, MAP_THEMES, type MapTheme, OVERVIEW_LAYERS } from "./style.ts";
 
-/** The downloaded files of one region, one PMTiles archive per theme. */
-export type MapFiles = Readonly<Record<MapTheme, Blob>>;
+/**
+ * The downloaded files of one region, one PMTiles archive per theme. The world overview's are
+ * marked `overview` (docs/adr/0013-world-overview.md): they are drawn under the regions.
+ */
+export type MapFiles = Readonly<Record<MapTheme, Blob>> & { readonly overview?: boolean };
 
 export interface MapLibreLayerOptions {
   readonly container: HTMLElement;
@@ -71,30 +74,52 @@ function registerProtocol(): void {
  */
 export async function createMapLibreLayer(options: MapLibreLayerOptions): Promise<MapLibreLayer> {
   registerProtocol();
-  const regions: readonly MapFiles[] = Array.isArray(options.files) ? options.files : [options.files as MapFiles];
+  const all: readonly MapFiles[] = Array.isArray(options.files) ? options.files : [options.files as MapFiles];
+  const overviewFiles = all.find((files) => files.overview);
+  const regionFiles = all.filter((files) => !files.overview);
+  // Without a region, the overview is drawn as the map itself.
+  const regions = regionFiles.length > 0 ? regionFiles : overviewFiles ? [overviewFiles] : [];
+  const overview = regionFiles.length > 0 ? overviewFiles : undefined;
   const layer = nextLayer++;
-  const keys = MAP_THEMES.map((theme) => {
-    const key = `layer${layer}-${theme}`;
-    sources.set(
-      key,
-      regions.map((files, i) => new PMTiles(blobSource(`${key}-${i}`, files[theme]))),
-    );
-    return key;
-  });
-  const styleSources = Object.fromEntries(MAP_THEMES.map((theme, i) => [theme, `${PROTOCOL}://${keys[i]}`])) as Record<
-    MapTheme,
-    string
-  >;
+  const keys: string[] = [];
+  const register = (name: string, files: readonly MapFiles[]) =>
+    Object.fromEntries(
+      MAP_THEMES.map((theme) => {
+        const key = `layer${layer}-${name}-${theme}`;
+        keys.push(key);
+        sources.set(
+          key,
+          files.map((each, i) => new PMTiles(blobSource(`${key}-${i}`, each[theme]))),
+        );
+        return [theme, `${PROTOCOL}://${key}`];
+      }),
+    ) as Record<MapTheme, string>;
+  const styleSources = register("regions", regions);
+  const overviewSources = overview ? register("overview", [overview]) : undefined;
+  // Inside the regions' bounds their own map covers the overview's coarser one.
+  const bounds = overviewSources
+    ? await Promise.all(
+        (sources.get(`layer${layer}-regions-base`) ?? []).map(async (archive) => {
+          const h = await archive.getHeader();
+          return [h.minLon, h.minLat, h.maxLon, h.maxLat] as const;
+        }),
+      )
+    : [];
   const map = new maplibregl.Map({
     container: options.container,
     style: baseMapStyle({
       sources: styleSources,
       colors: options.colors,
       ...(options.glyphs ? { glyphs: options.glyphs } : {}),
+      ...(overviewSources ? { overview: { sources: overviewSources, regions: bounds } } : {}),
     }),
     interactive: false,
     attributionControl: false,
     fadeDuration: 0,
+    // Tiles stay in memory at every zoom level once loaded, so that a recap prepared or played once
+    // plays without waiting for them again (MapLibre keeps five levels by default).
+    maxTileCacheZoomLevels: 16,
+    maxTileCacheSize: 1024,
     localIdeographFontFamily: LOCAL_FONTS,
     canvasContextAttributes: { preserveDrawingBuffer: options.readable ?? false },
     ...(options.pixelRatio ? { pixelRatio: options.pixelRatio } : {}),
@@ -129,6 +154,10 @@ export async function createMapLibreLayer(options: MapLibreLayerOptions): Promis
       map.setPaintProperty("water", "fill-color", colors.water);
       map.setPaintProperty("river", "line-color", colors.water);
       map.setPaintProperty("road", "line-color", colors.roadMajor);
+      if (map.getLayer(OVERVIEW_LAYERS.water)) {
+        map.setPaintProperty(OVERVIEW_LAYERS.water, "fill-color", colors.water);
+        map.setPaintProperty(OVERVIEW_LAYERS.cover, "fill-color", colors.land);
+      }
       if (map.getLayer("place")) map.setPaintProperty("place", "text-halo-color", colors.land);
     },
     setView(view: MapView) {
