@@ -11,7 +11,7 @@ import { formatBytes, MapsDialog, PlaceSearchBox, TripList } from "@tripreplay/u
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { backupTrip, inspectBackup, restoreBackup } from "./backup.ts";
 import { MapPreview } from "./MapPreview.tsx";
-import { NATIVE } from "./platform.ts";
+import { PACKAGED } from "./platform.ts";
 import { SettingsDialog } from "./SettingsDialog.tsx";
 import type { Services } from "./services.ts";
 import { Workspace } from "./Workspace.tsx";
@@ -342,7 +342,7 @@ export function App({ services, locale, t }: AppProps) {
       )}
       {screen.kind === "maps" && <MapsScreen services={services} locale={locale} t={t} />}
       <footer className="app-footer">
-        {NATIVE ? (
+        {PACKAGED ? (
           <NoticesButton t={t} />
         ) : (
           <a href="./THIRD-PARTY-NOTICES.txt" target="_blank" rel="noopener">
@@ -355,8 +355,8 @@ export function App({ services, locale, t }: AppProps) {
 }
 
 /**
- * The open-source licenses in the Android application, whose WebView does not open links in a
- * new window: the notices file of the package, shown in a dialog (docs/license-policy.md §5).
+ * The open-source licenses in the Android and Windows applications, whose WebViews do not open
+ * the page's links in a window of their own: the notices file of the package, shown in a dialog (docs/license-policy.md §5).
  */
 function NoticesButton({ t }: { readonly t: Translate }) {
   const dialog = useRef<HTMLDialogElement>(null);

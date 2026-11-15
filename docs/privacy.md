@@ -5,7 +5,7 @@ English | [繁體中文](zh-TW/privacy.md)
 | | |
 |---|---|
 | Date | 2026-11-14 |
-| Applies to | TripReplay 1.0, the Web application and the Android application |
+| Applies to | TripReplay 1.0, the Web application and the Android and Windows applications |
 
 TripReplay processes your trips, photos, videos, journal and music only on your device. It has no account, no analytics, no advertising and no server of its own. This statement lists every network request the application makes, and what it stores on your device.
 
@@ -66,14 +66,23 @@ The Android application ([ADR 0008](adr/0008-android-in-1-0.md)) contains the sa
 - Android's automatic backup is turned off for the application, so trips and media are not copied to a Google account. Use TripReplay's own backup (§2) instead.
 - It does not offer tools to an AI agent: the Android System WebView has no WebMCP.
 
-## 5. Files You Choose
+## 5. The Windows Application
+
+The Windows application ([ADR 0016](adr/0016-windows-application.md)) contains the same application and makes the same map requests, shown in Microsoft Edge WebView2. It differs in these points:
+
+- Its files are in the installed folder, so it makes no request to a website, not even to check for a new version. New versions come with a new installer.
+- It stores its data in its own WebView2 profile under `%LOCALAPPDATA%\TripReplay`, separate from any browser. Uninstalling the application keeps that data; delete the folder to remove it.
+- The WebView2 Runtime is part of Windows. Microsoft updates it, and it may send diagnostic data to Microsoft, under the diagnostic data settings of Windows, as Edge does.
+- Links to other sites open in your default browser.
+
+## 6. Files You Choose
 
 TripReplay reads only the files you choose: photos, videos, music, map files and backups. It copies them into its storage on your device; with **Make imported photos smaller** or **Make imported videos smaller** on, it stores smaller copies instead, without metadata other than the capture time and position it keeps with the trip and, for videos, the rotation. A backup file that you save contains a whole trip with its media, including their GPS positions; share it only with people who may see them.
 
-## 6. Links
+## 7. Links
 
 The **Open-source licenses** link opens a file of the application itself. Links in this documentation, such as the issue tracker, lead to other websites with their own privacy policies.
 
-## 7. Changes and Contact
+## 8. Changes and Contact
 
 Changes to this statement are recorded in the [changelog](../CHANGELOG.md). Report a privacy problem as described in the [Security Policy](../SECURITY.md).

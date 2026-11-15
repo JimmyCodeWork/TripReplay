@@ -73,7 +73,7 @@ Adding a license to §3 requires a pull request that amends this policy, states 
 
 ### 3.6 Enforcement
 
-[`licenses/policy.json`](../licenses/policy.json) is the machine-readable form of §3 and must be amended in the same pull request as this document. [`licenses/inventory.json`](../licenses/inventory.json) records every reviewed component shipped in release artifacts and every approved direct development dependency. CI rejects any installed component that is unreviewed, whose declared license has changed, or whose license is not permitted for its category. The Maven libraries of the Android application are reviewed in its `maven` section, and the Android build fails on any library Gradle resolves that is not reviewed there. See the [Development Guide](development.md#license-check).
+[`licenses/policy.json`](../licenses/policy.json) is the machine-readable form of §3 and must be amended in the same pull request as this document. [`licenses/inventory.json`](../licenses/inventory.json) records every reviewed component shipped in release artifacts and every approved direct development dependency. CI rejects any installed component that is unreviewed, whose declared license has changed, or whose license is not permitted for its category. The Maven libraries of the Android application are reviewed in its `maven` section, and the Android build fails on any library Gradle resolves that is not reviewed there. Likewise, the NuGet packages of the Windows application are reviewed in its `nuget` section and NSIS in its `installer` section, and the Windows build fails on any that is not reviewed. See the [Development Guide](development.md#license-check).
 
 ## 4. Candidate Review
 
@@ -88,6 +88,9 @@ Adding a license to §3 requires a pull request that amends this policy, states 
 | mp4-muxer | MIT | Admissible; used by export. Deprecated in favor of Mediabunny, which is MPL-2.0 and not admissible; pinned at 5.2.2 ([ADR 0009](adr/0009-export-in-1-0.md)). |
 | Tauri | Apache-2.0 OR MIT (transitive Apache-2.0, ISC, Unicode-3.0, CDLA-Permissive-2.0, MPL-2.0) | Not admissible. Every Tauri application links MPL-2.0 crates (`cssparser`, `selectors`, `dtoa-short`, `option-ext`) that cannot be turned off ([ADR 0008](adr/0008-android-in-1-0.md)). |
 | Capacitor (Android) | MIT; Android Jetpack libraries Apache-2.0 | Admissible. Used for the Android application; the Maven libraries are reviewed in the `maven` section of the inventory. |
+| Electron | MIT; bundles Chromium's FFmpeg under LGPL-2.1 | Not admissible ([ADR 0016](adr/0016-windows-application.md)). |
+| .NET runtime, WebView2 SDK (Windows) | MIT; BSD-3-Clause | Admissible. Used for the Windows application; the NuGet packages are reviewed in the `nuget` section of the inventory. The WebView2 Runtime is part of Windows and is not distributed ([ADR 0016](adr/0016-windows-application.md)). |
+| NSIS | Zlib; its LZMA compressor CPL-1.0, its bzip2 compressor bzip2-1.0.6 | Admissible with zlib compression only, which builds the Windows installer; reviewed in the `installer` section of the inventory. |
 | React | MIT | Admissible. Pending review. |
 | TypeScript | Apache-2.0 | Development tool; exempt. |
 | SQLite | blessing (public domain) | Admissible. Pending review of the binding used (for example, `sql.js` or `rusqlite`). |

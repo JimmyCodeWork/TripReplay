@@ -5,7 +5,7 @@ English | [繁體中文](zh-TW/browser-support.md)
 | | |
 |---|---|
 | Date | 2026-10-30 |
-| Applies to | TripReplay 1.0, the Web application and the Android application |
+| Applies to | TripReplay 1.0, the Web application and the Android and Windows applications |
 
 This page is kept current for each release ([1.0 Definition §6.4](release-1.0.md#64-documentation-and-support)).
 
@@ -25,6 +25,10 @@ Desktop and laptop computers give the best experience. Tablets and phones work i
 ### Android application
 
 The Android application ([ADR 0008](adr/0008-android-in-1-0.md)) runs on Android 7.0 or later and shows TripReplay in the Android System WebView, which is Chrome's engine; keep it up to date through Google Play. It behaves like the Web application in Chrome, except that backups are saved where you choose, "Full screen" fills the application window, and it has no install step besides the APK. Its builds are tested on devices by hand; the automated tests run the same page in Chromium.
+
+### Windows application
+
+The Windows application ([ADR 0016](adr/0016-windows-application.md)) runs on 64-bit Windows 10 and 11 and shows TripReplay in Microsoft Edge WebView2, which Windows keeps up to date. It behaves like the Web application in Edge, except that it keeps its own trips, "Full screen" fills the screen without the window frame, and it has no install step besides the installer. Its builds are tested on Windows by hand; the automated tests run the same page in Chromium.
 
 ## 2. Differences Between Browsers
 
@@ -51,5 +55,7 @@ The Android application ([ADR 0008](adr/0008-android-in-1-0.md)) runs on Android
 | **Large backups in Firefox and Safari** are assembled in memory before they are saved, so a trip with many gigabytes of video needs as much free memory | Back up large trips in Chrome or Edge, which write the file directly |
 | **Short map links**, such as `maps.app.goo.gl`, cannot be read without asking their service | Open the link and copy the full link, or paste the coordinates |
 | **Installing the Android application asks for permission.** Android warns about applications from outside an app store | Download the APK only from the project's [releases](https://github.com/JimmyCodeWork/TripReplay/releases), and allow the browser or file manager to install it when Android asks |
+| **Windows SmartScreen warns before the Windows installer runs.** The installer is not signed yet | Download it only from the project's [releases](https://github.com/JimmyCodeWork/TripReplay/releases), and choose **More info → Run anyway** |
+| **The Windows application does not start: WebView2 is missing.** Some editions of Windows 10 do not have the WebView2 Runtime | Install the Evergreen WebView2 Runtime from Microsoft; the application shows the link |
 | **"Full screen" in the Android application keeps the system bars.** It fills the application window, but the status and navigation bars stay visible | Turn the device sideways for a larger picture |
 | **Exporting a video takes a while and needs the application in front.** Each frame waits for the map to be drawn, and the export stops when the application goes to the background | Keep TripReplay open until the export finishes; choose 720p on slower devices |

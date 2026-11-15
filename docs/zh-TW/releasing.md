@@ -27,10 +27,12 @@
 
 `pnpm run android:build` 會建置 Android 應用程式（[ADR 0008](adr/0008-android-in-1-0.md)）：以 `vite build --mode native` 將頁面建置至 `apps/web/dist-native`，再由 Capacitor 複製到 `apps/android/android` 的 Gradle 專案。在 Gradle 封裝之前，`tools/release/src/android.ts` 會讀取 Gradle 為發行建置解析出的函式庫，依 `licenses/inventory.json` 的 `maven` 區段檢查，並改寫頁面的 `THIRD-PARTY-NOTICES.txt` 與 `sbom.cdx.json`，使其涵蓋 Web 元件、Capacitor 執行環境及這些函式庫。若有函式庫未經審查，**建置即會失敗**。應用程式在「開放原始碼授權」中顯示這份授權聲明。
 
+`pnpm run windows:build` 會將 Windows 應用程式及其安裝檔（[ADR 0016](adr/0016-windows-application.md)）建置至 `apps/windows/build`：以 `vite build --mode desktop` 將頁面建置至 `apps/web/dist-desktop`，以 `dotnet publish` 發布程式，再以 NSIS 建置安裝檔。在 NSIS 封裝之前，`tools/release/src/windows.ts` 會依 `licenses/inventory.json` 的 `nuget` 區段檢查程式發布時使用的 NuGet 套件，依 `installer` 區段檢查 NSIS，並將授權聲明與 SBOM 寫入頁面。若有套件未經審查，**建置即會失敗**。新的 .NET SDK 會帶來新的執行環境套件，須先審查才能再次通過建置。安裝檔未簽章（§5）。
+
 ## 2. 步驟
 
 1. 在分支上，於根目錄的 `package.json` 設定新版本。
-2. 建置發行版本，並以人工方式檢查[使用指南](user-guide.md)的核心情境：在 Firefox 與 Safari 中（自動化測試尚未涵蓋這兩個瀏覽器），以及在該分支 CI 建置的 Android 應用程式中，包括一次備份與還原。將變動記錄於[瀏覽器支援與已知問題](browser-support.md)及其翻譯。
+2. 建置發行版本，並以人工方式檢查[使用指南](user-guide.md)的核心情境：在 Firefox 與 Safari 中（自動化測試尚未涵蓋這兩個瀏覽器），以及在該分支 CI 建置的 Android 與 Windows 應用程式中，包括一次備份與還原。將變動記錄於[瀏覽器支援與已知問題](browser-support.md)及其翻譯。
 3. 在 `CHANGELOG.md` 及其翻譯中，將 `## [Unreleased]` 改為 `## [x.y.z] - YYYY-MM-DD`，並在其上方新增空白的 `## [Unreleased]` 段落。
 4. 開啟拉取請求，CI 通過後合併。
 5. 在 `main` 上為合併後的提交加上標籤並推送：
@@ -43,7 +45,8 @@
 6. 發行流程會檢查標籤是否與版本相符，執行 `verify`、建置與瀏覽器測試，並發布 GitHub 發行版本，附上：
    - `tripreplay-web-vx.y.z.zip`：`apps/web/dist` 的內容，可直接部署；
    - `tripreplay-android-vx.y.z.apk`：以發行金鑰簽署的 Android 應用程式（§4）；
-   - 兩者各自的 SBOM 與授權聲明：`tripreplay-web-vx.y.z.sbom.cdx.json`、`tripreplay-android-vx.y.z.sbom.cdx.json`、`THIRD-PARTY-NOTICES-web.txt` 與 `THIRD-PARTY-NOTICES-android.txt`；
+   - `tripreplay-windows-vx.y.z-setup.exe`：未簽章的 Windows 安裝檔（§5）；
+   - 各自的 SBOM 與授權聲明：`tripreplay-web-vx.y.z.sbom.cdx.json`、`tripreplay-android-vx.y.z.sbom.cdx.json`、`tripreplay-windows-vx.y.z.sbom.cdx.json`、`THIRD-PARTY-NOTICES-web.txt`、`THIRD-PARTY-NOTICES-android.txt` 與 `THIRD-PARTY-NOTICES-windows.txt`；
    - 上述檔案的 `SHA256SUMS`。
 
    發行說明為 `CHANGELOG.md` 中該版本的段落。含連字號的標籤（例如 `v0.1.0-beta.1`）會以預先發行版本發布。
@@ -81,3 +84,9 @@ Android 只會安裝與已安裝應用程式使用相同金鑰簽署的更新。
 缺少這些 Secrets 時發行流程會失敗；發布前也會以 `apksigner` 檢查 APK 的簽章。
 
 CI 的測試版本則以公開的固定除錯金鑰 `apps/android/android/app/debug.keystore` 簽署，讓每個版本都能覆蓋安裝前一個版本。測試版本會以「TripReplay Debug」的名稱安裝，與正式發行的應用程式並存，資料也各自獨立。切勿以此金鑰簽署發行版本。
+
+## 5. Windows 安裝檔
+
+Windows 安裝檔與程式目前皆未簽章（[ADR 0016](adr/0016-windows-application.md)），因此 Windows SmartScreen 會在第一次啟動前發出警告，使用者須選擇「**其他資訊 → 仍要執行**」。安裝檔以目前使用者身分安裝，不需系統管理員權限；執行較新的安裝檔即可更新應用程式，旅程會保留。
+
+CI 與發行流程在 Ubuntu 上以 Ubuntu 自己的 `dotnet-sdk-10.0` 與 `nsis` 套件建置，並使用該 `dotnet` 而非執行器預先安裝的版本，使執行環境套件與已審查的版本一致。在 Windows 上，請在 Git Bash 中執行 `pnpm run windows:build`，並將 .NET 10 SDK 與 NSIS 3 加入路徑。

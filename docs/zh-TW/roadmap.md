@@ -117,6 +117,7 @@ flowchart LR
 地圖檔存放於獨立的 OPFS 儲存區，因為媒體儲存區的啟動時復原程序會刪除未被任何專案引用的檔案。
 
 - Android 應用程式（[ADR 0008](adr/0008-android-in-1-0.md)）：Capacitor 將以 `vite build --mode native` 建置的同一個頁面封裝為 APK，在 Android System WebView 中執行。專案自有的外掛會將備份儲存到使用者選擇的位置，「全螢幕」會填滿視窗，授權資訊則以對話框開啟。Gradle 解析出的 Maven 函式庫須通過其專屬的授權門檻，並列於 APK 的授權聲明與 SBOM 中。CI 會為每次變更建置除錯版 APK；發行流程會簽署 APK 並附於發行版本。先前的候選方案 Tauri 因每個 Tauri 應用程式都會連結 MPL-2.0 套件而放棄。
+- Windows 應用程式（[ADR 0016](adr/0016-windows-application.md)）：以 C# 程式在 Microsoft Edge WebView2 中顯示以 `vite build --mode desktop` 建置的同一個頁面，並以 NSIS 安裝檔為目前使用者安裝。NuGet 套件與 NSIS 須通過其專屬的授權門檻。CI 會為每次變更建置安裝檔，發行流程會將尚未簽章的安裝檔附於發行版本。
 
 1.0 尚待完成的項目，依序為：
 

@@ -425,5 +425,44 @@
       "category": "code",
       "homepage": "https://jspecify.dev"
     }
+  },
+  "nuget": {
+    "Microsoft.NETCore.App.Host.win-x64@10.0.15": {
+      "declared": "MIT",
+      "category": "code",
+      "homepage": "https://github.com/dotnet/runtime",
+      "packageFiles": ["LICENSE.TXT", "THIRD-PARTY-NOTICES.TXT"],
+      "note": "The program's host (TripReplay.exe). Its third-party notices list only permissive licenses."
+    },
+    "Microsoft.NETCore.App.Runtime.win-x64@10.0.15": {
+      "declared": "MIT",
+      "category": "code",
+      "homepage": "https://github.com/dotnet/runtime",
+      "packageFiles": ["LICENSE.TXT", "THIRD-PARTY-NOTICES.TXT"],
+      "note": "The .NET runtime, published with the application. Its third-party notices list only permissive licenses."
+    },
+    "Microsoft.Web.WebView2@1.0.4314.35": {
+      "declared": "BSD-3-Clause",
+      "category": "code",
+      "homepage": "https://aka.ms/webview2",
+      "packageFiles": ["LICENSE.txt", "NOTICE.txt"],
+      "note": "The WebView2 SDK and its loader. The WebView2 Runtime it uses is part of Windows and is not bundled (docs/license-policy.md §2)."
+    },
+    "Microsoft.WindowsDesktop.App.Runtime.win-x64@10.0.15": {
+      "declared": "MIT",
+      "category": "code",
+      "homepage": "https://github.com/dotnet/windowsdesktop",
+      "packageFiles": ["LICENSE"],
+      "note": "Windows Forms, published with the application."
+    }
+  },
+  "installer": {
+    "NSIS@3.09": {
+      "declared": "Zlib",
+      "category": "code",
+      "homepage": "https://nsis.sourceforge.io/",
+      "noticeFile": "licenses/notices/NSIS-3.09-COPYRIGHT.txt",
+      "note": "Executable header and zlib compression of the Windows installer; the LZMA (CPL) and bzip2 modules are not used."
+    }
   }
 }

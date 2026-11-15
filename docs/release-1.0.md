@@ -35,9 +35,9 @@ The recap can also be exported as an MP4 video, made on the device ([ADR 0009](a
 
 | | 1.0 |
 |---|---|
-| Distribution | Web application at a public URL, installable as a Progressive Web App; and an Android application, a signed APK attached to each GitHub release ([ADR 0008](adr/0008-android-in-1-0.md)) |
+| Distribution | Web application at a public URL, installable as a Progressive Web App; and an Android application, a signed APK attached to each GitHub release ([ADR 0008](adr/0008-android-in-1-0.md)); and a Windows application, an installer attached to each GitHub release, not signed yet ([ADR 0016](adr/0016-windows-application.md)) |
 | Devices | Desktop and laptop computers; tablets and phones through their browsers |
-| Installed builds (Windows, macOS, Linux, iOS) and app stores | Not in 1.0. Remain the long-term goal ([Specification §1.1](specification.md#11-goals)) |
+| Installed builds (macOS, Linux, iOS), a signed Windows installer and app stores | Not in 1.0. Remain the long-term goal ([Specification §1.1](specification.md#11-goals)) |
 | Browsers | Current and previous major versions of Chrome, Edge, Safari and Firefox |
 | Network | Needed only to open the application and to download maps. After that, everything works without a connection |
 
@@ -69,7 +69,7 @@ The recap can also be exported as an MP4 video, made on the device ([ADR 0009](a
 
 | Release | Features |
 |---|---|
-| Later | Installed applications for Windows, macOS, Linux and iOS, and app store releases |
+| Later | Installed applications for macOS, Linux and iOS, signing of the Windows installer, and app store releases |
 
 The 1.0 architecture must not preclude these: preview is driven by the deterministic `renderAt(timeUs)` of [Specification §7](specification.md#7-preview-and-video-pipeline), so that export can render the same frames, and map resources are read only from downloaded map files.
 

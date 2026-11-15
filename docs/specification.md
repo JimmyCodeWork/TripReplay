@@ -20,7 +20,7 @@ TripReplay turns a planned itinerary and the photos and videos captured along th
 
 - Build an itinerary, import photos and videos, and generate an animated recap ordered by stop.
 - Export the recap as a video file.
-- Run on Web, Windows, macOS, Linux, Android and iOS. Version 1.0 ships on the Web and as an Android application ([ADR 0004](adr/0004-web-first-release.md), [ADR 0008](adr/0008-android-in-1-0.md)).
+- Run on Web, Windows, macOS, Linux, Android and iOS. Version 1.0 ships on the Web and as Android and Windows applications ([ADR 0004](adr/0004-web-first-release.md), [ADR 0008](adr/0008-android-in-1-0.md), [ADR 0016](adr/0016-windows-application.md)).
 - Keep all private media and processing on the device.
 - Run entirely on the device: the user downloads the map of the needed regions in advance, after which editing, place search, preview and export work without a network connection. The project operates no server ([ADR 0006](adr/0006-local-only-operation.md)).
 

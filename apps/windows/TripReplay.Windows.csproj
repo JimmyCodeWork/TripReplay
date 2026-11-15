@@ -1,0 +1,44 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    The Windows application (docs/adr/0016-windows-application.md): a window that shows the Web
+    application, built with `vite build mode desktop`, in Microsoft Edge WebView2. It is published
+    self-contained for win-x64 and packaged by installer/TripReplay.nsi; it builds on Linux too.
+  -->
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
+    <ApplicationIcon>src/TripReplay.ico</ApplicationIcon>
+    <AssemblyName>TripReplay</AssemblyName>
+    <RootNamespace>TripReplay.Windows</RootNamespace>
+    <Product>TripReplay</Product>
+    <Company>TripReplay contributors</Company>
+    <Copyright>Copyright (c) TripReplay contributors. MIT License.</Copyright>
+    <Version>$(TripReplayVersion)</Version>
+    <Version Condition="'$(TripReplayVersion)' == ''">0.0.0</Version>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <SelfContained>true</SelfContained>
+    <InvariantGlobalization>false</InvariantGlobalization>
+    <SatelliteResourceLanguages>en;zh-Hant</SatelliteResourceLanguages>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- BSD-3-Clause; reviewed in the "nuget" section of licenses/inventory.json. -->
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.4314.35" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="src/TripReplay.ico" LogicalName="TripReplay.ico" />
+  </ItemGroup>
+  <!-- The WebView2 package also references its WPF control, which the window does not use and
+       which would bring all of WPF into the application, as it needs another WindowsBase. -->
+  <Target Name="DropWebView2Wpf" BeforeTargets="ResolveAssemblyReferences">
+    <ItemGroup>
+      <Reference Remove="@(Reference)" Condition="'%(Filename)' == 'Microsoft.Web.WebView2.Wpf'" />
+    </ItemGroup>
+  </Target>
+</Project>

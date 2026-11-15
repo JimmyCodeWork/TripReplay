@@ -13,6 +13,7 @@
 | Git | 任一近期版本 | |
 | Docker | 選用 | 僅 `pnpm run verify:clean` 需要。 |
 | JDK 與 Android SDK | 21；Android SDK 平台 36 | 選用。僅建置 Android 應用程式時需要；Android Studio 會一併安裝。請設定 `ANDROID_HOME`，並將 `JAVA_HOME` 設為 JDK 21。 |
+| .NET SDK 與 NSIS | .NET 10；NSIS 3 | 選用。僅建置 Windows 應用程式時需要，可在 Windows（Git Bash）或 Linux（Ubuntu 24.04 上執行 `apt install dotnet-sdk-10.0 nsis`）上建置。 |
 
 ## 開始使用
 
@@ -32,6 +33,8 @@ pnpm run hooks:install   # 選用；見「本機驗證」
 | `pnpm start` | 建置 Web 應用程式並在 `http://localhost:4173` 提供服務，同時開啟瀏覽器；即 `launch/` 中啟動程式所執行的指令（[使用指南 §1](user-guide.md#1-開始之前)） |
 | `pnpm run build` | 將 Web 應用程式建置至 `apps/web/dist`，並產生其 SBOM、第三方授權聲明與 service worker（[發行流程](releasing.md)） |
 | `pnpm run build:native` | 將 Android 應用程式的頁面建置至 `apps/web/dist-native` |
+| `pnpm run build:desktop` | 將 Windows 應用程式的頁面建置至 `apps/web/dist-desktop` |
+| `pnpm run windows:build` | 將 Windows 應用程式及其安裝檔建置至 `apps/windows/build/`（[發行流程 §1](releasing.md#1-建置產出)） |
 | `pnpm run android:build` | 將 Android 應用程式建置至 `apps/android/android/app/build/outputs/apk/`（發行版；沒有金鑰時不簽署）。若需要除錯版 APK，請在第一次建置後於 `apps/android/android` 執行 `./gradlew assembleDebug` |
 | `pnpm run hooks:install` | 啟用版本庫的 Git hooks |
 | `pnpm run lint` | 檢查格式與 lint 規則（Biome）；有任何問題即失敗 |
@@ -79,6 +82,7 @@ pnpm run hooks:install   # 選用；見「本機驗證」
 |---|---|
 | `apps/web/` | Web 應用程式：建立轉接器並掛載介面的組合根 |
 | `apps/mcp/` | TripReplay MCP server（[ADR 0012](adr/0012-mcp-server.md)）：以標準輸入與輸出供代理使用 MCP，並在 `127.0.0.1:4174` 提供 WebSocket 給 TripReplay；`pnpm --filter @tripreplay/mcp start` 可執行它，`test/` 為其 Node 測試 |
+| `apps/windows/` | Windows 應用程式（[ADR 0016](adr/0016-windows-application.md)）：`src/` 中的 C# WebView2 程式、`installer/` 中的 NSIS 安裝檔與 `build.sh` |
 | `apps/android/` | Android 應用程式（[ADR 0008](adr/0008-android-in-1-0.md)）：Capacitor 設定與 `android/` 中的 Gradle 專案，含用於備份的 `SaveFile` 外掛 |
 | `packages/` | 產品套件：`domain`、`themes`、`i18n`、`timeline`、`app`、`renderer`、`map`、`media`、`audio`、`storage`、`ui`；其餘依[應用程式架構 §3](architecture.md#3-套件) 規劃 |
 | `packages/domain/` | 資料模型、不變條件及純函式的編輯操作 |
@@ -95,7 +99,7 @@ pnpm run hooks:install   # 選用；見「本機驗證」
 | `tools/deps-check/` | CI 使用的套件界線檢查；允許的相依關係定義於 `boundaries.json` |
 | `tools/i18n-check/` | CI 使用的訊息目錄檢查工具 |
 | `tools/license-check/` | CI 使用的授權檢查工具 |
-| `tools/release/` | 建置的授權聲明與 SBOM（包括 Android 函式庫，見 `src/android.ts`），以及發行說明 |
+| `tools/release/` | 建置的授權聲明與 SBOM（包括 Android 函式庫，見 `src/android.ts`；Windows 的 NuGet 套件，見 `src/windows.ts`），以及發行說明 |
 | `tools/variants/` | 由 OpenCC 字典產生地點搜尋用的異體字對照表 |
 | `tools/ci/` | `verify:clean` 使用的容器定義 |
 | `.githooks/` | 選用的 Git hooks |

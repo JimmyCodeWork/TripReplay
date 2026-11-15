@@ -10,6 +10,8 @@ export const DEFAULT_ORIGINS = [
   "https://jimmycodework.github.io",
   "http://localhost:4173",
   "http://127.0.0.1:4173",
+  // The Windows application (apps/windows), which serves its page from this virtual host.
+  "https://app.tripreplay.example",
 ] as const;
 
 /** Close codes TripReplay understands. */
