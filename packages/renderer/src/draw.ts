@@ -365,10 +365,29 @@ function journalLayout(ctx: Canvas2D, options: DrawOptions, journal: string): Jo
 }
 
 /**
- * A soft dark glow behind a stop title and its journal, fading out in every direction, so that they
- * read over any map without hiding it.
+ * The band behind a centered title and its subtitle, and `below` pixels of text under them, padded
+ * like a journal's, for the glow.
  */
-function drawGlow(ctx: Canvas2D, options: DrawOptions, placed: JournalLayout): void {
+function titleBand(options: DrawOptions, below = 0): { top: number; bottom: number } {
+  const { width, height, timeline } = options;
+  const unit = Math.min(width, height);
+  const layout = timeline.theme.layouts[timeline.aspectRatio];
+  const typography = timeline.theme.typography;
+  const pad = typography.captionSize * unit * 1.2 * 2.5;
+  const top = layout.title.y * height - typography.titleSize * unit * 0.7;
+  const subtitleBottom = (layout.title.y + layout.subtitleGap) * height + typography.subtitleSize * unit * 0.7;
+  return { top: top - pad, bottom: subtitleBottom + below + pad };
+}
+
+/**
+ * A soft dark glow behind centered text, fading out in every direction, so that it reads over any
+ * map without hiding it: behind every title of the recap, the same way, with or without a journal.
+ */
+function drawGlow(
+  ctx: Canvas2D,
+  options: DrawOptions,
+  placed: { readonly top: number; readonly bottom: number },
+): void {
   const { width, height, timeline } = options;
   const x = timeline.theme.layouts[timeline.aspectRatio].title.x * width;
   const y = (placed.top + placed.bottom) / 2;
@@ -504,6 +523,17 @@ function drawCaption(
  * The user's line for a new day, under its date, in the journal's serif; it rises into place once
  * the day has appeared.
  */
+/** The height of a day's line under its date, wrapped as `drawDayNote` sets it, for the glow. */
+function dayNoteHeight(ctx: Canvas2D, options: DrawOptions, note: string): number {
+  const { width, height, timeline } = options;
+  const size = timeline.theme.typography.captionSize * Math.min(width, height) * 1.2;
+  ctx.save();
+  journalText(ctx, size, timeline.theme.typography.journalFontFamily);
+  const lines = wrapText(note, JOURNAL_WIDTH[timeline.aspectRatio] * width, (t) => ctx.measureText(t).width);
+  ctx.restore();
+  return lines.length === 0 ? 0 : size * 1.2 + lines.length * size * LINE_HEIGHT;
+}
+
 function drawDayNote(ctx: Canvas2D, options: DrawOptions, overlay: Extract<Overlay, { kind: "dayChange" }>): void {
   const { width, height, timeline } = options;
   const unit = Math.min(width, height);
@@ -578,6 +608,7 @@ function drawOverlay(ctx: Canvas2D, options: DrawOptions, overlay: Overlay): voi
   ctx.globalAlpha = overlay.opacity;
   switch (overlay.kind) {
     case "tripTitle":
+      drawGlow(ctx, options, titleBand(options));
       text(ctx, options, overlay.title, layout.title, type.titleSize, type.titleWeight);
       text(
         ctx,
@@ -591,7 +622,7 @@ function drawOverlay(ctx: Canvas2D, options: DrawOptions, overlay: Overlay): voi
       break;
     case "stopTitle": {
       const placed = overlay.journal ? journalLayout(ctx, options, overlay.journal) : undefined;
-      if (placed) drawGlow(ctx, options, placed);
+      drawGlow(ctx, options, placed ?? titleBand(options));
       text(ctx, options, overlay.name, layout.title, type.titleSize, type.titleWeight);
       text(
         ctx,
@@ -609,6 +640,7 @@ function drawOverlay(ctx: Canvas2D, options: DrawOptions, overlay: Overlay): voi
       text(ctx, options, overlay.name, layout.stopLabel, type.labelSize, type.titleWeight);
       break;
     case "summary":
+      drawGlow(ctx, options, titleBand(options));
       text(ctx, options, overlay.title, layout.title, type.titleSize, type.titleWeight);
       text(
         ctx,
@@ -631,6 +663,7 @@ function drawOverlay(ctx: Canvas2D, options: DrawOptions, overlay: Overlay): voi
       ctx.fillStyle = `rgba(${NIGHT.red}, ${NIGHT.green}, ${NIGHT.blue}, ${(NIGHT.alpha * overlay.night).toFixed(3)})`;
       ctx.fillRect(0, 0, options.width, options.height);
       ctx.restore();
+      drawGlow(ctx, options, titleBand(options, overlay.note ? dayNoteHeight(ctx, options, overlay.note) : 0));
       text(ctx, options, labels.day(overlay.day), layout.title, type.titleSize, type.titleWeight);
       text(ctx, options, labels.date(overlay.date), layout.title, type.subtitleSize, 400, layout.subtitleGap);
       if (overlay.note) drawDayNote(ctx, options, overlay);

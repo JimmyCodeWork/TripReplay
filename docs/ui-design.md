@@ -168,6 +168,8 @@ The export uses the recap as it was when the dialog opened; edits made meanwhile
 | Video | Trimmed length | A framed video with its original sound, its note over the picture like a photo's, and a progress bar |
 | Closing | 3 s | The camera returns to the overview with the complete route; trip summary fades in |
 
+Every centered title of the recap, the trip's at the opening and the closing, a stop's with or without a journal entry, and a new day's, lies on the same soft dark glow, which fades out in every direction, so that titles look alike and read over any map. A note on a photo or video has its own shade instead, deepening towards the bottom of the picture.
+
 The opening, travel, stop title and closing lengths come from the theme unless the trip sets its own (§3.4).
 
 With "Reduce motion" enabled, camera moves and push-ins are replaced by cross-fades, and journal lines and notes fade in without rising. **Reduce motion** in Settings (§2.2) starts as the system setting and keeps the user's choice in the browser.
