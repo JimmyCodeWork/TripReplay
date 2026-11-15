@@ -5,7 +5,6 @@ export const night: Theme = {
   id: "night",
   nameKey: "theme.night.name",
   descriptionKey: "theme.night.description",
-  preferredAspectRatio: "16:9",
   map: {
     background: "#151b27",
     land: "#1a2130",

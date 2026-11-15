@@ -106,7 +106,7 @@ On every layout, what the user chooses stays under the finger: when a click or a
 | Media | "Import media" button; a "Stop" list, grouped by day, chooses whose media is shown; thumbnails of that stop's media in order. A **Make imported photos smaller** checkbox, on until turned off, and a **Make imported videos smaller (1080p, slower)** checkbox, off until turned on and shown only where the browser can encode video, choose whether imports store smaller copies; both are kept in the browser ([ADR 0011](adr/0011-smaller-media.md)). Selecting a photo shows its duration and an "On the way" checkbox (§6); selecting a video shows trim handles and volume. With "Reorder" on, beside "Import media", items reorder by dragging their handle (⠿). Each item's "Edit" button opens a row with a "Move to…" list of the other stops, grouped by day, which moves it to the end of that stop's media, then Move up, Move down (for the keyboard) and Remove from stop. |
 | Journal | The trip as a diary. By default one stop at a time, chosen like in the Media tab from a "Stop" list grouped by day, with **Previous stop** and **Next stop** buttons, and its day's line above it; with **Show the journal** set to one day at a time in Settings (§2.2), one day at a time with the same day chips as the itinerary, starting at the selected stop's day. Either keeps the tab short however long the journal grows: each day with a line of up to 200 characters that the recap shows as the day begins, each stop with its journal entry, and each photo or video with a short note (at most 500 characters) that becomes its caption. An entry is saved as one undoable change when the field loses focus, or with Ctrl+Enter or Cmd+Enter. Selecting a stop's name moves the preview to that stop. |
 | Music | Imported tracks; fade-in, fade-out, and "Lower music during clips with sound"; volume. |
-| Themes | Theme cards with a small preview; selecting one applies it immediately. Choosing the portrait theme also switches the preview to 9:16. |
+| Themes | Theme cards with a small preview; selecting one applies it immediately. The previews follow the trip's aspect ratio; choosing a theme leaves the aspect ratio as it is. |
 
 ### 3.4 Timeline
 
@@ -185,9 +185,11 @@ With **Load map first** on in Settings (§2.2), **Play** first moves the map thr
 
 | Theme | Look | Intended use |
 |---|---|---|
-| Classic | Light map, dark red route, white titles with shadow | General use, 16:9 |
+| Classic | Light map, dark red route, white titles with shadow | General use |
 | Night | Dark map, glowing yellow route | Evening viewing and projection |
-| Portrait | Large title at the top, media in the lower half | 9:16 sharing on phones |
+| Ocean | Sand-colored map, blue route, large white titles | Sharing on phones |
+
+Every theme has a layout for 16:9 and one for 9:16; portrait or landscape is set by the aspect ratio alone. The Ocean theme keeps the id `portrait` from when it also switched the recap to 9:16.
 
 The application interface itself follows the system light or dark setting, independently of the recap theme.
 

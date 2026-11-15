@@ -132,7 +132,7 @@ Use only music you have the right to use, especially if you show the recap in pu
 
 ## 7. Choose a Theme and Aspect Ratio
 
-- The **Themes** tab offers **Classic** (light map, dark route), **Night** (dark map, glowing route) and **Portrait** (large title at the top and media below). Choosing **Portrait** also switches the recap to 9:16.
+- The **Themes** tab offers **Classic** (light map, dark route), **Night** (dark map, glowing route) and **Ocean** (sand-colored map, blue route and large white titles). Portrait or landscape is set by **16:9** and **9:16** under the preview, whatever the theme.
 - Below the preview, choose **16:9** for screens and televisions, or **9:16** for phones.
 
 ## 8. Preview and Play

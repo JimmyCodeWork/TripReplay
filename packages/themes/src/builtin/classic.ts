@@ -5,7 +5,6 @@ export const classic: Theme = {
   id: "classic",
   nameKey: "theme.classic.name",
   descriptionKey: "theme.classic.description",
-  preferredAspectRatio: "16:9",
   map: {
     background: "#efe9df",
     land: "#e6dfd2",

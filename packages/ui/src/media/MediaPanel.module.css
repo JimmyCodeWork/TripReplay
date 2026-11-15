@@ -105,7 +105,7 @@ label.stop {
   white-space: nowrap;
 }
 
-.duration input {
+.duration input:not([type="checkbox"]) {
   width: 4.5em;
   padding: 1px 4px;
   border: 1px solid var(--color-field, #7a857e);
@@ -113,6 +113,14 @@ label.stop {
   background: var(--color-surface, #fff);
   color: var(--color-text, #1d2420);
   font: inherit;
+}
+
+/* A video's start and end, side by side where they fit and one under the other otherwise, so that
+   they never run under the Edit button beside them. */
+.trim {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 12px;
 }
 
 .tools {

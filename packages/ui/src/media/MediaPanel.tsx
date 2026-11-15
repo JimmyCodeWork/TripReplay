@@ -201,7 +201,7 @@ export function MediaPanel({
                           {t("media.videoLength", { length: formatTime(clip.outUs - clip.inUs) })}
                         </span>
                         {asset.kind === "video" && (
-                          <span className={styles.duration}>
+                          <span className={styles.trim}>
                             <SecondsField
                               className={styles.duration}
                               label={t("media.trimIn")}

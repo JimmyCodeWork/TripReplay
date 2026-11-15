@@ -48,12 +48,12 @@
     "description": "Description of the night theme."
   },
   "theme.portrait.name": {
-    "message": "Portrait",
-    "description": "Name of the theme designed for 9:16."
+    "message": "Ocean",
+    "description": "Name of the theme with a sand-colored map, a blue route and large white titles."
   },
   "theme.portrait.description": {
-    "message": "Large title at the top and media below; for 9:16",
-    "description": "Description of the portrait theme."
+    "message": "Sand-colored map, blue route and large white titles",
+    "description": "Description of the Ocean theme."
   },
   "region.world": {
     "message": "World overview",
@@ -1600,7 +1600,7 @@
     "description": "Heading of the themes tab."
   },
   "themes.intro": {
-    "message": "A theme sets the map colors, the route and the titles of the recap. Choosing one applies it at once; Portrait also switches to 9:16.",
+    "message": "A theme sets the recap's map colors, route and title style, and applies at once. Portrait or landscape is set by the aspect ratio under the preview.",
     "description": "Introduction of the themes tab."
   },
   "tripList.shrink": {

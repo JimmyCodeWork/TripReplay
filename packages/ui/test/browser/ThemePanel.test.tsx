@@ -38,7 +38,7 @@ describe("ThemePanel", () => {
       />,
     );
     const cards = [...view.querySelectorAll("button")];
-    expect(cards.map((c) => c.querySelector('[class*="name"]')?.textContent)).toEqual(["經典", "夜間", "直式"]);
+    expect(cards.map((c) => c.querySelector('[class*="name"]')?.textContent)).toEqual(["經典", "夜間", "藍海"]);
     expect(cards.map((c) => c.getAttribute("aria-pressed"))).toEqual(["true", "false", "false"]);
     expect(view.querySelectorAll("svg")).toHaveLength(3);
     cards[0]?.click();
@@ -46,7 +46,8 @@ describe("ThemePanel", () => {
     cards[2]?.click();
     expect(commands).toEqual([
       { type: "chooseTheme", themeId: "night" },
-      { type: "chooseTheme", themeId: "portrait", aspectRatio: "9:16" },
+      // The aspect ratio stays as it is: it is chosen under the preview.
+      { type: "chooseTheme", themeId: "portrait" },
     ]);
   });
 });
