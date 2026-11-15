@@ -1,12 +1,14 @@
 import type { Theme } from "../model.ts";
 import { DEFAULT_TIMING, DEFAULT_TYPOGRAPHY, LANDSCAPE_LAYOUT, PORTRAIT_LAYOUT } from "../shared.ts";
 
-/** Designed for 9:16: a large title at the top and media in the lower half. */
+/**
+ * "Ocean": a sand-colored map, a blue route and large white titles. Its id stays "portrait", the
+ * name it had while it also switched the recap to 9:16; the aspect ratio is now chosen on its own.
+ */
 export const portrait: Theme = {
   id: "portrait",
   nameKey: "theme.portrait.name",
   descriptionKey: "theme.portrait.description",
-  preferredAspectRatio: "9:16",
   map: {
     background: "#f3efe8",
     land: "#ebe5da",

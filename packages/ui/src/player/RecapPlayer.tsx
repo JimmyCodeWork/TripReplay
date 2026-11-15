@@ -1,4 +1,4 @@
-import type { Command, Playback, PreviewSurface, Timeline } from "@tripreplay/app";
+import { type Command, PLAYBACK_RATES, type Playback, type PreviewSurface, type Timeline } from "@tripreplay/app";
 import type { Locale, Translate } from "@tripreplay/i18n";
 import {
   type CSSProperties,
@@ -53,6 +53,8 @@ export interface RecapPlayerProps {
 }
 
 const ASPECT_RATIOS: readonly AspectRatio[] = ["16:9", "9:16"];
+/** How long the stage keeps its size before playback loads the map for it again. */
+const SIZE_SETTLE_MS = 300;
 /** Step of the position slider and of the arrow keys. */
 const STEP_US = 100_000;
 
@@ -110,9 +112,13 @@ export function RecapPlayer({
     };
   }, [createSurface]);
 
+  /** The stage's size once it has settled, for example after entering full screen. */
+  const [size, setSize] = useState("");
   useEffect(() => {
     const element = stage.current;
     if (!surface || !element) return;
+    let settle: ReturnType<typeof setTimeout> | undefined;
+    let first = true;
     const draw = () => {
       const frame = playback.frame();
       if (frame) surface.draw(timeline, frame);
@@ -120,12 +126,19 @@ export function RecapPlayer({
     const resize = () => {
       surface.resize(element.clientWidth, element.clientHeight);
       draw();
+      clearTimeout(settle);
+      const measured = () => setSize(`${element.clientWidth}x${element.clientHeight}`);
+      // The first size counts at once; later ones once they stop changing.
+      if (first) measured();
+      else settle = setTimeout(measured, SIZE_SETTLE_MS);
+      first = false;
     };
     const observer = new ResizeObserver(resize);
     observer.observe(element);
     resize();
     const unsubscribe = playback.subscribe(draw);
     return () => {
+      clearTimeout(settle);
       observer.disconnect();
       unsubscribe();
     };
@@ -133,10 +146,35 @@ export function RecapPlayer({
 
   /** Loading before playing, with its progress from 0 to 1; playing or pausing again cancels it. */
   const [preparing, setPreparing] = useState<{ readonly progress: number; readonly controller: AbortController }>();
-  /** What was last loaded: the surface and timeline, from a time on. */
-  const prepared = useRef<{ surface: PreviewSurface; timeline: Timeline; nearKm: number | undefined; fromUs: number }>(
-    undefined,
-  );
+  /**
+   * What was last loaded: the surface, timeline, distance and size, from a time on. The size
+   * matters because a larger stage, such as in full screen, shows other zoom levels and more tiles.
+   */
+  const prepared = useRef<
+    | { surface: PreviewSurface; timeline: Timeline; nearKm: number | undefined; size: string; fromUs: number }
+    | undefined
+  >(undefined);
+  const prepareAndPlay = (fromUs: number) => {
+    if (!surface?.prepare) return;
+    const controller = new AbortController();
+    // The effect below aborts the loading this one replaces.
+    setPreparing({ progress: 0, controller });
+    surface
+      .prepare(timeline, fromUs, {
+        nearKm: preloadNearKm,
+        signal: controller.signal,
+        onProgress: (progress) =>
+          setPreparing((current) => (current?.controller === controller ? { ...current, progress } : current)),
+      })
+      .then(
+        () => {
+          prepared.current = { surface, timeline, nearKm: preloadNearKm, size, fromUs };
+          setPreparing(undefined);
+          playback.play();
+        },
+        () => setPreparing((current) => (current?.controller === controller ? undefined : current)),
+      );
+  };
   const toggle = () => {
     if (preparing) {
       preparing.controller.abort();
@@ -149,32 +187,28 @@ export function RecapPlayer({
     const fromUs = state.timeUs >= state.durationUs ? 0 : state.timeUs;
     const done = prepared.current;
     const loaded =
-      done?.surface === surface && done.timeline === timeline && done.nearKm === preloadNearKm && done.fromUs <= fromUs;
-    if (loaded) {
-      playback.play();
-      return;
-    }
-    const controller = new AbortController();
-    setPreparing({ progress: 0, controller });
-    surface
-      .prepare(timeline, fromUs, {
-        nearKm: preloadNearKm,
-        signal: controller.signal,
-        onProgress: (progress) => setPreparing((current) => current && { ...current, progress }),
-      })
-      .then(
-        () => {
-          prepared.current = { surface, timeline, nearKm: preloadNearKm, fromUs };
-          setPreparing(undefined);
-          playback.play();
-        },
-        () => setPreparing(undefined),
-      );
+      done?.surface === surface &&
+      done.timeline === timeline &&
+      done.nearKm === preloadNearKm &&
+      done.size === size &&
+      done.fromUs <= fromUs;
+    if (loaded) playback.play();
+    else prepareAndPlay(fromUs);
   };
+  // A stage that grows or shrinks while playing, such as on entering full screen, needs other
+  // tiles: playback pauses, loads them from where it is, and goes on.
+  const prepareRef = useRef(prepareAndPlay);
+  prepareRef.current = prepareAndPlay;
+  useEffect(() => {
+    const done = prepared.current;
+    if (!preload || !done || done.size === size || !playback.getState().playing) return;
+    playback.pause();
+    prepareRef.current(playback.getState().timeUs);
+  }, [size, preload, playback]);
   // Event handlers outside React call the latest toggle.
   const toggleRef = useRef(toggle);
   toggleRef.current = toggle;
-  // A new surface or timeline, or leaving, stops loading for the old one.
+  // A new surface, timeline or loading, or leaving, stops loading for the old one.
   const controller = preparing?.controller;
   // biome-ignore lint/correctness/useExhaustiveDependencies: stops on a change of surface or timeline.
   useEffect(() => () => controller?.abort(), [controller, surface, timeline]);
@@ -244,6 +278,16 @@ export function RecapPlayer({
           aria-label={t("player.position")}
           aria-valuetext={t("player.time", { current: formatTime(state.timeUs), total: formatTime(state.durationUs) })}
         />
+        <label className={styles.speed} title={t("player.speedHint")}>
+          <span className={styles.hidden}>{t("player.speed")}</span>
+          <select value={state.rate} onChange={(event) => playback.setRate(Number(event.target.value))}>
+            {PLAYBACK_RATES.map((rate) => (
+              <option key={rate} value={rate}>
+                {t("player.rate", { rate })}
+              </option>
+            ))}
+          </select>
+        </label>
         <fieldset className={styles.aspect} aria-labelledby={aspectId}>
           <legend id={aspectId} className={styles.hidden}>
             {t("player.aspectRatio")}

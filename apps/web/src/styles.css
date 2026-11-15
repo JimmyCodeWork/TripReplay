@@ -213,6 +213,20 @@ body {
   background: var(--color-surface);
 }
 
+/*
+ * On a wide screen the side panel scrolls on its own, with the wheel over it, while the preview
+ * stays in view beside it; at its end the page scrolls on, for example to the timeline.
+ */
+@media (width >= 820px) {
+  .workspace-panel {
+    position: sticky;
+    top: 12px;
+    max-height: calc(100dvh - 24px);
+    overflow-y: auto;
+    overflow-anchor: none;
+  }
+}
+
 @media (width < 820px) {
   .maps-screen,
   .workspace-main {

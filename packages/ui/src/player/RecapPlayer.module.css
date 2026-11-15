@@ -76,6 +76,16 @@
   border: 0;
 }
 
+.speed select {
+  min-height: 36px;
+  padding: 4px 6px;
+  border: 1px solid var(--color-line, #d6ddd6);
+  border-radius: 6px;
+  background: var(--color-surface, #fff);
+  color: inherit;
+  font: inherit;
+}
+
 .hidden {
   position: absolute;
   width: 1px;

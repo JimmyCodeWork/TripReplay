@@ -37,7 +37,13 @@ export {
   type MediaImportState,
   prepareMusic,
 } from "./media-import.ts";
-export { createPlayback, type Playback, type PlaybackOptions, type PlaybackState } from "./playback.ts";
+export {
+  createPlayback,
+  PLAYBACK_RATES,
+  type Playback,
+  type PlaybackOptions,
+  type PlaybackState,
+} from "./playback.ts";
 export type {
   AssetStore,
   AudioPort,

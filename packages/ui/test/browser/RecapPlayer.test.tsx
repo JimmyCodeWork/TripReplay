@@ -110,6 +110,22 @@ describe("RecapPlayer", () => {
     expect(drawn.at(-1)).toBe(4_000_000);
   });
 
+  it("plays at a chosen speed", async () => {
+    const { clock, playback, ui } = setup();
+    const view = await render(ui);
+    const speed = view.querySelector("select[class], label select") as HTMLSelectElement;
+    expect([...speed.options].map((o) => o.textContent)).toEqual(["0.5×", "1×", "1.5×", "2×"]);
+    expect(speed.value).toBe("1");
+    await act(async () => {
+      speed.value = "2";
+      speed.dispatchEvent(new Event("change", { bubbles: true }));
+    });
+    expect(playback.getState().rate).toBe(2);
+    await click(view, "播放");
+    await clock.frame(1000);
+    expect(playback.getState().timeUs).toBe(2_000_000);
+  });
+
   it("shows the segments of the recap and switches the aspect ratio", async () => {
     const { timeline, ratios, ui } = setup();
     const view = await render(ui);
@@ -193,6 +209,24 @@ describe("RecapPlayer loading the map first", () => {
     await click(view, "暫停");
     await click(view, "播放");
     expect(calls).toHaveLength(1);
+    expect(playback.getState().playing).toBe(true);
+  });
+
+  it("loads the map again when the stage changes size while playing, as in full screen", async () => {
+    const { playback, calls, ui } = prepared();
+    const view = await render(<div style={{ width: "640px" }}>{ui(true)}</div>);
+    await act(async () => new Promise((resolve) => setTimeout(resolve, 50)));
+    await click(view, "播放");
+    await act(async () => calls[0]?.resolve());
+    expect(playback.getState().playing).toBe(true);
+    await act(async () => {
+      (view.firstElementChild as HTMLElement).style.width = "1200px";
+      await new Promise((resolve) => setTimeout(resolve, 600));
+    });
+    expect(calls).toHaveLength(2);
+    expect(playback.getState().playing).toBe(false);
+    expect(view.querySelector('[role="status"]')?.textContent).toContain("正在讀取地圖");
+    await act(async () => calls[1]?.resolve());
     expect(playback.getState().playing).toBe(true);
   });
 

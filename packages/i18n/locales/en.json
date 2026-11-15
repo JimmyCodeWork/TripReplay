@@ -48,12 +48,12 @@
     "description": "Description of the night theme."
   },
   "theme.portrait.name": {
-    "message": "Portrait",
-    "description": "Name of the theme designed for 9:16."
+    "message": "Ocean",
+    "description": "Name of the theme with a sand-colored map, a blue route and large white titles."
   },
   "theme.portrait.description": {
-    "message": "Large title at the top and media below; for 9:16",
-    "description": "Description of the portrait theme."
+    "message": "Sand-colored map, blue route and large white titles",
+    "description": "Description of the Ocean theme."
   },
   "region.world": {
     "message": "World overview",
@@ -843,6 +843,18 @@
     "message": "{current} / {total}",
     "description": "Playback position and length of the recap, as minutes:seconds."
   },
+  "player.speed": {
+    "message": "Playback speed",
+    "description": "Accessible name of the choice of playback speed under the preview."
+  },
+  "player.speedHint": {
+    "message": "Play the preview faster or slower, for example to check a long recap; exported videos always play at normal speed.",
+    "description": "Tooltip of the playback speed choice."
+  },
+  "player.rate": {
+    "message": "{rate}×",
+    "description": "A playback speed, such as 1.5×."
+  },
   "player.position": {
     "message": "Playback position",
     "description": "Accessible name of the slider that moves through the recap."
@@ -930,6 +942,26 @@
   "settings.section.playback": {
     "message": "Playback and map",
     "description": "Heading of the settings for playing the recap and loading the map."
+  },
+  "settings.section.editing": {
+    "message": "Editing",
+    "description": "Heading of the settings for editing a trip."
+  },
+  "settings.journalView": {
+    "message": "Show the journal",
+    "description": "Label of the choice of how the Journal tab shows the journal."
+  },
+  "settings.journalView.stop": {
+    "message": "One stop at a time",
+    "description": "Choice: the Journal tab shows one stop, chosen from a list."
+  },
+  "settings.journalView.day": {
+    "message": "One day at a time",
+    "description": "Choice: the Journal tab shows one day with its stops."
+  },
+  "settings.journalViewHint": {
+    "message": "One stop at a time shows a stop's entry, its day's line and its photos' notes, with buttons to the stops before and after, and keeps the tab short however long the journal grows. One day at a time shows the stops of a day together; All shows the whole trip, which can be slow with a long journal.",
+    "description": "Explanation of the Show the journal setting."
   },
   "settings.section.import": {
     "message": "Import",
@@ -1463,6 +1495,14 @@
     "message": "A few words about this moment",
     "description": "Placeholder of an empty note on a photo or video."
   },
+  "journal.previousStop": {
+    "message": "Previous stop",
+    "description": "Button in the Journal tab that shows the stop before."
+  },
+  "journal.nextStop": {
+    "message": "Next stop",
+    "description": "Button in the Journal tab that shows the stop after."
+  },
   "workspace.tab.music": {
     "message": "Music",
     "description": "Tab with the background music of the recap."
@@ -1560,7 +1600,7 @@
     "description": "Heading of the themes tab."
   },
   "themes.intro": {
-    "message": "A theme sets the map colors, the route and the titles of the recap. Choosing one applies it at once; Portrait also switches to 9:16.",
+    "message": "A theme sets the recap's map colors, route and title style, and applies at once. Portrait or landscape is set by the aspect ratio under the preview.",
     "description": "Introduction of the themes tab."
   },
   "tripList.shrink": {

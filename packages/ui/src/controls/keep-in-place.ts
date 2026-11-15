@@ -3,6 +3,8 @@ interface Held {
   readonly target: Element;
   readonly top: number;
   readonly scrollY: number;
+  /** An area marked `data-keep-in-place` that scrolls on its own, kept instead of the page. */
+  readonly area?: { readonly element: Element; readonly scrollTop: number };
 }
 
 /**
@@ -13,8 +15,9 @@ interface Held {
  * as much as the chosen element moved. When the page has become too short for that, room is kept
  * at its end, and given back as the user scrolls up.
  *
- * Only the page's own scrolling is kept: dialogs and other areas that scroll on their own are left
- * alone, and so is a page that scrolled on purpose, for example to bring something into view.
+ * Only the page's own scrolling is kept, and that of areas marked `data-keep-in-place`, such as the
+ * workspace's side panel on a wide screen: dialogs and other areas that scroll on their own are left
+ * alone, and so is a page or area that scrolled on purpose, for example to bring something into view.
  * The browser's own scroll anchoring is turned off for the page: it keeps some other element in
  * place, often one below what was chosen, and so moved the chosen element away when rows opened
  * above that element, such as the fields under the timeline.
@@ -30,6 +33,7 @@ export function keepInPlace(win: Window = window): () => void {
 
   const scrollsInside = (element: Element) => {
     for (let node = element.parentElement; node && node !== doc.body && node !== root; node = node.parentElement) {
+      if (node.hasAttribute("data-keep-in-place")) return false;
       const { overflowY } = win.getComputedStyle(node);
       if ((overflowY === "auto" || overflowY === "scroll") && node.scrollHeight > node.clientHeight) return true;
     }
@@ -51,7 +55,14 @@ export function keepInPlace(win: Window = window): () => void {
     const target = event.target;
     held = undefined;
     if (!(target instanceof Element) || target.closest("dialog") || scrollsInside(target)) return;
-    held = { target, top: target.getBoundingClientRect().top, scrollY: win.scrollY };
+    const area = target.closest("[data-keep-in-place]");
+    const scrolls = area && area.scrollHeight > area.clientHeight;
+    held = {
+      target,
+      top: target.getBoundingClientRect().top,
+      scrollY: win.scrollY,
+      ...(area && scrolls ? { area: { element: area, scrollTop: area.scrollTop } } : {}),
+    };
   };
 
   const after = () => {
@@ -61,6 +72,14 @@ export function keepInPlace(win: Window = window): () => void {
     win.cancelAnimationFrame(frame);
     frame = win.requestAnimationFrame(() => {
       if (!kept.target.isConnected) return;
+      if (kept.area) {
+        // Within an area of its own, unless it scrolled on purpose; it cannot scroll past its ends.
+        const { element, scrollTop } = kept.area;
+        const end = element.scrollHeight - element.clientHeight;
+        if (element.scrollTop !== scrollTop && element.scrollTop < end - 1) return;
+        element.scrollTop += kept.target.getBoundingClientRect().top - kept.top;
+        return;
+      }
       const end = root.scrollHeight - win.innerHeight;
       // The page scrolled by itself: on purpose, unless only because it became shorter.
       const shortened = win.scrollY < kept.scrollY && win.scrollY >= end - 1;

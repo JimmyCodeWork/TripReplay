@@ -83,7 +83,7 @@ In the **Media** tab, choose the **Stop** whose photos and videos you want to se
 
 ## 5. Write the Journal
 
-The **Journal** tab is a diary of the trip. For each day, you can write a line that the recap shows as the day begins, such as "Off to Kyoto on the first train"; for each stop, write what happened there; for each photo or video, add a short note. On a long trip, **Day 1**, **Day 2** and so on show one day at a time.
+The **Journal** tab is a diary of the trip. For each day, you can write a line that the recap shows as the day begins, such as "Off to Kyoto on the first train"; for each stop, write what happened there; for each photo or video, add a short note. The tab shows one stop at a time: choose it in **Stop**, or go through the trip with **Previous stop** and **Next stop**; its day's line is shown above it. To see a whole day's stops together instead, set **Show the journal** to **One day at a time** in **Settings**.
 
 - A day's line appears under "Day 2" and the date when the day begins, before the recap moves to the day's first stop, and stays long enough to read it. The first day's line appears before the move to the first stop.
 
@@ -132,7 +132,7 @@ Use only music you have the right to use, especially if you show the recap in pu
 
 ## 7. Choose a Theme and Aspect Ratio
 
-- The **Themes** tab offers **Classic** (light map, dark route), **Night** (dark map, glowing route) and **Portrait** (large title at the top and media below). Choosing **Portrait** also switches the recap to 9:16.
+- The **Themes** tab offers **Classic** (light map, dark route), **Night** (dark map, glowing route) and **Ocean** (sand-colored map, blue route and large white titles). Portrait or landscape is set by **16:9** and **9:16** under the preview, whatever the theme.
 - Below the preview, choose **16:9** for screens and televisions, or **9:16** for phones.
 
 ## 8. Preview and Play
@@ -140,6 +140,7 @@ Use only music you have the right to use, especially if you show the recap in pu
 The preview on the right always shows the current recap.
 
 - **Play** and **Pause**, or press the space bar while no button or field has the focus.
+- The speed beside them, **1×** at first, plays the preview at 0.5×, 1.5× or 2×, for example to check a long recap quickly. Exported videos always play at normal speed.
 - Drag the **Playback position** slider, or use the arrow keys on it, to move through the recap.
 - The bar under the slider shows the parts of the recap: opening, new days, travel, stop titles, photos, videos and closing. Select a part to jump to it.
 - Times are marked above the bar.
@@ -155,7 +156,7 @@ The preview on the right always shows the current recap.
 Two settings in **Settings** change how the recap plays:
 
 - **Reduce motion** replaces camera flights and zooms with cross-fades. It starts as your system's "Reduce motion" setting.
-- **Load map first**, on until you turn it off, makes **Play** first load the map along the camera path, so that the recap plays without blank or half-drawn areas. The preview shows the progress, and **Cancel** stops it. It takes a few seconds, longer for long trips, and happens again only after you change the recap. **Load the detailed map** chooses where the detailed map is loaded: within 25 km of the stops by default, or within 10, 50 or 100 km, or along the whole path. Farther away only the world overview is loaded, which is faster; the detailed map there appears while the recap plays, so a coarse map may show first. Without the world overview, the whole path is loaded.
+- **Load map first**, on until you turn it off, makes **Play** first load the map along the camera path, so that the recap plays without blank or half-drawn areas. The preview shows the progress, and **Cancel** stops it. It takes a few seconds, longer for long trips, and happens again only after you change the recap or the size of the preview; entering full screen while playing pauses briefly to load the map for the larger picture. **Load the detailed map** chooses where the detailed map is loaded: within 25 km of the stops by default, or within 10, 50 or 100 km, or along the whole path. Farther away only the world overview is loaded, which is faster; the detailed map there appears while the recap plays, so a coarse map may show first. Without the world overview, the whole path is loaded.
 
 If no downloaded map contains your stops, the preview says so and draws the recap on the theme's background; download the region in **Maps** (§2) to see the map.
 

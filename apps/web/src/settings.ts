@@ -21,6 +21,8 @@ export interface Settings {
   readonly mcp: boolean;
   /** The MCP pairing code the user entered; empty until then. */
   readonly mcpCode: string;
+  /** How the Journal tab shows the journal: one stop or one day at a time. */
+  readonly journalView: "stop" | "day";
 }
 
 /** The distances offered for loading the detailed map first, in kilometres. */
@@ -35,6 +37,7 @@ const DEFAULTS: Settings = {
   agentTools: false,
   mcp: false,
   mcpCode: "",
+  journalView: "stop",
 };
 
 const KEYS: Record<keyof Settings, string> = {
@@ -46,6 +49,7 @@ const KEYS: Record<keyof Settings, string> = {
   agentTools: "tripreplay.agentTools",
   mcp: "tripreplay.mcp",
   mcpCode: "tripreplay.mcpCode",
+  journalView: "tripreplay.journalView",
 };
 
 /** Turns a stored text into a setting's value, or undefined where it holds none or a wrong one. */
@@ -53,6 +57,8 @@ function parse<K extends keyof Settings>(key: K, text: string): Settings[K] | un
   switch (key) {
     case "mcpCode":
       return text as Settings[K];
+    case "journalView":
+      return (text === "day" || text === "stop" ? text : undefined) as Settings[K] | undefined;
     case "preloadNearKm":
       if (text === "all") return undefined;
       return (PRELOAD_NEAR_KM.includes(Number(text) as never) ? Number(text) : DEFAULTS.preloadNearKm) as Settings[K];

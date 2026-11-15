@@ -89,7 +89,6 @@ export interface Theme {
   /** Message catalog keys for the theme's name and description. */
   readonly nameKey: string;
   readonly descriptionKey: string;
-  readonly preferredAspectRatio: AspectRatioKey;
   readonly map: MapColors;
   readonly route: RouteStyle;
   readonly marker: MarkerStyle;

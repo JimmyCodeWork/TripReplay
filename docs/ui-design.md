@@ -57,12 +57,13 @@ Maps are downloaded once and then used on the device ([ADR 0006](adr/0006-local-
 | Playback and map | **Reduce motion** (§6) | The system setting | ? |
 | | **Load map first** ([ADR 0014](adr/0014-load-map-before-playing.md)) | On | ? |
 | | **Load the detailed map**: within 10, 25, 50 or 100 km of the stops, or along the whole path; disabled while **Load map first** is off | Within 25 km | ! |
+| Editing | **Show the journal**: one stop at a time, or one day at a time | One stop at a time | ? |
 | Import | **Make imported photos smaller** ([ADR 0011](adr/0011-smaller-media.md)) | On | ? |
 | | **Make imported videos smaller (1080p, slower)**, where the browser can encode videos | Off | ! |
 | AI agents | **Let the browser's AI agent use the open trip**, where the browser offers WebMCP ([ADR 0010](adr/0010-agent-tools.md)) | Off | ! |
 | | **Connect to the TripReplay MCP server on this computer**, in the Web application only ([ADR 0012](adr/0012-mcp-server.md)), with **Change pairing code** while a code is kept | Off | ! |
 
-A small **?** beside a setting explains what it does; a small **!** marks a cost or a consequence to know first, such as slow encoding or text sent to an agent's service. Selecting either shows its text under the setting, and selecting it again hides it; it has an accessible name such as "About Load map first". A group whose settings the device does not offer is left out.
+A small **?** beside a setting explains what it does; a small **!** marks a cost or a consequence to know first, such as slow encoding or text sent to an agent's service. Selecting either opens a small dialog with its text, titled with the setting's name, in the application's colors so that it reads in light and dark mode; it has an accessible name such as "About Load map first". A group whose settings the device does not offer is left out.
 
 The two import settings also stay as checkboxes in the **Media** tab, where they are used, and change the same setting.
 
@@ -87,7 +88,7 @@ The two import settings also stay as checkboxes in the **Media** tab, where they
 └──────────────────────────────────────────────────────────────┘
 ```
 
-- **Side panel** (320 px) with four tabs, described in §3.3.
+- **Side panel** (320 px) with four tabs, described in §3.3. It scrolls on its own, with the wheel over it, and stays in view while the page scrolls, so that the preview beside it stays in view too; at its end the page scrolls on, for example to the timeline.
 - **Preview** fills the remaining area at the selected aspect ratio.
 - **Timeline** spans the full width at the bottom.
 
@@ -103,9 +104,9 @@ On every layout, what the user chooses stays under the finger: when a click or a
 |---|---|
 | Itinerary | Stops grouped by day, each with a number and a name. A "Reorder" button beside the title shows a drag handle on each stop, so that a stray touch never reorders, and reads "Done" until pressed again. Drag the handle to reorder, including across days; the place is marked by a line. With more than one day, chips ("All days", "Day 1", …) show one day at a time, and choosing a day sets the date of new stops. Selecting a stop moves the preview to that stop and expands its actions under it: "Media (n)" and "Journal" open those tabs at the stop, then Copy, Rename, Remove, Move up and Move down, the last two for the keyboard. Stops are added by searching place names in the downloaded maps, by "Drop a pin", or by pasting coordinates or a map link (for example from Google Maps). Places already in the trip whose name matches are offered first in the search, marked "In this trip". Copy opens a small form with the copy's date and its place, at the start of that day or after one of its stops (by default right after the original on its own day, after the last stop on another day), for a hotel of several nights or a station passed again; the copy has no journal entry. |
 | Media | "Import media" button; a "Stop" list, grouped by day, chooses whose media is shown; thumbnails of that stop's media in order. A **Make imported photos smaller** checkbox, on until turned off, and a **Make imported videos smaller (1080p, slower)** checkbox, off until turned on and shown only where the browser can encode video, choose whether imports store smaller copies; both are kept in the browser ([ADR 0011](adr/0011-smaller-media.md)). Selecting a photo shows its duration and an "On the way" checkbox (§6); selecting a video shows trim handles and volume. With "Reorder" on, beside "Import media", items reorder by dragging their handle (⠿). Each item's "Edit" button opens a row with a "Move to…" list of the other stops, grouped by day, which moves it to the end of that stop's media, then Move up, Move down (for the keyboard) and Remove from stop. |
-| Journal | The trip as a diary, day by day, with the same day chips as the itinerary to show one day at a time (a stop opened from elsewhere brings its day into view): each day with a line of up to 200 characters that the recap shows as the day begins, each stop with its journal entry, and each photo or video with a short note (at most 500 characters) that becomes its caption. An entry is saved as one undoable change when the field loses focus, or with Ctrl+Enter or Cmd+Enter. Selecting a stop's name moves the preview to that stop. |
+| Journal | The trip as a diary. By default one stop at a time, chosen like in the Media tab from a "Stop" list grouped by day, with **Previous stop** and **Next stop** buttons, and its day's line above it; with **Show the journal** set to one day at a time in Settings (§2.2), one day at a time with the same day chips as the itinerary, starting at the selected stop's day. Either keeps the tab short however long the journal grows: each day with a line of up to 200 characters that the recap shows as the day begins, each stop with its journal entry, and each photo or video with a short note (at most 500 characters) that becomes its caption. An entry is saved as one undoable change when the field loses focus, or with Ctrl+Enter or Cmd+Enter. Selecting a stop's name moves the preview to that stop. |
 | Music | Imported tracks; fade-in, fade-out, and "Lower music during clips with sound"; volume. |
-| Themes | Theme cards with a small preview; selecting one applies it immediately. Choosing the portrait theme also switches the preview to 9:16. |
+| Themes | Theme cards with a small preview; selecting one applies it immediately. The previews follow the trip's aspect ratio; choosing a theme leaves the aspect ratio as it is. |
 
 ### 3.4 Timeline
 
@@ -114,6 +115,7 @@ On every layout, what the user chooses stays under the finger: when a click or a
 - A scale above the segments marks the time, every 1, 2, 5, 10, 15 or 30 seconds or more, with at most eight marks in view.
 - **Zoom:** − and + buttons above the timeline halve or double its width, from the whole recap up to the zoom at which 5 seconds fill the width; they appear only for a recap long enough to zoom. A zoomed timeline scrolls sideways by swiping, and an overview bar under it shows the whole recap with the part in view as a window that can be dragged, or moved by clicking beside it. Zooming keeps the playhead where it was in view; during playback the timeline scrolls to keep the playhead in view.
 - Clicking or dragging on the timeline moves the playhead; space toggles playback.
+- A **Playback speed** choice beside the play button plays the preview at 0.5×, 1×, 1.5× or 2×, with the sound of clips and music at the same speed; exported videos always play at 1×.
 - **Days:** on a trip of several days, the same day chips as the itinerary (§3.3) above the timeline show one day at a time. The opening belongs to the first day and the closing to the last; the strips, the time scale and the music then span only that day's parts, zoom applies within it, and choosing a day moves the playhead a moment into its first part. Stepping to a part of another day shows that day.
 - **Stepping:** above the timeline, "« Previous day", "‹ Previous part", "Next part ›" and "Next day »" move the playhead a moment into that part and select it, so its numbers show below, without aiming at a thin segment. A day starts with the move to its first stop; the first day starts with the opening. The parts are counted from the selected one, or from the one at the playhead.
 - **Durations are edited by dragging, or as numbers:**
@@ -162,7 +164,7 @@ The export uses the recap as it was when the dialog opened; edits made meanwhile
 |---|---|---|
 | Opening | 3 s | Overview of the whole trip with all stops marked; trip name and dates fade in |
 | New day | 1.5 s, longer with a line | Before the move to the first stop of a new day, and of the first day when it has a line, a part of its own: the scene darkens like nightfall and brightens again, and the day ("Day 2") and its date are shown in the middle, with the day's line from the journal under them in the journal serif. The camera and the line stay where they are; the move starts after it. A day with a line lasts long enough to read it: 2 s plus 0.12 s per character, up to 8 s |
-| Travel | 2 s | The camera flies to the next stop, zooming out for long distances; the route draws itself along the way, with an arrow at its head. The leg being drawn and the markers of its ends are drawn above the earlier line and markers, so that a line crossing earlier ones stays in view |
+| Travel | 2 s | The camera flies to the next stop, zooming out for long distances; the route draws itself along the way, with an arrow at its head. The leg being drawn and the markers of its ends are drawn above the earlier line and markers, so that a line crossing earlier ones stays in view. A stop's marker appears only once the camera arrives there, not ahead of time |
 | Stop title | 1 s, longer with a journal entry | The camera settles on the stop; its name and day appear, and the first 80 characters of its journal entry in up to three centered lines in the theme's journal serif, on a soft dark glow. A fine rule parts around the stop's marker (or shows a diamond in the route color) between the date and the entry, and the lines rise into place one after another, all within the first half of the title. The title lasts at least 1.5 s plus 0.12 s per character of the entry, up to 10 s |
 | Photos on the way | 3 s each, during the travel | Photos marked "On the way" in the Media tab are shown during the travel to their stop instead of after its title, each on a small card beside the line (lower right in 16:9, lower middle in 9:16) with its note, fading in and out with a moment of the line alone before, between and after them. The travel is lengthened to fit them, even past its own length. When such a photo has a location, the line bends through where it was taken, in the order of the stop's media, and reaches that point while the photo is shown; without one, the line is drawn evenly during the move. Videos cannot be on the way |
 | Photo | 3 s each | A framed photo over the map with a slow push-in, and its note in up to two centered lines of the journal serif over the bottom of the picture, on a shade that deepens downwards, appearing shortly after the photo; the stop name stays in a corner |
@@ -177,15 +179,17 @@ With "Reduce motion" enabled, camera moves and push-ins are replaced by cross-fa
 
 The **Itinerary only** button under the preview compiles the recap without photos and videos, those on the way included: the opening, the moves, the stop titles with their journal, the closing and the music remain, to check the itinerary. It is not kept, so the full recap returns when the trip is opened again; an export made meanwhile is of what the preview shows.
 
-With **Load map first** on in Settings (§2.2), **Play** first moves the map through the camera's path from the current position, waiting at each view until its tiles are drawn ([ADR 0014](adr/0014-load-map-before-playing.md)); farther than the chosen distance from every stop, only the world overview is loaded. Meanwhile a note over the preview shows the progress in percent and **Play** reads **Cancel**. A recap is loaded once; it is loaded again only after it or the distance changes.
+With **Load map first** on in Settings (§2.2), **Play** first moves the map through the camera's path from the current position, waiting at each view until its tiles are drawn ([ADR 0014](adr/0014-load-map-before-playing.md)); farther than the chosen distance from every stop, only the world overview is loaded. Meanwhile a note over the preview shows the progress in percent and **Play** reads **Cancel**. A recap is loaded once; it is loaded again only after it, the distance or the size of the preview changes. When the preview changes size while playing, such as on entering full screen, playback pauses, loads the map for the new size from where it is, and goes on.
 
 ## 7. Themes
 
 | Theme | Look | Intended use |
 |---|---|---|
-| Classic | Light map, dark red route, white titles with shadow | General use, 16:9 |
+| Classic | Light map, dark red route, white titles with shadow | General use |
 | Night | Dark map, glowing yellow route | Evening viewing and projection |
-| Portrait | Large title at the top, media in the lower half | 9:16 sharing on phones |
+| Ocean | Sand-colored map, blue route, large white titles | Sharing on phones |
+
+Every theme has a layout for 16:9 and one for 9:16; portrait or landscape is set by the aspect ratio alone. The Ocean theme keeps the id `portrait` from when it also switched the recap to 9:16.
 
 The application interface itself follows the system light or dark setting, independently of the recap theme.
 

@@ -166,12 +166,10 @@ describe("routePoints", () => {
 });
 
 describe("drawFrame", () => {
-  it("shows the trip title, its dates and every stop as upcoming during the opening", () => {
+  it("shows the trip title and its dates during the opening, without the stops ahead", () => {
     const { calls, texts } = draw(timeline, 1_500_000);
     expect(texts).toEqual(["Kyoto", "2026-04-01 – 2026-04-02", "© OpenStreetMap"]);
-    const markers = calls.filter((c) => c.name === "arc");
-    expect(markers).toHaveLength(3);
-    expect(calls.filter((c) => c.name === "fill").every((c) => c.fill === timeline.theme.marker.upcoming)).toBe(true);
+    expect(calls.filter((c) => c.name === "arc")).toHaveLength(0);
     expect(calls.some((c) => c.name === "stroke" && c.stroke === timeline.theme.route.color)).toBe(false);
   });
 
@@ -186,7 +184,7 @@ describe("drawFrame", () => {
     expect(settled.texts).toContain("Day 2 · 2026-04-02");
   });
 
-  it("draws the leg being travelled and its stops above the rest, with an arrow at its head", () => {
+  it("draws the leg being travelled and the stop it leaves above the rest, with an arrow at its head", () => {
     const travel = segment("travel", 2);
     if (!travel) throw new Error("missing segment");
     const { calls } = draw(timeline, (travel.startUs + travel.endUs) / 2);
@@ -195,10 +193,11 @@ describe("drawFrame", () => {
     // The line already drawn, then the leg being drawn.
     expect(lineStrokes).toHaveLength(2);
     const arcs = calls.flatMap((c, i) => (c.name === "arc" ? [{ i, x: c.args[0] as number }] : []));
-    expect(arcs).toHaveLength(3);
-    // The first stop, reached before this leg, lies under it; the leg's ends are drawn after it.
+    // The two stops reached; the stop ahead appears only once the camera arrives.
+    expect(arcs).toHaveLength(2);
+    // The first stop lies under the leg; the stop the leg leaves is drawn after it.
     const legStroke = lineStrokes[1] ?? 0;
-    expect(arcs.filter((a) => a.i > legStroke)).toHaveLength(2);
+    expect(arcs.filter((a) => a.i > legStroke)).toHaveLength(1);
     // The arrow: a closed shape filled in the route's color after the markers.
     const lastArc = arcs.at(-1)?.i ?? 0;
     const arrow = calls.findIndex((c, i) => i > lastArc && c.name === "closePath");

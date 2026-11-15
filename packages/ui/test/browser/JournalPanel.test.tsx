@@ -3,7 +3,7 @@ import { createTranslator } from "@tripreplay/i18n";
 import { act } from "react";
 import { afterEach, describe, expect, it } from "vitest";
 import { JournalPanel } from "../../src/index.ts";
-import { cleanup, click, render, rerender } from "./support.tsx";
+import { button, cleanup, click, render, rerender } from "./support.tsx";
 
 afterEach(cleanup);
 
@@ -55,7 +55,7 @@ async function write(area: HTMLTextAreaElement, text: string) {
   });
 }
 
-function setup() {
+function setup(options: { selectedStopId?: string; view?: "stop" | "day" } = {}) {
   const commands: Command[] = [];
   const selected: string[] = [];
   const ui = (p: Project) => (
@@ -65,7 +65,8 @@ function setup() {
         commands.push(command);
         return { ok: true, project: p } as never;
       }}
-      selectedStopId="a"
+      selectedStopId={options.selectedStopId ?? "a"}
+      {...(options.view ? { view: options.view } : {})}
       onSelect={(id) => void selected.push(id)}
       mediaUrl={async () => undefined}
       locale="zh-TW"
@@ -76,40 +77,48 @@ function setup() {
 }
 
 describe("JournalPanel", () => {
-  it("shows one day at a time", async () => {
-    const { ui } = setup();
+  it("shows one stop at a time, with its day's line, chosen from a list or the buttons", async () => {
+    const { selected, ui } = setup({ selectedStopId: "b" });
     const view = await render(ui(project));
-    await click(view, "第 2 天");
     expect([...view.querySelectorAll("h3")].map((h) => h.textContent)).toEqual(["第 2 天 · 2026年4月2日"]);
-    await click(view, "全部");
-    expect(view.querySelectorAll("h3")).toHaveLength(2);
-  });
-
-  it("shows the trip day by day with each stop's entry and each photo's note", async () => {
-    const { ui } = setup();
-    const view = await render(ui(project));
-    expect([...view.querySelectorAll("h3")].map((h) => h.textContent)).toEqual([
+    expect((view.querySelector('[aria-label="清水寺 的日記"]') as HTMLTextAreaElement).value).toBe("傍晚的清水舞台。");
+    expect(view.querySelector('[aria-label="京都車站 的日記"]')).toBeNull();
+    expect(view.querySelector('[aria-label="IMG_0101.jpg 的備註"]')).not.toBeNull();
+    const select = view.querySelector("select") as HTMLSelectElement;
+    expect([...select.querySelectorAll("optgroup")].map((g) => g.label)).toEqual([
       "第 1 天 · 2026年4月1日",
       "第 2 天 · 2026年4月2日",
     ]);
-    const entry = view.querySelector('[aria-label="清水寺 的日記"]') as HTMLTextAreaElement;
-    expect(entry.value).toBe("傍晚的清水舞台。");
-    expect((view.querySelector('[aria-label="京都車站 的日記"]') as HTMLTextAreaElement).placeholder).toBe(
-      "這裡發生了什麼事？",
-    );
-    expect(view.querySelector('[aria-label="IMG_0101.jpg 的備註"]')).not.toBeNull();
+    await act(async () => {
+      select.value = "a";
+      select.dispatchEvent(new Event("change", { bubbles: true }));
+    });
+    expect(selected).toEqual(["a"]);
+    expect(button(view, "下一個景點 ›").disabled).toBe(true);
+    await click(view, "‹ 上一個景點");
+    expect(selected).toEqual(["a", "a"]);
+  });
+
+  it("shows one day at a time when chosen in Settings, starting at the selected stop's day", async () => {
+    const { selected, ui } = setup({ selectedStopId: "b", view: "day" });
+    const view = await render(ui(project));
+    expect([...view.querySelectorAll("h3")].map((h) => h.textContent)).toEqual(["第 2 天 · 2026年4月2日"]);
+    await click(view, "全部");
+    expect(view.querySelectorAll("h3")).toHaveLength(2);
+    await click(view, "2清水寺");
+    expect(selected).toEqual(["b"]);
   });
 
   it("saves an entry as one command when it loses the focus, and a note with Ctrl+Enter", async () => {
-    const { commands, selected, ui } = setup();
+    const { commands, ui } = setup({ selectedStopId: "b" });
     const view = await render(ui(project));
-    const entry = view.querySelector('[aria-label="京都車站 的日記"]') as HTMLTextAreaElement;
-    await write(entry, "抵");
-    await write(entry, "抵達京都，");
-    await write(entry, "抵達京都，先去寄放行李。");
+    const entry = view.querySelector('[aria-label="清水寺 的日記"]') as HTMLTextAreaElement;
+    await write(entry, "傍");
+    await write(entry, "傍晚的清水舞台，");
+    await write(entry, "傍晚的清水舞台，人很多。");
     expect(commands).toEqual([]);
     await act(async () => entry.blur());
-    expect(commands).toEqual([{ type: "updateStop", id: "a", changes: { description: "抵達京都，先去寄放行李。" } }]);
+    expect(commands).toEqual([{ type: "updateStop", id: "b", changes: { description: "傍晚的清水舞台，人很多。" } }]);
 
     const note = view.querySelector('[aria-label="IMG_0101.jpg 的備註"]') as HTMLTextAreaElement;
     await write(note, "人還不多");
@@ -123,13 +132,10 @@ describe("JournalPanel", () => {
     await write(day, "搭首班新幹線前往京都");
     await act(async () => day.blur());
     expect(commands.at(-1)).toEqual({ type: "setDayNote", date: "2026-04-02", note: "搭首班新幹線前往京都" });
-
-    await click(view, "2清水寺");
-    expect(selected).toEqual(["b"]);
   });
 
   it("shows changes from elsewhere, such as undo, while a box is not being edited", async () => {
-    const { ui } = setup();
+    const { ui } = setup({ selectedStopId: "b" });
     const view = await render(ui(project));
     const changed = { ...project, stops: project.stops.map((s) => (s.id === "b" ? { ...s, description: "" } : s)) };
     await rerender(ui(changed));

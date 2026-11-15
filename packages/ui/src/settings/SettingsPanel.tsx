@@ -1,5 +1,5 @@
 import type { MessageKey, Translate } from "@tripreplay/i18n";
-import { type ReactNode, useId, useState } from "react";
+import { type ReactNode, useEffect, useId, useRef, useState } from "react";
 import styles from "./SettingsPanel.module.css";
 
 /** The settings the panel shows; the shell keeps them (docs/ui-design.md §2.2). */
@@ -12,6 +12,7 @@ export interface SettingsValues {
   readonly shrinkVideos: boolean;
   readonly agentTools: boolean;
   readonly mcp: boolean;
+  readonly journalView: "stop" | "day";
 }
 
 export interface SettingsPanelProps {
@@ -30,28 +31,43 @@ export interface SettingsPanelProps {
   readonly t: Translate;
 }
 
-/** A small "?" for an explanation or "!" for a caution, which shows its text under the setting. */
+/**
+ * A small "?" for an explanation or "!" for a caution, which opens a small dialog with its text in
+ * the shell's colors, titled with the setting's name.
+ */
 function Note({ kind, name, text, t }: { kind: "help" | "caution"; name: string; text: string; t: Translate }) {
   const [open, setOpen] = useState(false);
-  const id = useId();
+  const dialog = useRef<HTMLDialogElement>(null);
+  const titleId = useId();
   const label = t(kind === "help" ? "settings.help" : "settings.caution", { name });
+  useEffect(() => {
+    if (open) dialog.current?.showModal?.();
+  }, [open]);
   return (
     <>
       <button
         type="button"
         className={kind === "help" ? styles.help : styles.caution}
         aria-label={label}
+        aria-haspopup="dialog"
         title={label}
-        aria-expanded={open}
-        aria-controls={id}
-        onClick={() => setOpen(!open)}
+        onClick={() => setOpen(true)}
       >
         {kind === "help" ? "?" : "!"}
       </button>
       {open && (
-        <p id={id} className={kind === "help" ? styles.helpText : styles.cautionText}>
-          {text}
-        </p>
+        <dialog ref={dialog} className={styles.note} aria-labelledby={titleId} onClose={() => setOpen(false)}>
+          <h3 id={titleId} className={styles.noteTitle}>
+            <span aria-hidden="true" className={kind === "help" ? styles.help : styles.caution}>
+              {kind === "help" ? "?" : "!"}
+            </span>
+            {name}
+          </h3>
+          <p className={styles.noteText}>{text}</p>
+          <button type="button" className={styles.close} onClick={() => dialog.current?.close()}>
+            {t("common.close")}
+          </button>
+        </dialog>
       )}
     </>
   );
@@ -88,11 +104,12 @@ function Toggle({
 
 /**
  * The Settings dialog's content (docs/ui-design.md §2.2): the choices that apply to every trip,
- * grouped into playback and map, import, and AI agents. Each setting with something to explain has a
- * "?", and each with a cost or a consequence to know has a "!", which shows the text under it.
+ * grouped into playback and map, editing, import, and AI agents. Each setting with something to explain has a
+ * "?", and each with a cost or a consequence to know has a "!", which opens a small dialog with it.
  */
 export function SettingsPanel({ values, onChange, nearKmChoices, offers, onForgetMcpCode, t }: SettingsPanelProps) {
   const nearId = useId();
+  const journalId = useId();
   const note = (kind: "help" | "caution", name: MessageKey, text: MessageKey) => (
     <Note kind={kind} name={t(name)} text={t(text)} t={t} />
   );
@@ -132,6 +149,24 @@ export function SettingsPanel({ values, onChange, nearKmChoices, offers, onForge
             </select>
           </label>
           {note("caution", "settings.preloadNear", "settings.preloadNearHint")}
+        </div>
+      </fieldset>
+
+      <fieldset className={styles.section}>
+        <legend>{t("settings.section.editing")}</legend>
+        <div className={styles.row}>
+          <label className={styles.choice} htmlFor={journalId}>
+            <span>{t("settings.journalView")}</span>
+            <select
+              id={journalId}
+              value={values.journalView}
+              onChange={(event) => onChange({ journalView: event.target.value === "day" ? "day" : "stop" })}
+            >
+              <option value="stop">{t("settings.journalView.stop")}</option>
+              <option value="day">{t("settings.journalView.day")}</option>
+            </select>
+          </label>
+          {note("help", "settings.journalView", "settings.journalViewHint")}
         </div>
       </fieldset>
 

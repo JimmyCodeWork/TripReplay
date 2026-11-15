@@ -12,9 +12,8 @@ export interface ThemePanelProps {
   readonly t: Translate;
 }
 
-/** A small picture of a theme: its map colors, route, markers and title, in its preferred shape. */
-function ThemePreview({ theme }: { readonly theme: Theme }) {
-  const portrait = theme.preferredAspectRatio === "9:16";
+/** A small picture of a theme: its map colors, route, markers and title, in the trip's shape. */
+function ThemePreview({ theme, portrait }: { readonly theme: Theme; readonly portrait: boolean }) {
   const [w, h] = portrait ? [54, 96] : [160, 90];
   const route = portrait ? "M10 78 L24 58 L40 66 L46 40" : "M18 70 L58 48 L98 60 L140 30";
   const stops = portrait
@@ -115,14 +114,10 @@ export function ThemePanel({ project, dispatch, t }: ThemePanelProps) {
                 aria-pressed={selected}
                 onClick={() => {
                   if (selected) return;
-                  dispatch({
-                    type: "chooseTheme",
-                    themeId: theme.id,
-                    ...(theme.preferredAspectRatio === "9:16" ? { aspectRatio: "9:16" as const } : {}),
-                  });
+                  dispatch({ type: "chooseTheme", themeId: theme.id });
                 }}
               >
-                <ThemePreview theme={theme} />
+                <ThemePreview theme={theme} portrait={project.trip.aspectRatio === "9:16"} />
                 <span className={styles.name}>{t(theme.nameKey as MessageKey)}</span>
                 <span className={styles.description}>{t(theme.descriptionKey as MessageKey)}</span>
               </button>

@@ -36,10 +36,10 @@
     "message": "深色地圖、發光路線；適合夜間觀看與投影"
   },
   "theme.portrait.name": {
-    "message": "直式"
+    "message": "藍海"
   },
   "theme.portrait.description": {
-    "message": "大標題置頂、媒體在下；適合 9:16"
+    "message": "沙色地圖、藍色路線與白色大標題"
   },
   "region.world": {
     "message": "全球概覽"
@@ -632,6 +632,15 @@
   "player.time": {
     "message": "{current} / {total}"
   },
+  "player.speed": {
+    "message": "播放速度"
+  },
+  "player.speedHint": {
+    "message": "以較快或較慢的速度播放預覽，例如快速檢查較長的回顧；匯出的影片一律以正常速度播放。"
+  },
+  "player.rate": {
+    "message": "{rate}×"
+  },
   "player.position": {
     "message": "播放位置"
   },
@@ -697,6 +706,21 @@
   },
   "settings.section.playback": {
     "message": "播放與地圖"
+  },
+  "settings.section.editing": {
+    "message": "編輯"
+  },
+  "settings.journalView": {
+    "message": "日記顯示方式"
+  },
+  "settings.journalView.stop": {
+    "message": "一次一個景點"
+  },
+  "settings.journalView.day": {
+    "message": "一次一天"
+  },
+  "settings.journalViewHint": {
+    "message": "一次一個景點會顯示該景點的日記、當天的開場文字與照片備註，並有前往前後景點的按鈕；無論日記多長，分頁都不會變得很長。一次一天會一起顯示同一天的各個景點；選「全部」則顯示整趟旅行，日記很長時可能較慢。"
   },
   "settings.section.import": {
     "message": "匯入"
@@ -1097,6 +1121,12 @@
   "journal.notePlaceholder": {
     "message": "為這一刻寫幾句話"
   },
+  "journal.previousStop": {
+    "message": "上一個景點"
+  },
+  "journal.nextStop": {
+    "message": "下一個景點"
+  },
   "workspace.tab.music": {
     "message": "音樂"
   },
@@ -1170,7 +1200,7 @@
     "message": "主題"
   },
   "themes.intro": {
-    "message": "主題決定回顧的地圖配色、路線與標題樣式。選取後立即套用；選擇「直式」時也會切換為 9:16。"
+    "message": "主題決定回顧的地圖配色、路線與標題樣式，選取後立即套用。直式或橫式則由預覽下方的畫面比例決定。"
   },
   "tripList.shrink": {
     "message": "縮小媒體"

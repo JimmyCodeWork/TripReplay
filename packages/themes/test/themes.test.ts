@@ -17,8 +17,8 @@ describe("built-in themes", () => {
     }
   });
 
-  it("prefer 9:16 only for the portrait theme", () => {
-    expect(builtinThemes.filter((t) => t.preferredAspectRatio === "9:16").map((t) => t.id)).toEqual(["portrait"]);
+  it("have a layout for each aspect ratio, which is chosen apart from the theme", () => {
+    for (const t of builtinThemes) expect(Object.keys(t.layouts).sort()).toEqual(["16:9", "9:16"]);
   });
 });
 

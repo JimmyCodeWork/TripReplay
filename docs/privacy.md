@@ -37,7 +37,7 @@ Everything TripReplay stores is kept by your browser for the website you opened 
 | IndexedDB | Trips (itinerary, journal, settings) and the records of downloaded maps |
 | Origin private file system | Map files, and copies of the photos, videos and music you added |
 | Cache storage | The application's own files, so that it starts without a connection |
-| Local storage | Your settings: "Reduce motion", "Load map first" and where it loads the detailed map, your favorite map regions, whether imports make photos and videos smaller, and whether the browser's AI agent may use the open trip, and whether MCP is on, with its pairing code |
+| Local storage | Your settings: "Reduce motion", "Load map first" and where it loads the detailed map, how the journal is shown, your favorite map regions, whether imports make photos and videos smaller, and whether the browser's AI agent may use the open trip, and whether MCP is on, with its pairing code |
 
 The browser may clear this data, for example when the device is short of space ([Browser Support §3](browser-support.md#3-known-issues)). Back up trips you want to keep ([User Guide §9](user-guide.md#9-back-up-and-restore)).
 

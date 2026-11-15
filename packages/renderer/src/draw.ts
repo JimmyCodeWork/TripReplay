@@ -252,9 +252,10 @@ function drawMarker(ctx: Canvas2D, options: DrawOptions, marker: FrameDescriptio
 }
 
 /**
- * The route and the stops' markers, newest on top: the stops ahead, then the line already drawn
- * and the stops reached, then the leg being drawn with the arrow at its head, and last the markers
- * of that leg's ends or of the current stop, so that a line crossing earlier ones stays in view.
+ * The route and the markers of the stops reached, newest on top: the line already drawn and the
+ * stops reached, then the leg being drawn with the arrow at its head, and last the marker of the
+ * stop it leaves or of the current stop, so that a line crossing earlier ones stays in view. A
+ * stop's marker appears only once the camera has arrived there, not ahead of time.
  */
 function drawRouteAndMarkers(ctx: Canvas2D, options: DrawOptions): void {
   const { timeline, frame, project } = options;
@@ -264,15 +265,12 @@ function drawRouteAndMarkers(ctx: Canvas2D, options: DrawOptions): void {
   const moving = progress > reached;
   const done = routePoints(timeline.route, reached, project, via);
   const all = moving ? routePoints(timeline.route, progress, project, via) : done;
-  // The active stops: the ends of the leg being drawn, or the stop the recap is at.
-  const active = new Set<number>(moving ? [reached, reached + 1] : []);
+  // The active stops: the start of the leg being drawn, or the stop the recap is at.
+  const active = new Set<number>(moving ? [reached] : []);
   frame.markers.forEach((m, i) => {
     if (m.state === "current") active.add(i);
   });
   ctx.save();
-  frame.markers.forEach((m, i) => {
-    if (m.state === "upcoming" && !active.has(i)) drawMarker(ctx, options, m);
-  });
   strokeRoute(ctx, options, done);
   frame.markers.forEach((m, i) => {
     if (m.state !== "upcoming" && !active.has(i)) drawMarker(ctx, options, m);
@@ -283,7 +281,7 @@ function drawRouteAndMarkers(ctx: Canvas2D, options: DrawOptions): void {
   }
   for (const i of [...active].sort((a, b) => a - b)) {
     const marker = frame.markers[i];
-    if (marker) drawMarker(ctx, options, marker);
+    if (marker && marker.state !== "upcoming") drawMarker(ctx, options, marker);
   }
   if (moving && !timeline.reducedMotion) drawHead(ctx, options, all);
   ctx.restore();
