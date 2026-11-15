@@ -686,6 +686,51 @@
   "workspace.undo": {
     "message": "復原"
   },
+  "header.settings": {
+    "message": "設定"
+  },
+  "settings.title": {
+    "message": "設定"
+  },
+  "settings.intro": {
+    "message": "這些設定適用於所有旅行，並保存在此瀏覽器中。"
+  },
+  "settings.section.playback": {
+    "message": "播放與地圖"
+  },
+  "settings.section.import": {
+    "message": "匯入"
+  },
+  "settings.section.agents": {
+    "message": "AI 代理"
+  },
+  "settings.help": {
+    "message": "關於「{name}」"
+  },
+  "settings.caution": {
+    "message": "「{name}」注意事項"
+  },
+  "settings.reduceMotionHint": {
+    "message": "以淡入淡出取代鏡頭飛行與縮放。在您選擇之前，會依照系統的「減少動態效果」設定。"
+  },
+  "settings.preloadNear": {
+    "message": "完整讀取地圖的範圍"
+  },
+  "settings.preloadNear.km": {
+    "message": "景點附近 {km} 公里內"
+  },
+  "settings.preloadNear.all": {
+    "message": "整段鏡頭路徑"
+  },
+  "settings.preloadNearHint": {
+    "message": "離景點較遠的地方只會先讀取全球概覽，速度較快；那裡的詳細地圖會在播放時才出現，因此可能先看到較粗略的地圖。未下載全球概覽時，會讀取整段路徑。"
+  },
+  "settings.agentTools": {
+    "message": "允許瀏覽器的 AI 代理使用開啟中的旅行"
+  },
+  "settings.mcp": {
+    "message": "連線到本電腦的 TripReplay MCP server"
+  },
   "mcp.button": {
     "message": "MCP"
   },

@@ -27,11 +27,6 @@ export interface RecapPlayerProps {
   /** Applies an edit made on the timeline, such as a trimmed video; without it the timeline is read-only. */
   readonly onEdit?: (command: Command) => void;
   /**
-   * Turns "Reduce motion" on or off: the recap then cross-fades instead of moving the camera
-   * (docs/ui-design.md §6). Without it the button is not shown.
-   */
-  readonly onReducedMotion?: (reducedMotion: boolean) => void;
-  /**
    * Turns "Itinerary only" on or off: the recap then plays without photos and videos, to check
    * the stops and the moves between them. Without it the button is not shown.
    */
@@ -41,8 +36,8 @@ export interface RecapPlayerProps {
    * along the camera's path, so that it plays without waiting for it (PreviewSurface.prepare).
    */
   readonly preload?: boolean;
-  /** Turns "Load map first" on or off; without it the button is not shown. */
-  readonly onPreload?: (preload: boolean) => void;
+  /** Where the detailed map is loaded first; see PrepareOptions.nearKm. */
+  readonly preloadNearKm?: number | undefined;
   /**
    * How "Full screen" works: with the browser's Fullscreen API, or by filling the page, for a
    * WebView that does not offer the API, such as the Android application's.
@@ -77,10 +72,9 @@ export function RecapPlayer({
   createSurface,
   onAspectRatio,
   onEdit,
-  onReducedMotion,
   onItineraryOnly,
   preload = false,
-  onPreload,
+  preloadNearKm,
   fullScreen: fullScreenMode = "browser",
   notice,
   onExport,
@@ -140,7 +134,9 @@ export function RecapPlayer({
   /** Loading before playing, with its progress from 0 to 1; playing or pausing again cancels it. */
   const [preparing, setPreparing] = useState<{ readonly progress: number; readonly controller: AbortController }>();
   /** What was last loaded: the surface and timeline, from a time on. */
-  const prepared = useRef<{ surface: PreviewSurface; timeline: Timeline; fromUs: number }>(undefined);
+  const prepared = useRef<{ surface: PreviewSurface; timeline: Timeline; nearKm: number | undefined; fromUs: number }>(
+    undefined,
+  );
   const toggle = () => {
     if (preparing) {
       preparing.controller.abort();
@@ -152,7 +148,9 @@ export function RecapPlayer({
     }
     const fromUs = state.timeUs >= state.durationUs ? 0 : state.timeUs;
     const done = prepared.current;
-    if (done && done.surface === surface && done.timeline === timeline && done.fromUs <= fromUs) {
+    const loaded =
+      done?.surface === surface && done.timeline === timeline && done.nearKm === preloadNearKm && done.fromUs <= fromUs;
+    if (loaded) {
       playback.play();
       return;
     }
@@ -160,12 +158,13 @@ export function RecapPlayer({
     setPreparing({ progress: 0, controller });
     surface
       .prepare(timeline, fromUs, {
+        nearKm: preloadNearKm,
         signal: controller.signal,
         onProgress: (progress) => setPreparing((current) => current && { ...current, progress }),
       })
       .then(
         () => {
-          prepared.current = { surface, timeline, fromUs };
+          prepared.current = { surface, timeline, nearKm: preloadNearKm, fromUs };
           setPreparing(undefined);
           playback.play();
         },
@@ -261,16 +260,6 @@ export function RecapPlayer({
             </button>
           ))}
         </fieldset>
-        {onReducedMotion && (
-          <button
-            type="button"
-            className={styles.option}
-            aria-pressed={timeline.reducedMotion}
-            onClick={() => onReducedMotion(!timeline.reducedMotion)}
-          >
-            {t("player.reduceMotion")}
-          </button>
-        )}
         {onItineraryOnly && (
           <button
             type="button"
@@ -280,17 +269,6 @@ export function RecapPlayer({
             onClick={() => onItineraryOnly(!timeline.itineraryOnly)}
           >
             {t("player.itineraryOnly")}
-          </button>
-        )}
-        {onPreload && (
-          <button
-            type="button"
-            className={styles.option}
-            aria-pressed={preload}
-            title={t("player.preloadHint")}
-            onClick={() => onPreload(!preload)}
-          >
-            {t("player.preload")}
           </button>
         )}
         <button

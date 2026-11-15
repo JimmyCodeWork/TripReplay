@@ -74,6 +74,11 @@ export interface PreviewSurface {
 }
 
 export interface PrepareOptions {
+  /**
+   * Loads the detailed map only where the camera is within this many kilometres of a stop, and
+   * elsewhere only the world overview, which is faster; undefined loads it everywhere.
+   */
+  readonly nearKm?: number | undefined;
   readonly onProgress?: (fraction: number) => void;
   /** Stops loading; the promise then rejects with the signal's reason. */
   readonly signal?: AbortSignal;

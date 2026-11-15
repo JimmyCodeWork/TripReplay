@@ -19,6 +19,7 @@ This guide follows the core scenario: download a map, plan the trip, add your ph
 - **On your own computer, without the website (optional).** With [Node.js](https://nodejs.org/) 24 or later and a copy of the [source code](https://github.com/JimmyCodeWork/TripReplay), double-click `launch/TripReplay.cmd` on Windows or `launch/TripReplay.command` on macOS, or run `launch/start.sh` on Linux. It builds TripReplay (the first start also installs what it needs), serves it at `http://localhost:4173` and opens it in the browser; keep its window open while you use TripReplay. You can install it as an app from there too, and the installed app then starts even when the window is closed; run the launcher again to update it. The browser keeps trips for each address separately, so trips made at `localhost` do not appear on the website and the other way round; move them with a backup (§9).
 - **Storage.** Maps and media are stored by the browser on this device. A region map takes a few hundred megabytes, and your photos and videos take as much space as the files themselves. TripReplay checks the free space before every download and import.
 - **Offline.** You need a connection only to open TripReplay the first time and to download maps. After that, everything works without one, including place search.
+- **Settings.** **Settings** at the top gathers the choices that apply to every trip: playing and loading the map, making imported photos and videos smaller, and letting AI agents use the open trip. Select **?** beside a setting to read what it does, and **!** for what to know before turning it on. Your choices are kept in this browser.
 
 ## 2. Download a Map
 
@@ -69,7 +70,7 @@ Add stops first; every photo and video belongs to a stop.
 4. Times are shown in the trip's time zone. If your camera's clock was set to another zone, select **Change** and choose the right one; the suggestions update.
 5. Select **Add … files** to finish.
 
-**Make imported photos smaller**, above the stop list in the **Media** tab, stores each photo at most 2560 pixels on its longest side, which is sharp in the recap and usually takes a fifth to a tenth of the space. It is on until you turn it off. The original files on your device are not changed, and the capture time and position are kept with the trip. **Make imported videos smaller (1080p, slower)** does the same for videos, at most 1920 pixels on their longest side with their sound unchanged; it is off until you turn it on, as encoding a video takes about as long as it plays, or longer. Videos your browser cannot decode, such as HEVC on some computers, stay as they are. To make the media of a trip already imported smaller, select **Shrink media** on the trip in **Trips**, check the number of photos and videos and the space they take, choose whether to **Make videos smaller too**, and confirm. This cannot be undone in TripReplay, so back up the trip first (§9) if you want to keep the full-size photos in it.
+**Make imported photos smaller**, above the stop list in the **Media** tab and in **Settings**, stores each photo at most 2560 pixels on its longest side, which is sharp in the recap and usually takes a fifth to a tenth of the space. It is on until you turn it off. The original files on your device are not changed, and the capture time and position are kept with the trip. **Make imported videos smaller (1080p, slower)** does the same for videos, at most 1920 pixels on their longest side with their sound unchanged; it is off until you turn it on, as encoding a video takes about as long as it plays, or longer. Videos your browser cannot decode, such as HEVC on some computers, stay as they are. To make the media of a trip already imported smaller, select **Shrink media** on the trip in **Trips**, check the number of photos and videos and the space they take, choose whether to **Make videos smaller too**, and confirm. This cannot be undone in TripReplay, so back up the trip first (§9) if you want to keep the full-size photos in it.
 
 Files already in the trip are recognized and not added twice. Photos and videos are copied into the browser's storage, so the originals can be moved or deleted afterwards; keep them, or a backup (§9), in case the browser's storage is cleared.
 
@@ -92,11 +93,11 @@ The **Journal** tab is a diary of the trip. For each day, you can write a line t
 
 ### Write with the browser's AI agent
 
-Some desktop browsers have an AI agent built in. Where yours offers its tools to websites (WebMCP), an **AI agent** button appears at the top of the trip. Select it to let the agent work on the open trip; select it again to stop. It stays off until you turn it on.
+Some desktop browsers have an AI agent built in. Where yours offers its tools to websites (WebMCP), **Settings** offers **Let the browser's AI agent use the open trip**. Turn it on to let the agent work on the trip you open; turn it off to stop. It stays off until you turn it on.
 
 You can then ask the agent, for example, to add the stops of a day from your notes, to write a journal entry or captions in your style, or to give each stop a shorter title. The agent reads the trip's text and changes it with the same steps as the interface, so you see each change at once and can undo it with **Undo**. It cannot see your photos and videos, delete anything or import files.
 
-What the agent reads is sent to it and usually to the service behind it ([Privacy Statement §3](privacy.md#3-the-browsers-ai-agent)), so turn **AI agent** on only for trips you are willing to share with it. The Android application does not have this button.
+What the agent reads is sent to it and usually to the service behind it ([Privacy Statement §3](privacy.md#3-the-browsers-ai-agent)), so turn it on only while you work on trips you are willing to share with it. The Android application does not have this setting.
 
 ### Use an AI agent on your computer (MCP)
 
@@ -116,10 +117,10 @@ Agents such as Claude Desktop and Claude Code can work on the open trip through 
 
      and restart Claude Desktop.
    - **Claude Code:** run `claude mcp add tripreplay -- node /path/to/TripReplay/apps/mcp/src/main.ts`.
-3. Open a trip in TripReplay in Chrome or Edge on the same computer, at the project's site or at `http://localhost:4173`, and select **MCP** at the top of the trip.
+3. Open a trip in TripReplay in Chrome or Edge on the same computer, at the project's site or at `http://localhost:4173`, and turn on **Connect to the TripReplay MCP server on this computer** in **Settings**. A row marked **MCP** appears under the top of the trip.
 4. Ask the agent to use TripReplay. The first time, it tells you a six-digit pairing code; enter it in TripReplay and select **Connect**. The browser may ask whether the site may connect to devices on your computer or local network; allow it. TripReplay remembers the code in that browser.
 
-The agent then reads the trip's text and changes it like the browser's agent above, and each change can be undone with **Undo**. Select **MCP** again to disconnect. What the agent reads goes to it and usually to the service behind it ([Privacy Statement §3](privacy.md#3-the-browsers-ai-agent)).
+The agent then reads the trip's text and changes it like the browser's agent above, and each change can be undone with **Undo**. Turn the setting off to disconnect. What the agent reads goes to it and usually to the service behind it ([Privacy Statement §3](privacy.md#3-the-browsers-ai-agent)).
 
 ## 6. Add Music
 
@@ -148,10 +149,13 @@ The preview on the right always shows the current recap.
 - When the recap is long and its parts are thin, select **+** above the bar to enlarge it, up to the point where about five seconds fill the width, and **−** to see more of it again. An enlarged bar scrolls sideways: swipe it, or drag the window in the overview bar below it. While the recap plays, the bar follows the playback position.
 - Select a part to edit it in the fields under the timeline, in seconds: a photo's duration, a video's start and end, a music track's start, or the length of the opening, travel, stop titles or closing. The lengths of the opening, travel, titles and closing apply to the whole trip; a stop with a journal entry keeps its title longer when the entry needs more time to read. For a stop's title or the move to it, **This stop's title (s)** and **Move to this stop (s)** set the length of that one stop instead, without automatic lengthening except for photos on the way, which always get their time; **Use the trip's length** brings it back. Select **Close** to hide the fields.
 - On the timeline you can also drag the right edge of a photo to change its duration, drag the edges of a video to trim it, and drag the music to move it. The same changes can be made with the fields in the **Media** and **Music** tabs.
-- **Reduce motion** replaces camera flights and zooms with cross-fades. It starts as your system's "Reduce motion" setting, and TripReplay remembers your choice in this browser.
 - **Itinerary only** plays the recap without photos and videos: only the stops, their titles and journal, and the moves between them, to check the itinerary quickly. Select it again for the whole recap. An export made while it is on is of the itinerary only.
-- **Load map first**, on until you turn it off, makes **Play** first load the map along the whole camera path, so that the recap plays without blank or half-drawn areas. The preview shows the progress, and **Cancel** stops it. It takes a few seconds, longer for long trips, and happens again only after you change the recap. TripReplay remembers your choice in this browser.
 - **Full screen** plays the recap on the whole screen, for example to show it to family and friends. Press **Escape** to leave full screen. In the Android application, it fills the application window; select **Full screen** again to leave it. The timeline and its fields are hidden in full screen, so the recap and its controls fit the screen.
+
+Two settings in **Settings** change how the recap plays:
+
+- **Reduce motion** replaces camera flights and zooms with cross-fades. It starts as your system's "Reduce motion" setting.
+- **Load map first**, on until you turn it off, makes **Play** first load the map along the camera path, so that the recap plays without blank or half-drawn areas. The preview shows the progress, and **Cancel** stops it. It takes a few seconds, longer for long trips, and happens again only after you change the recap. **Load the detailed map** chooses where the detailed map is loaded: within 25 km of the stops by default, or within 10, 50 or 100 km, or along the whole path. Farther away only the world overview is loaded, which is faster; the detailed map there appears while the recap plays, so a coarse map may show first. Without the world overview, the whole path is loaded.
 
 If no downloaded map contains your stops, the preview says so and draws the recap on the theme's background; download the region in **Maps** (§2) to see the map.
 

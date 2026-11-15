@@ -20,7 +20,7 @@ The application makes the following requests, and no others. The built page carr
 
 In particular:
 
-- **No trip data leaves the device.** Trips, stops, journal entries, photos, videos, music, their metadata (such as GPS positions and capture times) and backups are never sent anywhere by TripReplay. If you turn on **AI agent** in a trip, the browser's own AI agent can read that trip's text (§3).
+- **No trip data leaves the device.** Trips, stops, journal entries, photos, videos, music, their metadata (such as GPS positions and capture times) and backups are never sent anywhere by TripReplay. If you let the browser's own AI agent use the open trip in **Settings**, it can read that trip's text (§3).
 - **Your location stays on the device.** "Use current location" in **Maps** reads the device's position once, only when you select it, to find the regions you are in. It is not stored or sent anywhere.
 - **Place search runs on the device**, in the downloaded maps. Searches, pasted coordinates and pasted map links are not sent anywhere; a short map link that only its service can resolve is not opened.
 - **No other services are contacted**: no fonts, map styles, telemetry, crash reports or update checks of other parties.
@@ -37,13 +37,13 @@ Everything TripReplay stores is kept by your browser for the website you opened 
 | IndexedDB | Trips (itinerary, journal, settings) and the records of downloaded maps |
 | Origin private file system | Map files, and copies of the photos, videos and music you added |
 | Cache storage | The application's own files, so that it starts without a connection |
-| Local storage | Your "Reduce motion" and "Load map first" choices in the preview, your favorite map regions, whether imports make photos and videos smaller, and whether the browser's AI agent may use the open trip, and whether MCP is on, with its pairing code |
+| Local storage | Your settings: "Reduce motion", "Load map first" and where it loads the detailed map, your favorite map regions, whether imports make photos and videos smaller, and whether the browser's AI agent may use the open trip, and whether MCP is on, with its pairing code |
 
 The browser may clear this data, for example when the device is short of space ([Browser Support §3](browser-support.md#3-known-issues)). Back up trips you want to keep ([User Guide §9](user-guide.md#9-back-up-and-restore)).
 
 ## 3. The Browser's AI Agent
 
-Some browsers have an AI agent built in, which websites can offer tools to through WebMCP ([ADR 0010](adr/0010-agent-tools.md)). Where the browser offers it, the workspace shows an **AI agent** button. It is off until you turn it on, and the choice is kept in the browser.
+Some browsers have an AI agent built in, which websites can offer tools to through WebMCP ([ADR 0010](adr/0010-agent-tools.md)). Where the browser offers it, **Settings** offers **Let the browser's AI agent use the open trip**. It is off until you turn it on, and the choice is kept in the browser.
 
 While it is on and a trip is open, the agent can:
 
@@ -52,9 +52,9 @@ While it is on and a trip is open, the agent can:
 
 The agent cannot read photos, videos or music, remove anything, import files or open other trips.
 
-TripReplay sends nothing itself, but what the agent reads goes to the agent, and usually to the service behind it, under that service's privacy policy. Turn **AI agent** on only for trips whose text you are willing to share with it, and off when you are done.
+TripReplay sends nothing itself, but what the agent reads goes to the agent, and usually to the service behind it, under that service's privacy policy. Turn it on only while you work on trips whose text you are willing to share with it, and off when you are done.
 
-The **MCP** button of the Web application works the same way for agents such as Claude Desktop, through the TripReplay MCP server that the agent runs on your computer ([ADR 0012](adr/0012-mcp-server.md)). It is off until you turn it on. While it is on, TripReplay connects to `127.0.0.1:4174`, on your own computer only, with the pairing code you entered; the code is kept in the browser's local storage. The server passes the agent's requests to TripReplay and its answers back, and sends nothing anywhere else.
+The **Connect to the TripReplay MCP server on this computer** setting of the Web application works the same way for agents such as Claude Desktop, through the TripReplay MCP server that the agent runs on your computer ([ADR 0012](adr/0012-mcp-server.md)). It is off until you turn it on. While it is on, TripReplay connects to `127.0.0.1:4174`, on your own computer only, with the pairing code you entered; the code is kept in the browser's local storage. The server passes the agent's requests to TripReplay and its answers back, and sends nothing anywhere else.
 
 ## 4. The Android Application
 

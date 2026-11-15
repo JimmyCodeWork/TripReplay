@@ -915,6 +915,66 @@
     "message": "Undo",
     "description": "Button that undoes the last change; Ctrl+Z does the same."
   },
+  "header.settings": {
+    "message": "Settings",
+    "description": "Button in the application header that opens the Settings dialog."
+  },
+  "settings.title": {
+    "message": "Settings",
+    "description": "Title of the Settings dialog."
+  },
+  "settings.intro": {
+    "message": "These settings apply to every trip and are kept in this browser.",
+    "description": "Line under the title of the Settings dialog."
+  },
+  "settings.section.playback": {
+    "message": "Playback and map",
+    "description": "Heading of the settings for playing the recap and loading the map."
+  },
+  "settings.section.import": {
+    "message": "Import",
+    "description": "Heading of the settings for importing photos and videos."
+  },
+  "settings.section.agents": {
+    "message": "AI agents",
+    "description": "Heading of the settings that let AI agents use the open trip."
+  },
+  "settings.help": {
+    "message": "About {name}",
+    "description": "Accessible name of the small ? button beside a setting, which shows what it does."
+  },
+  "settings.caution": {
+    "message": "Note on {name}",
+    "description": "Accessible name of the small ! button beside a setting, which shows what to know before using it."
+  },
+  "settings.reduceMotionHint": {
+    "message": "Replaces camera flights and zooms with cross-fades. Until you choose, it follows your system's \"Reduce motion\" setting.",
+    "description": "Explanation of the Reduce motion setting."
+  },
+  "settings.preloadNear": {
+    "message": "Load the detailed map",
+    "description": "Label of the choice of where Load map first loads the detailed map."
+  },
+  "settings.preloadNear.km": {
+    "message": "Within {km} km of the stops",
+    "description": "Choice of Load the detailed map: only where the camera is within km kilometres of a stop."
+  },
+  "settings.preloadNear.all": {
+    "message": "Along the whole path",
+    "description": "Choice of Load the detailed map: everywhere along the camera's path."
+  },
+  "settings.preloadNearHint": {
+    "message": "Farther from the stops, only the world overview is loaded first, which is faster; the detailed map there appears while the recap plays, so a coarse map may show first. Without the world overview, the whole path is loaded.",
+    "description": "Caution on the Load the detailed map choice."
+  },
+  "settings.agentTools": {
+    "message": "Let the browser's AI agent use the open trip",
+    "description": "Setting that offers the open trip to the browser's own AI agent through WebMCP."
+  },
+  "settings.mcp": {
+    "message": "Connect to the TripReplay MCP server on this computer",
+    "description": "Setting that connects the open trip to the local MCP server for agents such as Claude Desktop."
+  },
   "mcp.button": {
     "message": "MCP",
     "description": "Toggle button in the workspace bar of the Web application: connects the open trip to the TripReplay MCP server on this computer, for an agent such as Claude Desktop. Off until the user turns it on."

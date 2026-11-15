@@ -1,6 +1,6 @@
-import { type Clock, type PreviewSurface, renderAt } from "@tripreplay/app";
+import type { Clock, PreviewSurface } from "@tripreplay/app";
 import { createMapLibreLayer, type MapFiles } from "@tripreplay/map";
-import { createRecapRenderer, mapView, type RecapLabels } from "@tripreplay/renderer";
+import { createRecapRenderer, prepareViews, type RecapLabels } from "@tripreplay/renderer";
 import { resolveTheme } from "@tripreplay/themes";
 import type { PreviewMedia } from "./preview-media.ts";
 
@@ -13,8 +13,6 @@ export const animationClock: Clock = {
   },
 };
 
-/** Steps of recap time at which `prepare` loads the map, short enough that a fast camera move shows little between them. */
-const PREPARE_STEP_US = 50_000;
 /** A view whose tiles take longer than this to load is left to load while playing. */
 const PREPARE_VIEW_TIMEOUT_MS = 5000;
 
@@ -60,20 +58,15 @@ export async function createRecapSurface(
       renderer.draw(timeline, frame);
     },
     // Shows each view of the camera's path from `fromUs` on until its tiles are drawn, which keeps
-    // them in the map's cache for playback; the current frame is drawn again at the end.
+    // them in the map's cache for playback; far from the stops, only the world overview is drawn and
+    // loaded. The current frame is drawn again at the end.
     ...(map && {
       async prepare(timeline, fromUs, options = {}) {
-        const views: ReturnType<typeof mapView>[] = [];
-        let previous = "";
-        for (let us = fromUs; us <= timeline.durationUs + PREPARE_STEP_US; us += PREPARE_STEP_US) {
-          const view = mapView(renderAt(timeline, us).camera, width, timeline.aspectRatio);
-          const key = `${view.center.lon.toFixed(6)} ${view.center.lat.toFixed(6)} ${view.zoom.toFixed(3)} ${view.bearing}`;
-          if (key !== previous) views.push(view);
-          previous = key;
-        }
+        const views = prepareViews(timeline, fromUs, width, { nearKm: options.nearKm });
         try {
-          for (const [index, view] of views.entries()) {
+          for (const [index, { view, near }] of views.entries()) {
             options.signal?.throwIfAborted();
+            map.setOverviewOnly?.(!near);
             map.setView(view);
             await Promise.race([
               map.whenDrawn(),
@@ -82,6 +75,7 @@ export async function createRecapSurface(
             options.onProgress?.((index + 1) / views.length);
           }
         } finally {
+          map.setOverviewOnly?.(false);
           if (last) renderer.draw(...last);
         }
       },

@@ -2,7 +2,7 @@ import type { LonLat, MapColors, MapLayer, MapView } from "@tripreplay/renderer"
 import * as maplibregl from "maplibre-gl";
 import { PMTiles } from "pmtiles";
 import { blobSource } from "./blob-source.ts";
-import { baseMapStyle, MAP_THEMES, type MapTheme, OVERVIEW_LAYERS } from "./style.ts";
+import { baseMapStyle, MAP_THEMES, type MapTheme, OVERVIEW_LAYERS, OVERVIEW_SOURCES } from "./style.ts";
 
 /**
  * The downloaded files of one region, one PMTiles archive per theme. The world overview's are
@@ -118,6 +118,8 @@ export async function createMapLibreLayer(options: MapLibreLayerOptions): Promis
     center: [0, 0],
     zoom: 0,
   });
+  /** Whether only the overview is drawn (MapLibreLayer.setOverviewOnly). */
+  let overviewOnly = false;
   const release = () => {
     for (const key of keys) sources.delete(key);
   };
@@ -161,9 +163,28 @@ export async function createMapLibreLayer(options: MapLibreLayerOptions): Promis
     },
     whenDrawn() {
       return new Promise<void>((resolve) => {
-        map.once("idle", () => resolve());
+        if (!overviewOnly) {
+          map.once("idle", () => resolve());
+          map.triggerRepaint();
+          return;
+        }
+        // The regions' hidden sources load nothing, but tiles they loaded before would hold back "idle".
+        const check = () => {
+          if (!OVERVIEW_SOURCES.every((id) => map.isSourceLoaded(id))) return;
+          map.off("render", check);
+          resolve();
+        };
+        map.on("render", check);
         map.triggerRepaint();
       });
+    },
+    setOverviewOnly(on) {
+      if (!overviewSources || on === overviewOnly) return;
+      overviewOnly = on;
+      for (const { id } of map.getStyle().layers) {
+        if (id === "land" || id === OVERVIEW_LAYERS.water || id === OVERVIEW_LAYERS.boundary) continue;
+        map.setLayoutProperty(id, "visibility", on ? "none" : "visible");
+      }
     },
     destroy() {
       map.remove();

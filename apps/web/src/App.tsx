@@ -12,6 +12,7 @@ import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "
 import { backupTrip, inspectBackup, restoreBackup } from "./backup.ts";
 import { MapPreview } from "./MapPreview.tsx";
 import { NATIVE } from "./platform.ts";
+import { SettingsDialog } from "./SettingsDialog.tsx";
 import type { Services } from "./services.ts";
 import { Workspace } from "./Workspace.tsx";
 
@@ -222,6 +223,7 @@ export function App({ services, locale, t }: AppProps) {
           >
             {t("header.maps")}
           </button>
+          <SettingsDialog services={services} t={t} />
         </nav>
       </header>
       {screen.kind === "trips" && (

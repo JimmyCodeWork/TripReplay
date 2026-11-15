@@ -27,6 +27,9 @@ export interface StyleOptions {
   readonly overview?: Readonly<Record<MapTheme, string>>;
 }
 
+/** Ids of the world overview's sources. */
+export const OVERVIEW_SOURCES = ["overview-base", "overview-divisions"] as const;
+
 /** Ids of the layers that draw the world overview and cover it with the regions' land. */
 export const OVERVIEW_LAYERS = {
   water: "overview-water",

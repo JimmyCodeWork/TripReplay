@@ -1,0 +1,91 @@
+/* Design tokens come from the application shell as custom properties; the fallbacks keep the panel legible alone. */
+
+.panel {
+  display: grid;
+  gap: 16px;
+  color: var(--color-text, #1d2420);
+  font: 15px / 1.5 var(--font-body, system-ui, sans-serif);
+}
+
+.section {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 12px 16px;
+  border: 1px solid var(--color-line, #d6ddd6);
+  border-radius: 8px;
+}
+
+.section legend {
+  padding: 0 4px;
+  font-weight: 600;
+}
+
+/* A setting, its "?" or "!", and the text the mark shows on a line of its own. */
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  align-items: center;
+}
+
+.toggle {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.choice {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  align-items: center;
+}
+
+.help,
+.caution {
+  display: inline-grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 1px solid currentcolor;
+  border-radius: 50%;
+  background: transparent;
+  font: 600 13px / 1 var(--font-body, system-ui, sans-serif);
+  cursor: pointer;
+}
+
+.help {
+  color: var(--color-muted, #5b665f);
+}
+
+.caution {
+  color: #a35a00;
+}
+
+.helpText,
+.cautionText {
+  flex-basis: 100%;
+  margin: 0;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+.helpText {
+  background: var(--color-surface-muted, #eef2ef);
+}
+
+.cautionText {
+  background: #fdf1e1;
+}
+
+.link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-accent, #b23a48);
+  text-decoration: underline;
+  cursor: pointer;
+}

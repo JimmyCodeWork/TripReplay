@@ -25,9 +25,6 @@ export function modelContext(): ModelContext | undefined {
   return typeof found?.registerTool === "function" ? found : undefined;
 }
 
-/** Whether the user lets AI agents in this browser use the open trip; off unless chosen. */
-export const AGENT_TOOLS_KEY = "tripreplay.agentTools";
-
 /**
  * Offers the agent tools of TripReplay (docs/adr/0010-agent-tools.md) to the browser's AI agent
  * while a trip is open and the user has turned them on. The tools are registered once and look up
