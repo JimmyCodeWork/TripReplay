@@ -116,7 +116,11 @@ internal sealed class MainForm : Form
     {
         var english = "TripReplay needs the Microsoft Edge WebView2 Runtime, which is part of Windows 10 and 11 but missing here. Open the download page?";
         var chinese = "TripReplay 需要 Microsoft Edge WebView2 Runtime；Windows 10 與 11 通常已內建，但這台電腦上找不到。要開啟下載頁面嗎？";
-        var text = System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("zh", StringComparison.Ordinal) ? chinese : english;
+        var japanese = "TripReplay には Microsoft Edge WebView2 Runtime が必要です。Windows 10 と 11 には通常含まれていますが、このパソコンでは見つかりませんでした。ダウンロードページを開きますか？";
+        var culture = System.Globalization.CultureInfo.CurrentUICulture.Name;
+        var text = culture.StartsWith("zh", StringComparison.Ordinal) ? chinese
+            : culture.StartsWith("ja", StringComparison.Ordinal) ? japanese
+            : english;
         if (MessageBox.Show(this, text, "TripReplay", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
         {
             OpenOutside(WebView2Download);

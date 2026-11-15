@@ -1,4 +1,5 @@
 import en from "../locales/en.json" with { type: "json" };
+import ja from "../locales/ja.json" with { type: "json" };
 import zhTW from "../locales/zh-TW.json" with { type: "json" };
 import type { Locale } from "./locale.ts";
 
@@ -11,6 +12,7 @@ interface TranslationEntry {
 
 const translations: Record<Exclude<Locale, "en">, Readonly<Partial<Record<MessageKey, TranslationEntry>>>> = {
   "zh-TW": zhTW,
+  ja,
 };
 
 const cache = new Map<Locale, ReadonlyMap<MessageKey, string>>();

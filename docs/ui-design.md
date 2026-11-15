@@ -54,14 +54,15 @@ Maps are downloaded once and then used on the device ([ADR 0006](adr/0006-local-
 
 | Group | Setting | Default | Mark |
 |---|---|---|---|
+| Language | **Display language**: Same as the browser, English, 繁體中文 or 日本語, each named in itself; applies at once | Same as the browser | |
 | Playback and map | **Reduce motion** (§6) | The system setting | ? |
 | | **Load map first** ([ADR 0014](adr/0014-load-map-before-playing.md)) | On | ? |
 | | **Load the detailed map**: within 10, 25, 50 or 100 km of the stops, or along the whole path; disabled while **Load map first** is off | Within 25 km | ! |
 | Editing | **Show the journal**: one stop at a time, or one day at a time | One stop at a time | ? |
 | Import | **Make imported photos smaller** ([ADR 0011](adr/0011-smaller-media.md)) | On | ? |
 | | **Make imported videos smaller (1080p, slower)**, where the browser can encode videos | Off | ! |
-| AI agents | **Let the browser's AI agent use the open trip**, where the browser offers WebMCP ([ADR 0010](adr/0010-agent-tools.md)) | Off | ! |
-| | **Connect to the TripReplay MCP server on this computer**, in the Web application only ([ADR 0012](adr/0012-mcp-server.md)), with **Change pairing code** while a code is kept | Off | ! |
+| Agent tools | **Let the browser's built-in agent tool use the open trip**, where the browser offers WebMCP ([ADR 0010](adr/0010-agent-tools.md)) | Off | ! |
+| | **Turn on the MCP server**, in the Web application only ([ADR 0012](adr/0012-mcp-server.md)), with **Change pairing code** while a code is kept | Off | ! |
 
 A small **?** beside a setting explains what it does; a small **!** marks a cost or a consequence to know first, such as slow encoding or text sent to an agent's service. Selecting either opens a small dialog with its text, titled with the setting's name, in the application's colors so that it reads in light and dark mode; it has an accessible name such as "About Load map first". A group whose settings the device does not offer is left out.
 

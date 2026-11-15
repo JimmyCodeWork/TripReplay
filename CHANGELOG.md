@@ -8,6 +8,8 @@ All notable changes to TripReplay are recorded here. The format follows [Keep a 
 
 ### Added
 
+- Japanese: TripReplay's screens are now in English, Traditional Chinese and Japanese. **Settings → Language** chooses one, or follows the browser as before; the change applies at once. The README and the Windows installer are in all three languages.
+- The MCP setting is now **Turn on the MCP server**, in a group named **Agent tools**, and its note explains plainly what an agent tool can see and do: only the open trip's text, after you turn it on and enter its pairing code, with every change undoable.
 - A Windows installer, `tripreplay-windows-…-setup.exe`, with each release: TripReplay as a Windows 10 and 11 application in Microsoft Edge WebView2, installed for the current user without administrator rights, with its own trips. It is not signed yet, so SmartScreen warns before it runs ([ADR 0016](docs/adr/0016-windows-application.md)).
 - Photos and videos dragged from the desktop onto the workspace are imported like with **Import media**, into the selected stop; an audio file dragged in is added as music.
 - **Previous stop** and **Next stop** in the Media tab too, as in the Journal tab.

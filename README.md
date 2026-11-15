@@ -1,6 +1,6 @@
 # TripReplay
 
-English | [繁體中文](README.zh-TW.md)
+English | [繁體中文](README.zh-TW.md) | [日本語](README.ja.md)
 
 TripReplay turns your itinerary, photos and videos into an animated map recap of your trip. Everything is processed on your device.
 
@@ -9,6 +9,8 @@ TripReplay turns your itinerary, photos and videos into an animated map recap of
 ## Try It
 
 - **In the browser:** open [https://jimmycodework.github.io/TripReplay/](https://jimmycodework.github.io/TripReplay/) in Chrome or Edge and select the install button in the address bar to get a desktop icon that opens TripReplay with one click.
+- **On Windows:** download `tripreplay-windows-…-setup.exe` from the [releases](https://github.com/JimmyCodeWork/TripReplay/releases) and run it. The installer is not signed yet, so Windows SmartScreen asks you to confirm with **More info → Run anyway**.
+- **On Android:** download `tripreplay-android-….apk` from the [releases](https://github.com/JimmyCodeWork/TripReplay/releases).
 - **On your own computer:** with Node.js 24 or later, double-click `launch/TripReplay.cmd` (Windows) or `launch/TripReplay.command` (macOS), or run `launch/start.sh` (Linux), to serve TripReplay at `http://localhost:4173`. See the [User Guide §1](docs/user-guide.md#1-before-you-start).
 
 ## Planned Features
@@ -21,7 +23,8 @@ TripReplay turns your itinerary, photos and videos into an animated map recap of
 - Play the recap full-screen in the browser.
 - Download the map of the regions you need once; after that, everything works without a connection, including place search.
 - Export the recap as an MP4 video (1080p or 720p, 30 fps).
-- Version 1.0 runs in the browser and can be installed as a Progressive Web App, and comes as an Android application (APK); installed apps for Windows, macOS, Linux and iOS will follow.
+- Use it in English, Traditional Chinese or Japanese; it follows your browser's language, or the one you choose in Settings.
+- Version 1.0 runs in the browser and can be installed as a Progressive Web App, and comes as an Android application (APK) and a Windows application (installer); installed apps for macOS, Linux and iOS will follow.
 
 ## Privacy
 

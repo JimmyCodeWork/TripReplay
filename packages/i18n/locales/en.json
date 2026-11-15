@@ -968,7 +968,7 @@
     "description": "Heading of the settings for importing photos and videos."
   },
   "settings.section.agents": {
-    "message": "AI agents",
+    "message": "Agent tools",
     "description": "Heading of the settings that let AI agents use the open trip."
   },
   "settings.help": {
@@ -1000,11 +1000,11 @@
     "description": "Caution on the Load the detailed map choice."
   },
   "settings.agentTools": {
-    "message": "Let the browser's AI agent use the open trip",
+    "message": "Let the browser's built-in agent tool use the open trip",
     "description": "Setting that offers the open trip to the browser's own AI agent through WebMCP."
   },
   "settings.mcp": {
-    "message": "Connect to the TripReplay MCP server on this computer",
+    "message": "Turn on the MCP server",
     "description": "Setting that connects the open trip to the local MCP server for agents such as Claude Desktop."
   },
   "mcp.button": {
@@ -1012,11 +1012,11 @@
     "description": "Toggle button in the workspace bar of the Web application: connects the open trip to the TripReplay MCP server on this computer, for an agent such as Claude Desktop. Off until the user turns it on."
   },
   "mcp.hint": {
-    "message": "Connect this trip to the TripReplay MCP server on this computer, so that an AI agent such as Claude Desktop can read it and edit its stops, journal, notes and timing. What it reads is sent to the agent's service. Changes can be undone.",
+    "message": "Lets an agent tool that you run on this computer, such as Claude Desktop, help with the trip you have open: add stops, write the journal and notes, and adjust the timing. It stays off until you turn it on, and even then the tool connects only with the pairing code it shows you. It sees only the open trip's names, places, dates, journal and notes and the file names of its media: not the photos and videos themselves, and no other trip. What it sees is handled by that tool's service, like anything you type into it. Every change can be undone, and turning this off disconnects it at once.",
     "description": "Tooltip of the MCP button."
   },
   "mcp.askCode": {
-    "message": "Pairing code from the AI agent:",
+    "message": "Pairing code from the agent tool:",
     "description": "Label of the field for the six-digit code that the agent shows when TripReplay is not connected."
   },
   "mcp.pair": {
@@ -1024,15 +1024,15 @@
     "description": "Button that connects with the pairing code."
   },
   "mcp.waiting": {
-    "message": "Waiting for the TripReplay MCP server. Start it in your AI agent, for example by asking it to use TripReplay.",
+    "message": "Waiting for the TripReplay MCP server. Start it in your agent tool, for example by asking it to use TripReplay.",
     "description": "Shown while TripReplay looks for the MCP server, which runs only while the agent has it started."
   },
   "mcp.connected": {
-    "message": "Connected: the AI agent can work on this trip.",
+    "message": "Connected: the agent tool can help with this trip.",
     "description": "Shown while the MCP server is connected."
   },
   "mcp.wrongCode": {
-    "message": "The pairing code was not accepted. Enter the code the AI agent shows:",
+    "message": "The pairing code was not accepted. Enter the code the agent tool shows:",
     "description": "Shown, as the field's label, when the server refused the code."
   },
   "mcp.replaced": {
@@ -1044,11 +1044,11 @@
     "description": "Link that forgets the stored pairing code, to enter another."
   },
   "workspace.agentTools": {
-    "message": "AI agent",
+    "message": "Agent tool",
     "description": "Toggle button in the workspace bar, shown only in browsers with WebMCP: lets the browser's AI agent read and edit the text of the open trip. Off until the user turns it on."
   },
   "workspace.agentToolsHint": {
-    "message": "Let the AI agent built into this browser read this trip and edit its stops, journal, notes and timing. What it reads is sent to the agent's service. Changes can be undone.",
+    "message": "Lets the agent tool built into this browser help with this trip: add stops, write the journal and notes, and adjust the timing. It stays off until you turn it on. It sees only this trip's names, places, dates, journal and notes and the file names of its media: not the photos and videos themselves, and no other trip. What it sees is handled by that tool's service, like anything you type into it. Every change can be undone.",
     "description": "Tooltip of the AI agent toggle button."
   },
   "agent.tool.getTrip": {
@@ -1137,11 +1137,11 @@
   },
   "export.q1080": {
     "message": "1080p (sharper)",
-    "description": "Choice of a 1920 \u00d7 1080 video, or 1080 \u00d7 1920 in portrait."
+    "description": "Choice of a 1920 × 1080 video, or 1080 × 1920 in portrait."
   },
   "export.q720": {
     "message": "720p (faster, smaller file)",
-    "description": "Choice of a 1280 \u00d7 720 video, or 720 \u00d7 1280 in portrait."
+    "description": "Choice of a 1280 × 720 video, or 720 × 1280 in portrait."
   },
   "export.checking": {
     "message": "Checking which formats this device can encode…",
@@ -1714,5 +1714,29 @@
   "app.notices": {
     "message": "Open-source licenses",
     "description": "Footer link to the licenses of the third-party software in the application."
+  },
+  "settings.section.language": {
+    "message": "Language",
+    "description": "Heading of the Settings section with the display language."
+  },
+  "settings.language": {
+    "message": "Display language",
+    "description": "Setting that chooses the language of TripReplay's screens."
+  },
+  "settings.language.auto": {
+    "message": "Same as the browser",
+    "description": "Choice of the display language that follows the browser's preferred languages."
+  },
+  "language.english": {
+    "message": "English",
+    "description": "Name of English in English, shown in the language choice. The same in every catalog."
+  },
+  "language.traditionalChinese": {
+    "message": "繁體中文",
+    "description": "Name of Traditional Chinese in Traditional Chinese, shown in the language choice. The same in every catalog."
+  },
+  "language.japanese": {
+    "message": "日本語",
+    "description": "Name of Japanese in Japanese, shown in the language choice. The same in every catalog."
   }
 }
