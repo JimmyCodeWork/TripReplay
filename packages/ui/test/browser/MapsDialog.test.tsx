@@ -82,6 +82,7 @@ interface Options {
   readonly favorites?: readonly string[];
   readonly locate?: () => Promise<{ lon: number; lat: number }>;
   readonly overview?: boolean;
+  readonly mobileData?: boolean;
 }
 
 async function render(manager: FakeManager, locale: Locale = "en", options: Options = {}) {
@@ -101,6 +102,7 @@ async function render(manager: FakeManager, locale: Locale = "en", options: Opti
           draw();
         }}
         locate={options.locate}
+        onMobileData={() => options.mobileData ?? false}
         {...(options.overview ? { overview: WORLD } : {})}
         locale={locale}
         t={createTranslator(locale)}
@@ -223,6 +225,18 @@ describe("MapsDialog", () => {
     expect(manager.calls).toEqual(["estimate taiwan"]);
     await click(row(view, "Taiwan"), "Download");
     expect(manager.calls).toEqual(["estimate taiwan", "download taiwan Taiwan"]);
+  });
+
+  it("advises Wi-Fi, and more strongly on mobile data before a download", async () => {
+    const view = await render(new FakeManager(), "zh-TW", { mobileData: true });
+    expect(view.textContent).toContain("建議盡量在 Wi-Fi 環境下載");
+    await click(row(view, "臺灣"), "下載");
+    expect(row(view, "臺灣").textContent).toContain("此裝置目前似乎使用行動數據");
+    expect(buttons(row(view, "臺灣"))).toEqual(["下載", "取消"]);
+    act(() => root?.unmount());
+    const wifi = await render(new FakeManager());
+    await click(row(wifi, "Taiwan"), "Download");
+    expect(row(wifi, "Taiwan").textContent).not.toContain("mobile data");
   });
 
   it("does not offer a download that does not fit", async () => {
