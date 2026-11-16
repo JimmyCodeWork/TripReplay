@@ -71,6 +71,8 @@ The two import settings also stay as checkboxes in the **Media** tab, where they
 
 ## 3. Trip Workspace
 
+Each time a trip opens while no map at all is downloaded, a dialog titled **No map downloaded yet** says what is missing without one: the recap is drawn on a plain background, and place names cannot be searched. **Download later** closes it and stays in the trip, which can be edited without a map; **Download maps** goes to Maps.
+
 ### 3.1 Desktop layout
 
 ```
