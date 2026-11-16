@@ -10,6 +10,7 @@ import { StopOptions } from "../controls/StopOptions.tsx";
 import { formatDate } from "../format-date.ts";
 import { formatTime } from "../player/format-time.ts";
 import styles from "./MediaPanel.module.css";
+import { MediaPreview } from "./MediaPreview.tsx";
 
 type Project = EditorState["project"];
 type Clip = Project["clips"][number];
@@ -40,7 +41,18 @@ export interface MediaPanelProps {
 
 const SECOND = 1_000_000;
 
-function Thumbnail({ asset, mediaUrl }: { readonly asset: Asset; readonly mediaUrl: MediaPanelProps["mediaUrl"] }) {
+function Thumbnail({
+  asset,
+  mediaUrl,
+  onOpen,
+  label,
+}: {
+  readonly asset: Asset;
+  readonly mediaUrl: MediaPanelProps["mediaUrl"];
+  /** Opens the photo or video in the preview. */
+  readonly onOpen: () => void;
+  readonly label: string;
+}) {
   const [url, setUrl] = useState<string | undefined>();
   useEffect(() => {
     let current = true;
@@ -50,13 +62,16 @@ function Thumbnail({ asset, mediaUrl }: { readonly asset: Asset; readonly mediaU
     };
   }, [asset.id, mediaUrl]);
   if (!url) return <span className={styles.thumbnail} aria-hidden="true" />;
-  return asset.kind === "video" ? (
-    // A thumbnail only; the item is named by the text next to it.
-    <span className={styles.decorative} aria-hidden="true">
-      <video className={styles.thumbnail} src={`${url}#t=0.1`} preload="metadata" muted tabIndex={-1} />
-    </span>
-  ) : (
-    <img className={styles.thumbnail} src={url} alt="" />
+  return (
+    <button type="button" className={styles.thumbnailButton} aria-label={label} title={label} onClick={onOpen}>
+      {asset.kind === "video" ? (
+        <span className={styles.decorative} aria-hidden="true">
+          <video className={styles.thumbnail} src={`${url}#t=0.1`} preload="metadata" muted tabIndex={-1} />
+        </span>
+      ) : (
+        <img className={styles.thumbnail} src={url} alt="" />
+      )}
+    </button>
   );
 }
 
@@ -85,6 +100,24 @@ export function MediaPanel({
   const assetOf = (clip: Clip) => project.assets.find((asset) => asset.id === clip.assetId);
   const [editing, setEditing] = useState<string | undefined>();
   const [sorting, setSorting] = useState(false);
+  /** The position, among the stop's items, of the photo or video shown in the preview. */
+  const [previewing, setPreviewing] = useState<number | undefined>();
+  const previewItems = clips.flatMap((clip) => {
+    const asset = assetOf(clip);
+    if (!asset) return [];
+    return [
+      clip.kind === "video"
+        ? {
+            id: clip.id,
+            assetId: asset.id,
+            kind: clip.kind,
+            fileName: asset.fileName,
+            start: clip.inUs / SECOND,
+            end: clip.outUs / SECOND,
+          }
+        : { id: clip.id, assetId: asset.id, kind: clip.kind, fileName: asset.fileName },
+    ];
+  });
   const drag = useDragReorder(
     clips.map((clip) => clip.id),
     (id, position) => stop && dispatch({ type: "moveClip", id, stopId: stop.id, position }),
@@ -158,7 +191,12 @@ export function MediaPanel({
                       ⠿
                     </span>
                   )}
-                  <Thumbnail asset={asset} mediaUrl={mediaUrl} />
+                  <Thumbnail
+                    asset={asset}
+                    mediaUrl={mediaUrl}
+                    label={t("media.preview", { file: asset.fileName })}
+                    onOpen={() => setPreviewing(previewItems.findIndex((item) => item.id === clip.id))}
+                  />
                   <div className={styles.text}>
                     <span className={styles.name}>{asset.fileName}</span>
                     {clip.kind === "photo" ? (
@@ -293,6 +331,16 @@ export function MediaPanel({
               );
             })}
           </ol>
+          {previewing !== undefined && previewing >= 0 && (
+            <MediaPreview
+              key={stop.id}
+              items={previewItems}
+              index={previewing}
+              mediaUrl={mediaUrl}
+              onClose={() => setPreviewing(undefined)}
+              t={t}
+            />
+          )}
         </>
       )}
     </section>

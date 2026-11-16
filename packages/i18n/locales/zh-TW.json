@@ -1390,5 +1390,17 @@
   },
   "maps.mobileData": {
     "message": "此裝置目前似乎使用行動數據。建議改用 Wi-Fi 下載，以免耗用大量行動數據。"
+  },
+  "media.preview": {
+    "message": "預覽 {file}"
+  },
+  "media.previewPrevious": {
+    "message": "上一個"
+  },
+  "media.previewNext": {
+    "message": "下一個"
+  },
+  "media.previewPosition": {
+    "message": "第 {index} 個，共 {count} 個"
   }
 }

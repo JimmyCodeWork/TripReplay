@@ -1390,5 +1390,17 @@
   },
   "maps.mobileData": {
     "message": "このデバイスはモバイルデータ通信を使っているようです。データ通信量を多く消費するおそれがあるため、Wi-Fi でのダウンロードをおすすめします。"
+  },
+  "media.preview": {
+    "message": "{file} をプレビュー"
+  },
+  "media.previewPrevious": {
+    "message": "前へ"
+  },
+  "media.previewNext": {
+    "message": "次へ"
+  },
+  "media.previewPosition": {
+    "message": "{index} / {count} 件"
   }
 }
