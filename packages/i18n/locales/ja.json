@@ -1401,6 +1401,6 @@
     "message": "次へ"
   },
   "media.previewPosition": {
-    "message": "{count} 件中 {index} 件目"
+    "message": "{index} / {count} 件"
   }
 }
