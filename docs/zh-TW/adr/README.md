@@ -13,7 +13,7 @@
 | [0003](0003-language-and-toolchain.md) | 主要程式語言與工具鏈 | 已接受 |
 | [0004](0004-web-first-release.md) | 1.0 以 Web 與畫面先行，並自行託管 OpenStreetMap 圖磚 | 已接受；地圖託管已由 0006 取代，平台已由 0008 修訂 |
 | [0005](0005-modular-architecture.md) | 模組化的分層應用程式架構 | 已接受 |
-| [0006](0006-local-only-operation.md) | 完全地端執行：下載地圖與裝置上的地點搜尋 | 已接受；已由 0012 修訂 |
+| [0006](0006-local-only-operation.md) | 完全地端執行：下載地圖與裝置上的地點搜尋 | 已接受；已由 0012 與 0017 修訂 |
 | [0007](0007-architecture-gate.md) | 架構決策關卡：渲染器、地圖管線與支援的瀏覽器 | 已接受 |
 | [0008](0008-android-in-1-0.md) | 1.0 提供以 Capacitor 建置的 Android 應用程式 | 已接受；已由 0016 修訂 |
 | [0009](0009-export-in-1-0.md) | 1.0 提供以 WebCodecs 與 mp4-muxer 實作的 MP4 匯出 | 已接受 |
@@ -24,6 +24,7 @@
 | [0014](0014-load-map-before-playing.md) | 播放前先讀取地圖 | 已接受 |
 | [0015](0015-overview-alone-when-zoomed-out.md) | 拉遠時只顯示全球概覽 | 已接受 |
 | [0016](0016-windows-application.md) | 以 WebView2 與 NSIS 安裝檔提供 Windows 應用程式 | 已接受 |
+| [0017](0017-manual-update-check.md) | 手動檢查更新 | 已接受 |
 
 ## 撰寫紀錄
 

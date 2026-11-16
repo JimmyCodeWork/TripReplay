@@ -30,6 +30,8 @@ export interface SettingsPanelProps {
   };
   /** The Storage section's content, such as a `StorageSummary`; left out when undefined. */
   readonly storage?: ReactNode;
+  /** The About section's content: the version and the update check; left out when undefined. */
+  readonly about?: ReactNode;
   /** Forgets the MCP pairing code; shown while one is kept. */
   readonly onForgetMcpCode?: (() => void) | undefined;
   readonly t: Translate;
@@ -124,7 +126,7 @@ function Toggle({
 
 /**
  * The Settings dialog's content (docs/ui-design.md §2.2): the choices that apply to every trip,
- * grouped into language, playback and map, editing, import, agent tools and storage. Each setting with something to explain has a
+ * grouped into language, playback and map, editing, import, agent tools, storage and about. Each setting with something to explain has a
  * "?", and each with a cost or a consequence to know has a "!", which opens a small dialog with it.
  */
 export function SettingsPanel({
@@ -133,6 +135,7 @@ export function SettingsPanel({
   nearKmChoices,
   offers,
   storage,
+  about,
   onForgetMcpCode,
   t,
 }: SettingsPanelProps) {
@@ -279,6 +282,18 @@ export function SettingsPanel({
             </span>
           </legend>
           {storage}
+        </fieldset>
+      )}
+
+      {about !== undefined && (
+        <fieldset className={styles.section}>
+          <legend>
+            <span className={styles.row}>
+              {t("settings.section.about")}
+              {note("help", "settings.section.about", "update.hint")}
+            </span>
+          </legend>
+          {about}
         </fieldset>
       )}
     </div>

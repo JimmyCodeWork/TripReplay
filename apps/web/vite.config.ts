@@ -3,7 +3,7 @@ import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { releaseNotices } from "@tripreplay/release";
 import { defineConfig } from "vite";
-import { contentSecurityPolicy, serviceWorker } from "./build-plugins.ts";
+import { contentSecurityPolicy, RELEASES_URL, serviceWorker } from "./build-plugins.ts";
 
 const root = fileURLToPath(new URL("../..", import.meta.url));
 const { version } = JSON.parse(readFileSync(new URL("../../package.json", import.meta.url), "utf8")) as {
@@ -25,8 +25,10 @@ export default defineConfig(({ mode }) => {
     // started on another port, TripReplay would open without the trips saved before.
     preview: { host: "localhost", port: 4173, strictPort: true },
     build: { target: "es2022", outDir: native ? "dist-native" : desktop ? "dist-desktop" : "dist" },
+    // Shown in Settings and compared with the releases when checking for updates.
+    define: { __TRIPREPLAY_VERSION__: JSON.stringify(version), __TRIPREPLAY_RELEASES__: JSON.stringify(RELEASES_URL) },
     plugins: [
-      contentSecurityPolicy(),
+      contentSecurityPolicy({ releases: native || desktop }),
       ...(native || desktop ? [] : [serviceWorker(fileURLToPath(new URL("public", import.meta.url)))]),
       releaseNotices({
         root,

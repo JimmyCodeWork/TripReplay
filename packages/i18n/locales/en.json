@@ -1794,5 +1794,57 @@
   "noMap.download": {
     "message": "Download maps",
     "description": "Closes the no-map dialog and goes to Maps."
+  },
+  "settings.section.about": {
+    "message": "About",
+    "description": "Heading of the Settings section with the version and the update check."
+  },
+  "about.version": {
+    "message": "Version {version}",
+    "description": "TripReplay's version, such as 1.0.0."
+  },
+  "update.check": {
+    "message": "Check for updates",
+    "description": "Button that checks for a newer version of TripReplay."
+  },
+  "update.checking": {
+    "message": "Checking…",
+    "description": "Shown while checking for updates."
+  },
+  "update.upToDate": {
+    "message": "You have the latest version.",
+    "description": "Shown when no newer version exists."
+  },
+  "update.ready": {
+    "message": "A new version is ready. Reload to use it; your trips stay as they are.",
+    "description": "Web application: the new version has been downloaded and is used after a reload."
+  },
+  "update.reload": {
+    "message": "Reload",
+    "description": "Reloads the page to use the new version."
+  },
+  "update.available": {
+    "message": "Version {version} is available.",
+    "description": "Android and Windows applications: a newer release exists."
+  },
+  "update.download": {
+    "message": "Open the download page",
+    "description": "Opens the release page of the newer version in the browser."
+  },
+  "update.installHint": {
+    "message": "Install it over this one; your trips stay.",
+    "description": "How to install the downloaded version."
+  },
+  "update.noReleases": {
+    "message": "No version has been released yet.",
+    "description": "Shown when the project has published no release."
+  },
+  "update.failed": {
+    "message": "Could not check for updates. Check the connection and try again.",
+    "description": "Shown when the check failed."
+  },
+  "update.hint": {
+    "message": "TripReplay checks only when you select Check for updates. The Web application asks its own site for a new version and uses it after a reload. The Android and Windows applications ask GitHub for the project's releases, which tells GitHub only that a check was made; a new version is downloaded from its page and installed over the old one.",
+    "description": "Explanation of the About section, shown by its ?."
   }
 }

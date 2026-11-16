@@ -1345,5 +1345,44 @@
   },
   "noMap.download": {
     "message": "ダウンロードへ"
+  },
+  "settings.section.about": {
+    "message": "このアプリについて"
+  },
+  "about.version": {
+    "message": "バージョン {version}"
+  },
+  "update.check": {
+    "message": "アップデートを確認"
+  },
+  "update.checking": {
+    "message": "確認しています…"
+  },
+  "update.upToDate": {
+    "message": "最新バージョンです。"
+  },
+  "update.ready": {
+    "message": "新しいバージョンの準備ができました。再読み込みすると使えます。旅行はそのまま残ります。"
+  },
+  "update.reload": {
+    "message": "再読み込み"
+  },
+  "update.available": {
+    "message": "バージョン {version} が公開されています。"
+  },
+  "update.download": {
+    "message": "ダウンロードページを開く"
+  },
+  "update.installHint": {
+    "message": "上書きしてインストールしてください。旅行はそのまま残ります。"
+  },
+  "update.noReleases": {
+    "message": "まだバージョンが公開されていません。"
+  },
+  "update.failed": {
+    "message": "アップデートを確認できませんでした。接続を確認して、もう一度お試しください。"
+  },
+  "update.hint": {
+    "message": "TripReplay が確認するのは「アップデートを確認」を選んだときだけです。ウェブ版は自分のサイトに新しいバージョンを問い合わせ、再読み込みすると使えます。Android 版と Windows 版は GitHub にプロジェクトのリリースを問い合わせます。GitHub に伝わるのは確認が行われたことだけです。新しいバージョンはそのページからダウンロードし、古いものに上書きしてインストールします。"
   }
 }
