@@ -1788,8 +1788,8 @@
     "description": "Text of the no-map dialog: what is missing without a map, and that the trip can be edited without one."
   },
   "noMap.ok": {
-    "message": "OK",
-    "description": "Closes the no-map dialog and stays in the trip."
+    "message": "Download later",
+    "description": "Closes the no-map dialog and stays in the trip, to download maps another time."
   },
   "noMap.download": {
     "message": "Download maps",
