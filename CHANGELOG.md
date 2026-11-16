@@ -8,7 +8,7 @@ All notable changes to TripReplay are recorded here. The format follows [Keep a 
 
 ### Added
 
-- The page keeps clear of the status bar and screen corners on iPhone and iPad, where the blurred top of the screen covered the title and the header buttons, with a little more room at the top everywhere.
+- The page keeps clear of the status bar and screen corners on iPhone and iPad, where the blurred top of the screen covered the title and the header buttons.
 - Opening a trip while no map is downloaded shows **No map downloaded yet**, each time, with **Download later** to go on without a map and **Download maps** to go to Maps.
 - **Storage** in Settings shows how much space TripReplay uses against what the browser allows, how much the maps and the trips' photos, videos and music take, and whether the browser may clear the data on its own.
 - Japanese: TripReplay's screens are now in English, Traditional Chinese and Japanese. **Settings → Language** chooses one, or follows the browser as before; the change applies at once. The README and the Windows installer are in all three languages.
@@ -62,3 +62,7 @@ All notable changes to TripReplay are recorded here. The format follows [Keep a 
 - "Reduce motion" in the preview, starting as the system setting; the workspace tabs work with the arrow keys; contrast of text on the accent color and of field borders meets WCAG 2.2 AA in the light and dark schemes.
 - An Android application (APK), built with Capacitor from the same page: backups are saved where you choose, and its libraries pass their own license gate ([ADR 0008](docs/adr/0008-android-in-1-0.md)).
 - [User guide](docs/user-guide.md), [privacy statement](docs/privacy.md), [browser support and known issues](docs/browser-support.md) and [accessibility review](docs/accessibility-review.md).
+
+### Fixed
+
+- On touch screens, the page leaves more room at the top and on the right, where the blurred top bar of iPad still covered the edges of the header buttons.

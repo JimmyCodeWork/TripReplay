@@ -44,11 +44,21 @@ body {
   margin: 0 auto;
   /*
    * Clear of the system bars and screen corners where the page reaches under them
-   * (viewport-fit=cover), such as the blurred status bar of iPhone and iPad, with a little more
-   * room at the top than at the sides.
+   * (viewport-fit=cover), such as the blurred status bar of iPhone and iPad.
    */
-  padding: calc(24px + env(safe-area-inset-top)) max(16px, env(safe-area-inset-right))
+  padding: calc(16px + env(safe-area-inset-top)) max(16px, env(safe-area-inset-right))
     calc(16px + env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+}
+
+/*
+ * On touch screens, more room at the top and on the right, where the blur of iPadOS's top bar
+ * still reached the edges of the header buttons.
+ */
+@media (pointer: coarse) {
+  .app {
+    padding-top: calc(36px + env(safe-area-inset-top));
+    padding-right: max(24px, calc(8px + env(safe-area-inset-right)));
+  }
 }
 
 .app-header h1 {
