@@ -104,7 +104,19 @@ export function MediaPanel({
   const [previewing, setPreviewing] = useState<number | undefined>();
   const previewItems = clips.flatMap((clip) => {
     const asset = assetOf(clip);
-    return asset ? [{ id: clip.id, assetId: asset.id, kind: clip.kind, fileName: asset.fileName }] : [];
+    if (!asset) return [];
+    return [
+      clip.kind === "video"
+        ? {
+            id: clip.id,
+            assetId: asset.id,
+            kind: clip.kind,
+            fileName: asset.fileName,
+            start: clip.inUs / SECOND,
+            end: clip.outUs / SECOND,
+          }
+        : { id: clip.id, assetId: asset.id, kind: clip.kind, fileName: asset.fileName },
+    ];
   });
   const drag = useDragReorder(
     clips.map((clip) => clip.id),

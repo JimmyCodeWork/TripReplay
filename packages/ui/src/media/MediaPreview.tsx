@@ -9,6 +9,9 @@ export interface PreviewItem {
   readonly assetId: string;
   readonly kind: "photo" | "video";
   readonly fileName: string;
+  /** For a video, the part the recap plays, in seconds; it plays from `start` and stops at `end`. */
+  readonly start?: number | undefined;
+  readonly end?: number | undefined;
 }
 
 export interface MediaPreviewProps {
@@ -84,7 +87,29 @@ export function MediaPreview({ items, index: first, mediaUrl, onClose, t }: Medi
         {url &&
           (item.kind === "video" ? (
             // biome-ignore lint/a11y/useMediaCaption: the user's own videos have no captions.
-            <video key={url} className={styles.media} src={url} controls autoPlay playsInline />
+            <video
+              key={url}
+              className={styles.media}
+              src={url}
+              controls
+              playsInline
+              onLoadedMetadata={(event) => {
+                // The part the recap plays, started at once; where the browser refuses to play
+                // without a tap, its controls stay.
+                const video = event.currentTarget;
+                video.currentTime = item.start ?? 0;
+                void video.play().catch(() => {});
+              }}
+              onTimeUpdate={(event) => {
+                const video = event.currentTarget;
+                if (item.end !== undefined && video.currentTime >= item.end) video.pause();
+              }}
+              onPlay={(event) => {
+                // Playing again after the end starts the part over.
+                const video = event.currentTarget;
+                if (item.end !== undefined && video.currentTime >= item.end - 0.05) video.currentTime = item.start ?? 0;
+              }}
+            />
           ) : (
             <img className={styles.media} src={url} alt={item.fileName} />
           ))}

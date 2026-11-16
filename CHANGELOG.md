@@ -8,7 +8,7 @@ All notable changes to TripReplay are recorded here. The format follows [Keep a 
 
 ### Added
 
-- Selecting a thumbnail in the Media tab opens the photo or video at the size of the window, with **Previous** and **Next** (or the arrow keys) through the stop's media.
+- Selecting a thumbnail in the Media tab opens the photo or video at the size of the window, a video playing at once from its trimmed start to its trimmed end, with **Previous** and **Next** (or the arrow keys) through the stop's media.
 - **Maps** advises downloading over Wi-Fi, and on an Android device on mobile data, the confirmation of a download recommends Wi-Fi before it starts.
 - **About** in Settings shows the version and **Check for updates**, which checks only when selected: the Web application loads the new version and offers **Reload**; the Android and Windows applications ask GitHub for the releases and link to the download page of a newer one.
 - The page keeps clear of the status bar and screen corners on iPhone and iPad, where the blurred top of the screen covered the title and the header buttons.
