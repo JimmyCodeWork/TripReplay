@@ -8,6 +8,7 @@ All notable changes to TripReplay are recorded here. The format follows [Keep a 
 
 ### Added
 
+- Opening a trip while no map is downloaded shows **No map downloaded yet**, each time, with **OK** to go on without a map and **Download maps** to go to Maps.
 - **Storage** in Settings shows how much space TripReplay uses against what the browser allows, how much the maps and the trips' photos, videos and music take, and whether the browser may clear the data on its own.
 - Japanese: TripReplay's screens are now in English, Traditional Chinese and Japanese. **Settings → Language** chooses one, or follows the browser as before; the change applies at once. The README and the Windows installer are in all three languages.
 - The MCP setting is now **Turn on the MCP server**, in a group named **Agent tools**, and its note explains plainly what an agent tool can see and do: only the open trip's text, after you turn it on and enter its pairing code, with every change undoable.

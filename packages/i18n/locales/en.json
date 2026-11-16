@@ -1778,5 +1778,21 @@
   "storage.hint": {
     "message": "TripReplay sets no limit of its own: the browser decides how much it may store, usually a large share of the free disk space, but on some devices, such as iPads, as little as 1 GB. Downloading a map or importing media checks the free space first. Sizes are approximate, because browsers round them.",
     "description": "Explanation of the Storage section, shown by its ?."
+  },
+  "noMap.title": {
+    "message": "No map downloaded yet",
+    "description": "Title of the dialog shown each time a trip opens while no map is downloaded."
+  },
+  "noMap.text": {
+    "message": "Without a map, the recap shows the route and stops on a plain background, and place names cannot be searched; pasted coordinates and map links still work. You can plan the trip now and download maps later in Maps.",
+    "description": "Text of the no-map dialog: what is missing without a map, and that the trip can be edited without one."
+  },
+  "noMap.ok": {
+    "message": "OK",
+    "description": "Closes the no-map dialog and stays in the trip."
+  },
+  "noMap.download": {
+    "message": "Download maps",
+    "description": "Closes the no-map dialog and goes to Maps."
   }
 }

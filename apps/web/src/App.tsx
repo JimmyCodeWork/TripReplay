@@ -11,6 +11,7 @@ import { formatBytes, MapsDialog, PlaceSearchBox, TripList } from "@tripreplay/u
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { backupTrip, inspectBackup, restoreBackup } from "./backup.ts";
 import { MapPreview } from "./MapPreview.tsx";
+import { NoMapDialog } from "./NoMapDialog.tsx";
 import { PACKAGED } from "./platform.ts";
 import { SettingsDialog } from "./SettingsDialog.tsx";
 import type { Services } from "./services.ts";
@@ -113,6 +114,12 @@ export function App({ services, locale, t }: AppProps) {
   const { trips } = services;
   const list = useSyncExternalStore(trips.subscribe, trips.getState);
   const [screen, setScreen] = useState<Screen>({ kind: "trips" });
+  /** Whether the notice that no map is downloaded is shown, once each time a trip opens without one. */
+  const [noMap, setNoMap] = useState(false);
+  const openTrip = (id: string) => {
+    setScreen({ kind: "trip", id });
+    setNoMap(!services.regions.getState().some((entry) => entry.status.kind === "ready"));
+  };
   const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   const [status, setStatus] = useState<string | undefined>();
   /** A backup whose trip is already stored, waiting for the user to restore it as a copy or not. */
@@ -231,9 +238,9 @@ export function App({ services, locale, t }: AppProps) {
           trips={list}
           locale={locale}
           t={t}
-          onOpen={(id) => setScreen({ kind: "trip", id })}
+          onOpen={openTrip}
           onCreate={() => {
-            void trips.create(t("tripList.newTitle"), timeZone).then((id) => setScreen({ kind: "trip", id }));
+            void trips.create(t("tripList.newTitle"), timeZone).then(openTrip);
           }}
           onRename={(id, title) => void trips.rename(id, title)}
           onDuplicate={(id) => {
@@ -338,6 +345,16 @@ export function App({ services, locale, t }: AppProps) {
             void trips.refresh();
             setScreen({ kind: "trips" });
           }}
+        />
+      )}
+      {screen.kind === "trip" && noMap && (
+        <NoMapDialog
+          onClose={() => setNoMap(false)}
+          onDownload={() => {
+            setNoMap(false);
+            setScreen({ kind: "maps" });
+          }}
+          t={t}
         />
       )}
       {screen.kind === "maps" && <MapsScreen services={services} locale={locale} t={t} />}

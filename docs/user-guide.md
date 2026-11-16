@@ -42,7 +42,7 @@ Map data © OpenStreetMap contributors, Overture Maps Foundation.
 
 ## 3. Plan the Trip
 
-1. Select **Trips** at the top, then **Create your first trip** (or **New trip**). The trip opens in its workspace; you can rename it later in the trip list.
+1. Select **Trips** at the top, then **Create your first trip** (or **New trip**). The trip opens in its workspace; you can rename it later in the trip list. While no map is downloaded, a dialog reminds you each time you open a trip: select **OK** to plan without a map, or **Download maps** to get one first (§2).
 2. In **Itinerary**, set **Date of new stops** to the day you are adding.
 3. Type a place name into the search box and choose a result. The stop is added to that day.
    - Instead of a name, you can paste coordinates, such as `34.9949, 135.785`, or a link copied from Google Maps, Apple Maps, OpenStreetMap or Bing Maps. Short links, such as `maps.app.goo.gl`, cannot be read without a connection; open them and copy the full link instead.
