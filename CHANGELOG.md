@@ -8,6 +8,7 @@ All notable changes to TripReplay are recorded here. The format follows [Keep a 
 
 ### Added
 
+- **Maps** advises downloading over Wi-Fi, and on an Android device on mobile data, the confirmation of a download recommends Wi-Fi before it starts.
 - **About** in Settings shows the version and **Check for updates**, which checks only when selected: the Web application loads the new version and offers **Reload**; the Android and Windows applications ask GitHub for the releases and link to the download page of a newer one.
 - The page keeps clear of the status bar and screen corners on iPhone and iPad, where the blurred top of the screen covered the title and the header buttons.
 - Opening a trip while no map is downloaded shows **No map downloaded yet**, each time, with **Download later** to go on without a map and **Download maps** to go to Maps.

@@ -102,11 +102,22 @@ function MapsScreen({ services, locale, t }: AppProps) {
         onToggleFavorite={toggleFavorite}
         locate={locate}
         overview={WORLD_REGION}
+        onMobileData={onMobileData}
         locale={locale}
         t={t}
       />
     </div>
   );
+}
+
+/**
+ * Whether the device is on mobile data, where the browser tells: the Network Information API,
+ * which Chrome and the Android System WebView offer on Android. Elsewhere, the general advice in
+ * Maps stands alone.
+ */
+function onMobileData(): boolean {
+  const connection = (navigator as Navigator & { connection?: { type?: string } }).connection;
+  return connection?.type === "cellular";
 }
 
 /** The screens of docs/ui-design.md §1: the trip list, the trip workspace and the maps dialog. */

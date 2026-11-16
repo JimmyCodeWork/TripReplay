@@ -25,6 +25,11 @@ export interface MapsDialogProps {
   readonly locate?: (() => Promise<{ readonly lon: number; readonly lat: number }>) | undefined;
   /** The world overview, offered above the regions (docs/adr/0013-world-overview.md). */
   readonly overview?: CatalogRegion | undefined;
+  /**
+   * Whether the device seems to be on mobile data, asked as a download is confirmed; undefined
+   * where the browser does not tell.
+   */
+  readonly onMobileData?: (() => boolean) | undefined;
   readonly locale: Locale;
   readonly t: Translate;
 }
@@ -45,7 +50,8 @@ const contains = ({ bounds: [west, south, east, north] }: CatalogRegion, at: { l
 type Step =
   | { readonly kind: "idle" }
   | { readonly kind: "checking" }
-  | { readonly kind: "confirm"; readonly estimate: RegionEstimate }
+  /** `mobileData`: the device seemed to be on mobile data when the size was checked. */
+  | { readonly kind: "confirm"; readonly estimate: RegionEstimate; readonly mobileData: boolean }
   | { readonly kind: "failed"; readonly reason: RegionFailureReason };
 
 interface RowProps {
@@ -55,6 +61,7 @@ interface RowProps {
   readonly favorite?: boolean;
   readonly onToggleFavorite?: () => void;
   readonly manager: RegionManager<File>;
+  readonly onMobileData?: (() => boolean) | undefined;
   readonly locale: Locale;
   readonly t: Translate;
 }
@@ -63,7 +70,7 @@ function percent(completed: number, total: number): number {
   return total > 0 ? Math.min(100, Math.round((completed / total) * 100)) : 0;
 }
 
-function RegionRow({ region, entry, favorite, onToggleFavorite, manager, locale, t }: RowProps) {
+function RegionRow({ region, entry, favorite, onToggleFavorite, manager, onMobileData, locale, t }: RowProps) {
   const [step, setStep] = useState<Step>({ kind: "idle" });
   const size = (bytes: number) => formatBytes(locale, bytes);
   const name = t(`region.${region.id}` as MessageKey);
@@ -72,7 +79,8 @@ function RegionRow({ region, entry, favorite, onToggleFavorite, manager, locale,
   const check = async () => {
     setStep({ kind: "checking" });
     try {
-      setStep({ kind: "confirm", estimate: await manager.estimate(region.bounds, region.id) });
+      const estimate = await manager.estimate(region.bounds, region.id);
+      setStep({ kind: "confirm", estimate, mobileData: onMobileData?.() ?? false });
     } catch (error) {
       setStep({ kind: "failed", reason: error instanceof RegionFailure ? error.reason : "network" });
     }
@@ -89,6 +97,8 @@ function RegionRow({ region, entry, favorite, onToggleFavorite, manager, locale,
   );
 
   let status: string;
+  /** Advice shown above the actions, such as waiting for Wi-Fi. */
+  let advice: string | undefined;
   let progress: { completed: number; total: number } | undefined;
   const actions: ReactNode[] = [];
   if (!entry) {
@@ -105,6 +115,7 @@ function RegionRow({ region, entry, favorite, onToggleFavorite, manager, locale,
           freeBytes === undefined
             ? t("maps.confirmUnknownFree", { size: size(neededBytes) })
             : t("maps.confirm", { size: size(neededBytes), free: size(freeBytes) });
+        if (step.mobileData) advice = t("maps.mobileData");
         actions.push(button("maps.action.download", download, true));
       }
       actions.push(button("common.cancel", () => setStep({ kind: "idle" })));
@@ -203,6 +214,7 @@ function RegionRow({ region, entry, favorite, onToggleFavorite, manager, locale,
         <p className={styles.status} role="status">
           {status}
         </p>
+        {advice && <p className={styles.advice}>{advice}</p>}
         {progress && (
           <progress
             className={styles.progress}
@@ -341,6 +353,7 @@ export function MapsDialog({
   onToggleFavorite,
   locate,
   overview,
+  onMobileData,
   locale,
   t,
 }: MapsDialogProps) {
@@ -392,6 +405,7 @@ export function MapsDialog({
           {t("maps.title")}
         </h2>
         <p className={styles.intro}>{t("maps.intro")}</p>
+        <p className={styles.intro}>{t("maps.wifiTip")}</p>
       </header>
       {overview && (
         <ul className={styles.list} aria-label={t("region.world")}>
@@ -399,6 +413,7 @@ export function MapsDialog({
             region={overview}
             entry={entries.find((entry) => entry.id === overview.id)}
             manager={manager}
+            onMobileData={onMobileData}
             locale={locale}
             t={t}
           />
@@ -457,6 +472,7 @@ export function MapsDialog({
             favorite={favorites.includes(region.id)}
             onToggleFavorite={() => onToggleFavorite(region.id)}
             manager={manager}
+            onMobileData={onMobileData}
             locale={locale}
             t={t}
           />

@@ -1384,5 +1384,11 @@
   },
   "update.hint": {
     "message": "只有在您選取「檢查更新」時，TripReplay 才會檢查。網頁版會向自己的網站詢問新版本，重新載入後即可使用。Android 與 Windows 應用程式會向 GitHub 查詢專案的發行版本，GitHub 只會知道有人進行了檢查；新版本需從其頁面下載，再覆蓋安裝舊版。"
+  },
+  "maps.wifiTip": {
+    "message": "地圖檔案較大，從數十到數百 MB 不等，建議盡量在 Wi-Fi 環境下載。"
+  },
+  "maps.mobileData": {
+    "message": "此裝置目前似乎使用行動數據。建議改用 Wi-Fi 下載，以免耗用大量行動數據。"
   }
 }

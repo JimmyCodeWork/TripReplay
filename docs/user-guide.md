@@ -29,7 +29,7 @@ The map shows your route and lets you search for places. Download each region yo
 
 1. Select **Maps** at the top.
 2. Find the region, for example **Japan – Kansai**, and select **Download**. The list shows the popular countries; choose another country, **Favorites** or **Downloaded** in **Country or area**. **Use current location** lists the regions where you are; your location is used only on this device, and the Android application asks for permission first. Select ☆ beside a region to add it to your favorites.
-3. TripReplay shows the size and the free space on your device. Select **Download** again to confirm.
+3. TripReplay shows the size and the free space on your device. Select **Download** again to confirm. Maps take tens to hundreds of megabytes, so download them over Wi-Fi where you can; on an Android device on mobile data, TripReplay reminds you of this before the download.
 4. Wait until the region shows **Ready**. You can **Pause** and **Resume** a download, and keep working on your trips meanwhile. If the connection drops, the download resumes where it stopped.
 
 Other things you can do in **Maps**:

@@ -1846,5 +1846,13 @@
   "update.hint": {
     "message": "TripReplay checks only when you select Check for updates. The Web application asks its own site for a new version and uses it after a reload. The Android and Windows applications ask GitHub for the project's releases, which tells GitHub only that a check was made; a new version is downloaded from its page and installed over the old one.",
     "description": "Explanation of the About section, shown by its ?."
+  },
+  "maps.wifiTip": {
+    "message": "Maps are large, from tens to hundreds of megabytes: download them over Wi-Fi where you can.",
+    "description": "General advice under the introduction of Maps."
+  },
+  "maps.mobileData": {
+    "message": "This device seems to be on mobile data. Downloading over Wi-Fi is recommended, as it may use much of your data plan.",
+    "description": "Shown before a download is confirmed when the browser reports a cellular connection."
   }
 }
