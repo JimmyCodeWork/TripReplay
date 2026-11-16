@@ -6,7 +6,7 @@
 
 | | |
 |---|---|
-| 狀態 | 已接受。取代 [ADR 0004](0004-web-first-release.md) 決策 2 中的地圖託管。決策 3 已由 [ADR 0012](0012-mcp-server.md) 修訂：開啟 MCP 時，網頁應用程式會連線到同一台電腦上的 server |
+| 狀態 | 已接受。取代 [ADR 0004](0004-web-first-release.md) 決策 2 中的地圖託管。決策 3 已由 [ADR 0012](0012-mcp-server.md) 修訂：開啟 MCP 時，網頁應用程式會連線到同一台電腦上的 server；並由 [ADR 0017](0017-manual-update-check.md) 修訂：檢查更新時，Android 與 Windows 應用程式會向 GitHub 查詢發行版本 |
 | 日期 | 2026-10-24 |
 
 ## 背景

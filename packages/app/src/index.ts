@@ -102,3 +102,4 @@ export {
 export { createStore, type Listener, type Store } from "./store.ts";
 export { createTimelineCache } from "./timeline-cache.ts";
 export { createTripLibrary, summarizeProject, type TripLibrary, type TripLibraryOptions } from "./trips.ts";
+export { compareVersions, isPrerelease, newerRelease, type Release } from "./updates.ts";

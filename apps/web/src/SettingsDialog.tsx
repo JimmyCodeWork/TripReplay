@@ -5,6 +5,7 @@ import { NATIVE } from "./platform.ts";
 import type { Services } from "./services.ts";
 import { PRELOAD_NEAR_KM, updateSettings, useSettings } from "./settings.ts";
 import { measureStorage } from "./storage-usage.ts";
+import { UpdateCheck } from "./UpdateCheck.tsx";
 import { modelContext } from "./web-mcp.ts";
 
 /** The system's "Reduce motion" setting, which "Reduce motion" follows until the user chooses. */
@@ -77,6 +78,7 @@ export function SettingsDialog({ services, locale, t }: SettingsDialogProps) {
               mcp: !NATIVE,
             }}
             storage={<StorageSummary usage={storage} locale={locale} t={t} />}
+            about={<UpdateCheck t={t} />}
             onForgetMcpCode={settings.mcpCode ? () => updateSettings({ mcpCode: "" }) : undefined}
             t={t}
           />

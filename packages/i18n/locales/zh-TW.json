@@ -1345,5 +1345,44 @@
   },
   "noMap.download": {
     "message": "前往下載"
+  },
+  "settings.section.about": {
+    "message": "關於"
+  },
+  "about.version": {
+    "message": "版本 {version}"
+  },
+  "update.check": {
+    "message": "檢查更新"
+  },
+  "update.checking": {
+    "message": "檢查中…"
+  },
+  "update.upToDate": {
+    "message": "已是最新版本。"
+  },
+  "update.ready": {
+    "message": "新版本已準備好。重新載入即可使用，您的旅行不受影響。"
+  },
+  "update.reload": {
+    "message": "重新載入"
+  },
+  "update.available": {
+    "message": "已有新版本 {version}。"
+  },
+  "update.download": {
+    "message": "前往下載頁面"
+  },
+  "update.installHint": {
+    "message": "直接覆蓋安裝即可，旅行會保留。"
+  },
+  "update.noReleases": {
+    "message": "尚未發布任何版本。"
+  },
+  "update.failed": {
+    "message": "無法檢查更新，請確認網路連線後再試一次。"
+  },
+  "update.hint": {
+    "message": "只有在您選取「檢查更新」時，TripReplay 才會檢查。網頁版會向自己的網站詢問新版本，重新載入後即可使用。Android 與 Windows 應用程式會向 GitHub 查詢專案的發行版本，GitHub 只會知道有人進行了檢查；新版本需從其頁面下載，再覆蓋安裝舊版。"
   }
 }

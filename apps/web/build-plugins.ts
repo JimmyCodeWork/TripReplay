@@ -10,34 +10,45 @@ import type { Plugin } from "vite";
 export const MAP_SOURCE = "https://overturemaps-extras-us-west-2.s3.us-west-2.amazonaws.com";
 
 /**
+ * The release list of the project on GitHub, which the Android and Windows applications ask for a
+ * newer version when the user checks for updates (docs/privacy.md §1).
+ */
+export const RELEASES_URL = "https://api.github.com/repos/JimmyCodeWork/TripReplay/releases?per_page=20";
+
+/**
  * The Content Security Policy. Scripts and workers come only from the site; network access is
- * limited to the map download source; media is shown from blob: URLs of stored files. Inline
+ * limited to the map download source and, with `releases`, the release list; media is shown from blob: URLs of stored files. Inline
  * styles are allowed because React and MapLibre set style attributes.
  */
-export const CONTENT_SECURITY_POLICY = [
-  "default-src 'self'",
-  "script-src 'self'",
-  "worker-src 'self' blob:",
-  // The TripReplay MCP server on this computer, which the user connects to by choice (ADR 0012).
-  `connect-src 'self' ${MAP_SOURCE} ws://127.0.0.1:4174 blob: data:`,
-  "img-src 'self' blob: data:",
-  "media-src 'self' blob:",
-  "style-src 'self' 'unsafe-inline'",
-  "font-src 'self'",
-  "object-src 'none'",
-  "base-uri 'self'",
-  "form-action 'none'",
-].join("; ");
+export function contentSecurityPolicyText({ releases }: { readonly releases: boolean }): string {
+  return [
+    "default-src 'self'",
+    "script-src 'self'",
+    "worker-src 'self' blob:",
+    // The TripReplay MCP server on this computer, which the user connects to by choice (ADR 0012).
+    `connect-src 'self' ${MAP_SOURCE}${releases ? ` ${new URL(RELEASES_URL).origin}` : ""} ws://127.0.0.1:4174 blob: data:`,
+    "img-src 'self' blob: data:",
+    "media-src 'self' blob:",
+    "style-src 'self' 'unsafe-inline'",
+    "font-src 'self'",
+    "object-src 'none'",
+    "base-uri 'self'",
+    "form-action 'none'",
+  ].join("; ");
+}
 
-/** Adds the policy to the built page only; the development server needs inline scripts and WebSockets. */
-export function contentSecurityPolicy(): Plugin {
+/**
+ * Adds the policy to the built page only; the development server needs inline scripts and
+ * WebSockets. `releases` lets the page ask GitHub for releases, in the Android and Windows builds.
+ */
+export function contentSecurityPolicy(options: { readonly releases: boolean } = { releases: false }): Plugin {
   return {
     name: "tripreplay-csp",
     apply: "build",
     transformIndexHtml: () => [
       {
         tag: "meta",
-        attrs: { "http-equiv": "Content-Security-Policy", content: CONTENT_SECURITY_POLICY },
+        attrs: { "http-equiv": "Content-Security-Policy", content: contentSecurityPolicyText(options) },
         injectTo: "head-prepend",
       },
     ],

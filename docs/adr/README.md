@@ -11,7 +11,7 @@ This directory records significant architecture and policy decisions. Each recor
 | [0003](0003-language-and-toolchain.md) | Primary language and toolchain | Accepted |
 | [0004](0004-web-first-release.md) | Web-first, screen-first 1.0 with self-hosted OpenStreetMap tiles | Accepted; map hosting superseded by 0006, platform amended by 0008 |
 | [0005](0005-modular-architecture.md) | Modular, layered application architecture | Accepted |
-| [0006](0006-local-only-operation.md) | Local-only operation: downloaded maps and on-device place search | Accepted; amended by 0012 |
+| [0006](0006-local-only-operation.md) | Local-only operation: downloaded maps and on-device place search | Accepted; amended by 0012 and 0017 |
 | [0007](0007-architecture-gate.md) | Architecture gate: renderer, map pipeline and supported browsers | Accepted |
 | [0008](0008-android-in-1-0.md) | An Android application in 1.0, built with Capacitor | Accepted; amended by 0016 |
 | [0009](0009-export-in-1-0.md) | MP4 export in 1.0, with WebCodecs and mp4-muxer | Accepted |
@@ -22,6 +22,7 @@ This directory records significant architecture and policy decisions. Each recor
 | [0014](0014-load-map-before-playing.md) | Load the map before playing | Accepted |
 | [0015](0015-overview-alone-when-zoomed-out.md) | The world overview alone when zoomed out | Accepted |
 | [0016](0016-windows-application.md) | A Windows application with WebView2 and an NSIS installer | Accepted |
+| [0017](0017-manual-update-check.md) | A manual update check | Accepted |
 
 ## Writing a Record
 

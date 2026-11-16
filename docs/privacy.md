@@ -15,18 +15,19 @@ The application makes the following requests, and no others. The built page carr
 
 | When | Destination | What is sent | What the destination can learn |
 |---|---|---|---|
-| You open TripReplay, and when the browser checks for a new version | The website you opened TripReplay from: for the project's site, GitHub Pages (`jimmycodework.github.io`, operated by GitHub); none when you run TripReplay on your own computer at `localhost` | Ordinary requests for the application's files (HTML, scripts, styles, icons, `sw.js`) | That someone opened the application, with the usual request information: IP address, time and browser (user agent) |
+| You open TripReplay, when the browser checks for a new version, and when you select **Check for updates** in **Settings** | The website you opened TripReplay from: for the project's site, GitHub Pages (`jimmycodework.github.io`, operated by GitHub); none when you run TripReplay on your own computer at `localhost` | Ordinary requests for the application's files (HTML, scripts, styles, icons, `sw.js`) | That someone opened the application, with the usual request information: IP address, time and browser (user agent) |
 | You select **Download**, **Update** or **Check for updates** in **Maps** | Overture Maps' public storage, `overturemaps-extras-us-west-2.s3.us-west-2.amazonaws.com` (operated on Amazon Web Services) | A listing of the available map releases, and HTTP range requests for the parts of the map archives that cover the chosen region, or the first zoom levels of the whole world for the world overview | Your IP address, the time and browser, and which areas were downloaded, since the requested parts correspond to those areas |
+| In the Android and Windows applications only: you select **Check for updates** in **Settings** | GitHub's API, `api.github.com` (operated by GitHub) | One request for the list of TripReplay's releases | Your IP address, the time and the application's user agent, and so that someone checked for a TripReplay update |
 
 In particular:
 
 - **No trip data leaves the device.** Trips, stops, journal entries, photos, videos, music, their metadata (such as GPS positions and capture times) and backups are never sent anywhere by TripReplay. If you let the browser's own AI agent use the open trip in **Settings**, it can read that trip's text (§3).
 - **Your location stays on the device.** "Use current location" in **Maps** reads the device's position once, only when you select it, to find the regions you are in. It is not stored or sent anywhere.
 - **Place search runs on the device**, in the downloaded maps. Searches, pasted coordinates and pasted map links are not sent anywhere; a short map link that only its service can resolve is not opened.
-- **No other services are contacted**: no fonts, map styles, telemetry, crash reports or update checks of other parties.
+- **No other services are contacted**: no fonts, map styles, telemetry or crash reports. Updates are checked only when you select **Check for updates**; nothing is checked on its own, apart from the browser's check of `sw.js` below.
 - Once the application is installed or cached, it starts from the copy on your device. The browser still checks the website for a new version of `sw.js` when a connection is available.
 
-The website's operator and Overture Maps decide themselves what they log and for how long; TripReplay has no control over that. TripReplay itself sets no cookies.
+The website's operator, GitHub and Overture Maps decide themselves what they log and for how long; TripReplay has no control over that. TripReplay itself sets no cookies.
 
 ## 2. Stored on Your Device
 
@@ -60,7 +61,7 @@ The **Turn on the MCP server** setting of the Web application works the same way
 
 The Android application ([ADR 0008](adr/0008-android-in-1-0.md)) contains the same application and makes the same map requests. It differs in these points:
 
-- Its files are in the package, so it makes no request to a website, not even to check for a new version. New versions come with a new APK.
+- Its files are in the package, so it makes no request to a website. It looks for a new version only when you select **Check for updates**, by asking GitHub for the list of releases (§1); new versions come with a new APK.
 - It asks Android for network access, which the map downloads need, and for location, which only "Use current location" uses and asks for when you first select it. Approximate location is enough.
 - It stores its data in the application's own storage on the device, separate from any browser. Uninstalling the application deletes that data.
 - Android's automatic backup is turned off for the application, so trips and media are not copied to a Google account. Use TripReplay's own backup (§2) instead.
@@ -70,7 +71,7 @@ The Android application ([ADR 0008](adr/0008-android-in-1-0.md)) contains the sa
 
 The Windows application ([ADR 0016](adr/0016-windows-application.md)) contains the same application and makes the same map requests, shown in Microsoft Edge WebView2. It differs in these points:
 
-- Its files are in the installed folder, so it makes no request to a website, not even to check for a new version. New versions come with a new installer.
+- Its files are in the installed folder, so it makes no request to a website. It looks for a new version only when you select **Check for updates**, by asking GitHub for the list of releases (§1); new versions come with a new installer.
 - It stores its data in its own WebView2 profile under `%LOCALAPPDATA%\TripReplay`, separate from any browser. Uninstalling the application keeps that data; delete the folder to remove it.
 - The WebView2 Runtime is part of Windows. Microsoft updates it, and it may send diagnostic data to Microsoft, under the diagnostic data settings of Windows, as Edge does.
 - Links to other sites open in your default browser.
