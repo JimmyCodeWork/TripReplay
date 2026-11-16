@@ -1,0 +1,86 @@
+/* A photo or video at the size of the window; tokens come from the shell, with legible fallbacks. */
+
+.preview {
+  box-sizing: border-box;
+  width: min(100vw - 24px, 1400px);
+  max-width: none;
+  height: min(100vh - 24px, 1000px);
+  max-height: none;
+  padding: 12px;
+  border: 0;
+  border-radius: 8px;
+  background: #111;
+  color: #f2f2f2;
+  font: 15px / 1.5 var(--font-body, system-ui, sans-serif);
+}
+
+.preview[open] {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 8px;
+}
+
+.preview::backdrop {
+  background: rgb(0 0 0 / 70%);
+}
+
+.bar,
+.nav {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.nav {
+  justify-content: center;
+}
+
+.name {
+  overflow: hidden;
+  flex: 1;
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.position {
+  color: #bbb;
+  font-variant-numeric: tabular-nums;
+}
+
+/* The photo or video fills the space between the bars, whole and in its own proportions. */
+.stage {
+  position: relative;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.media {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.button {
+  padding: 4px 12px;
+  border: 1px solid #555;
+  border-radius: 6px;
+  background: #222;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.button:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}

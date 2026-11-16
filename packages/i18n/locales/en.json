@@ -1854,5 +1854,21 @@
   "maps.mobileData": {
     "message": "This device seems to be on mobile data. Downloading over Wi-Fi is recommended, as it may use much of your data plan.",
     "description": "Shown before a download is confirmed when the browser reports a cellular connection."
+  },
+  "media.preview": {
+    "message": "Preview {file}",
+    "description": "Name of a thumbnail in the media tab, which opens the photo or video at the size of the window."
+  },
+  "media.previewPrevious": {
+    "message": "Previous",
+    "description": "Shows the stop's previous photo or video in the preview."
+  },
+  "media.previewNext": {
+    "message": "Next",
+    "description": "Shows the stop's next photo or video in the preview."
+  },
+  "media.previewPosition": {
+    "message": "{index} of {count}",
+    "description": "Position of the shown item among the stop's photos and videos."
   }
 }
