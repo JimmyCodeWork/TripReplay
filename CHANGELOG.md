@@ -8,6 +8,7 @@ All notable changes to TripReplay are recorded here. The format follows [Keep a 
 
 ### Added
 
+- The page keeps clear of the status bar and screen corners on iPhone and iPad, where the blurred top of the screen covered the title and the header buttons, with a little more room at the top everywhere.
 - Opening a trip while no map is downloaded shows **No map downloaded yet**, each time, with **Download later** to go on without a map and **Download maps** to go to Maps.
 - **Storage** in Settings shows how much space TripReplay uses against what the browser allows, how much the maps and the trips' photos, videos and music take, and whether the browser may clear the data on its own.
 - Japanese: TripReplay's screens are now in English, Traditional Chinese and Japanese. **Settings → Language** chooses one, or follows the browser as before; the change applies at once. The README and the Windows installer are in all three languages.
