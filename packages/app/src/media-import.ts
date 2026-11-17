@@ -45,11 +45,16 @@ export interface MediaImportState {
  * One import (docs/ui-design.md §4): reads and stores the chosen files one by one, suggests a
  * stop for each and keeps the user's decisions. Nothing reaches the project until `finish`.
  */
-export interface MediaImport {
+export interface MediaImport<File = unknown> {
   getState(): MediaImportState;
   subscribe(listener: Listener): () => void;
   /** Reads, stores and matches the files; resolves once every file is done. */
   run(): Promise<void>;
+  /**
+   * Adds more files to this import, such as photos dragged in while it is open; they are read
+   * after those before them, and the import goes back to reading until they are done.
+   */
+  add(files: readonly File[]): void;
   /** Assigns an item to a stop, which counts as accepted; undefined leaves it unassigned. */
   choose(index: number, stopId: StopId | undefined): void;
   accept(index: number): void;
@@ -109,7 +114,11 @@ export function createMediaImport<File>({
   selectedStopId,
   shrinkPhotos = false,
   shrinkVideos = false,
-}: MediaImportOptions<File>): MediaImport {
+}: MediaImportOptions<File>): MediaImport<File> {
+  /** Every file of the import, the added ones after the first; `next` is the next one to read. */
+  const queue: File[] = [...files];
+  let next = 0;
+  let running: Promise<void> | undefined;
   const store = createStore<MediaImportState>({
     phase: "reading",
     completed: 0,
@@ -138,64 +147,107 @@ export function createMediaImport<File>({
     for (const id of ids) await media.discard(id).catch(() => {});
   };
 
+  // Only files in use are duplicates. A file whose clips were all removed is still stored with the
+  // trip, and importing it again brings it back without storing it twice. Read when the import
+  // starts, and kept up to date for the files added later.
+  let known: { hashes: Set<string>; unused: Map<string, Asset> } | undefined;
+
+  /** Reads the files not read yet, the added ones included, then turns to review. */
+  const drain = async () => {
+    if (!known) {
+      const current = project();
+      known = {
+        hashes: new Set(
+          current.assets.filter((asset) => isAssetReferenced(current, asset.id)).map((asset) => asset.contentHash),
+        ),
+        unused: new Map(
+          current.assets
+            .filter((asset) => !isAssetReferenced(current, asset.id))
+            .map((asset) => [asset.contentHash, asset]),
+        ),
+      };
+    }
+    const { hashes, unused } = known;
+    while (next < queue.length) {
+      const index = next++;
+      const file = queue[index] as File;
+      if (controller.signal.aborted) return;
+      try {
+        const info = await media.inspect(file, controller.signal);
+        // Music is added in the music tab, not to stops.
+        if (info.kind === "audio") {
+          update(index, (item) => ({ ...item, status: "unsupported" }));
+        } else if (hashes.has(info.contentHash)) {
+          update(index, (item) => ({ ...item, status: "duplicate" }));
+        } else if (unused.has(info.contentHash)) {
+          hashes.add(info.contentHash);
+          const asset = unused.get(info.contentHash) as Asset;
+          update(index, (item) => ({ ...item, status: "ready", asset, ...suggested(asset) }));
+        } else {
+          hashes.add(info.contentHash);
+          const id = newId();
+          // The original's content hash stays, so that importing the original again is a duplicate.
+          const shrunk =
+            shrinkPhotos && info.kind === "photo"
+              ? await media.shrinkPhoto?.(file)
+              : shrinkVideos && info.kind === "video"
+                ? await media.shrinkVideo?.(file, controller.signal)
+                : undefined;
+          await media.store(shrunk?.file ?? file, id, controller.signal);
+          stored.push(id);
+          const { file: _, ...changes } = shrunk ?? { file };
+          const asset = {
+            ...info,
+            ...changes,
+            ...(shrunk && info.kind === "photo" ? { rotation: 0 } : {}),
+            id,
+          } as Asset;
+          update(index, (item) => ({ ...item, status: "ready", asset, ...suggested(asset) }));
+        }
+      } catch (error) {
+        if (controller.signal.aborted) return;
+        const reason = error instanceof MediaFailure ? error.reason : "failed";
+        update(index, (item) => ({ ...item, status: reason }));
+      }
+      store.setState((state) => ({ ...state, completed: state.completed + 1 }));
+    }
+    if (next >= queue.length) store.setState((state) => ({ ...state, phase: "review" }));
+  };
+
+  /** Starts reading unless it is under way; files added at its very end start it again. */
+  const start = (): Promise<void> => {
+    running ??= drain().finally(() => {
+      running = undefined;
+      if (next < queue.length && !controller.signal.aborted) void start();
+    });
+    return running;
+  };
+
   return {
     getState: store.getState,
     subscribe: store.subscribe,
 
-    async run() {
-      // Only files in use are duplicates. A file whose clips were all removed is still stored
-      // with the trip, and importing it again brings it back without storing it twice.
-      const current = project();
-      const hashes = new Set(
-        current.assets.filter((asset) => isAssetReferenced(current, asset.id)).map((asset) => asset.contentHash),
-      );
-      const unused = new Map(
-        current.assets
-          .filter((asset) => !isAssetReferenced(current, asset.id))
-          .map((asset) => [asset.contentHash, asset]),
-      );
-      for (const [index, file] of files.entries()) {
-        if (controller.signal.aborted) return;
-        try {
-          const info = await media.inspect(file, controller.signal);
-          // Music is added in the music tab, not to stops.
-          if (info.kind === "audio") {
-            update(index, (item) => ({ ...item, status: "unsupported" }));
-          } else if (hashes.has(info.contentHash)) {
-            update(index, (item) => ({ ...item, status: "duplicate" }));
-          } else if (unused.has(info.contentHash)) {
-            hashes.add(info.contentHash);
-            const asset = unused.get(info.contentHash) as Asset;
-            update(index, (item) => ({ ...item, status: "ready", asset, ...suggested(asset) }));
-          } else {
-            hashes.add(info.contentHash);
-            const id = newId();
-            // The original's content hash stays, so that importing the original again is a duplicate.
-            const shrunk =
-              shrinkPhotos && info.kind === "photo"
-                ? await media.shrinkPhoto?.(file)
-                : shrinkVideos && info.kind === "video"
-                  ? await media.shrinkVideo?.(file, controller.signal)
-                  : undefined;
-            await media.store(shrunk?.file ?? file, id, controller.signal);
-            stored.push(id);
-            const { file: _, ...changes } = shrunk ?? { file };
-            const asset = {
-              ...info,
-              ...changes,
-              ...(shrunk && info.kind === "photo" ? { rotation: 0 } : {}),
-              id,
-            } as Asset;
-            update(index, (item) => ({ ...item, status: "ready", asset, ...suggested(asset) }));
-          }
-        } catch (error) {
-          if (controller.signal.aborted) return;
-          const reason = error instanceof MediaFailure ? error.reason : "failed";
-          update(index, (item) => ({ ...item, status: reason }));
-        }
-        store.setState((state) => ({ ...state, completed: state.completed + 1 }));
-      }
-      store.setState((state) => ({ ...state, phase: "review" }));
+    run: start,
+
+    add(more) {
+      if (more.length === 0 || controller.signal.aborted) return;
+      const first = queue.length;
+      queue.push(...more);
+      store.setState((state) => ({
+        ...state,
+        phase: "reading",
+        total: state.total + more.length,
+        items: [
+          ...state.items,
+          ...more.map((file, offset) => ({
+            index: first + offset,
+            fileName: media.fileName(file),
+            status: "waiting" as const,
+            accepted: false,
+          })),
+        ],
+      }));
+      void start();
     },
 
     choose(index, stopId) {

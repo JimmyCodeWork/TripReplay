@@ -8,6 +8,7 @@ All notable changes to TripReplay are recorded here. The format follows [Keep a 
 
 ### Added
 
+- Photos and videos dragged in while the import dialog is open join that import, so that several drops make one import.
 - Line breaks in a journal entry, a day's line or a note start a new line in the recap too.
 - The day chosen in the Itinerary tab stays chosen after another tab is shown and the itinerary comes back.
 - Selecting a thumbnail in the Media tab opens the photo or video at the size of the window, a video playing at once from its trimmed start to its trimmed end, with **Previous** and **Next** (or the arrow keys) through the stop's media.
