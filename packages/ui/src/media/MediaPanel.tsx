@@ -227,6 +227,22 @@ export function MediaPanel({
                           />
                           {t("media.enRoute")}
                         </label>
+                        {clip.enRoute && (
+                          <label className={styles.duration} title={t("media.enRouteCenteredHint")}>
+                            <input
+                              type="checkbox"
+                              checked={clip.enRouteCentered === true}
+                              onChange={(event) =>
+                                dispatch({
+                                  type: "setClipEnRouteCentered",
+                                  id: clip.id,
+                                  centered: event.target.checked,
+                                })
+                              }
+                            />
+                            {t("media.enRouteCentered")}
+                          </label>
+                        )}
                       </>
                     ) : (
                       <>

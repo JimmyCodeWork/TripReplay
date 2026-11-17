@@ -12,7 +12,7 @@ export interface PlaybackState {
 }
 
 /** The speeds offered for playback. */
-export const PLAYBACK_RATES = [0.5, 1, 1.5, 2] as const;
+export const PLAYBACK_RATES = [0.5, 1, 1.5, 2, 3, 4] as const;
 
 /**
  * Plays a timeline in real time (docs/ui-design.md §3.4, §5). The time comes from the clock, so a

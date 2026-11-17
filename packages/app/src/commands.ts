@@ -30,6 +30,7 @@ import {
   type StopTimingChanges,
   setAspectRatio,
   setClipEnRoute,
+  setClipEnRouteCentered,
   setClipFit,
   setClipMuted,
   setClipNote,
@@ -90,6 +91,7 @@ export type Command =
   | { readonly type: "setClipMuted"; readonly id: ClipId; readonly muted: boolean }
   | { readonly type: "setClipFit"; readonly id: ClipId; readonly fit: Fit }
   | { readonly type: "setClipEnRoute"; readonly id: ClipId; readonly enRoute: boolean }
+  | { readonly type: "setClipEnRouteCentered"; readonly id: ClipId; readonly centered: boolean }
   | { readonly type: "setClipNote"; readonly id: ClipId; readonly note: string }
   /** An imported music file, if new, and its track, as one step to undo. */
   | {
@@ -182,6 +184,8 @@ export function applyCommand(project: Project, command: Command): Project {
       return setClipMuted(project, command.id, command.muted);
     case "setClipEnRoute":
       return setClipEnRoute(project, command.id, command.enRoute);
+    case "setClipEnRouteCentered":
+      return setClipEnRouteCentered(project, command.id, command.centered);
     case "setClipFit":
       return setClipFit(project, command.id, command.fit);
     case "setClipNote":

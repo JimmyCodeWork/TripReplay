@@ -1414,5 +1414,11 @@
   },
   "media.mute": {
     "message": "ミュート"
+  },
+  "media.enRouteCentered": {
+    "message": "中央に表示"
+  },
+  "media.enRouteCenteredHint": {
+    "message": "線が引かれる間、このスポットの写真と同じ大きさで画面の中央に表示します。線の横の小さなカードには表示しません。"
   }
 }

@@ -99,6 +99,8 @@ export function validateProject(project: Project): ValidationIssue[] {
       if (clip.durationUs < PHOTO_DURATION.min || clip.durationUs > PHOTO_DURATION.max)
         add(`${path}.durationUs`, "is outside the allowed range");
       if (clip.enRoute !== undefined && clip.enRoute !== true) add(`${path}.enRoute`, "must be true when present");
+      if (clip.enRouteCentered !== undefined && (clip.enRouteCentered !== true || clip.enRoute !== true))
+        add(`${path}.enRouteCentered`, "must be true, and only on a photo taken on the way");
     } else {
       if ("enRoute" in clip) add(`${path}.enRoute`, "only a photo can be on the way");
       const length = asset?.kind === "video" ? asset.durationUs : Number.POSITIVE_INFINITY;

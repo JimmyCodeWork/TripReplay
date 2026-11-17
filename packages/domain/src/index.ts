@@ -8,6 +8,7 @@ export {
   removeClip,
   resetTiming,
   setClipEnRoute,
+  setClipEnRouteCentered,
   setClipFit,
   setClipMuted,
   setClipNote,

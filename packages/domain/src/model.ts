@@ -100,6 +100,11 @@ export interface PhotoClip {
    * instead of after its title. Absent for a photo at the stop.
    */
   readonly enRoute?: true;
+  /**
+   * A photo taken on the way, shown in the middle at the size of the stop's media instead of on the
+   * small card beside the line; only with `enRoute`, absent otherwise.
+   */
+  readonly enRouteCentered?: true;
 }
 
 export interface VideoClip {

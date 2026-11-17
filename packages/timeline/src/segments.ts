@@ -60,6 +60,7 @@ export interface EnRouteInput {
   readonly durationUs: Microseconds;
   readonly caption: string;
   readonly at?: number;
+  readonly centered?: true;
 }
 
 /**

@@ -97,7 +97,13 @@ function enRouteInputs(
   let passed = 0;
   return clips.map((clip) => {
     const located = before !== undefined && project.assets.some((a) => a.id === clip.assetId && a.gps);
-    const input = { clipId: clip.id, assetId: clip.assetId, durationUs: clip.durationUs, caption: clip.note ?? "" };
+    const input = {
+      clipId: clip.id,
+      assetId: clip.assetId,
+      durationUs: clip.durationUs,
+      caption: clip.note ?? "",
+      ...(clip.enRouteCentered ? { centered: true as const } : {}),
+    };
     if (!located) return input;
     passed++;
     return { ...input, at: total > 0 ? (lengths[passed] ?? 0) / total : passed / (stop.via.length + 1) };

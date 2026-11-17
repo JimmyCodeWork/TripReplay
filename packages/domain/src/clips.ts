@@ -165,8 +165,19 @@ export function setClipEnRoute(project: Project, id: ClipId, enRoute: boolean): 
     project,
     id,
     "photo",
-    ({ enRoute: _, ...clip }): PhotoClip => (enRoute ? { ...clip, enRoute } : clip),
+    // Back at the stop, a photo is no longer shown in the middle of the move either.
+    ({ enRoute: _, enRouteCentered, ...clip }): PhotoClip =>
+      enRoute ? { ...clip, enRoute, ...(enRouteCentered ? { enRouteCentered } : {}) } : clip,
   );
+}
+
+/** Shows a photo taken on the way in the middle, at the size of the stop's media, or on its small card. */
+export function setClipEnRouteCentered(project: Project, id: ClipId, centered: boolean): Project {
+  return updateClip(project, id, "photo", ({ enRouteCentered: _, ...clip }): PhotoClip => {
+    if (centered && !clip.enRoute)
+      throw invalid("Only a photo taken on the way can be shown in the middle of the move");
+    return centered ? { ...clip, enRouteCentered: true } : clip;
+  });
 }
 
 /** Length of a clip on the recap timeline. */

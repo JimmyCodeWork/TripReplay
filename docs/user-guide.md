@@ -80,7 +80,7 @@ In the **Media** tab, choose the **Stop** whose photos and videos you want to se
 
 - select **Edit** to move it with **Move up** and **Move down**, or to another stop with **Move to…**, for example after an import put it at the wrong stop, or to **Remove from stop**;
 - set how many **Seconds** a photo is shown;
-- check **On the way** for a photo taken on the way to the stop, for example from a train: it is shown on a small card while the line is drawn to the stop, and the move lasts long enough for all such photos. When the photo has a location, the line passes where it was taken, so a few photos along a railway trace the journey. Put them in the order they were taken;
+- check **On the way** for a photo taken on the way to the stop, for example from a train: it is shown on a small card while the line is drawn to the stop, or, with **In the middle** also checked, in the middle at the size of the stop's photos; the move lasts long enough for all such photos. When the photo has a location, the line passes where it was taken, so a few photos along a railway trace the journey. Put them in the order they were taken;
 - trim a video with **From (s)** and **To (s)**, and set its **Volume**, or select **Mute** to play it without sound; its volume is kept for when you clear **Mute**.
 
 ## 5. Write the Journal
@@ -142,7 +142,7 @@ Use only music you have the right to use, especially if you show the recap in pu
 The preview on the right always shows the current recap.
 
 - **Play** and **Pause**, or press the space bar while no button or field has the focus.
-- The speed beside them, **1×** at first, plays the preview at 0.5×, 1.5× or 2×, for example to check a long recap quickly. Exported videos always play at normal speed.
+- The speed beside them, **1×** at first, plays the preview at 0.5×, 1.5×, 2×, 3× or 4×, for example to check a long recap quickly. Exported videos always play at normal speed.
 - Drag the **Playback position** slider, or use the arrow keys on it, to move through the recap.
 - The bar under the slider shows the parts of the recap: opening, new days, travel, stop titles, photos, videos and closing. Select a part to jump to it.
 - Times are marked above the bar.
