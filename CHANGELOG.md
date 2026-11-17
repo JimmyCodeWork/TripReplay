@@ -8,6 +8,9 @@ All notable changes to TripReplay are recorded here. The format follows [Keep a 
 
 ### Added
 
+- Photos and videos dragged in while the import dialog is open join that import, so that several drops make one import.
+- Line breaks in a journal entry, a day's line or a note start a new line in the recap too.
+- The day chosen in the Itinerary tab stays chosen after another tab is shown and the itinerary comes back.
 - Selecting a thumbnail in the Media tab opens the photo or video at the size of the window, a video playing at once from its trimmed start to its trimmed end, with **Previous** and **Next** (or the arrow keys) through the stop's media.
 - **Maps** advises downloading over Wi-Fi, and on an Android device on mobile data, the confirmation of a download recommends Wi-Fi before it starts.
 - **About** in Settings shows the version and **Check for updates**, which checks only when selected: the Web application loads the new version and offers **Reload**; the Android and Windows applications ask GitHub for the releases and link to the download page of a newer one.
@@ -68,4 +71,5 @@ All notable changes to TripReplay are recorded here. The format follows [Keep a 
 
 ### Fixed
 
+- A JPEG photo is no longer refused as "not a photo or video this browser can show" when its camera put large data before the picture's size, or left bytes between its segments; its capture time and position are still read.
 - On touch screens, the page leaves more room at the top and on the right, where the blurred top bar of iPad still covered the edges of the header buttons.

@@ -64,7 +64,7 @@ In the trip list, each trip can be opened, renamed, duplicated, backed up and de
 
 Add stops first; every photo and video belongs to a stop.
 
-1. Open the **Media** tab and select **Import media**, then choose your photos and videos. On a computer you can also drag them from a folder onto TripReplay; an audio file dragged in the same way is added as music.
+1. Open the **Media** tab and select **Import media**, then choose your photos and videos. On a computer you can also drag them from a folder onto TripReplay, and keep dragging more while the import dialog is open: they join the same import. An audio file dragged in the same way is added as music.
 2. TripReplay reads each file's capture time and GPS position and suggests a stop:
    - **by location** — the nearest stop of that day, from the file's GPS position;
    - **by date** — the first stop of the day it was taken, when the file has no position.
@@ -89,7 +89,7 @@ The **Journal** tab is a diary of the trip. For each day, you can write a line t
 
 - A day's line appears under "Day 2" and the date when the day begins, before the recap moves to the day's first stop, and stays long enough to read it. The first day's line appears before the move to the first stop.
 
-- A stop's entry is shown in the recap under the stop's name, in up to three lines (about 80 characters), appearing line by line in a serif face like a printed diary. The stop's title stays on screen longer so that it can be read.
+- A stop's entry is shown in the recap under the stop's name, in up to three lines (about 80 characters), with a new line wherever you pressed Enter, appearing line by line in a serif face like a printed diary. The stop's title stays on screen longer so that it can be read.
 - Notes on photos and videos are shown over the bottom of the picture, in up to two lines, shortly after it appears.
 - An entry is saved when you leave the field, or with **Ctrl+Enter** (**⌘+Enter** on a Mac).
 

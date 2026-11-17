@@ -1870,5 +1870,9 @@
   "media.previewPosition": {
     "message": "{index} of {count}",
     "description": "Position of the shown item among the stop's photos and videos."
+  },
+  "media.dropAddHint": {
+    "message": "Drop to add photos and videos to this import",
+    "description": "Shown over the window while files are dragged onto it with the import dialog open."
   }
 }

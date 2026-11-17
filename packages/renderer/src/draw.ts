@@ -83,7 +83,7 @@ const CAPTION_REVEAL = { delayUs: 400_000, fadeUs: 800_000 } as const;
  * Breaks a caption into at most `maxLines` lines that fit `maxWidth`. Words stay whole where
  * there are spaces; Chinese and Japanese text, which has none, breaks between characters. Closing
  * punctuation never starts a line: it stays at the end of the line before, slightly past the
- * width. A cut last line ends with an ellipsis.
+ * width. A line break in the text starts a new line. A cut last line ends with an ellipsis.
  */
 /** Punctuation that must not start a line in Chinese, Japanese or English text. */
 const CLOSING = /^[，。、．,.!?！？：:；;）)」』】〉》〕］}…ー～〜%％]$/u;
@@ -94,16 +94,24 @@ export function wrapText(
   measure: (text: string) => number,
   maxLines = CAPTION_LINES,
 ): string[] {
+  // A line break of the text starts a new line; other runs of spaces become one space.
   const tokens =
     text
-      .replace(/\s+/g, " ")
+      .replace(/[^\S\n]+/g, " ")
+      .replace(/ ?\n[\s]*/g, "\n")
       .trim()
       .match(
-        /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{P}]|[^\s\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{P}]+|\s/gu,
+        /\n|[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{P}]|[^\s\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{P}]+|\s/gu,
       ) ?? [];
   const lines: string[] = [];
   let line = "";
   for (const token of tokens) {
+    if (token === "\n") {
+      lines.push(line.trimEnd());
+      line = "";
+      if (lines.length === maxLines) break;
+      continue;
+    }
     const next = line + token;
     if (measure(next) <= maxWidth || line.trim() === "" || CLOSING.test(token)) {
       line = next;

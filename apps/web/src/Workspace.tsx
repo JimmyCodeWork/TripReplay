@@ -209,6 +209,8 @@ function EditorView({ editor, services, locale, t, onClose }: EditorViewProps) {
   const [exporting, setExporting] = useState<Timeline | undefined>();
 
   const [tab, setTab] = useState<Tab>("itinerary");
+  /** The day the itinerary shows, kept while other tabs are shown; undefined for all days. */
+  const [itineraryDay, setItineraryDay] = useState<string | undefined>();
   const fileInput = useRef<HTMLInputElement>(null);
   const musicInput = useRef<HTMLInputElement>(null);
   const [musicError, setMusicError] = useState<string | undefined>();
@@ -225,7 +227,7 @@ function EditorView({ editor, services, locale, t, onClose }: EditorViewProps) {
       setMusicError(t("music.failed", { reason: error instanceof MediaFailure ? error.reason : "failed" }));
     }
   };
-  const [importing, setImporting] = useState<MediaImport | undefined>();
+  const [importing, setImporting] = useState<MediaImport<File> | undefined>();
   const startImport = (files: File[]) => {
     if (files.length === 0) return;
     const session = createMediaImport({
@@ -273,10 +275,16 @@ function EditorView({ editor, services, locale, t, onClose }: EditorViewProps) {
   };
 
   // Files dragged from the desktop onto the workspace: photos and videos are imported like with
-  // "Import media", to the selected stop, and an audio file is added as music.
+  // "Import media", to the selected stop, and an audio file is added as music. While the import
+  // dialog is open, more photos and videos dropped are added to that import.
   const [dragging, setDragging] = useState(false);
-  const dropRef = useRef({ startImport, addMusic, busy: false });
-  dropRef.current = { startImport, addMusic, busy: importing !== undefined || exporting !== undefined };
+  const dropRef = useRef<{
+    startImport: (files: File[]) => void;
+    addMusic: (file: File) => Promise<void>;
+    importing: MediaImport<File> | undefined;
+    busy: boolean;
+  }>({ startImport, addMusic, importing: undefined, busy: false });
+  dropRef.current = { startImport, addMusic, importing, busy: exporting !== undefined };
   useEffect(() => {
     let depth = 0;
     const carriesFiles = (event: DragEvent) => event.dataTransfer?.types.includes("Files") === true;
@@ -303,6 +311,11 @@ function EditorView({ editor, services, locale, t, onClose }: EditorViewProps) {
       const files = [...(event.dataTransfer?.files ?? [])];
       const media = files.filter((file) => file.type.startsWith("image/") || file.type.startsWith("video/"));
       const music = files.find((file) => file.type.startsWith("audio/"));
+      const current = dropRef.current.importing;
+      if (current) {
+        current.add(media);
+        return;
+      }
       if (media.length > 0) dropRef.current.startImport(media);
       else if (music) void dropRef.current.addMusic(music);
     };
@@ -334,7 +347,7 @@ function EditorView({ editor, services, locale, t, onClose }: EditorViewProps) {
     <div className="workspace">
       {dragging && (
         <div className="drop-zone" aria-hidden="true">
-          <p>{t("media.dropHint")}</p>
+          <p>{t(importing ? "media.dropAddHint" : "media.dropHint")}</p>
         </div>
       )}
       <div className="workspace-bar">
@@ -427,6 +440,8 @@ function EditorView({ editor, services, locale, t, onClose }: EditorViewProps) {
                   select(id);
                   setTab(to);
                 }}
+                shownDay={itineraryDay}
+                onShowDay={setItineraryDay}
                 locale={locale}
                 t={t}
               />

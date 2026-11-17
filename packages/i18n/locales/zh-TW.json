@@ -1402,5 +1402,8 @@
   },
   "media.previewPosition": {
     "message": "第 {index} 個，共 {count} 個"
+  },
+  "media.dropAddHint": {
+    "message": "放開即可將照片與影片加入這次匯入"
   }
 }

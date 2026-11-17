@@ -228,6 +228,42 @@ describe("media import", () => {
     expect(next.clips.filter((c) => c.stopId === "kiyomizu").map((c) => c.assetId)).toEqual(["id2", "id1"]);
   });
 
+  it("takes more files while it is open, and reads them after the others", async () => {
+    const { session } = setup([{ name: "a" }], kyoto(), "nara");
+    await session.run();
+    expect(session.getState()).toMatchObject({ phase: "review", completed: 1, total: 1 });
+    // Dropped in after the first one was read: the import reads again, then returns to review.
+    session.add([{ name: "b" }, { name: "a" }]);
+    expect(session.getState()).toMatchObject({ phase: "reading", total: 3 });
+    expect(session.getState().items.map((i) => [i.index, i.fileName, i.status])).toEqual([
+      [0, "a", "ready"],
+      [1, "b", "waiting"],
+      [2, "a", "waiting"],
+    ]);
+    await session.run();
+    const state = session.getState();
+    expect(state).toMatchObject({ phase: "review", completed: 3, total: 3 });
+    // The second a is the same file as the first: a duplicate. b goes to the selected stop.
+    expect(state.items.map((i) => [i.status, i.stopId])).toEqual([
+      ["ready", "nara"],
+      ["ready", "nara"],
+      ["duplicate", undefined],
+    ]);
+    const command = await session.finish();
+    if (command?.type !== "importMedia") throw new Error("no command");
+    expect(command.clips).toHaveLength(2);
+  });
+
+  it("reads files added while it is still reading", async () => {
+    const { session } = setup([{ name: "a" }, { name: "b" }]);
+    const reading = session.run();
+    session.add([{ name: "c" }]);
+    await reading;
+    await session.run();
+    expect(session.getState()).toMatchObject({ phase: "review", completed: 3, total: 3 });
+    expect(session.getState().items.map((i) => i.status)).toEqual(["ready", "ready", "ready"]);
+  });
+
   it("puts every item at the stop selected when the import began, keeping its suggestion", async () => {
     const { session } = setup(
       [{ name: "a", info: photo("a", { captureTime: "2026-04-01T15:00:00", gps: KIYOMIZU }) }, { name: "b" }],

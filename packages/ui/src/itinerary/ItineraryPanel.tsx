@@ -19,6 +19,12 @@ export interface ItineraryPanelProps {
   readonly onSelect: (stopId: string) => void;
   /** Opens the media or journal tab at a stop. */
   readonly onOpen?: ((tab: "media" | "journal", stopId: string) => void) | undefined;
+  /**
+   * The day the panel shows, undefined for all days, kept by the shell so that it stays when
+   * another tab is shown and the panel comes back; without it the panel keeps the day itself.
+   */
+  readonly shownDay?: string | undefined;
+  readonly onShowDay?: ((day: string | undefined) => void) | undefined;
   readonly locale: Locale;
   readonly t: Translate;
 }
@@ -69,18 +75,24 @@ export function ItineraryPanel({
   selectedStopId,
   onSelect,
   onOpen,
+  shownDay: keptDay,
+  onShowDay,
   locale,
   t,
 }: ItineraryPanelProps) {
-  const [date, setDate] = useState(() => project.stops.at(-1)?.date ?? today());
+  const [ownDay, setOwnDay] = useState<string | undefined>();
+  const chosenDay = onShowDay ? keptDay : ownDay;
+  const setShownDay = onShowDay ?? setOwnDay;
+  const grouped = days(project.stops);
+  // A day without stops any more, after its last stop moved or was removed, shows all days.
+  const shownDay = grouped.some((day) => day.date === chosenDay) ? chosenDay : undefined;
+  const [date, setDate] = useState(() => shownDay ?? project.stops.at(-1)?.date ?? today());
   const [renaming, setRenaming] = useState<{ readonly id: string; readonly name: string } | undefined>();
   const [copying, setCopying] = useState<Copying | undefined>();
-  const [shownDay, setShownDay] = useState<string | undefined>();
   const [sorting, setSorting] = useState(false);
   const [dragging, setDragging] = useState<{ readonly id: string; readonly target?: DropTarget } | undefined>();
   const titleId = useId();
   const dateId = useId();
-  const grouped = days(project.stops);
   const shown = grouped.filter((day) => shownDay === undefined || day.date === shownDay);
   const numbers = new Map(project.stops.map((stop, index) => [stop.id, index + 1]));
   const stopsOn = (on: string, without?: string) => project.stops.filter((s) => s.date === on && s.id !== without);

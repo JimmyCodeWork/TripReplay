@@ -1402,5 +1402,8 @@
   },
   "media.previewPosition": {
     "message": "{index} / {count} 件"
+  },
+  "media.dropAddHint": {
+    "message": "ドロップすると、写真と動画をこの読み込みに追加します"
   }
 }

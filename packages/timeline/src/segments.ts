@@ -15,9 +15,13 @@ import type { Camera, EnRoutePhoto, Segment, TimelineStop } from "./model.ts";
 /** Characters of a stop's journal entry shown in the recap; the rest stays in the journal. */
 export const JOURNAL_EXCERPT = 80;
 
-/** The part of a journal entry shown under the stop's title, ending with an ellipsis when cut. */
+/**
+ * The part of a journal entry shown under the stop's title, ending with an ellipsis when cut.
+ * Its line breaks are kept, so that the recap starts a new line where the entry does; empty lines
+ * between paragraphs count as one break.
+ */
 export function journalExcerpt(entry: string): string {
-  const text = entry.trim().replace(/\s*\n\s*/g, " ");
+  const text = entry.trim().replace(/[^\S\n]*\n\s*/g, "\n");
   const chars = Array.from(text);
   return chars.length <= JOURNAL_EXCERPT ? text : `${chars.slice(0, JOURNAL_EXCERPT).join("").trimEnd()}…`;
 }
