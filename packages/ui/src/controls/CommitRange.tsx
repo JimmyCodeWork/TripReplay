@@ -11,10 +11,21 @@ export interface CommitRangeProps {
   /** The value as read out by screen readers, for example "70%". */
   readonly valueText?: string;
   readonly className?: string | undefined;
+  readonly disabled?: boolean;
 }
 
 /** A slider that shows every step while dragging and saves the result as one change. */
-export function CommitRange({ value, min, max, step, onCommit, label, valueText, className }: CommitRangeProps) {
+export function CommitRange({
+  value,
+  min,
+  max,
+  step,
+  onCommit,
+  label,
+  valueText,
+  className,
+  disabled = false,
+}: CommitRangeProps) {
   const [draft, setDraft] = useState(value);
   const [dragging, setDragging] = useState(false);
   useEffect(() => {
@@ -32,6 +43,7 @@ export function CommitRange({ value, min, max, step, onCommit, label, valueText,
       max={max}
       step={step}
       value={draft}
+      disabled={disabled}
       aria-label={label}
       {...(valueText ? { "aria-valuetext": valueText } : {})}
       onChange={(event) => {

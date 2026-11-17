@@ -1882,5 +1882,9 @@
   "backup.writing": {
     "message": "Backing up… {written} of about {total} ({percent}%)",
     "description": "Progress of a backup while the file is written; sizes such as 1.2 GB."
+  },
+  "media.mute": {
+    "message": "Mute",
+    "description": "Checkbox beside a video's volume that plays the video without its sound."
   }
 }

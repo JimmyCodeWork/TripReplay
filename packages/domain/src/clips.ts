@@ -132,6 +132,14 @@ export function setClipVolume(project: Project, id: ClipId, volume: number): Pro
   return updateClip(project, id, "video", (clip): VideoClip => ({ ...clip, volume: clamp(volume, 0, 1) }));
 }
 
+/** Mutes a video or lets it be heard again at its volume. */
+export function setClipMuted(project: Project, id: ClipId, muted: boolean): Project {
+  return updateClip(project, id, "video", (clip): VideoClip => {
+    const { muted: _, ...rest } = clip;
+    return muted ? { ...rest, muted: true } : rest;
+  });
+}
+
 export function setClipFit(project: Project, id: ClipId, fit: Fit): Project {
   const clip = findClip(project, id);
   return { ...project, clips: replaceById(project.clips, { ...clip, fit }) };

@@ -1,4 +1,4 @@
-import { seconds, setClipVolume, updateMusicSettings } from "@tripreplay/domain";
+import { seconds, setClipMuted, setClipVolume, updateMusicSettings } from "@tripreplay/domain";
 import { describe, expect, it } from "vitest";
 import { type AudioState, compile, DUCK_GAIN, renderAt, type Timeline } from "../src/index.ts";
 import { kyoto } from "./fixtures.ts";
@@ -27,6 +27,9 @@ describe("audio", () => {
     const muted = compile(setClipVolume(kyoto(), "c3", 0));
     expect(audio(muted, 13.5, "clip")).toBeUndefined();
     expect(muted.audibleClips).toEqual([]);
+    const silenced = compile(setClipMuted(kyoto(), "c3", true));
+    expect(audio(silenced, 13.5, "clip")).toBeUndefined();
+    expect(silenced.audibleClips).toEqual([]);
   });
 
   it("fades the music in and lowers it under clips with sound", () => {

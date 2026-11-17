@@ -261,10 +261,21 @@ export function MediaPanel({
                               step={5}
                               label={t("media.volumeFor", { file: asset.fileName })}
                               valueText={`${Math.round(clip.volume * 100)}%`}
+                              disabled={clip.muted === true}
                               onCommit={(percent) =>
                                 dispatch({ type: "setClipVolume", id: clip.id, volume: percent / 100 })
                               }
                             />
+                            <label className={styles.mute}>
+                              <input
+                                type="checkbox"
+                                checked={clip.muted === true}
+                                onChange={(event) =>
+                                  dispatch({ type: "setClipMuted", id: clip.id, muted: event.target.checked })
+                                }
+                              />
+                              {t("media.mute")}
+                            </label>
                           </span>
                         )}
                       </>

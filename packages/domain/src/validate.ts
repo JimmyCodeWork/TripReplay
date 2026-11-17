@@ -105,6 +105,7 @@ export function validateProject(project: Project): ValidationIssue[] {
       if (clip.inUs < 0 || clip.outUs > length) add(`${path}`, "trim is outside the video");
       if (clip.outUs - clip.inUs < Math.min(MIN_VIDEO_CLIP, length)) add(`${path}`, "is shorter than the minimum");
       if (clip.volume < 0 || clip.volume > 1) add(`${path}.volume`, "must be between 0 and 1");
+      if (clip.muted !== undefined && clip.muted !== true) add(`${path}.muted`, "must be true when present");
     }
   });
 

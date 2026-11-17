@@ -14,6 +14,7 @@ import {
   seconds,
   setClipEnRoute,
   setClipFit,
+  setClipMuted,
   setClipNote,
   setClipVolume,
   setDayNote,
@@ -98,6 +99,16 @@ describe("trimVideo", () => {
   it("clamps volume and sets fit", () => {
     const p = setClipFit(setClipVolume(withClips(), "c2", 3), "c2", "cover");
     expect(p.clips[1]).toMatchObject({ volume: 1, fit: "cover" });
+  });
+
+  it("mutes a video and lets it be heard again at its volume", () => {
+    const muted = setClipMuted(setClipVolume(withClips(), "c2", 0.6), "c2", true);
+    expect(muted.clips[1]).toMatchObject({ muted: true, volume: 0.6 });
+    expect(validateProject(muted)).toEqual([]);
+    const heard = setClipMuted(muted, "c2", false);
+    expect("muted" in (heard.clips[1] as object)).toBe(false);
+    expect(heard.clips[1]).toMatchObject({ volume: 0.6 });
+    expect(() => setClipMuted(withClips(), "c1", true)).toThrow();
   });
 });
 

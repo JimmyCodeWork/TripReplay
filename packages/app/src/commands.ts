@@ -31,6 +31,7 @@ import {
   setAspectRatio,
   setClipEnRoute,
   setClipFit,
+  setClipMuted,
   setClipNote,
   setClipVolume,
   setDayNote,
@@ -86,6 +87,7 @@ export type Command =
   | { readonly type: "setPhotoDuration"; readonly id: ClipId; readonly durationUs: Microseconds }
   | { readonly type: "trimVideo"; readonly id: ClipId; readonly inUs?: Microseconds; readonly outUs?: Microseconds }
   | { readonly type: "setClipVolume"; readonly id: ClipId; readonly volume: number }
+  | { readonly type: "setClipMuted"; readonly id: ClipId; readonly muted: boolean }
   | { readonly type: "setClipFit"; readonly id: ClipId; readonly fit: Fit }
   | { readonly type: "setClipEnRoute"; readonly id: ClipId; readonly enRoute: boolean }
   | { readonly type: "setClipNote"; readonly id: ClipId; readonly note: string }
@@ -176,6 +178,8 @@ export function applyCommand(project: Project, command: Command): Project {
       return trimVideo(project, command.id, trim(command));
     case "setClipVolume":
       return setClipVolume(project, command.id, command.volume);
+    case "setClipMuted":
+      return setClipMuted(project, command.id, command.muted);
     case "setClipEnRoute":
       return setClipEnRoute(project, command.id, command.enRoute);
     case "setClipFit":

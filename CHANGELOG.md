@@ -8,6 +8,7 @@ All notable changes to TripReplay are recorded here. The format follows [Keep a 
 
 ### Added
 
+- **Mute** beside a video's volume in the Media tab plays it without sound, in the preview and the export; the music is no longer lowered for it, and its volume is kept for when it is heard again.
 - A photo or video that does not fill its card, such as a portrait photo in a landscape recap, now lies on a blurred, darkened copy of itself instead of the plain card.
 - Backups are named `….tripreplay.zip` on every device, so that a backup made on a computer can be chosen and restored on a phone as it is; backups named `.tripreplay` are still restored.
 - A backup shows its progress: the smaller copies made, then how much of the file is written, with a percentage. In Firefox and Safari, a backup is written to a temporary file in the browser's storage instead of being assembled in memory, so that a backup of gigabytes no longer runs out of memory.

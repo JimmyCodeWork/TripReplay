@@ -81,7 +81,7 @@ In the **Media** tab, choose the **Stop** whose photos and videos you want to se
 - select **Edit** to move it with **Move up** and **Move down**, or to another stop with **Move to…**, for example after an import put it at the wrong stop, or to **Remove from stop**;
 - set how many **Seconds** a photo is shown;
 - check **On the way** for a photo taken on the way to the stop, for example from a train: it is shown on a small card while the line is drawn to the stop, and the move lasts long enough for all such photos. When the photo has a location, the line passes where it was taken, so a few photos along a railway trace the journey. Put them in the order they were taken;
-- trim a video with **From (s)** and **To (s)**, and set its **Volume**.
+- trim a video with **From (s)** and **To (s)**, and set its **Volume**, or select **Mute** to play it without sound; its volume is kept for when you clear **Mute**.
 
 ## 5. Write the Journal
 

@@ -9,6 +9,7 @@ export {
   resetTiming,
   setClipEnRoute,
   setClipFit,
+  setClipMuted,
   setClipNote,
   setClipVolume,
   setPhotoDuration,
