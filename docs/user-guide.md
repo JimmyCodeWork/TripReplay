@@ -89,7 +89,7 @@ The **Journal** tab is a diary of the trip. For each day, you can write a line t
 
 - A day's line appears under "Day 2" and the date when the day begins, before the recap moves to the day's first stop, and stays long enough to read it. The first day's line appears before the move to the first stop.
 
-- A stop's entry is shown in the recap under the stop's name, in up to three lines (about 80 characters), appearing line by line in a serif face like a printed diary. The stop's title stays on screen longer so that it can be read.
+- A stop's entry is shown in the recap under the stop's name, in up to three lines (about 80 characters), with a new line wherever you pressed Enter, appearing line by line in a serif face like a printed diary. The stop's title stays on screen longer so that it can be read.
 - Notes on photos and videos are shown over the bottom of the picture, in up to two lines, shortly after it appears.
 - An entry is saved when you leave the field, or with **Ctrl+Enter** (**⌘+Enter** on a Mac).
 

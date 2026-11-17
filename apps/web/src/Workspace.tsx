@@ -209,6 +209,8 @@ function EditorView({ editor, services, locale, t, onClose }: EditorViewProps) {
   const [exporting, setExporting] = useState<Timeline | undefined>();
 
   const [tab, setTab] = useState<Tab>("itinerary");
+  /** The day the itinerary shows, kept while other tabs are shown; undefined for all days. */
+  const [itineraryDay, setItineraryDay] = useState<string | undefined>();
   const fileInput = useRef<HTMLInputElement>(null);
   const musicInput = useRef<HTMLInputElement>(null);
   const [musicError, setMusicError] = useState<string | undefined>();
@@ -427,6 +429,8 @@ function EditorView({ editor, services, locale, t, onClose }: EditorViewProps) {
                   select(id);
                   setTab(to);
                 }}
+                shownDay={itineraryDay}
+                onShowDay={setItineraryDay}
                 locale={locale}
                 t={t}
               />

@@ -78,7 +78,7 @@ describe("compile", () => {
     expect(titles).toEqual([seconds(10), seconds(1), seconds(1)]);
     expect(titleLength(seconds(1), "短短一句")).toBe(seconds(1.5) + seconds(0.48));
     expect(titleLength(seconds(3), "短短一句")).toBe(seconds(3));
-    expect(journalExcerpt("  第一行\n第二行  ")).toBe("第一行 第二行");
+    expect(journalExcerpt("  第一行 \n\n  第二行  ")).toBe("第一行\n第二行");
   });
 
   it("numbers days from the first stop's date", () => {

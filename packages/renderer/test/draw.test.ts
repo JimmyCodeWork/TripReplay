@@ -348,6 +348,12 @@ describe("wrapText", () => {
     expect(wrapText("早上的清水，寺人還不多", 50, measure)).toEqual(["早上的清水，", "寺人還不多"]);
   });
 
+  it("starts a new line at a line break of the text", () => {
+    expect(wrapText("清水寺\n人還不多", 100, measure)).toEqual(["清水寺", "人還不多"]);
+    expect(wrapText("one\ntwo\nthree\nfour", 100, measure, 3)).toEqual(["one", "two", "three…"]);
+    expect(wrapText("早上的清水寺人還不多\n晚上", 50, measure, 3)).toEqual(["早上的清水", "寺人還不多", "晚上"]);
+  });
+
   it("ends a cut caption with an ellipsis", () => {
     expect(wrapText("一二三四五六七八九十十一十二", 50, measure)).toEqual(["一二三四五", "六七八九…"]);
   });
