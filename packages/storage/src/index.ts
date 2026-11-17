@@ -3,6 +3,7 @@ export { blobMedia, blobSource } from "./blob-source.ts";
 export { StorageError, type StorageErrorCode } from "./errors.ts";
 export { openOpfsVolume } from "./opfs.ts";
 export {
+  LEGACY_PACKAGE_EXTENSION,
   type OpenedPackage,
   PACKAGE_EXTENSION,
   PACKAGE_FORMAT,

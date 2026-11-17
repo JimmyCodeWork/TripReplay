@@ -7,6 +7,7 @@ import {
   WORLD_REGION,
 } from "@tripreplay/app";
 import type { Locale, Translate } from "@tripreplay/i18n";
+import { LEGACY_PACKAGE_EXTENSION } from "@tripreplay/storage";
 import { formatBytes, MapsDialog, PlaceSearchBox, TripList } from "@tripreplay/ui";
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { type BackupProgress, backupTrip, inspectBackup, restoreBackup } from "./backup.ts";
@@ -353,7 +354,7 @@ export function App({ services, locale, t }: AppProps) {
       <input
         ref={restoreInput}
         type="file"
-        accept=".tripreplay,application/zip"
+        accept={`.zip,${LEGACY_PACKAGE_EXTENSION},application/zip`}
         hidden
         onChange={(event) => {
           const file = event.target.files?.[0];

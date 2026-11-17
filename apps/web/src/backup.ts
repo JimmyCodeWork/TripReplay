@@ -153,7 +153,7 @@ export async function backupTrip(
     try {
       handle = await picker.call(window, {
         suggestedName: name,
-        types: [{ description, accept: { "application/zip": [PACKAGE_EXTENSION] } }],
+        types: [{ description, accept: { "application/zip": [".zip"] } }],
       });
     } catch (error) {
       // A cancel this soon came from the browser, which showed no dialog; the file is then downloaded.

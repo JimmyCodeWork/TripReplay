@@ -12,7 +12,7 @@ A project package is one file that holds a trip and all of its media, for backin
 
 ## 1. File
 
-- Extension `.tripreplay`; media type `application/zip`.
+- File name ending `.tripreplay.zip`, so that phones and computers alike recognize a ZIP archive; media type `application/zip`. Packages named `.tripreplay`, written before version 1.0, are read as well.
 - A ZIP archive whose entries are **stored without compression**, because photos and videos are already compressed. Compressed or encrypted entries are rejected.
 - Entry names are UTF-8. Sizes are known before writing; CRC-32 values follow each entry in a data descriptor, so the file is written as a stream without holding media in memory.
 - ZIP64 records are used where a size or offset reaches 4 GiB, so libraries larger than 4 GiB are supported. The result opens with common ZIP tools.

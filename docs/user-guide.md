@@ -176,8 +176,8 @@ The video is made entirely on your device; nothing is uploaded.
 
 The browser can clear stored data, for example when the device runs out of space or, in Safari, after a website has not been used for some time ([Browser Support](browser-support.md)). Back up the trips you care about.
 
-- **Back up.** In **Trips**, select **Back up** on a trip. Choose **Full size** to keep the media as stored, or **Smaller photos** to put copies at most 2560 pixels on their longest side in the backup, for a much smaller file, with **Make videos smaller too** for 1080p copies of the videos; the trip on this device is not changed either way. TripReplay saves one `.tripreplay` file with the trip, its journal, its music and all its photos and videos. Chrome, Edge and the Android application ask where to save it; other browsers put it in your downloads folder.
-- **Restore.** Select **Restore backup** and choose a `.tripreplay` file. If the trip is already on this device, you can **Restore as a copy**; the existing trip is not changed.
+- **Back up.** In **Trips**, select **Back up** on a trip. Choose **Full size** to keep the media as stored, or **Smaller photos** to put copies at most 2560 pixels on their longest side in the backup, for a much smaller file, with **Make videos smaller too** for 1080p copies of the videos; the trip on this device is not changed either way. TripReplay saves one `.tripreplay.zip` file with the trip, its journal, its music and all its photos and videos. Chrome, Edge and the Android application ask where to save it; other browsers put it in your downloads folder.
+- **Restore.** Select **Restore backup** and choose a backup file, ending `.tripreplay.zip` (or `.tripreplay` for older backups). A backup made on a computer restores on a phone and the other way round. If the trip is already on this device, you can **Restore as a copy**; the existing trip is not changed.
 
 A backup also moves a trip to another device or browser: back it up on one and restore it on the other. Maps are not part of a backup; download them again on the new device.
 
