@@ -1405,5 +1405,11 @@
   },
   "media.dropAddHint": {
     "message": "ドロップすると、写真と動画をこの読み込みに追加します"
+  },
+  "backup.shrinking": {
+    "message": "小さいコピーを作成しています… {done} / {total}"
+  },
+  "backup.writing": {
+    "message": "バックアップしています… {written} / 約 {total}（{percent}%）"
   }
 }

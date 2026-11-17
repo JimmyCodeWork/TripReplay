@@ -9,7 +9,7 @@ import {
 import type { Locale, Translate } from "@tripreplay/i18n";
 import { formatBytes, MapsDialog, PlaceSearchBox, TripList } from "@tripreplay/ui";
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
-import { backupTrip, inspectBackup, restoreBackup } from "./backup.ts";
+import { type BackupProgress, backupTrip, inspectBackup, restoreBackup } from "./backup.ts";
 import { MapPreview } from "./MapPreview.tsx";
 import { NoMapDialog } from "./NoMapDialog.tsx";
 import { PACKAGED } from "./platform.ts";
@@ -157,7 +157,23 @@ export function App({ services, locale, t }: AppProps) {
     setBackingUp(undefined);
     setStatus(t("backup.working"));
     const shrink = smaller ? (withVideos ? "photosAndVideos" : "photos") : undefined;
-    backupTrip(services, id, t("backup.fileType"), shrink ? { shrink } : {}).then(
+    // The status follows the backup, changed only when the shown numbers change.
+    let shown = "";
+    const onProgress = (progress: BackupProgress) => {
+      const text =
+        progress.phase === "shrinking"
+          ? t("backup.shrinking", { done: progress.done, total: progress.total })
+          : t("backup.writing", {
+              written: formatBytes(locale, progress.written),
+              total: formatBytes(locale, progress.total),
+              percent: progress.total > 0 ? Math.min(99, Math.floor((progress.written / progress.total) * 100)) : 0,
+            });
+      if (text !== shown) {
+        shown = text;
+        setStatus(text);
+      }
+    };
+    backupTrip(services, id, t("backup.fileType"), { ...(shrink ? { shrink } : {}), onProgress }).then(
       (saved) => setStatus(saved ? t("backup.done") : undefined),
       failed("backup.failed"),
     );

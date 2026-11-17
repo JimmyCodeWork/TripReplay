@@ -19,6 +19,28 @@ interface SavePicker {
   }): Promise<{ createWritable(): Promise<WritableStream<Uint8Array> & { close(): Promise<void> }> }>;
 }
 
+/** How far a backup is: making smaller copies first where asked, then writing the package. */
+export type BackupProgress =
+  | { readonly phase: "shrinking"; readonly done: number; readonly total: number }
+  /** `total` is the size of the media written, which the package exceeds by a little. */
+  | { readonly phase: "writing"; readonly written: number; readonly total: number };
+
+const mediaBytes = (project: Project) => project.assets.reduce((sum, asset) => sum + asset.byteSize, 0);
+
+/** Passes the chunks on, telling how many bytes have gone by. */
+async function* counted(
+  chunks: AsyncIterable<Uint8Array>,
+  total: number,
+  onProgress: ((progress: BackupProgress) => void) | undefined,
+): AsyncIterable<Uint8Array> {
+  let written = 0;
+  for await (const chunk of chunks) {
+    written += chunk.length;
+    onProgress?.({ phase: "writing", written, total });
+    yield chunk;
+  }
+}
+
 /** A file name from the trip title, without characters that file systems reject. */
 export function backupFileName(title: string, date = new Date()): string {
   const safe =
@@ -30,14 +52,22 @@ export function backupFileName(title: string, date = new Date()): string {
 }
 
 /** The trip with its media as stored. */
-function wholePackage(services: Services, project: Project): AsyncIterable<Uint8Array> {
-  return writeProjectPackage(
-    project,
-    async (id) => {
-      const file = await services.assets.open(id);
-      return file && blobMedia(file);
-    },
-    new Date(),
+function wholePackage(
+  services: Services,
+  project: Project,
+  onProgress?: (progress: BackupProgress) => void,
+): AsyncIterable<Uint8Array> {
+  return counted(
+    writeProjectPackage(
+      project,
+      async (id) => {
+        const file = await services.assets.open(id);
+        return file && blobMedia(file);
+      },
+      new Date(),
+    ),
+    mediaBytes(project),
+    onProgress,
   );
 }
 
@@ -49,7 +79,12 @@ function wholePackage(services: Services, project: Project): AsyncIterable<Uint8
  * media store, not in memory, until the backup is written; start-up recovery removes any left by
  * an interruption.
  */
-async function* smallerPackage(services: Services, project: Project, videos: boolean): AsyncIterable<Uint8Array> {
+async function* smallerPackage(
+  services: Services,
+  project: Project,
+  videos: boolean,
+  onProgress?: (progress: BackupProgress) => void,
+): AsyncIterable<Uint8Array> {
   const { media } = services;
   const copies: string[] = [];
   const read = async (asset: Asset) => {
@@ -66,14 +101,20 @@ async function* smallerPackage(services: Services, project: Project, videos: boo
         await media.store(file, copy.id);
         copies.push(copy.id);
       },
+      (done, total) => onProgress?.({ phase: "shrinking", done, total }),
     );
-    yield* writeProjectPackage(
-      replaceAssets(project, replaced),
-      async (id) => {
-        const file = await services.assets.open(id);
-        return file && blobMedia(file);
-      },
-      new Date(),
+    const smaller = replaceAssets(project, replaced);
+    yield* counted(
+      writeProjectPackage(
+        smaller,
+        async (id) => {
+          const file = await services.assets.open(id);
+          return file && blobMedia(file);
+        },
+        new Date(),
+      ),
+      mediaBytes(smaller),
+      onProgress,
     );
   } finally {
     for (const id of copies) await media.discard(id).catch(() => {});
@@ -90,13 +131,16 @@ export async function backupTrip(
   services: Services,
   tripId: string,
   description: string,
-  options: { readonly shrink?: "photos" | "photosAndVideos" } = {},
+  options: {
+    readonly shrink?: "photos" | "photosAndVideos";
+    readonly onProgress?: (progress: BackupProgress) => void;
+  } = {},
 ): Promise<boolean> {
   const project = await services.projects.load(tripId);
   if (!project) throw new Error(`Trip "${tripId}" is not stored`);
   const chunks = options.shrink
-    ? smallerPackage(services, project, options.shrink === "photosAndVideos")
-    : wholePackage(services, project);
+    ? smallerPackage(services, project, options.shrink === "photosAndVideos", options.onProgress)
+    : wholePackage(services, project, options.onProgress);
   const name = backupFileName(project.trip.title);
   if (NATIVE) {
     const { saveFile } = await import("./native-save.ts");
@@ -129,9 +173,7 @@ export async function backupTrip(
     }
     return true;
   }
-  const parts: Uint8Array[] = [];
-  for await (const chunk of chunks) parts.push(chunk);
-  const url = URL.createObjectURL(new Blob(parts as Uint8Array<ArrayBuffer>[], { type: "application/zip" }));
+  const url = URL.createObjectURL(await assemble(chunks));
   const link = document.createElement("a");
   link.href = url;
   link.download = name;
@@ -142,6 +184,42 @@ export async function backupTrip(
   setTimeout(() => URL.revokeObjectURL(url), 60_000);
   return true;
 }
+
+/**
+ * The package as one file to download, where the browser has no save dialog (Firefox, Safari). It
+ * is written into a temporary file of the origin private file system, kept on the disk rather
+ * than in memory, so that a backup of gigabytes does not exhaust the memory; the temporary files
+ * are removed at the next start, like those of exports. Without that file system, it is
+ * assembled in memory.
+ */
+async function assemble(chunks: AsyncIterable<Uint8Array>): Promise<Blob> {
+  const root = await navigator.storage?.getDirectory?.().catch(() => undefined);
+  const directory = await root?.getDirectoryHandle(TEMPORARY_DIRECTORY, { create: true }).catch(() => undefined);
+  const handle = await directory?.getFileHandle(`${crypto.randomUUID()}.zip`, { create: true }).catch(() => undefined);
+  const writable = await (
+    handle as (FileSystemFileHandle & { createWritable?: () => Promise<FileSystemWritableFileStream> }) | undefined
+  )
+    ?.createWritable?.()
+    .catch(() => undefined);
+  if (handle && writable) {
+    try {
+      for await (const chunk of chunks) await writable.write(chunk as Uint8Array<ArrayBuffer>);
+      await writable.close();
+    } catch (error) {
+      await writable.abort().catch(() => {});
+      await directory?.removeEntry(handle.name).catch(() => {});
+      throw error;
+    }
+    // Wrapped, still on the disk, with the type of a backup.
+    return new Blob([await handle.getFile()], { type: "application/zip" });
+  }
+  const parts: Uint8Array[] = [];
+  for await (const chunk of chunks) parts.push(chunk);
+  return new Blob(parts as Uint8Array<ArrayBuffer>[], { type: "application/zip" });
+}
+
+/** The temporary directory of downloads, which export-video.ts clears at every start. */
+const TEMPORARY_DIRECTORY = "exports";
 
 /** A cancel this soon after the save dialog was asked for came from the browser, not from the user. */
 const INSTANT_CANCEL_MS = 500;

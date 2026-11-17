@@ -8,6 +8,7 @@ All notable changes to TripReplay are recorded here. The format follows [Keep a 
 
 ### Added
 
+- A backup shows its progress: the smaller copies made, then how much of the file is written, with a percentage. In Firefox and Safari, a backup is written to a temporary file in the browser's storage instead of being assembled in memory, so that a backup of gigabytes no longer runs out of memory.
 - Photos and videos dragged in while the import dialog is open join that import, so that several drops make one import.
 - Line breaks in a journal entry, a day's line or a note start a new line in the recap too.
 - The day chosen in the Itinerary tab stays chosen after another tab is shown and the itinerary comes back.

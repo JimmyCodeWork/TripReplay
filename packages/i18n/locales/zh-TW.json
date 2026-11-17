@@ -1405,5 +1405,11 @@
   },
   "media.dropAddHint": {
     "message": "放開即可將照片與影片加入這次匯入"
+  },
+  "backup.shrinking": {
+    "message": "正在製作縮小的副本… {done}／{total}"
+  },
+  "backup.writing": {
+    "message": "正在備份… {written}／約 {total}（{percent}%）"
   }
 }

@@ -54,7 +54,7 @@ Windows 應用程式（[ADR 0016](adr/0016-windows-application.md)）可在 64 �
 | **瀏覽器可能清除已儲存的資料。** 在所有測試過的裝置上，瀏覽器都未核准 TripReplay 的永久儲存要求。Safari 可能刪除一段時間未使用之網站的資料 | 請備份想保留的旅行（[使用指南 §9](user-guide.md#9-備份與還原)）。在 Safari 中，請將 TripReplay 加入主畫面或 Dock |
 | **iPhone 與 iPad 的儲存空間較少。** 在測試的 iPad 上，Safari 為每個網站提供約 1 GB；一個區域的地圖就可能佔用將近一半 | 只下載需要的區域，旅行結束後刪除地圖。每次下載與匯入前，TripReplay 都會確認可用空間 |
 | **Safari 以外的瀏覽器無法顯示 HEIC 照片。** 匯入時會標示為「不是此瀏覽器可顯示的照片或影片」 | 請在 Safari 中匯入，或先轉換為 JPEG。在 iPhone 上，「**設定 → 相機 → 格式 → 最相容**」可讓新拍的照片存為 JPEG |
-| **在 Firefox 與 Safari 中備份大型旅行**時，備份會先在記憶體中組合再儲存，因此含有數 GB 影片的旅行需要同等大小的可用記憶體 | 請在 Chrome 或 Edge 中備份大型旅行，它們會直接寫入檔案 |
+| **在 Firefox 與 Safari 中備份大型旅行**時，備份會先寫入瀏覽器儲存空間中的暫存檔再下載，因此短時間內需要與備份同等大小的瀏覽器可用空間；無法使用該儲存空間時，則會在記憶體中組合。iPad 上的瀏覽器可能只允許使用 1 GB，大型旅行可能放不下兩份 | 請在 Chrome 或 Edge 中備份大型旅行（它們會直接寫入檔案），或選擇「**縮小照片**」以取得小得多的檔案 |
 | **地圖短網址**（例如 `maps.app.goo.gl`）必須詢問其服務才能解讀 | 請開啟連結後複製完整連結，或直接貼上座標 |
 | **安裝 Android 應用程式時需要授權。** Android 會對應用程式商店以外的應用程式提出警告 | 請只從專案的[發行版本](https://github.com/JimmyCodeWork/TripReplay/releases)下載 APK，並在 Android 詢問時允許瀏覽器或檔案管理員安裝 |
 | **執行 Windows 安裝檔前，Windows SmartScreen 會發出警告。** 安裝檔尚未簽章 | 請只從專案的[發行版本](https://github.com/JimmyCodeWork/TripReplay/releases)下載，並選擇「**其他資訊 → 仍要執行**」 |
