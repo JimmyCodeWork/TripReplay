@@ -1,9 +1,12 @@
 /** What a photo file says about itself, read from its bytes. */
 export interface ImageMetadata {
   readonly format: "jpeg" | "png";
-  /** Size as displayed, after the EXIF orientation is applied. */
-  readonly width: number;
-  readonly height: number;
+  /**
+   * Size as displayed, after the EXIF orientation is applied. Undefined for a JPEG whose size lies
+   * past the bytes read, after large camera data; the decoder tells it then.
+   */
+  readonly width?: number;
+  readonly height?: number;
   /** ISO 8601 date-time, with an offset when the file records one. */
   readonly captureTime?: string;
   readonly gps?: { readonly lon: number; readonly lat: number };
@@ -144,15 +147,28 @@ export function readExif(bytes: Uint8Array): Exif {
 const isStartOfFrame = (marker: number) =>
   marker >= 0xc0 && marker <= 0xcf && marker !== 0xc4 && marker !== 0xc8 && marker !== 0xcc;
 
-function readJpeg(bytes: Uint8Array): ImageMetadata | undefined {
+/**
+ * Reads a JPEG's segments up to its size. A JPEG is recognized by its first bytes alone: bytes
+ * between segments that some cameras and editors leave are skipped, and a size past the bytes
+ * read leaves only the EXIF data, so that such photos are still imported with their time and place.
+ */
+function readJpeg(bytes: Uint8Array): ImageMetadata {
   const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
   let exif: Exif = {};
   let at = 2;
   while (at + 4 <= bytes.length) {
-    if (bytes[at] !== 0xff) return undefined;
+    if (bytes[at] !== 0xff) {
+      at++;
+      continue;
+    }
     const marker = bytes[at + 1] as number;
     if (marker === 0xff) {
       at++;
+      continue;
+    }
+    // Markers without a length: start of image, restart markers and the reserved TEM.
+    if (marker === 0xd8 || marker === 0x01 || (marker >= 0xd0 && marker <= 0xd7)) {
+      at += 2;
       continue;
     }
     const length = view.getUint16(at + 2);
@@ -177,10 +193,15 @@ function readJpeg(bytes: Uint8Array): ImageMetadata | undefined {
         ...(exif.gps ? { gps: exif.gps } : {}),
       };
     }
-    if (marker === 0xda) return undefined;
+    // Image data or the end: the size was not in a frame header before it.
+    if (marker === 0xda || marker === 0xd9) break;
     at += 2 + length;
   }
-  return undefined;
+  return {
+    format: "jpeg",
+    ...(exif.captureTime ? { captureTime: exif.captureTime } : {}),
+    ...(exif.gps ? { gps: exif.gps } : {}),
+  };
 }
 
 function readPng(bytes: Uint8Array): ImageMetadata | undefined {

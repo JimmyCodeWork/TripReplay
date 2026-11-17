@@ -70,4 +70,5 @@ All notable changes to TripReplay are recorded here. The format follows [Keep a 
 
 ### Fixed
 
+- A JPEG photo is no longer refused as "not a photo or video this browser can show" when its camera put large data before the picture's size, or left bytes between its segments; its capture time and position are still read.
 - On touch screens, the page leaves more room at the top and on the right, where the blurred top bar of iPad still covered the edges of the header buttons.

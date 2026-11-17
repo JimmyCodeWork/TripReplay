@@ -56,6 +56,19 @@ describe("readImageMetadata", () => {
     expect(turned).toEqual({ format: "jpeg", width: 48, height: 64 });
   });
 
+  it("recognizes a JPEG whose size is past the bytes read, and skips bytes between segments", () => {
+    const tagged = withExif(jpeg, { dateTimeOriginal: "2026:04:01 10:15:30", lat: 34.9949, lon: 135.785 });
+    // The first bytes only, as after large camera data that puts the frame header further on.
+    const exifEnd = 4 + ((tagged[4] as number) << 8) + (tagged[5] as number);
+    const head = readImageMetadata(tagged.slice(0, exifEnd + 2));
+    expect(head).toMatchObject({ format: "jpeg", captureTime: "2026-04-01T10:15:30" });
+    expect(head?.width).toBeUndefined();
+    expect(head?.gps?.lat).toBeCloseTo(34.9949, 4);
+    // Fill bytes before the next segment.
+    const padded = new Uint8Array([...tagged.slice(0, exifEnd), 0, 0, 0, ...tagged.slice(exifEnd)]);
+    expect(readImageMetadata(padded)).toMatchObject({ format: "jpeg", width: 64, height: 48 });
+  });
+
   it("keeps the photo when its EXIF data is damaged", () => {
     const tagged = withExif(jpeg, { dateTimeOriginal: "2026:04:01 10:15:30" });
     tagged.set([0x12, 0x34], 10);

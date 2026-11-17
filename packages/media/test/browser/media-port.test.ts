@@ -61,6 +61,30 @@ describe("inspectMediaFile", () => {
     expect((await inspectMediaFile(await file(FIXTURES.png, "map.png"))).mimeType).toBe("image/png");
   });
 
+  it("imports a JPEG whose size comes after more than the bytes first read, with its EXIF data", async () => {
+    // Five 60 KB application segments after the EXIF data, as large camera data puts the frame
+    // header past the first 256 KB.
+    const photo = await file(FIXTURES.jpeg, "DSC_0002.JPG", (bytes) => {
+      const tagged = withExif(bytes, { dateTimeOriginal: "2026:04:01 10:15:30", lat: 34.9949, lon: 135.785 });
+      const exifEnd = 4 + ((tagged[4] as number) << 8) + (tagged[5] as number);
+      const segment = new Uint8Array(60_000);
+      segment.set([0xff, 0xef, (59_998 >> 8) & 0xff, 59_998 & 0xff]);
+      const parts = [tagged.slice(0, exifEnd), ...Array.from({ length: 5 }, () => segment), tagged.slice(exifEnd)];
+      const out = new Uint8Array(parts.reduce((sum, part) => sum + part.length, 0));
+      let at = 0;
+      for (const part of parts) {
+        out.set(part, at);
+        at += part.length;
+      }
+      return out;
+    });
+    expect(photo.size).toBeGreaterThan(300_000);
+    const info = await inspectMediaFile(photo);
+    expect(info).toMatchObject({ kind: "photo", mimeType: "image/jpeg", width: 64, height: 48 });
+    expect(info.captureTime).toBe("2026-04-01T10:15:30");
+    expect(info.gps?.lon).toBeCloseTo(135.785, 4);
+  });
+
   it("reads a video the browser can play, with its sound and location", async () => {
     const info = await inspectMediaFile(await file(FIXTURES.video, "kyoto.mp4"));
     expect(info).toMatchObject({ kind: "video", mimeType: "video/mp4", width: 320, height: 180, hasAudio: true });
