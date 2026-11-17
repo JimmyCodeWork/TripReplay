@@ -21,6 +21,8 @@ export interface Canvas2D<Image = unknown> {
   shadowBlur: number;
   /** Spacing between letters, such as "2px"; ignored by contexts without it. */
   letterSpacing?: string;
+  /** A CSS filter for what is drawn, such as "blur(12px)"; ignored by contexts without it. */
+  filter?: string;
   save(): void;
   restore(): void;
   setTransform(a: number, b: number, c: number, d: number, e: number, f: number): void;
