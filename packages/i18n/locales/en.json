@@ -1874,5 +1874,13 @@
   "media.dropAddHint": {
     "message": "Drop to add photos and videos to this import",
     "description": "Shown over the window while files are dragged onto it with the import dialog open."
+  },
+  "backup.shrinking": {
+    "message": "Making smaller copies… {done} of {total}",
+    "description": "Progress of a backup with smaller media, while the copies are made."
+  },
+  "backup.writing": {
+    "message": "Backing up… {written} of about {total} ({percent}%)",
+    "description": "Progress of a backup while the file is written; sizes such as 1.2 GB."
   }
 }
