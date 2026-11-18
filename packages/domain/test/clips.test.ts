@@ -13,7 +13,9 @@ import {
   resetTiming,
   seconds,
   setClipEnRoute,
+  setClipEnRouteCentered,
   setClipFit,
+  setClipMuted,
   setClipNote,
   setClipVolume,
   setDayNote,
@@ -99,6 +101,16 @@ describe("trimVideo", () => {
     const p = setClipFit(setClipVolume(withClips(), "c2", 3), "c2", "cover");
     expect(p.clips[1]).toMatchObject({ volume: 1, fit: "cover" });
   });
+
+  it("mutes a video and lets it be heard again at its volume", () => {
+    const muted = setClipMuted(setClipVolume(withClips(), "c2", 0.6), "c2", true);
+    expect(muted.clips[1]).toMatchObject({ muted: true, volume: 0.6 });
+    expect(validateProject(muted)).toEqual([]);
+    const heard = setClipMuted(muted, "c2", false);
+    expect("muted" in (heard.clips[1] as object)).toBe(false);
+    expect(heard.clips[1]).toMatchObject({ volume: 0.6 });
+    expect(() => setClipMuted(withClips(), "c1", true)).toThrow();
+  });
 });
 
 describe("setClipNote", () => {
@@ -128,6 +140,20 @@ describe("setClipEnRoute", () => {
 
   it("rejects videos", () => {
     expect(() => setClipEnRoute(withClips(), "c2", true)).toThrow(DomainError);
+  });
+
+  it("shows a photo taken on the way in the middle, only while it is on the way", () => {
+    expect(() => setClipEnRouteCentered(withClips(), "c1", true)).toThrow(DomainError);
+    let p = setClipEnRouteCentered(setClipEnRoute(withClips(), "c1", true), "c1", true);
+    expect(p.clips[0]).toMatchObject({ enRoute: true, enRouteCentered: true });
+    expect(validateProject(p)).toEqual([]);
+    // Marking it on the way again keeps the choice; back at the stop drops it.
+    expect(setClipEnRoute(p, "c1", true).clips[0]).toMatchObject({ enRouteCentered: true });
+    p = setClipEnRoute(p, "c1", false);
+    expect(p.clips[0]).not.toHaveProperty("enRouteCentered");
+    expect(setClipEnRouteCentered(setClipEnRoute(p, "c1", true), "c1", false).clips[0]).not.toHaveProperty(
+      "enRouteCentered",
+    );
   });
 });
 

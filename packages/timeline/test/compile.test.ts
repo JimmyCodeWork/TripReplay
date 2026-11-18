@@ -3,6 +3,7 @@ import {
   moveClip,
   seconds,
   setClipEnRoute,
+  setClipEnRouteCentered,
   setClipNote,
   setDayNote,
   setStopTiming,
@@ -219,6 +220,17 @@ describe("photos taken on the way", () => {
     // The line alone before and after the photo.
     expect(renderAt(timeline, travel.startUs + 100_000).overlays.some((o) => o.kind === "media")).toBe(false);
     expect(renderAt(timeline, travel.endUs - 100_000).overlays.some((o) => o.kind === "media")).toBe(false);
+  });
+
+  it("shows one in the middle, at the size of the stop's media, when asked", () => {
+    const timeline = compile(setClipEnRouteCentered(onTheWay(), "c2", true));
+    const travel = travels(timeline)[1];
+    if (travel?.kind !== "travel") throw new Error("missing travel");
+    const [photo] = travel.photos;
+    if (!photo) throw new Error("missing photo");
+    expect(photo.centered).toBe(true);
+    const card = renderAt(timeline, (photo.startUs + photo.endUs) / 2).overlays.find((o) => o.kind === "media");
+    expect(card?.kind === "media" && card.frame).toEqual(timeline.theme.layouts[timeline.aspectRatio].mediaFrame);
   });
 
   it("lengthens a move that is too short for its photos", () => {

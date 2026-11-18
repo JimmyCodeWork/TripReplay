@@ -227,6 +227,22 @@ export function MediaPanel({
                           />
                           {t("media.enRoute")}
                         </label>
+                        {clip.enRoute && (
+                          <label className={styles.duration} title={t("media.enRouteCenteredHint")}>
+                            <input
+                              type="checkbox"
+                              checked={clip.enRouteCentered === true}
+                              onChange={(event) =>
+                                dispatch({
+                                  type: "setClipEnRouteCentered",
+                                  id: clip.id,
+                                  centered: event.target.checked,
+                                })
+                              }
+                            />
+                            {t("media.enRouteCentered")}
+                          </label>
+                        )}
                       </>
                     ) : (
                       <>
@@ -261,10 +277,21 @@ export function MediaPanel({
                               step={5}
                               label={t("media.volumeFor", { file: asset.fileName })}
                               valueText={`${Math.round(clip.volume * 100)}%`}
+                              disabled={clip.muted === true}
                               onCommit={(percent) =>
                                 dispatch({ type: "setClipVolume", id: clip.id, volume: percent / 100 })
                               }
                             />
+                            <label className={styles.mute}>
+                              <input
+                                type="checkbox"
+                                checked={clip.muted === true}
+                                onChange={(event) =>
+                                  dispatch({ type: "setClipMuted", id: clip.id, muted: event.target.checked })
+                                }
+                              />
+                              {t("media.mute")}
+                            </label>
                           </span>
                         )}
                       </>

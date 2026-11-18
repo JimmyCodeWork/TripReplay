@@ -100,6 +100,11 @@ export interface PhotoClip {
    * instead of after its title. Absent for a photo at the stop.
    */
   readonly enRoute?: true;
+  /**
+   * A photo taken on the way, shown in the middle at the size of the stop's media instead of on the
+   * small card beside the line; only with `enRoute`, absent otherwise.
+   */
+  readonly enRouteCentered?: true;
 }
 
 export interface VideoClip {
@@ -109,8 +114,10 @@ export interface VideoClip {
   readonly assetId: AssetId;
   readonly inUs: Microseconds;
   readonly outUs: Microseconds;
-  /** 0 (muted) to 1 (original level). */
+  /** 0 (silent) to 1 (original level). */
   readonly volume: number;
+  /** The video plays without its sound, keeping `volume` for when it is heard again; absent otherwise. */
+  readonly muted?: true;
   readonly fit: Fit;
   /** The user's note about the video, shown as its caption; absent when empty. */
   readonly note?: string;

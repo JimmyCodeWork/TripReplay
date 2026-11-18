@@ -132,6 +132,14 @@ export function setClipVolume(project: Project, id: ClipId, volume: number): Pro
   return updateClip(project, id, "video", (clip): VideoClip => ({ ...clip, volume: clamp(volume, 0, 1) }));
 }
 
+/** Mutes a video or lets it be heard again at its volume. */
+export function setClipMuted(project: Project, id: ClipId, muted: boolean): Project {
+  return updateClip(project, id, "video", (clip): VideoClip => {
+    const { muted: _, ...rest } = clip;
+    return muted ? { ...rest, muted: true } : rest;
+  });
+}
+
 export function setClipFit(project: Project, id: ClipId, fit: Fit): Project {
   const clip = findClip(project, id);
   return { ...project, clips: replaceById(project.clips, { ...clip, fit }) };
@@ -157,8 +165,19 @@ export function setClipEnRoute(project: Project, id: ClipId, enRoute: boolean): 
     project,
     id,
     "photo",
-    ({ enRoute: _, ...clip }): PhotoClip => (enRoute ? { ...clip, enRoute } : clip),
+    // Back at the stop, a photo is no longer shown in the middle of the move either.
+    ({ enRoute: _, enRouteCentered, ...clip }): PhotoClip =>
+      enRoute ? { ...clip, enRoute, ...(enRouteCentered ? { enRouteCentered } : {}) } : clip,
   );
+}
+
+/** Shows a photo taken on the way in the middle, at the size of the stop's media, or on its small card. */
+export function setClipEnRouteCentered(project: Project, id: ClipId, centered: boolean): Project {
+  return updateClip(project, id, "photo", ({ enRouteCentered: _, ...clip }): PhotoClip => {
+    if (centered && !clip.enRoute)
+      throw invalid("Only a photo taken on the way can be shown in the middle of the move");
+    return centered ? { ...clip, enRouteCentered: true } : clip;
+  });
 }
 
 /** Length of a clip on the recap timeline. */

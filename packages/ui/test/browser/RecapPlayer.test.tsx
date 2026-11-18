@@ -114,7 +114,7 @@ describe("RecapPlayer", () => {
     const { clock, playback, ui } = setup();
     const view = await render(ui);
     const speed = view.querySelector("select[class], label select") as HTMLSelectElement;
-    expect([...speed.options].map((o) => o.textContent)).toEqual(["0.5×", "1×", "1.5×", "2×"]);
+    expect([...speed.options].map((o) => o.textContent)).toEqual(["0.5×", "1×", "1.5×", "2×", "3×", "4×"]);
     expect(speed.value).toBe("1");
     await act(async () => {
       speed.value = "2";

@@ -208,3 +208,10 @@
   outline: 2px solid var(--color-accent, #b33a46);
   outline-offset: 2px;
 }
+
+/* Mutes a video's sound, beside its volume. */
+.mute {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+}

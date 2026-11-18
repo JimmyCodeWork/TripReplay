@@ -55,7 +55,9 @@ function enRouteCards(timeline: Timeline, segment: TravelSegment, timeUs: Micros
         clipId: photo.clipId,
         assetId: photo.assetId,
         mediaTimeUs: 0,
-        frame: EN_ROUTE_FRAME[timeline.aspectRatio],
+        frame: photo.centered
+          ? timeline.theme.layouts[timeline.aspectRatio].mediaFrame
+          : EN_ROUTE_FRAME[timeline.aspectRatio],
         scale: timeline.reducedMotion ? 1 : lerp(1, PHOTO_PUSH_IN, played),
         progress: played,
         caption: photo.caption,

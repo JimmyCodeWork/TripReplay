@@ -1882,5 +1882,17 @@
   "backup.writing": {
     "message": "Backing up… {written} of about {total} ({percent}%)",
     "description": "Progress of a backup while the file is written; sizes such as 1.2 GB."
+  },
+  "media.mute": {
+    "message": "Mute",
+    "description": "Checkbox beside a video's volume that plays the video without its sound."
+  },
+  "media.enRouteCentered": {
+    "message": "In the middle",
+    "description": "Checkbox of a photo taken on the way: shows it in the middle at full size instead of on the small card."
+  },
+  "media.enRouteCenteredHint": {
+    "message": "Shows this photo in the middle, as large as the stop's photos, while the line is drawn, instead of on the small card beside it.",
+    "description": "Tooltip of the In the middle checkbox."
   }
 }

@@ -8,6 +8,11 @@ All notable changes to TripReplay are recorded here. The format follows [Keep a 
 
 ### Added
 
+- **In the middle**, under **On the way** for a photo taken on the way, shows it in the middle at the size of the stop's photos while the line is drawn, instead of on the small card.
+- Playback speeds of 3× and 4× for the preview.
+- **Mute** beside a video's volume in the Media tab plays it without sound, in the preview and the export; the music is no longer lowered for it, and its volume is kept for when it is heard again.
+- A photo or video that does not fill its card, such as a portrait photo in a landscape recap, now lies on a blurred, darkened copy of itself instead of the plain card.
+- Backups are named `….tripreplay.zip` on every device, so that a backup made on a computer can be chosen and restored on a phone as it is; backups named `.tripreplay` are still restored.
 - A backup shows its progress: the smaller copies made, then how much of the file is written, with a percentage. In Firefox and Safari, a backup is written to a temporary file in the browser's storage instead of being assembled in memory, so that a backup of gigabytes no longer runs out of memory.
 - Photos and videos dragged in while the import dialog is open join that import, so that several drops make one import.
 - Line breaks in a journal entry, a day's line or a note start a new line in the recap too.

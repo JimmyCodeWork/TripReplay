@@ -1411,5 +1411,14 @@
   },
   "backup.writing": {
     "message": "正在備份… {written}／約 {total}（{percent}%）"
+  },
+  "media.mute": {
+    "message": "靜音"
+  },
+  "media.enRouteCentered": {
+    "message": "置中顯示"
+  },
+  "media.enRouteCenteredHint": {
+    "message": "畫線時將這張照片以與景點照片相同的大小顯示在畫面中央，而不是顯示在路線旁的小卡片上。"
   }
 }

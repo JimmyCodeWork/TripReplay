@@ -60,6 +60,7 @@ export interface EnRouteInput {
   readonly durationUs: Microseconds;
   readonly caption: string;
   readonly at?: number;
+  readonly centered?: true;
 }
 
 /**
@@ -136,7 +137,7 @@ export function buildSegments(
         clipId: clip.id,
         assetId: clip.assetId,
         mediaInUs: clip.kind === "video" ? clip.inUs : 0,
-        gain: audible ? clip.volume : 0,
+        gain: audible && !(clip.kind === "video" && clip.muted) ? clip.volume : 0,
         caption: clip.note ?? "",
       });
     }

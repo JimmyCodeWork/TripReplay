@@ -18,6 +18,7 @@ import {
 } from "@tripreplay/export";
 import { createMapLibreLayer, type MapFiles } from "@tripreplay/map";
 import { createRecapRenderer, type MediaSource, type RecapLabels } from "@tripreplay/renderer";
+import { PACKAGE_EXTENSION } from "@tripreplay/storage";
 import { resolveTheme } from "@tripreplay/themes";
 import { backupFileName } from "./backup.ts";
 import { NATIVE } from "./platform.ts";
@@ -316,7 +317,7 @@ export async function clearExports(): Promise<void> {
 
 /** A file name for the video from the trip title and today's date. */
 export function videoFileName(title: string, date = new Date()): string {
-  return backupFileName(title, date).replace(/\.[^.]+$/, ".mp4");
+  return `${backupFileName(title, date).slice(0, -PACKAGE_EXTENSION.length)}.mp4`;
 }
 
 /** The File System Access API where the browser offers it (Chromium); not yet in the DOM types. */

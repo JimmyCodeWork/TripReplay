@@ -52,8 +52,9 @@ const labels: RecapLabels = {
 };
 
 /** Records the calls and the state at each drawing call, as a canvas would apply it. */
-function recorder() {
-  const calls: { name: string; args: unknown[]; alpha: number; fill: unknown; stroke: unknown }[] = [];
+function recorder({ filters = false } = {}) {
+  const calls: { name: string; args: unknown[]; alpha: number; fill: unknown; stroke: unknown; filter?: unknown }[] =
+    [];
   const state = { globalAlpha: 1, fillStyle: "" as unknown, strokeStyle: "" as unknown };
   const stack: (typeof state)[] = [];
   const ctx = new Proxy(
@@ -67,6 +68,8 @@ function recorder() {
       textBaseline: "alphabetic",
       shadowColor: "",
       shadowBlur: 0,
+      // A context that can blur has a filter; the renderer checks for it.
+      ...(filters ? { filter: "none" } : {}),
     } as Record<string, unknown>,
     {
       get(target, key: string) {
@@ -92,6 +95,7 @@ function recorder() {
             alpha: target.globalAlpha as number,
             fill: target.fillStyle,
             stroke: target.strokeStyle,
+            filter: target.filter,
           });
         };
       },
@@ -390,5 +394,48 @@ describe("captions", () => {
     };
     expect(drawn(card)).toEqual(["早上的清水寺，人還不多。"]);
     expect(drawn({ ...card, shownUs: 0 })).toEqual([]);
+  });
+
+  it("fills the card around a picture that does not cover it with the picture, blurred", () => {
+    const timeline = compile(project);
+    const frame = renderAt(timeline, 0);
+    const card = {
+      kind: "media" as const,
+      mediaKind: "photo" as const,
+      clipId: "c1",
+      assetId: "p1",
+      mediaTimeUs: 0,
+      // 576 × 378 pixels on the 960 × 540 frame.
+      frame: { x: 0.2, y: 0.1, width: 0.6, height: 0.7 },
+      scale: 1,
+      progress: 0,
+      caption: "",
+      shownUs: 0,
+      opacity: 1,
+    };
+    const images = (size: { width: number; height: number }, filters: boolean) => {
+      const { ctx, calls } = recorder({ filters });
+      drawFrame(ctx, {
+        timeline,
+        frame: { ...frame, overlays: [card] },
+        width: WIDTH,
+        height: HEIGHT,
+        project: () => ({ x: 0, y: 0 }),
+        labels,
+        media: { frame: () => ({ image: "picture", ...size }) },
+      });
+      return calls.filter((c) => c.name === "drawImage");
+    };
+    // A portrait photo: the blurred copy covers the card, then the photo is drawn whole on it.
+    const portrait = images({ width: 300, height: 400 }, true);
+    expect(portrait).toHaveLength(2);
+    expect(portrait[0]?.filter).toMatch(/^blur\(\d+px\)$/);
+    expect(portrait[0]?.args[3]).toBeGreaterThan(576);
+    expect(portrait[1]?.filter).toBe("none");
+    expect(portrait[1]?.args[4]).toBeCloseTo(378);
+    // Without blur, the copy is still drawn, under a darker shade.
+    expect(images({ width: 300, height: 400 }, false)).toHaveLength(2);
+    // A picture of the card's proportions covers it: nothing behind it.
+    expect(images({ width: 1520, height: 997.5 }, true)).toHaveLength(1);
   });
 });

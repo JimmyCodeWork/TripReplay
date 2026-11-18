@@ -63,6 +63,8 @@ export interface EnRoutePhoto {
    * location; the line reaches that point while the photo is shown. Absent without a location.
    */
   readonly at?: number;
+  /** Shown in the middle, at the size of the stop's media, instead of on the small card. */
+  readonly centered?: true;
 }
 
 export interface TravelSegment extends SegmentBase {

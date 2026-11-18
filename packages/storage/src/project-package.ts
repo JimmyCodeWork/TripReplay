@@ -8,7 +8,13 @@ import { writeZip } from "./zip/zip-write.ts";
 
 export const PACKAGE_FORMAT = "tripreplay-project";
 export const PACKAGE_VERSION = 1;
-export const PACKAGE_EXTENSION = ".tripreplay";
+/**
+ * The ending of a package's file name: a ZIP archive by its last extension, so that phones and
+ * computers alike open and offer it as one, and a TripReplay backup by the one before.
+ */
+export const PACKAGE_EXTENSION = ".tripreplay.zip";
+/** The ending of packages written before version 1.0, which are still restored. */
+export const LEGACY_PACKAGE_EXTENSION = ".tripreplay";
 
 const MANIFEST = "manifest.json";
 const PROJECT = "project.json";

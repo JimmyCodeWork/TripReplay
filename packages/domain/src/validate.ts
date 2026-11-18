@@ -99,12 +99,15 @@ export function validateProject(project: Project): ValidationIssue[] {
       if (clip.durationUs < PHOTO_DURATION.min || clip.durationUs > PHOTO_DURATION.max)
         add(`${path}.durationUs`, "is outside the allowed range");
       if (clip.enRoute !== undefined && clip.enRoute !== true) add(`${path}.enRoute`, "must be true when present");
+      if (clip.enRouteCentered !== undefined && (clip.enRouteCentered !== true || clip.enRoute !== true))
+        add(`${path}.enRouteCentered`, "must be true, and only on a photo taken on the way");
     } else {
       if ("enRoute" in clip) add(`${path}.enRoute`, "only a photo can be on the way");
       const length = asset?.kind === "video" ? asset.durationUs : Number.POSITIVE_INFINITY;
       if (clip.inUs < 0 || clip.outUs > length) add(`${path}`, "trim is outside the video");
       if (clip.outUs - clip.inUs < Math.min(MIN_VIDEO_CLIP, length)) add(`${path}`, "is shorter than the minimum");
       if (clip.volume < 0 || clip.volume > 1) add(`${path}.volume`, "must be between 0 and 1");
+      if (clip.muted !== undefined && clip.muted !== true) add(`${path}.muted`, "must be true when present");
     }
   });
 

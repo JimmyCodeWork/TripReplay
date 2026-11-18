@@ -562,6 +562,36 @@ function drawDayNote(ctx: Canvas2D, options: DrawOptions, overlay: Extract<Overl
   });
 }
 
+/** How much the blurred fill behind a picture is blurred, in fractions of the shorter side. */
+const FILL_BLUR = 0.04;
+/** How much the blurred fill is darkened, so that the picture stands out in front of it. */
+const FILL_SHADE = "rgba(0, 0, 0, 0.25)";
+
+/**
+ * Fills the parts of a card that the picture leaves free, as a portrait photo on a landscape
+ * card, with the same picture enlarged to cover the card, blurred and darkened. Where the context
+ * cannot blur, the enlarged picture is darkened more, so that it still reads as background.
+ */
+function drawBlurredFill(
+  ctx: Canvas2D,
+  picture: { readonly image: unknown; readonly width: number; readonly height: number },
+  card: { readonly x: number; readonly y: number; readonly width: number; readonly height: number },
+  unit: number,
+): void {
+  // A little larger than the card, so that the blur's soft edges fall outside it.
+  const cover = Math.max(card.width / picture.width, card.height / picture.height) * 1.15;
+  const cw = picture.width * cover;
+  const ch = picture.height * cover;
+  ctx.save();
+  const blurs = "filter" in ctx;
+  if (blurs) ctx.filter = `blur(${Math.round(unit * FILL_BLUR)}px)`;
+  ctx.drawImage(picture.image, card.x + (card.width - cw) / 2, card.y + (card.height - ch) / 2, cw, ch);
+  if (blurs) ctx.filter = "none";
+  ctx.fillStyle = blurs ? FILL_SHADE : "rgba(0, 0, 0, 0.55)";
+  ctx.fillRect(card.x, card.y, card.width, card.height);
+  ctx.restore();
+}
+
 function drawMedia(ctx: Canvas2D, options: DrawOptions, overlay: Extract<Overlay, { kind: "media" }>): void {
   const { width, height, timeline, media } = options;
   const unit = Math.min(width, height);
@@ -593,6 +623,7 @@ function drawMedia(ctx: Canvas2D, options: DrawOptions, overlay: Extract<Overlay
     const ph = picture.height * fit;
     const px = x + (w - pw) / 2;
     const py = y + (h - ph) / 2;
+    if (pw < w - 1 || ph < h - 1) drawBlurredFill(ctx, picture, { x, y, width: w, height: h }, unit);
     ctx.drawImage(picture.image, px, py, pw, ph);
     const left = Math.max(x, px);
     const top = Math.max(y, py);
